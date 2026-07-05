@@ -1945,6 +1945,28 @@ async function pullFromSheet(){
     let countAkun=0, countLead=0;
     const skippedAkunNames = new Set();
     const skippedLeadAdv = new Set();
+
+    // ==== ROSTER AKUN DULU (tambah/perbarui/HAPUS) supaya daftar akun persis sama dgn sheet "AkunWL" ====
+    let countRoster=0, countRemoved=0;
+    if(Array.isArray(json.akunwl) && json.akunwl.length>0){
+      const namesInSheet = new Set(json.akunwl.map(r=> String(r.nama||'').trim().toLowerCase()).filter(Boolean));
+      (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster++; });
+      for(let i=ACCOUNTS.length-1;i>=0;i--){
+        if(!namesInSheet.has(ACCOUNTS[i].name.trim().toLowerCase())){
+          selectedAccounts.delete(ACCOUNTS[i].id);
+          ACCOUNTS.splice(i,1);
+          countRemoved++;
+        }
+      }
+    }
+    const countHistori = applyHistoriAkunRows(json.historiakun);
+
+    // ==== RESET series budget/spend & lead ke 0 SEBELUM diisi ulang ====
+    // supaya baris yang sudah dihapus/dikosongkan di spreadsheet ikut jadi 0/kosong di dashboard
+    // (bukan tetap memakai nilai lama yang tersimpan di localStorage / browser).
+    ACCOUNTS.forEach(acc=>{ acc.budgetSeries = zeroSeries(); acc.spendSeries = zeroSeries(); });
+    Object.keys(ADV_LEADS).forEach(adv=>{ ADV_LEADS[adv].real = zeroSeries(); ADV_LEADS[adv].oo = zeroSeries(); });
+
     (json.akun||[]).forEach(r=>{
       const acc = findAccountByName(r.nama);
       const d = parseIdDate(r.tanggal);
@@ -1963,10 +1985,7 @@ async function pullFromSheet(){
       setAt(ADV_LEADS[adv].oo, d, parseFloat(r.oo)||0);
       countLead++;
     });
-    let countRoster=0;
-    (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster++; });
-    const countHistori = applyHistoriAkunRows(json.historiakun);
-    if(countRoster>0 || countHistori>0){ renderAccountGroups(); renderInputSelectors(); saveLocalState(); }
+    if(countRoster>0 || countRemoved>0 || countHistori>0){ renderAccountGroups(); renderInputSelectors(); saveLocalState(); }
     let countTarget=0, modeFromSheet=null;
     (json.target||[]).forEach(r=>{
       const advRaw = String(r.advertiser||'').trim();
@@ -1993,14 +2012,15 @@ async function pullFromSheet(){
       if(targetMode==='bulanan'){ renderMonthPicker(); renderTargetRowsMonthly(); renderCopyFromSelect(); }
       saveLocalState();
     }
+    const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus dari dashboard karena sudah tidak ada di sheet AkunWL.') : '';
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL. <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), dan '+countTarget+' baris target dari spreadsheet. Semua baris cocok dengan akun yang terdaftar.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), dan '+countTarget+' baris target dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
@@ -2482,6 +2502,27 @@ async function autoPullOnLoad(){
     let countAkun=0, countLead=0;
     const skippedAkunNames2 = new Set();
     const skippedLeadAdv2 = new Set();
+
+    // ==== ROSTER AKUN DULU (tambah/perbarui/HAPUS) supaya daftar akun persis sama dgn sheet "AkunWL" ====
+    let countRoster2=0, countRemoved2=0;
+    if(Array.isArray(json.akunwl) && json.akunwl.length>0){
+      const namesInSheet2 = new Set(json.akunwl.map(r=> String(r.nama||'').trim().toLowerCase()).filter(Boolean));
+      (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster2++; });
+      for(let i=ACCOUNTS.length-1;i>=0;i--){
+        if(!namesInSheet2.has(ACCOUNTS[i].name.trim().toLowerCase())){
+          selectedAccounts.delete(ACCOUNTS[i].id);
+          ACCOUNTS.splice(i,1);
+          countRemoved2++;
+        }
+      }
+    }
+    applyHistoriAkunRows(json.historiakun);
+
+    // ==== RESET series budget/spend & lead ke 0 SEBELUM diisi ulang, supaya data yang sudah ====
+    // dihapus/dikosongkan di spreadsheet ikut hilang di dashboard, bukan nyangkut nilai lama.
+    ACCOUNTS.forEach(acc=>{ acc.budgetSeries = zeroSeries(); acc.spendSeries = zeroSeries(); });
+    Object.keys(ADV_LEADS).forEach(adv=>{ ADV_LEADS[adv].real = zeroSeries(); ADV_LEADS[adv].oo = zeroSeries(); });
+
     (json.akun||[]).forEach(r=>{
       const acc = findAccountByName(r.nama);
       const d = parseIdDate(r.tanggal);
@@ -2500,24 +2541,22 @@ async function autoPullOnLoad(){
       setAt(ADV_LEADS[adv].oo, d, parseFloat(r.oo)||0);
       countLead++;
     });
-    let countRoster2=0;
-    (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster2++; });
-    applyHistoriAkunRows(json.historiakun);
-    if(countRoster2>0){ renderAccountGroups(); renderInputSelectors(); }
+    if(countRoster2>0 || countRemoved2>0){ renderAccountGroups(); renderInputSelectors(); }
     saveLocalState();
     render();
     const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0);
+    const removedNote2 = countRemoved2>0 ? (' '+countRemoved2+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
     if(msg){
       const now = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
       if(hasSkipped2){
         let warnParts2=[];
         if(skippedAkunNames2.size>0) warnParts2.push('Akun tidak dikenal: '+[...skippedAkunNames2].join(', '));
         if(skippedLeadAdv2.size>0) warnParts2.push('Advertiser tidak dikenal: '+[...skippedLeadAdv2].join(', '));
-        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL. <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
+        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL.'+removedNote2+' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
         msg.style.color = 'var(--red)';
         setSidebarStatus('err', 'Sinkron sebagian (ada baris dilewati)');
       } else {
-        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL ('+now+')';
+        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL ('+now+').'+removedNote2;
         msg.style.color = 'var(--green)';
         setSidebarStatus('ok', 'Terhubung ke spreadsheet');
       }
