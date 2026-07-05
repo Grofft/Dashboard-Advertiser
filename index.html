@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Iklan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  .app{display:flex;min-height:100vh;}
+
+  /* Sidebar */
+  .sidebar{width:220px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:4px;}
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 22px 8px;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);}
+  .brand span{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;}
+  .navbtn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:var(--muted);cursor:pointer;font-size:14px;font-weight:500;border:1px solid transparent;user-select:none;}
+  .navbtn:hover{background:var(--panel-2);color:var(--text);}
+  .navbtn.active{background:var(--accent-dim);color:#CFFFFA;border-color:var(--accent);}
+  .navbtn .ic{width:16px;text-align:center;font-size:14px;}
+  .sidebar-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);}
+  .status{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);padding:6px 8px;}
+  .status .sdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+  .status.ok .sdot{background:var(--good);}
+  .status.err .sdot{background:var(--bad);}
+  .status.sim .sdot{background:var(--warn);}
+  .main{flex:1;padding:24px 30px 50px 30px;max-width:1400px;}
+  .page{display:none;}
+  .page.active{display:block;animation:fadeInPage .25s ease;}
+:root{
+  --bg:#0F1115; --panel:#171B22; --panel-2:#1D222B; --line:#2A3040;
+  --text:#E7E9EE; --muted:#8B93A7;
+  --green:#2DD4BF; --greendark:#1B6E64; --yellow:#F5C518; --red:#EF4444; --blue:#38BDF8; --purple:#A78BFA;
+  --scrollbar:#2A3343; --td-border:#1D2531; --footer-text:#4D566A; --code-bg:#0E1117;
+  --chart-grid:#1D2531; --chart-tick:#5C6678;
+  --th-text:#0B0F14;
+  --report-preview-bg:#0B0F14; --report-preview-text:#A8E6C5;
+  --row-odd:rgba(255,255,255,.015); --row-hover:rgba(56,189,248,.06);
+  --soft-white:rgba(255,255,255,.06);
+  --overlay-bg:rgba(0,0,0,.6);
+  --shadow-card:none;
+  --header-bg:rgba(11,15,20,.95); --tabs-bg:rgba(11,15,20,.97);
+  --accent:var(--green); --accent-dim:var(--greendark);
+  --good:var(--green); --good-bg:rgba(45,212,191,.15);
+  --warn:var(--yellow); --bad:var(--red);
+  --warn-bg:rgba(245,197,24,.15); --bad-bg:rgba(239,68,68,.15);
+  --radius:10px;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F4F6F9; --panel:#FFFFFF; --panel-2:#EEF1F6; --line:#DCE1EA;
+  --text:#12161C; --muted:#5B6577;
+  --green:#0F9E8E; --greendark:#0B7A6D; --yellow:#B8860B; --red:#D7384F; --blue:#2B6FE0; --purple:#7A56E0;
+  --scrollbar:#C7CEDA; --td-border:#E3E7EE; --footer-text:#9AA3B2; --code-bg:#F0F2F6;
+  --chart-grid:#E3E7EE; --chart-tick:#7A8494;
+  --th-text:#FFFFFF;
+  --report-preview-bg:#0B0F14; --report-preview-text:#A8E6C5;
+  --row-odd:rgba(20,30,50,.02); --row-hover:rgba(43,111,224,.06);
+  --soft-white:rgba(20,30,50,.05);
+  --overlay-bg:rgba(20,26,38,.45);
+  --shadow-card:0 1px 2px rgba(20,30,50,.05);
+  --header-bg:rgba(255,255,255,.92); --tabs-bg:rgba(255,255,255,.95);
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6;letter-spacing:.01em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-variant-numeric:tabular-nums;transition:background .2s ease,color .2s ease;}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px;}
+
+/* ===== THEME TOGGLE ===== */
+.theme-toggle{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px;}
+.theme-toggle-btn{display:flex;align-items:center;justify-content:center;width:30px;height:28px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:14px;background:none;border:none;}
+.theme-toggle-btn.active{background:var(--green);color:#06150E;}
+
+.period-btns{display:flex;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px;flex-wrap:wrap;}
+.period-btn{padding:6px 11px;border-radius:6px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;}
+.period-btn.active{background:var(--green);color:#06150E;}
+.filterbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.filterbar input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;}
+.range-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);padding:6px 4px;}
+
+.section-header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:30px 0 14px;}
+.section-header:first-of-type{margin-top:6px;}
+.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:19px;}
+.muted-note{font-size:12.5px;color:var(--muted);line-height:1.55;}
+
+.grid{display:grid;gap:14px;}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.grid-4,.grid-3{grid-template-columns:1fr;}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow-card);}
+.kpi .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+.kpi .value{font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;margin-top:8px;line-height:1.25;letter-spacing:.01em;}
+.bar-accent{height:3px;width:28px;border-radius:2px;margin-bottom:10px;}
+
+.panel-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:4px;}
+.panel-desc{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 18px 8px;}
+.chart-wrap{position:relative;height:300px;}
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+.table-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;}
+th{text-align:left;color:var(--th-text);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;padding:11px 12px;background:linear-gradient(180deg,var(--green),var(--greendark));white-space:nowrap;}
+th:first-child{border-radius:8px 0 0 0;}
+th:last-child{border-radius:0 8px 0 0;}
+td{padding:11px 12px;border-bottom:1px solid var(--td-border);white-space:nowrap;line-height:1.5;font-variant-numeric:tabular-nums;}
+tbody tr:nth-child(odd){background:var(--row-odd);}
+tbody tr:hover{background:var(--row-hover);}
+tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;color:var(--text);background:var(--panel-2);}
+.tag{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;}
+.tag.green{background:rgba(45,212,191,.15);color:var(--green);}
+.tag.red{background:rgba(239,68,68,.15);color:var(--red);}
+.tag.blue{background:rgba(56,189,248,.15);color:var(--blue);}
+.tag.yellow{background:rgba(245,197,24,.18);color:var(--yellow);}
+.acc-name-pill{display:inline-flex;align-items:center;gap:6px;font-weight:600;}
+.acc-name-pill .dot{width:7px;height:7px;border-radius:50%;}
+
+.account-picker{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+
+/* ===== Kartu hasil per advertiser (Data Hasil Advertiser) ===== */
+.adv-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.adv-card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;}
+.adv-card-head{display:flex;align-items:center;gap:8px;margin-bottom:11px;padding-bottom:11px;border-bottom:1px solid var(--line);}
+.adv-card-head .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.adv-card-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16.5px;letter-spacing:.01em;}
+.adv-card-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;font-size:14.5px;line-height:1.4;}
+.adv-card-row .k{color:var(--muted);}
+.adv-card-row .v{font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:15px;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:7px;}
+.adv-card-row .tag{font-size:12.5px;padding:4px 10px;}
+.delta-badge{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap;}
+.delta-badge.up{color:var(--green);background:rgba(45,212,191,.12);}
+.delta-badge.down{color:var(--red);background:rgba(239,68,68,.12);}
+.delta-badge.flat{color:var(--muted);background:rgba(255,255,255,.05);}
+.adv-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;}
+.acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
+.acc-total-bar b{font-family:'IBM Plex Mono',monospace;color:var(--green);margin-left:4px;}
+
+/* Generic button (banyak <button class="btn"> tidak punya style sebelumnya -> jatuh ke default browser yg besar/polos) */
+.btn{background:var(--green);color:#06201C;border:none;border-radius:7px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.88;}
+.btn:active{transform:scale(.98);}
+
+/* Form input ringkas (Data Input) */
+.compact-form{padding:13px 16px;}
+.compact-form h3{margin-bottom:8px !important;}
+.compact-form .target-row{margin-bottom:7px;gap:6px;}
+.compact-form .target-row label{font-size:11.5px;color:var(--muted);margin-bottom:1px;}
+.compact-form .target-row input, .compact-form .target-row select{padding:7px 9px;font-size:12.5px;}
+.compact-form .btn{padding:8px 12px;font-size:12px;}
+.acc-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.acc-toolbar .btn{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;}
+.acc-toolbar .btn:hover{border-color:var(--green);}
+.acc-group{margin-bottom:10px;}
+.acc-group-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:10px 0 6px;display:flex;align-items:center;gap:6px;}
+.acc-list{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:1000px){.acc-list{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.acc-list{grid-template-columns:1fr;}}
+.acc-item{display:flex;align-items:center;gap:8px;padding:7px 8px 7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font-size:13.5px;}
+.acc-item.inactive{opacity:.5;border-style:dashed;}
+.acc-item label.acc-check{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0;}
+.acc-item label.acc-check span.nm{overflow:hidden;text-overflow:ellipsis;}
+.acc-item input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;flex-shrink:0;}
+.acc-item .icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 4px;border-radius:5px;flex-shrink:0;line-height:1;}
+.acc-item .icon-btn:hover{color:var(--text);background:var(--soft-white);}
+.acc-tag-inactive{font-size:9.5px;font-weight:700;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:1px 5px;flex-shrink:0;}
+.acc-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-size:12.5px;font-weight:600;}
+.acc-add-btn:hover{color:var(--green);border-color:var(--green);}
+
+.edit-modal-overlay{position:fixed;inset:0;background:var(--overlay-bg);display:flex;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px);}
+.edit-modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;width:380px;max-width:92vw;}
+.edit-modal h3{font-family:'Space Grotesk',sans-serif;font-size:15.5px;margin-bottom:14px;}
+.edit-modal .field{margin-bottom:12px;}
+.edit-modal label{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
+.edit-modal input, .edit-modal select{width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px 11px;font-size:14px;font-variant-numeric:tabular-nums;}
+.edit-modal .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;}
+.edit-modal .btn-modal{padding:8px 14px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--text);}
+.edit-modal .btn-modal.primary{background:var(--green);color:#06150E;border:none;}
+.edit-modal .btn-modal.danger{background:var(--red);color:#fff;border:none;}
+
+.target-panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+.target-row{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:center;margin-bottom:10px;}
+.target-row label{font-size:13px;font-weight:600;}
+.target-row input, .target-row select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 11px;font-size:14.5px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums;}
+
+footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:'IBM Plex Mono',monospace;text-align:center;}
+
+/* ===== METRIC MULTI-SELECT DROPDOWN ===== */
+.metric-opt{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:12.5px;cursor:pointer;transition:background .1s;}
+.metric-opt:hover{background:var(--row-hover);}
+.metric-opt input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;flex-shrink:0;cursor:pointer;}
+#metricDropdownBtn:hover{border-color:var(--green);}
+#metricDropdownMenu{animation:fadeInPage .15s ease;}
+
+/* ===== TARGET BULANAN ===== */
+.month-picker{display:flex;flex-direction:column;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.month-btn{padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;background:var(--panel-2);border:1px solid var(--line);}
+.month-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.month-btn.has-custom{border-color:var(--yellow);color:var(--yellow);}
+.month-btn.has-custom.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.monthly-target-note{font-size:11.5px;color:var(--muted);padding:10px 12px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);border-radius:8px;margin-bottom:14px;}
+.target-mode-toggle{display:flex;gap:8px;margin-bottom:16px;align-items:center;}
+.target-mode-toggle label{font-size:12px;font-weight:600;color:var(--muted);}
+.target-mode-btn{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);}
+.target-mode-btn.active{background:var(--green);color:#06150E;border-color:var(--green);}
+.target-copy-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.target-copy-bar select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12.5px;}
+.target-copy-bar .btn{padding:6px 12px;font-size:12px;}
+
+
+/* ===== PAGE FADE (dipakai index .page.active) ===== */
+@keyframes fadeInPage{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* ===== REPORT WHATSAPP ===== */
+.report-modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 28px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.report-modal h3{font-family:'Space Grotesk',sans-serif;font-size:17px;margin-bottom:4px;}
+.report-section{margin-bottom:18px;}
+.report-section-title{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.adv-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.adv-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;}
+.adv-chip.selected{border-color:currentColor;background:var(--soft-white);}
+.adv-chip input[type=checkbox]{accent-color:currentColor;width:14px;height:14px;}
+.report-preview{background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:var(--report-preview-text);white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;}
+.report-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.btn-wa{display:flex;align-items:center;gap:8px;padding:10px 18px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-wa:hover{background:#1ebe5d;}
+.btn-wa svg{flex-shrink:0;}
+.btn-copy-report{padding:10px 16px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;}
+.btn-copy-report:hover{border-color:var(--green);}
+.report-no-data{color:var(--red);font-size:12.5px;font-style:italic;}
+.toggle-group{display:flex;gap:8px;flex-wrap:wrap;}
+.toggle-chip{padding:6px 12px;border:1px solid var(--line);border-radius:7px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;}
+.toggle-chip.on{background:var(--green);color:#06150E;border-color:var(--green);}
+.wa-phone-row{display:flex;gap:8px;align-items:center;margin-bottom:4px;}
+.wa-phone-row input{flex:1;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 11px;font-size:13px;font-family:'IBM Plex Mono',monospace;}
+.wa-phone-row .btn-modal{padding:7px 12px;font-size:12px;white-space:nowrap;}
+.btn-report-float{position:fixed;bottom:28px;right:28px;z-index:20;display:flex;align-items:center;gap:8px;padding:12px 20px;background:#25D366;color:#fff;border:none;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:all .2s;}
+.btn-report-float:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 6px 26px rgba(37,211,102,.5);}
+@media(max-width:768px){.btn-report-float{bottom:18px;right:14px;padding:10px 16px;font-size:13px;}}
+
+
+/* ===== CUSTOM CHART LEGEND ===== */
+#advChartLegend{
+  display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 4px 14px;
+}
+.legend-group{
+  display:flex;flex-direction:column;gap:4px;
+  background:var(--panel-2);border:1px solid var(--line);
+  border-radius:8px;padding:8px 12px;min-width:160px;
+}
+.legend-group-title{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);margin-bottom:4px;
+}
+.legend-item{
+  display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text);
+  cursor:pointer;padding:2px 0;opacity:1;transition:opacity .15s;
+}
+.legend-item.hidden-series{opacity:.35;}
+.legend-swatch{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:14px;border-radius:3px;flex-shrink:0;position:relative;overflow:hidden;
+}
+.legend-swatch-line{
+  position:absolute;width:100%;height:2.4px;top:50%;transform:translateY(-50%);
+  border-radius:2px;
+}
+.legend-swatch-line.dashed{
+  background:none !important;
+  height:0;border-top:2.4px dashed var(--lc);top:50%;transform:translateY(-50%);
+}
+.legend-metric-badge{
+  font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;
+  background:var(--soft-white);border-radius:4px;padding:1px 5px;margin-left:auto;white-space:nowrap;
+}
+
+/* ============== TAMPILAN HP / MOBILE ============== */
+@media(max-width:768px){
+  .global-filterbar{padding:10px 14px;}
+  .filterbar{width:100%;gap:6px;}
+  .period-btns{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;}
+  .period-btn{flex-shrink:0;padding:8px 11px;font-size:12.5px;}
+  #customStart, #customEnd{flex:1;min-width:0;}
+  .section-header{margin:22px 0 10px;}
+  .section-header h2{font-size:16px;}
+
+  .acc-toolbar{flex-direction:column;align-items:stretch;}
+  .acc-toolbar > div:last-child{display:flex;gap:8px;}
+  .acc-toolbar .btn{flex:1;text-align:center;}
+
+  .target-row{grid-template-columns:1fr !important;gap:6px;}
+  .target-row label{display:flex;align-items:center;gap:6px;}
+
+  .kpi .value{font-size:21px;}
+  .card{padding:14px;}
+
+  table{font-size:12.5px;}
+  th, td{padding:9px 8px;}
+
+  .two-col{gap:12px;}
+  .chart-wrap, .chart-wrap.short{height:240px;}
+
+  .edit-modal{padding:18px 16px;width:94vw;}
+  .edit-modal-overlay{padding:14px;}
+
+  .account-picker, .target-panel, .chart-card{padding:14px;}
+}
+@media(max-width:420px){
+  .kpi .value{font-size:19px;}
+  .grid-4, .grid-3{gap:10px;}
+}
+
+/* ===== Page title header (h1) & global filter bar ===== */
+.section-header h1{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
+.global-filterbar{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px 16px;margin-bottom:22px;
+}
+.global-filterbar .filterbar{gap:8px;}
+.global-filterbar input[type=date]{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;}
+  @media(max-width:860px){
+    .app{flex-direction:column;}
+    .sidebar{width:100%;flex-direction:row;overflow-x:auto;padding:12px;}
+    .brand{display:none;}
+    .sidebar-foot{display:none;}
+    .grid-2{grid-template-columns:1fr;}
+    .main{padding:18px;}
+  }
+</style>
+</head>
+<script>
+// Terapkan tema tersimpan sesegera mungkin agar tidak "kedip" gelap->terang
+try{
+  var __t = localStorage.getItem("dashTheme");
+  if(__t === "light"){ document.documentElement.setAttribute("data-theme","light"); }
+}catch(e){}
+</script>
+<body>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="brand"><div class="dot"></div><span>DASHBOARD IKLAN</span></div>
+    <div class="navbtn active" data-page="overview"><span class="ic">◧</span> Overview</div>
+    <div class="navbtn" data-page="advertiser"><span class="ic">▤</span> Data Hasil Advertiser</div>
+    <div class="navbtn" data-page="akun"><span class="ic">▥</span> Data Akun</div>
+    <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
+    <div class="navbtn" data-page="target"><span class="ic">◎</span> Target &amp; Pengaturan</div>
+    <div class="navbtn" data-page="integrasi"><span class="ic">⚙</span> Pengaturan Integrasi</div>
+    <div class="sidebar-foot">
+      <div class="status" id="apiStatus"><div class="sdot"></div><span id="apiStatusText">Menghubungkan…</span></div>
+    </div>
+  </div>
+
+  <div class="main">
+
+<div class="global-filterbar">
+  <div class="period-btns" id="periodBtns"></div>
+  <div class="filterbar">
+    <input type="date" id="customStart">
+    <span id="customDash" style="color:var(--muted);">—</span>
+    <input type="date" id="customEnd">
+    <div class="range-label" id="rangeLabel"></div>
+  </div>
+  <div class="theme-toggle" id="themeToggle" title="Mode tampilan">
+    <button class="theme-toggle-btn" id="btnQuickRefresh" type="button" title="Tarik data terbaru dari spreadsheet">⟳</button>
+    <button class="theme-toggle-btn" id="btnThemeDark" type="button" title="Mode Gelap">🌙</button>
+    <button class="theme-toggle-btn" id="btnThemeLight" type="button" title="Mode Terang">☀️</button>
+  </div>
+</div>
+
+<div class="page active" id="page-overview">
+  <div class="section-header" style="margin-top:0;"><h1>Overview</h1><div class="muted-note">Ringkasan performa iklan lintas akun &amp; advertiser</div></div>
+
+  <div class="section-header"><h2>Ringkasan Budget</h2></div>
+  <div class="grid grid-4">
+    <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Budget (Non PPN)</div><div class="value" id="kpiBudget">Rp 435.44jt</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">Total Spend + PPN</div><div class="value" id="kpiSpendPPN">Rp 450.98jt</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Lead (Real + OO)</div><div class="value" id="kpiLeads">11.732</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">Jumlah Akun Aktif</div><div class="value" id="kpiAccCount">11</div></div>
+  </div>
+  <div class="chart-card" style="margin-top:16px;">
+    <div class="panel-title">Grafik Performa Advertiser</div>
+    <div class="panel-desc">Grafik garis per hari — satu garis per advertiser, otomatis ikut filter tanggal &amp; akun di atas. Pilih metrik yang ingin ditampilkan:</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <label style="font-size:12px;font-weight:600;color:var(--muted);">Metrik:</label>
+      <!-- Hidden legacy select agar JS lama tetap bisa dibaca -->
+      <select id="advMetricSelect" style="display:none;">
+        <option value="budget" selected>Budget (Non PPN)</option>
+        <option value="spendPPN">Budget + PPN</option>
+        <option value="leadReal">Lead Real</option>
+        <option value="leadOO">Lead OO</option>
+        <option value="cplReal">CPL Real</option>
+        <option value="cplOO">CPL OO</option>
+        <option value="pctLead">% Lead (Real dari Total Lead)</option>
+      </select>
+      <!-- Multi-select checkbox dropdown -->
+      <div id="metricDropdownWrap" style="position:relative;">
+        <button id="metricDropdownBtn" type="button" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 36px 8px 12px;font-size:12.5px;min-width:220px;cursor:pointer;text-align:left;position:relative;">
+          <span id="metricDropdownLabel">Budget (Non PPN)</span>
+          <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);">▾</span>
+        </button>
+        <div id="metricDropdownMenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:100;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 0;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.3);">
+          <div style="padding:6px 12px 4px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line);margin-bottom:4px;">Pilih satu atau lebih metrik</div>
+          <label class="metric-opt" data-val="budget"><input type="checkbox" value="budget" checked> Budget (Non PPN)</label>
+          <label class="metric-opt" data-val="spendPPN"><input type="checkbox" value="spendPPN"> Budget + PPN</label>
+          <label class="metric-opt" data-val="leadReal"><input type="checkbox" value="leadReal"> Lead Real</label>
+          <label class="metric-opt" data-val="leadOO"><input type="checkbox" value="leadOO"> Lead OO</label>
+          <label class="metric-opt" data-val="cplReal"><input type="checkbox" value="cplReal"> CPL Real</label>
+          <label class="metric-opt" data-val="cplOO"><input type="checkbox" value="cplOO"> CPL OO</label>
+          <label class="metric-opt" data-val="pctLead"><input type="checkbox" value="pctLead"> % Lead (Real dari Total Lead)</label>
+          <div style="padding:6px 12px 4px;border-top:1px solid var(--line);margin-top:4px;display:flex;gap:8px;">
+            <button id="metricSelectAll" type="button" style="font-size:11px;font-weight:600;color:var(--green);background:none;border:none;cursor:pointer;padding:0;">Pilih Semua</button>
+            <button id="metricClearAll" type="button" style="font-size:11px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;">Kosongkan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="advChartLegend"></div>
+    <div class="chart-wrap"><canvas id="chartAdvMetric" style="box-sizing: border-box; display: block; height: 300px; width: 1321px;" width="1783" height="404"></canvas></div>
+  </div>
+
+</div><!-- /page-overview -->
+
+<div class="page" id="page-advertiser">
+  <div class="section-header" style="margin-top:0;"><h1>Data Hasil Advertiser</h1><div class="muted-note">Real, OO, budget, kekurangan, dan CPL tiap advertiser pada periode terpilih</div></div>
+  <div class="section-header"><h2>Performa Advertiser</h2></div>
+  <div class="chart-card">
+    <div class="panel-title">Lead, CPL &amp; Kekurangan vs Target Budget</div>
+    <div class="panel-desc">Berdasarkan akun terpilih pada periode terpilih</div>
+    <div class="adv-cards-grid" id="tblAdvertiser"></div>
+  </div>
+</div><!-- /page-advertiser -->
+
+<div class="page" id="page-akun">
+  <div class="section-header" style="margin-top:0;"><h1>Data Akun</h1><div class="muted-note">Kelola akun WL per advertiser, serta lihat detail budget &amp; spend per akun</div></div>
+
+  <div class="section-header"><h2>Pilih Akun WL</h2><div class="muted-note" id="accSummary">11 dari 11 akun aktif dipilih</div></div>
+  <div class="account-picker">
+    <div class="acc-toolbar">
+      <div class="muted-note">Centang akun yang ingin ditampilkan — seluruh dashboard otomatis sinkron.</div>
+      <div style="display:flex;gap:8px;">
+        <div class="btn" id="btnSelectAll">Pilih Semua</div>
+        <div class="btn" id="btnClearAll">Kosongkan</div>
+      </div>
+    </div>
+    <div id="accGroups"><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#2FBE82;display:inline-block;"></span>MALDY<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc2" checked=""><span class="nm">Maldy 04</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc3" checked=""><span class="nm">Maldy 05</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc4" checked=""><span class="nm">DGT-05</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun MALDY</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#F0566C;display:inline-block;"></span>FIKI<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc1" checked=""><span class="nm">DGT-07</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun FIKI</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#4C8DFF;display:inline-block;"></span>RIFAN<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc5" checked=""><span class="nm">Maldy-Eka</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc6" checked=""><span class="nm">Aziz-01</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc7" checked=""><span class="nm">DGT-02</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun RIFAN</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#9C7BFF;display:inline-block;"></span>ALADIN<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc8" checked=""><span class="nm">Nextugo-03</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc9" checked=""><span class="nm">DGT-Nextug03</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc10" checked=""><span class="nm">DGT-Nextug06</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun ALADIN</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#F2C12E;display:inline-block;"></span>YASIN<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc11" checked=""><span class="nm">DGT-07 XUEFANG</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun YASIN</div></div></div></div>
+    <div class="acc-add-btn" id="btnAddAdvertiser" style="margin-top:6px;">+ Tambah Advertiser Baru</div>
+  </div>
+
+  <div class="section-header"><h2>Detail per Akun WL</h2></div>
+  <div class="chart-card">
+    <div class="panel-title">Budget &amp; Spend per Akun</div>
+    <div class="panel-desc">Nama akun, advertiser pemilik, budget 24 jam, total budget, dan spend+PPN pada periode terpilih</div>
+    <div class="adv-cards-grid" id="tblAccounts"></div>
+    <div class="acc-total-bar"><span>Total</span><span>Budget: <b id="tblAccTotalBudget">Rp 0</b></span><span>Spend + PPN: <b id="tblAccTotalSpend">Rp 0</b></span></div>
+  </div>
+</div><!-- /page-akun -->
+
+<div class="page" id="page-input">
+  <div class="section-header" style="margin-top:0;"><h1>Data Input</h1><div class="muted-note">Input cepat budget per akun &amp; lead per advertiser, harian</div></div>
+
+  <div class="section-header"><h2>Input Data Harian</h2><div class="muted-note">Isi cepat — cukup pilih akun/advertiser & masukkan angkanya, sisanya otomatis</div></div>
+
+  <div class="account-picker" style="margin-bottom:14px;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <label style="font-size:12px;font-weight:600;white-space:nowrap;">📅 Tanggal untuk semua input di bawah</label>
+    <input type="date" id="inSharedDate" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 9px;font-size:12.5px;font-weight:600;max-width:180px;">
+  </div>
+
+  <div class="grid grid-2" style="gap:14px;">
+    <div class="account-picker compact-form">
+      <h3 style="font-family:&#39;Space Grotesk&#39;,sans-serif;font-size:13.5px;margin-bottom:8px;">💰 Budget per Akun</h3>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Akun</label><select id="inAccSelect" autofocus><option value="acc1">DGT-07 (FIKI)</option><option value="acc2">Maldy 04 (MALDY)</option><option value="acc3">Maldy 05 (MALDY)</option><option value="acc4">DGT-05 (MALDY)</option><option value="acc5">Maldy-Eka (RIFAN)</option><option value="acc6">Aziz-01 (RIFAN)</option><option value="acc7">DGT-02 (RIFAN)</option><option value="acc8">Nextugo-03 (ALADIN)</option><option value="acc9">DGT-Nextug03 (ALADIN)</option><option value="acc10">DGT-Nextug06 (ALADIN)</option><option value="acc11">DGT-07 XUEFANG (YASIN)</option></select></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Budget (Non PPN)</label><input type="number" id="inAccBudget" placeholder="Contoh: 2500000" step="1000" inputmode="numeric"></div>
+      <div id="accSpendPreview" style="font-size:11.5px;color:var(--muted);margin:-2px 0 8px 2px;">Spend + PPN (<span id="accPPNLabel">3</span>%, dari PPN akun ini): <b id="accSpendPreviewVal">Rp 0</b> &nbsp;·&nbsp; <a href="#" id="toggleAccAdvanced" style="color:var(--green);text-decoration:none;">override manual</a></div>
+      <div id="accAdvancedBox" style="display:none;">
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Spend + PPN (manual)</label><input type="number" id="inAccSpend" placeholder="Contoh: 2600000" step="1000" inputmode="numeric"></div>
+        <div class="muted-note" style="margin:-2px 0 8px;">Isi kalau spend aktual hari ini berbeda dari hasil hitung otomatis. PPN default akun ini diatur di menu Data Akun.</div>
+      </div>
+      <button class="btn" id="btnSaveAccInput" style="margin-top:3px;width:100%;">💾 Simpan Data Akun</button>
+      <div class="muted-note" id="accInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+    </div>
+    <div class="account-picker compact-form">
+      <h3 style="font-family:&#39;Space Grotesk&#39;,sans-serif;font-size:13.5px;margin-bottom:8px;">🎯 Lead per Advertiser</h3>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="inLeadSelect" autofocus><option value="MALDY">MALDY</option><option value="FIKI">FIKI</option><option value="RIFAN">RIFAN</option><option value="ALADIN">ALADIN</option><option value="YASIN">YASIN</option></select></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="inLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="inLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
+      <button class="btn" id="btnSaveLeadInput" style="margin-top:3px;width:100%;">💾 Simpan Data Lead</button>
+      <div class="muted-note" id="leadInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+    </div>
+  </div>
+  <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: tekan <b>Enter</b> di kolom angka untuk langsung menyimpan — gak perlu klik tombol. Setelah simpan, kolom otomatis bersih dan siap diisi data berikutnya (akun/advertiser & tanggal tetap sama).</div>
+
+</div><!-- /page-input -->
+
+<div class="page" id="page-target">
+  <div class="section-header" style="margin-top:0;"><h1>Target &amp; Pengaturan</h1><div class="muted-note">Atur target budget per advertiser — harian atau bulanan</div></div>
+
+  <div class="section-header"><h2>Target Budget per Advertiser</h2><div class="muted-note">Atur target harian atau bulanan — kalkulasi Kekurangan otomatis menyesuaikan</div></div>
+
+  <!-- Mode Toggle: Harian vs Bulanan -->
+  <div class="target-panel" style="margin-bottom:14px;">
+    <div class="target-mode-toggle">
+      <label>Mode Target:</label>
+      <button class="target-mode-btn active" id="btnModeHarian" onclick="setTargetMode('harian')">📅 Harian</button>
+      <button class="target-mode-btn" id="btnModeBulanan" onclick="setTargetMode('bulanan')">🗓️ Bulanan</button>
+    </div>
+    <div class="monthly-target-note" id="targetModeNote">
+      <b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Spend+PPN − (Target Harian × jumlah hari dalam periode).
+    </div>
+
+    <!-- PANEL HARIAN -->
+    <div id="panelTargetHarian">
+      <div id="targetRows"></div>
+      <div class="muted-note" style="margin-top:8px;">Kekurangan = Spend+PPN periode − (Target Harian × jumlah hari). Positif = melebihi target, negatif = di bawah target.</div>
+    </div>
+
+    <!-- PANEL BULANAN -->
+    <div id="panelTargetBulanan" style="display:none;">
+      <div style="margin-bottom:12px;">
+        <div class="muted-note" style="margin-bottom:10px;">Pilih bulan untuk diedit. Bulan dengan target khusus ditandai <span style="color:var(--yellow);font-weight:700;">kuning</span>.</div>
+        <div class="month-picker" id="monthPicker"></div>
+      </div>
+
+      <!-- Copy from month -->
+      <div class="target-copy-bar">
+        <span style="font-size:12px;color:var(--muted);font-weight:600;">Salin dari bulan:</span>
+        <select id="copyFromMonth">
+          <option value="">-- Pilih bulan sumber --</option>
+        </select>
+        <button class="btn" id="btnCopyFromMonth" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Bulan Ini</button>
+        <button class="btn" id="btnCopyToAll" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Semua Bulan</button>
+      </div>
+
+      <div id="targetRowsMonthly"></div>
+      <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Spend+PPN bulan ini − (Target Harian × 28 hari, standar tetap). Ditampilkan otomatis per advertiser di atas. Kekurangan periode dashboard tetap dihitung berdasarkan jumlah hari asli pada periode yang dipilih.</div>
+    </div>
+  </div>
+
+</div><!-- /page-target -->
+
+<div class="page" id="page-integrasi">
+  <div class="section-header" style="margin-top:0;"><h1>Pengaturan Integrasi</h1><div class="muted-note">Panduan menghubungkan dashboard ke Google Sheet via Apps Script</div></div>
+
+  <div class="section-header"><h2>Integrasi Spreadsheet (Google Apps Script)</h2><div class="muted-note">Tarik &amp; kirim data otomatis ke Google Sheets</div></div>
+  <div class="muted-note" style="margin:-4px 0 14px;">Disarankan: gunakan satu akun Google yang sama untuk membuat Google Sheet dan men-deploy Apps Script-nya, supaya data spreadsheet dan deployment tetap konsisten.</div>
+  <div style="margin:-4px 0 14px;padding:10px 14px;background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.25);border-radius:8px;font-size:12px;color:var(--green);display:flex;align-items:flex-start;gap:8px;">
+    <span style="font-size:15px;flex-shrink:0;">⚡</span>
+    <span><b>Auto-Sync Aktif:</b> Setiap kali halaman dibuka — di device atau browser mana pun — dashboard otomatis menarik data terbaru dari spreadsheet (asal URL Apps Script sudah diisi). Tidak perlu klik "Tarik Data" lagi.</span>
+  </div>
+  <div class="target-panel">
+    <div class="field-row" style="margin-bottom:14px;">
+      <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;">URL Web App Apps Script</label>
+      <input type="url" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 11px;font-size:12.5px;font-family:&#39;IBM Plex Mono&#39;,monospace;">
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <button class="btn" id="btnPullSheet">Tarik Data dari Spreadsheet</button>
+      <button class="btn secondary" id="btnPushSheet" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 16px;font-weight:700;font-size:12.5px;cursor:pointer;">Kirim Semua Data ke Spreadsheet</button>
+      <button class="btn secondary" id="btnShowScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 16px;font-weight:700;font-size:12.5px;cursor:pointer;">Lihat Kode Apps Script</button>
+    </div>
+    <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--green);">Berhasil menarik 231 baris akun &amp; 109 baris lead dari spreadsheet.</div>
+    <div id="scriptBox" style="display:none;">
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 5 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target).</div>
+      <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:&#39;IBM Plex Mono&#39;,monospace;" id="scriptCode"></pre>
+      <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
+    </div>
+  </div>
+
+  <div class="section-header"><h2>Reset Data</h2><div class="muted-note">Hapus seluruh data dashboard dari penyimpanan browser (localStorage)</div></div>
+  <div class="target-panel" style="border-color:rgba(239,68,68,.35);">
+    <div class="muted-note" style="margin-bottom:12px;">Tombol ini menghapus <b>semua</b> data yang tersimpan di browser ini: daftar akun, daftar advertiser, budget &amp; spend harian, lead, dan target. Data di Google Sheet (kalau sudah terhubung) <b>tidak ikut terhapus</b>. Gunakan ini kalau ingin memulai dashboard dari kosong sama sekali.</div>
+    <button class="btn" id="btnResetAllData" style="background:var(--bad);color:#fff;">🗑 Hapus Semua Data &amp; Kosongkan Storage</button>
+    <div class="muted-note" id="resetDataMsg" style="margin-top:8px;"></div>
+  </div>
+
+</div><!-- /page-integrasi -->
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- FLOATING REPORT BUTTON -->
+<button class="btn-report-float" id="btnOpenReport">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.111 1.518 5.843L0 24l6.335-1.49A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.724.876.936-3.617-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
+  Kirim Report WA
+</button>
+
+<script>
+/* ============== HELPERS ============== */
+function seeded(str){
+  let h=1779033703^str.length;
+  for(let i=0;i<str.length;i++){ h=Math.imul(h^str.charCodeAt(i),3432918353); h=h<<13|h>>>19; }
+  return function(){ h=Math.imul(h^h>>>16,2246822507); h=Math.imul(h^h>>>13,3266489909); h^=h>>>16; return (h>>>0)/4294967296; };
+}
+function dateRangeArray(start,end){ const arr=[]; let d=new Date(start); while(d<=end){ arr.push(new Date(d)); d.setDate(d.getDate()+1); } return arr; }
+const TODAY_REF = (function(){ const d=new Date(); d.setHours(0,0,0,0); return d; })();
+const ANCHOR_DATE = TODAY_REF;
+const DATA_START = new Date(TODAY_REF.getFullYear(), 0, 1);
+const DATA_END   = new Date(TODAY_REF.getFullYear(), 11, 31);
+const ALL_DATES = dateRangeArray(DATA_START, DATA_END);
+
+
+function fmtISO(d){ return d.toISOString().slice(0,10); }
+function fmtDateID(d){ return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+function rupiah(n){ n=Math.round(n||0); const sign=n<0?'-':''; n=Math.abs(n); return sign+'Rp '+n.toLocaleString('id-ID'); }
+function rupiahShort(n){ n=n||0; const sign=n<0?'-':''; n=Math.abs(n); if(n>=1e9) return sign+'Rp '+(n/1e9).toFixed(2)+'M'; if(n>=1e6) return sign+'Rp '+(n/1e6).toFixed(2)+'jt'; if(n>=1e3) return sign+'Rp '+(n/1e3).toFixed(0)+'rb'; return sign+'Rp '+Math.round(n); }
+function num(n){ return Math.round(n||0).toLocaleString('id-ID'); }
+function idx(date){ return Math.round((date-DATA_START)/86400000); }
+
+function zeroSeries(){ return ALL_DATES.map(()=>0); }
+function setAt(series, date, value){ const i=idx(date); if(i>=0 && i<series.length) series[i]=value; }
+
+/* ============== HISTORI KEPEMILIKAN AKUN PER TANGGAL ==============
+   Setiap akun punya ownerHistory: [{advertiser, fromIdx}, ...] terurut naik
+   berdasarkan fromIdx (index hari sejak DATA_START). Entry pertama berlaku
+   sejak awal data. Saat akun dipindah ke advertiser lain, entry baru
+   ditambahkan dengan fromIdx = tanggal efektif perpindahan — entry lama
+   TIDAK dihapus, jadi histori budget/spend di masa lalu tetap teratribusi
+   ke advertiser lama. */
+function ensureOwnerHistory(acc){
+  if(!Array.isArray(acc.ownerHistory) || acc.ownerHistory.length===0){
+    acc.ownerHistory = [{advertiser: acc.advertiser, fromIdx: 0}];
+  }
+  return acc.ownerHistory;
+}
+// Advertiser yang memiliki akun ini pada index-hari tertentu (i = index ke ALL_DATES)
+function ownerAtIndex(acc, i){
+  const hist = ensureOwnerHistory(acc);
+  let owner = hist[0].advertiser;
+  for(let k=0;k<hist.length;k++){
+    if(hist[k].fromIdx<=i) owner = hist[k].advertiser; else break;
+  }
+  return owner;
+}
+function ownerAtDate(acc, date){ return ownerAtIndex(acc, idx(date)); }
+// Catat perpindahan kepemilikan akun ke advertiser baru, efektif mulai tanggal tertentu.
+// Entry dengan fromIdx >= tanggal baru akan ditimpa (supaya tidak dobel kalau diedit ulang).
+function recordOwnerChange(acc, newAdvertiser, effectiveDate){
+  const hist = ensureOwnerHistory(acc);
+  const fromIdx = Math.max(0, idx(effectiveDate));
+  const filtered = hist.filter(h=>h.fromIdx<fromIdx);
+  const entry = {advertiser:newAdvertiser, fromIdx};
+  filtered.push(entry);
+  filtered.sort((a,b)=>a.fromIdx-b.fromIdx);
+  acc.ownerHistory = filtered;
+  acc.advertiser = newAdvertiser; // advertiser "saat ini" tetap dipakai untuk grouping/manajemen
+  return entry;
+}
+// Jumlah budget/spend suatu akun yang menjadi milik `adv` di dalam range tanggal tertentu
+function sumInForAdv(acc, series, adv, range){
+  const [s,e] = indicesForRange(range);
+  let t=0;
+  for(let i=s;i<=e;i++){ if(ownerAtIndex(acc,i)===adv) t += (series[i]||0); }
+  return t;
+}
+// Apakah akun ini pernah (kapan pun, termasuk sekarang) dimiliki advertiser tsb
+function everOwnedBy(acc, adv){ return ensureOwnerHistory(acc).some(h=>h.advertiser===adv); }
+// Apakah akun ini berpindah tangan di dalam range tanggal tertentu (untuk badge peringatan UI)
+function switchedInRange(acc, range){
+  const [s,e] = indicesForRange(range);
+  return ensureOwnerHistory(acc).some(h=> h.fromIdx>s && h.fromIdx<=e);
+}
+
+/* ============== DATA: AKUN WL (sesuai referensi gambar) ============== */
+let ADVERTISERS = ['MALDY','FIKI','RIFAN','ALADIN'];
+let ADV_COLOR = {MALDY:'#2FBE82', FIKI:'#F0566C', RIFAN:'#4C8DFF', ALADIN:'#9C7BFF'};
+const ADV_COLOR_PALETTE = ['#F2C12E','#5FD0C7','#FF9F6B','#06D6A0','#EF476F','#118AB2','#FFD166','#B388FF','#4ADE80','#60A5FA'];
+let advColorCursor = 0;
+function nextAdvColor(){ const c=ADV_COLOR_PALETTE[advColorCursor % ADV_COLOR_PALETTE.length]; advColorCursor++; return c; }
+
+const ACCOUNTS_RAW = [
+  {name:'DGT-07',        advertiser:'FIKI',   budget:447613,  spendPPN:461041},
+  {name:'Maldy 04',      advertiser:'MALDY',  budget:2831228, spendPPN:2944477},
+  {name:'Maldy 05',      advertiser:'MALDY',  budget:3625561, spendPPN:3770583},
+  {name:'DGT-05',        advertiser:'MALDY',  budget:1734799, spendPPN:1786843},
+  {name:'Maldy-Eka',     advertiser:'RIFAN',  budget:2842512, spendPPN:2956212},
+  {name:'Aziz-01',       advertiser:'RIFAN',  budget:776136,  spendPPN:807181},
+  {name:'DGT-02',        advertiser:'RIFAN',  budget:652522,  spendPPN:672098},
+  {name:'Nextugo-03',    advertiser:'ALADIN', budget:1561235, spendPPN:1623684},
+  {name:'DGT-Nextug03',  advertiser:'ALADIN', budget:1009754, spendPPN:1040047},
+  {name:'DGT-Nextug06',  advertiser:'ALADIN', budget:263,     spendPPN:271},
+];
+let accCounter = 0;
+const ACCOUNTS = ACCOUNTS_RAW.map((r)=>{
+  const budgetSeries = zeroSeries(); setAt(budgetSeries, ANCHOR_DATE, r.budget);
+  const spendSeries = zeroSeries(); setAt(spendSeries, ANCHOR_DATE, r.spendPPN);
+  accCounter++;
+  return {id:'acc'+accCounter, name:r.name, advertiser:r.advertiser, ppn:3, budgetSeries, spendSeries, status:'aktif',
+    ownerHistory:[{advertiser:r.advertiser, fromIdx:0}]};
+});
+function makeNewAccount(name, advertiser, ppn){
+  accCounter++;
+  return {id:'acc'+accCounter, name, advertiser, ppn:(parseFloat(ppn)||0), budgetSeries: zeroSeries(), spendSeries: zeroSeries(), status:'aktif',
+    ownerHistory:[{advertiser, fromIdx:0}]};
+}
+function findAccountByName(name){
+  const n = (name||'').trim().toLowerCase();
+  return ACCOUNTS.find(a=> a.name.trim().toLowerCase()===n);
+}
+
+/* Lead per advertiser (sesuai referensi gambar, sisanya diisi manual/spreadsheet) */
+const ADV_LEAD_RAW = {
+  MALDY:{real:80, oo:151},
+  FIKI:{real:1, oo:2},
+  RIFAN:{real:40, oo:68},
+  ALADIN:{real:26, oo:53}
+};
+const ADV_LEADS = {};
+ADVERTISERS.forEach(adv=>{
+  const r = ADV_LEAD_RAW[adv];
+  const real = zeroSeries(); setAt(real, ANCHOR_DATE, r.real);
+  const oo = zeroSeries(); setAt(oo, ANCHOR_DATE, r.oo);
+  ADV_LEADS[adv] = {real, oo};
+});
+function makeNewAdvertiser(name){
+  ADVERTISERS.push(name);
+  ADV_COLOR[name] = nextAdvColor();
+  ADV_LEADS[name] = {real: zeroSeries(), oo: zeroSeries()};
+  TARGETS[name] = 1000000;
+  TARGETS_MONTHLY[name] = {};
+}
+
+/* Target budget harian per advertiser (editable) */
+let TARGETS = {MALDY:7800000, FIKI:2000000, RIFAN:7650000, ALADIN:7600000};
+
+/* Target bulanan: TARGETS_MONTHLY[adv]["tahun-bulan"] = nilai harian */
+let TARGETS_MONTHLY = {};
+function initMonthlyTargets(adv){
+  if(!TARGETS_MONTHLY[adv]) TARGETS_MONTHLY[adv] = {};
+}
+function getMonthlyTarget(adv, month, year){
+  year = year !== undefined ? year : activeEditYear;
+  initMonthlyTargets(adv);
+  const key = monthKey(year, month);
+  if(TARGETS_MONTHLY[adv][key] !== undefined) return TARGETS_MONTHLY[adv][key];
+  // fallback: key lama tanpa tahun (kompatibilitas data lama)
+  if(TARGETS_MONTHLY[adv][month] !== undefined) return TARGETS_MONTHLY[adv][month];
+  return (TARGETS[adv]||0);
+}
+function setMonthlyTarget(adv, month, val, year){
+  year = year !== undefined ? year : activeEditYear;
+  initMonthlyTargets(adv);
+  TARGETS_MONTHLY[adv][monthKey(year, month)] = val;
+}
+function hasCustomMonthlyTarget(adv, month, year){
+  year = year !== undefined ? year : activeEditYear;
+  if(!TARGETS_MONTHLY[adv]) return false;
+  return TARGETS_MONTHLY[adv][monthKey(year, month)] !== undefined || TARGETS_MONTHLY[adv][month] !== undefined;
+}
+
+/* Mode target: 'harian' atau 'bulanan' */
+let targetMode = 'harian';
+let activeEditMonth = new Date().getMonth()+1; // 1..12
+let activeEditYear = new Date().getFullYear();  // tahun aktif untuk edit target bulanan
+
+function monthKey(year, month){ return year + '-' + month; } // e.g. "2026-6"
+
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const MONTH_NAMES_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+/* Terapkan mode target ke UI saja (dipakai juga saat menarik data dari spreadsheet, tanpa push balik) */
+function applyTargetModeUI(mode){
+  targetMode = mode;
+  document.getElementById('btnModeHarian').classList.toggle('active', mode==='harian');
+  document.getElementById('btnModeBulanan').classList.toggle('active', mode==='bulanan');
+  document.getElementById('panelTargetHarian').style.display = mode==='harian' ? '' : 'none';
+  document.getElementById('panelTargetBulanan').style.display = mode==='bulanan' ? '' : 'none';
+  const note = document.getElementById('targetModeNote');
+  if(mode==='harian'){
+    note.innerHTML = '<b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Spend+PPN − (Target Harian × jumlah hari dalam periode).';
+  } else {
+    note.innerHTML = '<b>Mode Bulanan:</b> Atur target per bulan secara terpisah. Pilih bulan di bawah untuk mengedit. Kekurangan dihitung dengan target bulan masing-masing hari.';
+    renderMonthPicker();
+    renderTargetRowsMonthly();
+    renderCopyFromSelect();
+  }
+}
+
+function setTargetMode(mode){
+  applyTargetModeUI(mode);
+  saveLocalState();
+  render();
+  pushTargetMode(mode);
+}
+
+function renderMonthPicker(){
+  const wrap = document.getElementById('monthPicker');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+
+  // --- Selector Tahun ---
+  const yearWrap = document.createElement('div');
+  yearWrap.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;width:100%;';
+  const yearLabel = document.createElement('span');
+  yearLabel.style.cssText = 'font-size:12px;font-weight:700;color:var(--muted);';
+  yearLabel.textContent = 'Tahun:';
+  const yearSel = document.createElement('select');
+  yearSel.style.cssText = 'background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:700;cursor:pointer;';
+  const currentYear = new Date().getFullYear();
+  for(let y = currentYear - 2; y <= currentYear + 2; y++){
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    if(y === activeEditYear) opt.selected = true;
+    yearSel.appendChild(opt);
+  }
+  yearSel.onchange = ()=>{
+    activeEditYear = parseInt(yearSel.value);
+    renderMonthPicker();
+    renderTargetRowsMonthly();
+    renderCopyFromSelect();
+  };
+  yearWrap.appendChild(yearLabel);
+  yearWrap.appendChild(yearSel);
+  wrap.appendChild(yearWrap);
+
+  // --- Tombol Bulan ---
+  const monthsWrap = document.createElement('div');
+  monthsWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;';
+  for(let m=1; m<=12; m++){
+    const btn = document.createElement('button');
+    const anyCustom = ADVERTISERS.some(adv=>hasCustomMonthlyTarget(adv, m, activeEditYear));
+    btn.className = 'month-btn' + (m===activeEditMonth&&activeEditYear===activeEditYear?' ':'') + (m===activeEditMonth?' active':'') + (anyCustom&&m!==activeEditMonth?' has-custom':'');
+    btn.textContent = MONTH_NAMES[m-1];
+    btn.title = MONTH_NAMES_FULL[m-1] + ' ' + activeEditYear;
+    btn.onclick = ()=>{ activeEditMonth=m; renderMonthPicker(); renderTargetRowsMonthly(); };
+    monthsWrap.appendChild(btn);
+  }
+  wrap.appendChild(monthsWrap);
+}
+
+function renderTargetRowsMonthly(){
+  const wrap = document.getElementById('targetRowsMonthly');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  const title = document.createElement('div');
+  title.style.cssText = 'font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:10px;';
+  title.textContent = 'Target Harian — ' + MONTH_NAMES_FULL[activeEditMonth-1] + ' ' + activeEditYear;
+  wrap.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'adv-cards-grid';
+  grid.style.marginBottom = '14px';
+  wrap.appendChild(grid);
+
+  const daysInActiveMonth = 28; // standar tetap 28 hari untuk kalkulasi Target Bulan (bukan jumlah hari kalender asli)
+  let totalTargetBulan = 0, totalSpendBulan = 0;
+
+  ADVERTISERS.forEach(adv=>{
+    const val = getMonthlyTarget(adv, activeEditMonth, activeEditYear);
+    const isCustom = hasCustomMonthlyTarget(adv, activeEditMonth, activeEditYear);
+
+    const targetBulan = val * daysInActiveMonth;
+    const advAccs = ACCOUNTS.filter(a=>everOwnedBy(a,adv));
+    let spendBulan = 0;
+    ALL_DATES.forEach((d,i)=>{
+      if(d.getFullYear()===activeEditYear && (d.getMonth()+1)===activeEditMonth){
+        advAccs.forEach(a=>{ if(ownerAtIndex(a,i)===adv) spendBulan += (a.spendSeries[i]||0); });
+      }
+    });
+    const kekuranganBulan = spendBulan - targetBulan;
+    totalTargetBulan += targetBulan;
+    totalSpendBulan += spendBulan;
+
+    const card = document.createElement('div');
+    card.className = 'adv-card';
+    card.innerHTML =
+      '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[adv]+'"></span><span class="adv-card-name">'+adv+'</span>'+
+      (isCustom ? '<span class="tag yellow" style="margin-left:auto;font-size:10px;">KUSTOM</span>' : '')+
+      '</div>'+
+      '<div style="margin-bottom:10px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:4px;">Target Harian</label>'+
+      '<input type="number" step="10000" value="'+val+'" data-adv="'+adv+'" data-month="'+activeEditMonth+'" style="width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;font-family:\'IBM Plex Mono\',monospace;"></div>'+
+      '<div class="adv-card-row"><span class="k">Target Bulan</span><span class="v">'+rupiah(targetBulan)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Spend Bulan Ini</span><span class="v">'+rupiah(spendBulan)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="tag '+(kekuranganBulan<0?'yellow':'green')+'">'+rupiah(kekuranganBulan)+'</span></div>';
+    const inp = card.querySelector('input');
+    inp.onchange = (e)=>{
+      const v = parseFloat(e.target.value)||0;
+      setMonthlyTarget(adv, activeEditMonth, v, activeEditYear);
+      saveLocalState(); render(); renderMonthPicker(); renderTargetRowsMonthly();
+      pushTargetMonthly(adv, activeEditYear, activeEditMonth, v);
+    };
+    grid.appendChild(card);
+  });
+
+  // --- Ringkasan total semua advertiser ---
+  const totalKekurangan = totalSpendBulan - totalTargetBulan;
+  const totalBox = document.createElement('div');
+  totalBox.style.cssText = 'margin-top:6px;margin-bottom:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);display:flex;flex-wrap:wrap;gap:16px;align-items:center;';
+  totalBox.innerHTML =
+    '<div style="font-size:12.5px;font-weight:700;">Total Kekurangan Target Spending Bulanan</div>'+
+    '<div style="font-size:12px;color:var(--muted);">Target: <b style="color:var(--text);">'+rupiah(totalTargetBulan)+'</b></div>'+
+    '<div style="font-size:12px;color:var(--muted);">Spend: <b style="color:var(--text);">'+rupiah(totalSpendBulan)+'</b></div>'+
+    '<div style="font-size:12px;color:var(--muted);">Kekurangan: <span class="tag '+(totalKekurangan<0?'yellow':'green')+'" style="font-size:12px;">'+rupiah(totalKekurangan)+'</span></div>';
+  wrap.appendChild(totalBox);
+
+  // Reset bulan ini ke default harian
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'btn';
+  resetBtn.style.cssText = 'margin-top:10px;background:var(--panel-2);border:1px solid var(--line);color:var(--red);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;';
+  resetBtn.textContent = 'Reset ke Default Harian';
+  resetBtn.onclick = ()=>{
+    ADVERTISERS.forEach(adv=>{
+      if(TARGETS_MONTHLY[adv]){
+        delete TARGETS_MONTHLY[adv][monthKey(activeEditYear, activeEditMonth)];
+        // hapus juga key lama tanpa tahun jika ada
+        delete TARGETS_MONTHLY[adv][activeEditMonth];
+      }
+      pushTargetMonthlyDelete(adv, activeEditYear, activeEditMonth);
+    });
+    saveLocalState(); render(); renderMonthPicker(); renderTargetRowsMonthly();
+  };
+  wrap.appendChild(resetBtn);
+}
+
+function renderCopyFromSelect(){
+  const sel = document.getElementById('copyFromMonth');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">-- Pilih bulan sumber --</option>';
+  for(let m=1; m<=12; m++){
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = MONTH_NAMES_FULL[m-1] + ' ' + activeEditYear;
+    if(m===activeEditMonth) opt.textContent += ' (bulan aktif)';
+    sel.appendChild(opt);
+  }
+  document.getElementById('btnCopyFromMonth').onclick = ()=>{
+    const src = parseInt(sel.value);
+    if(!src){ alert('Pilih bulan sumber terlebih dahulu'); return; }
+    ADVERTISERS.forEach(adv=>{
+      const v = getMonthlyTarget(adv, src, activeEditYear);
+      setMonthlyTarget(adv, activeEditMonth, v, activeEditYear);
+      pushTargetMonthly(adv, activeEditYear, activeEditMonth, v);
+    });
+    saveLocalState(); render(); renderMonthPicker(); renderTargetRowsMonthly();
+  };
+  document.getElementById('btnCopyToAll').onclick = ()=>{
+    const src = parseInt(sel.value);
+    if(!src){ alert('Pilih bulan sumber terlebih dahulu'); return; }
+    for(let m=1; m<=12; m++){
+      ADVERTISERS.forEach(adv=>{
+        const v = getMonthlyTarget(adv, src, activeEditYear);
+        setMonthlyTarget(adv, m, v, activeEditYear);
+        pushTargetMonthly(adv, activeEditYear, m, v);
+      });
+    }
+    saveLocalState(); render(); renderMonthPicker(); renderTargetRowsMonthly();
+  };
+}
+
+/* Hitung target efektif untuk suatu hari (berdasarkan bulan) */
+function getEffectiveTargetForDate(adv, date){
+  if(targetMode === 'bulanan'){
+    const m = date.getMonth()+1;
+    const y = date.getFullYear();
+    return getMonthlyTarget(adv, m, y);
+  }
+  return TARGETS[adv]||0;
+}
+
+/* Hitung total target dalam range (bulan per bulan) */
+function calcTargetInRange(adv, range){
+  if(targetMode === 'harian'){
+    return (TARGETS[adv]||0) * daysIn(range);
+  }
+  // Mode bulanan: sum per hari
+  const dates = datesIn(range);
+  return dates.reduce((s, d)=> s + getEffectiveTargetForDate(adv, d), 0);
+}
+
+
+let selectedAccounts = new Set(ACCOUNTS.map(a=>a.id));
+
+/* ============== PERIOD LOGIC ============== */
+let periodType = 'hari_ini';
+const PERIODS = [
+  {id:'hari_ini', label:'Hari Ini'},
+  {id:'kemarin', label:'Kemarin'},
+  {id:'bulan_ini', label:'Bulan Ini'},
+  {id:'7_hari', label:'7 Hari Terakhir'},
+  {id:'30_hari', label:'30 Hari Terakhir'},
+  {id:'q1', label:'Quartal 1'},
+  {id:'q2', label:'Quartal 2'},
+  {id:'q3', label:'Quartal 3'},
+  {id:'custom', label:'Custom'}
+];
+function getRange(){
+  const t = new Date(ANCHOR_DATE); t.setHours(0,0,0,0);
+  if(periodType==='hari_ini') return [t,t];
+  if(periodType==='kemarin'){ const y=new Date(t); y.setDate(y.getDate()-1); return [y,y]; }
+  if(periodType==='bulan_ini') return [new Date(t.getFullYear(),t.getMonth(),1), new Date(t.getFullYear(),t.getMonth()+1,0)];
+  if(periodType==='7_hari'){ const s=new Date(t); s.setDate(s.getDate()-6); return [s,t]; }
+  if(periodType==='30_hari'){ const s=new Date(t); s.setDate(s.getDate()-29); return [s,t]; }
+  if(periodType==='q1') return [new Date(t.getFullYear(),0,1), new Date(t.getFullYear(),2,31)];
+  if(periodType==='q2') return [new Date(t.getFullYear(),3,1), new Date(t.getFullYear(),5,30)];
+  if(periodType==='q3') return [new Date(t.getFullYear(),6,1), new Date(t.getFullYear(),8,30)];
+  if(periodType==='custom'){
+    const s=new Date(document.getElementById('customStart').value||fmtISO(DATA_START));
+    const e=new Date(document.getElementById('customEnd').value||fmtISO(ANCHOR_DATE));
+    return [s,e];
+  }
+  return [t,t];
+}
+function indicesForRange(range){
+  const [s,e]=range;
+  const si=Math.max(0, idx(s));
+  const ei=Math.min(ALL_DATES.length-1, idx(e));
+  return [si,ei];
+}
+function sumIn(series, range){ const [s,e]=indicesForRange(range); let t=0; for(let i=s;i<=e;i++) t+=series[i]; return t; }
+function sliceIn(series, range){ const [s,e]=indicesForRange(range); return series.slice(s,e+1); }
+function datesIn(range){ const [s,e]=indicesForRange(range); return ALL_DATES.slice(s,e+1); }
+function trendLabels(range){ return datesIn(range).map(d=>d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})); }
+function daysIn(range){ const [s,e]=indicesForRange(range); return e-s+1; }
+
+// Periode sebelumnya dengan durasi yang sama, langsung sebelum range saat ini.
+function getPrevRange(range){
+  const len = daysIn(range);
+  const prevEnd = new Date(range[0]); prevEnd.setDate(prevEnd.getDate()-1);
+  const prevStart = new Date(prevEnd); prevStart.setDate(prevStart.getDate()-(len-1));
+  return [prevStart, prevEnd];
+}
+// Badge naik/turun dibanding periode sebelumnya. invert=true kalau nilai turun dianggap "bagus" (misal CPL).
+function deltaBadge(curr, prev, invert){
+  if(!prev && !curr) return '';
+  if(!prev) return '<span class="delta-badge up">▲ baru</span>';
+  const pct = ((curr-prev)/Math.abs(prev))*100;
+  if(Math.abs(pct) < 0.05) return '<span class="delta-badge flat">▬ 0%</span>';
+  const rising = pct > 0;
+  const good = invert ? !rising : rising;
+  const arrow = rising ? '▲' : '▼';
+  const cls = good ? 'up' : 'down';
+  return '<span class="delta-badge '+cls+'">'+arrow+' '+Math.abs(pct).toFixed(0)+'%</span>';
+}
+
+/* ============== UI: PERIOD BUTTONS ============== */
+function renderPeriodBtns(){
+  const wrap=document.getElementById('periodBtns'); wrap.innerHTML='';
+  PERIODS.forEach(p=>{
+    const b=document.createElement('div');
+    b.className='period-btn'+(p.id===periodType?' active':'');
+    b.textContent=p.label;
+    b.onclick=()=>{ periodType=p.id; updateCustomVisibility(); renderPeriodBtns(); render(); };
+    wrap.appendChild(b);
+  });
+}
+function updateCustomVisibility(){
+  const cs=document.getElementById('customStart'), ce=document.getElementById('customEnd'), dash=document.getElementById('customDash');
+  const show = periodType==='custom';
+  cs.style.display = show?'inline-block':'none';
+  ce.style.display = show?'inline-block':'none';
+  dash.style.display = show?'inline':'none';
+}
+document.getElementById('customStart').addEventListener('change', render);
+document.getElementById('customEnd').addEventListener('change', render);
+
+/* ============== UI: ACCOUNT PICKER (grouped by advertiser) ============== */
+function renderAccountGroups(){
+  if(document.getElementById('inAccSelect')) renderInputSelectors();
+  const wrap=document.getElementById('accGroups'); wrap.innerHTML='';
+  ADVERTISERS.forEach(adv=>{
+    const accs = ACCOUNTS.filter(a=>a.advertiser===adv);
+    const groupEl=document.createElement('div'); groupEl.className='acc-group';
+    groupEl.innerHTML = '<div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:'+ADV_COLOR[adv]+';display:inline-block;"></span>'+adv+
+      '<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">&#128465;</button></div>';
+    groupEl.querySelector('[data-act=delAdv]').onclick=()=>{
+      const hasAccounts = ACCOUNTS.some(a=>a.advertiser===adv);
+      if(hasAccounts){ alert('Tidak bisa menghapus "'+adv+'" karena masih punya akun. Hapus atau pindahkan akunnya terlebih dahulu.'); return; }
+      if(confirm('Hapus advertiser "'+adv+'"?')){
+        ADVERTISERS = ADVERTISERS.filter(a=>a!==adv);
+        delete ADV_COLOR[adv]; delete ADV_LEADS[adv]; delete TARGETS[adv];
+        saveLocalState(); renderAccountGroups(); renderTargetRows(); render();
+      }
+    };
+    const listEl=document.createElement('div'); listEl.className='acc-list';
+    accs.forEach(acc=>{
+      const inactive = acc.status==='nonaktif';
+      const el=document.createElement('div'); el.className='acc-item'+(inactive?' inactive':'');
+      el.innerHTML =
+        '<label class="acc-check">'+
+          '<input type="checkbox" data-id="'+acc.id+'" '+(selectedAccounts.has(acc.id)?'checked':'')+(inactive?' disabled':'')+'>'+
+          '<span class="nm">'+acc.name+'</span>'+
+        '</label>'+
+        '<span style="font-size:10px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace;flex-shrink:0;">PPN '+(acc.ppn!=null?acc.ppn:3)+'%</span>'+
+        (inactive?'<span class="acc-tag-inactive">MATI</span>':'')+
+        '<button class="icon-btn" data-act="edit" title="Edit akun">&#9998;</button>'+
+        '<button class="icon-btn" data-act="toggle" title="'+(inactive?'Aktifkan kembali':'Tandai mati / nonaktif')+'">'+(inactive?'&#9654;':'&#10074;&#10074;')+'</button>'+
+        '<button class="icon-btn" data-act="delete" title="Hapus akun">&#128465;</button>';
+      el.querySelector('input').onchange=(e)=>{
+        if(e.target.checked) selectedAccounts.add(acc.id); else selectedAccounts.delete(acc.id);
+        render();
+      };
+      el.querySelector('[data-act=edit]').onclick=()=> openEditModal(acc.id);
+      el.querySelector('[data-act=toggle]').onclick=()=>{
+        acc.status = inactive ? 'aktif' : 'nonaktif';
+        if(acc.status==='nonaktif') selectedAccounts.delete(acc.id);
+        saveLocalState(); renderAccountGroups(); render(); syncAccountRoster();
+      };
+      el.querySelector('[data-act=delete]').onclick=()=>{
+        if(confirm('Hapus akun "'+acc.name+'" dari dashboard? Tindakan ini tidak bisa dibatalkan.')){
+          const i = ACCOUNTS.indexOf(acc);
+          if(i>-1) ACCOUNTS.splice(i,1);
+          selectedAccounts.delete(acc.id);
+          saveLocalState(); renderAccountGroups(); render();
+        }
+      };
+      listEl.appendChild(el);
+    });
+    const addBtn=document.createElement('div'); addBtn.className='acc-add-btn';
+    addBtn.innerHTML='+ Tambah Akun '+adv;
+    addBtn.onclick=()=> openAddModal(adv);
+    listEl.appendChild(addBtn);
+    groupEl.appendChild(listEl);
+    wrap.appendChild(groupEl);
+  });
+  document.getElementById('accSummary').textContent = selectedAccounts.size+' dari '+ACCOUNTS.filter(a=>a.status!=='nonaktif').length+' akun aktif dipilih';
+}
+
+/* ============== MODAL: EDIT / TAMBAH AKUN ============== */
+function closeModal(){
+  const ov=document.getElementById('modalOverlay');
+  if(ov) ov.remove();
+}
+function ownerHistoryLogHTML(acc){
+  const hist = ensureOwnerHistory(acc).slice().sort((a,b)=>b.fromIdx-a.fromIdx); // terbaru dulu
+  if(hist.length<=1) return '<div class="muted-note" style="margin-top:4px;">Belum pernah pindah advertiser.</div>';
+  return '<div style="margin-top:6px;max-height:120px;overflow-y:auto;border:1px solid var(--line);border-radius:7px;">'+
+    hist.map((h,k)=>{
+      const d = new Date(DATA_START); d.setDate(d.getDate()+h.fromIdx);
+      const isFirst = k===hist.length-1;
+      return '<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 9px;font-size:11.5px;'+(k>0?'border-top:1px solid var(--line);':'')+'">'+
+        '<span><b>'+h.advertiser+'</b></span>'+
+        '<span style="color:var(--muted);font-family:\'IBM Plex Mono\',monospace;">'+(isFirst?'sejak awal data':'mulai '+fmtDateID(d))+'</span>'+
+      '</div>';
+    }).join('')+
+  '</div>';
+}
+function openEditModal(accId){
+  const acc = ACCOUNTS.find(a=>a.id===accId);
+  if(!acc) return;
+  ensureOwnerHistory(acc);
+  closeModal();
+  const overlay=document.createElement('div'); overlay.className='edit-modal-overlay'; overlay.id='modalOverlay';
+  overlay.innerHTML = `
+    <div class="edit-modal">
+      <h3>Edit Akun Iklan</h3>
+      <div class="field"><label>Nama Akun</label><input type="text" id="mNama" value="${acc.name}"></div>
+      <div class="field"><label>Advertiser Pemilik (saat ini)</label>
+        <select id="mAdv">${ADVERTISERS.map(a=>'<option value="'+a+'" '+(a===acc.advertiser?'selected':'')+'>'+a+'</option>').join('')}</select>
+      </div>
+      <div class="field" id="mEffectiveWrap" style="display:none;">
+        <label>Tanggal Efektif Pindah</label>
+        <input type="date" id="mEffectiveDate" value="${fmtISO(TODAY_REF)}">
+        <div class="muted-note" style="margin-top:4px;">Data budget &amp; spend SEBELUM tanggal ini tetap tercatat milik advertiser lama. Mulai tanggal ini, data akun dihitung ke advertiser baru.</div>
+      </div>
+      <div class="field"><label>PPN Akun Ini (%)</label><input type="number" id="mPPN" value="${acc.ppn!=null?acc.ppn:3}" step="0.5" min="0"></div>
+      <div class="field"><label>Status Akun</label>
+        <select id="mStatus">
+          <option value="aktif" ${acc.status==='aktif'?'selected':''}>Aktif</option>
+          <option value="nonaktif" ${acc.status==='nonaktif'?'selected':''}>Nonaktif / Mati</option>
+        </select>
+      </div>
+      <div class="field"><label>Riwayat Kepemilikan Advertiser</label>${ownerHistoryLogHTML(acc)}</div>
+      <div class="modal-actions">
+        <button class="btn-modal danger" id="mDelete">Hapus Akun</button>
+        <button class="btn-modal" id="mCancel">Batal</button>
+        <button class="btn-modal primary" id="mSave">Simpan</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('mCancel').onclick = closeModal;
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+  const advSel = document.getElementById('mAdv');
+  const effWrap = document.getElementById('mEffectiveWrap');
+  const toggleEffWrap = ()=>{ effWrap.style.display = (advSel.value!==acc.advertiser) ? '' : 'none'; };
+  advSel.addEventListener('change', toggleEffWrap);
+  toggleEffWrap();
+  document.getElementById('mSave').onclick = ()=>{
+    acc.name = document.getElementById('mNama').value.trim() || acc.name;
+    const newAdv = advSel.value;
+    if(newAdv !== acc.advertiser){
+      const effDateStr = document.getElementById('mEffectiveDate').value || fmtISO(TODAY_REF);
+      const entry = recordOwnerChange(acc, newAdv, new Date(effDateStr));
+      pushOwnerHistoryEntry(acc, entry);
+    }
+    acc.ppn = parseFloat(document.getElementById('mPPN').value)||0;
+    const newStatus = document.getElementById('mStatus').value;
+    if(newStatus==='nonaktif' && acc.status!=='nonaktif') selectedAccounts.delete(acc.id);
+    acc.status = newStatus;
+    saveLocalState(); closeModal(); renderAccountGroups(); render(); syncAccountRoster();
+  };
+  document.getElementById('mDelete').onclick = ()=>{
+    if(confirm('Hapus akun "'+acc.name+'" dari dashboard?')){
+      const i=ACCOUNTS.indexOf(acc); if(i>-1) ACCOUNTS.splice(i,1);
+      selectedAccounts.delete(acc.id);
+      saveLocalState(); closeModal(); renderAccountGroups(); render();
+    }
+  };
+}
+function openAddModal(defaultAdv){
+  closeModal();
+  const overlay=document.createElement('div'); overlay.className='edit-modal-overlay'; overlay.id='modalOverlay';
+  overlay.innerHTML = `
+    <div class="edit-modal">
+      <h3>Tambah Akun Iklan Baru</h3>
+      <div class="field"><label>Nama Akun</label><input type="text" id="mNama" placeholder="Contoh: Maldy 06"></div>
+      <div class="field"><label>Advertiser Pemilik</label>
+        <select id="mAdv">${ADVERTISERS.map(a=>'<option value="'+a+'" '+(a===defaultAdv?'selected':'')+'>'+a+'</option>').join('')}</select>
+      </div>
+      <div class="field"><label>PPN Akun Ini (%)</label><input type="number" id="mPPN" value="3" step="0.5" min="0"></div>
+      <div class="muted-note" style="margin-bottom:6px;">PPN ini akan otomatis dipakai setiap kali input budget harian akun ini di menu "Data Input" — tidak perlu diubah manual lagi. Data budget &amp; spend akun ini diisi lewat panel "Input Data Harian" atau ditarik dari spreadsheet.</div>
+      <div class="modal-actions">
+        <button class="btn-modal" id="mCancel">Batal</button>
+        <button class="btn-modal primary" id="mSave">Tambah Akun</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('mCancel').onclick = closeModal;
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+  document.getElementById('mSave').onclick = ()=>{
+    const name = document.getElementById('mNama').value.trim();
+    if(!name){ alert('Nama akun wajib diisi'); return; }
+    const advertiser = document.getElementById('mAdv').value;
+    const ppn = document.getElementById('mPPN').value;
+    const newAcc = makeNewAccount(name, advertiser, ppn);
+    ACCOUNTS.push(newAcc);
+    selectedAccounts.add(newAcc.id);
+    saveLocalState(); closeModal(); renderAccountGroups(); render(); renderInputSelectors(); syncAccountRoster();
+  };
+}
+document.getElementById('btnSelectAll').onclick=()=>{ selectedAccounts=new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id)); renderAccountGroups(); render(); };
+document.getElementById('btnClearAll').onclick=()=>{ selectedAccounts=new Set(); renderAccountGroups(); render(); };
+
+function openAddAdvertiserModal(){
+  closeModal();
+  const overlay=document.createElement('div'); overlay.className='edit-modal-overlay'; overlay.id='modalOverlay';
+  overlay.innerHTML = `
+    <div class="edit-modal">
+      <h3>Tambah Advertiser Baru</h3>
+      <div class="field"><label>Nama Advertiser</label><input type="text" id="mAdvName" placeholder="Contoh: BUDI"></div>
+      <div class="muted-note" style="margin-bottom:6px;">Setelah dibuat, advertiser baru langsung muncul sebagai grup baru tempat Anda bisa menambahkan akun WL.</div>
+      <div class="modal-actions">
+        <button class="btn-modal" id="mCancel">Batal</button>
+        <button class="btn-modal primary" id="mSave">Tambah Advertiser</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('mCancel').onclick = closeModal;
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+  document.getElementById('mSave').onclick = ()=>{
+    let name = document.getElementById('mAdvName').value.trim().toUpperCase();
+    if(!name){ alert('Nama advertiser wajib diisi'); return; }
+    if(ADVERTISERS.includes(name)){ alert('Advertiser dengan nama itu sudah ada'); return; }
+    makeNewAdvertiser(name);
+    saveLocalState(); closeModal(); renderAccountGroups(); renderTargetRows(); render();
+    pushTargetDefault(name);
+  };
+}
+document.getElementById('btnAddAdvertiser').onclick = openAddAdvertiserModal;
+
+/* ============== UI: TARGET BUDGET PANEL ============== */
+function renderTargetRows(){
+  const wrap=document.getElementById('targetRows'); wrap.innerHTML='';
+  ADVERTISERS.forEach(adv=>{
+    const row=document.createElement('div'); row.className='target-row';
+    row.innerHTML = '<label><span style="width:8px;height:8px;border-radius:50%;background:'+ADV_COLOR[adv]+';display:inline-block;margin-right:6px;"></span>'+adv+'</label>'+
+      '<input type="number" step="10000" value="'+TARGETS[adv]+'" data-adv="'+adv+'">';
+    row.querySelector('input').onchange=(e)=>{ TARGETS[adv]=parseFloat(e.target.value)||0; saveLocalState(); render(); pushTargetDefault(adv); };
+    wrap.appendChild(row);
+  });
+}
+
+/* ============== CHARTS ============== */
+const COLORS=['#2FBE82','#F0566C','#4C8DFF','#9C7BFF','#F2C12E','#5FD0C7','#FF9F6B','#06D6A0','#EF476F','#118AB2'];
+const chartReg={};
+function destroyCharts(){ Object.keys(chartReg).forEach(k=>{chartReg[k].destroy(); delete chartReg[k];}); }
+function mkChart(id,cfg){ const ctx=document.getElementById(id); if(!ctx) return; if(typeof Chart==='undefined'){ if(!ctx.dataset.retried){ ctx.dataset.retried='1'; setTimeout(render,400); } return; } chartReg[id]=new Chart(ctx,cfg); }
+function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+const baseOpts=(legend)=>({
+  responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+  plugins:{legend:{display:false},
+    tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text')}},
+  scales:{x:{grid:{color:cssVar('--chart-grid')},ticks:{color:cssVar('--chart-tick'),font:{size:10.5},maxRotation:0,autoSkip:true}},
+    y:{grid:{color:cssVar('--chart-grid')},ticks:{color:cssVar('--chart-tick'),font:{size:10.5}}}}
+});
+
+/* ============== MAIN RENDER ============== */
+function render(){
+  const range = getRange();
+  document.getElementById('rangeLabel').textContent = fmtDateID(range[0])+'  →  '+fmtDateID(range[1]);
+  const nDays = daysIn(range);
+
+  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+
+  // ---- tabel akun ----
+  let totalBudget=0, totalSpend=0;
+  const rowsAcc = accs.map(a=>{
+    const bud = sumIn(a.budgetSeries, range);
+    const sp = sumIn(a.spendSeries, range);
+    totalBudget+=bud; totalSpend+=sp;
+    return {a, bud, sp, avg: bud/nDays};
+  });
+  document.getElementById('tblAccounts').innerHTML = rowsAcc.length ? rowsAcc.map(r=>
+    '<div class="adv-card">'+
+      '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.a.advertiser]+'"></span><span class="adv-card-name">'+r.a.name+'</span>'+
+      (switchedInRange(r.a,range)?'<span class="tag blue" style="margin-left:auto;font-size:10px;" title="Akun ini pindah advertiser di dalam periode terpilih">🔀 PINDAH</span>':'')+
+      '</div>'+
+      '<div class="adv-card-row"><span class="k">Advertiser (saat ini)</span><span class="v">'+r.a.advertiser+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Budget 24 Jam (avg/hari)</span><span class="v">'+rupiah(r.avg)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Total Budget</span><span class="v">'+rupiah(r.bud)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Spend + PPN</span><span class="tag green">'+rupiah(r.sp)+'</span></div>'+
+    '</div>'
+  ).join('') : '<div class="muted-note">Tidak ada akun terpilih</div>';
+  document.getElementById('tblAccTotalBudget').textContent = rupiah(totalBudget);
+  document.getElementById('tblAccTotalSpend').textContent = rupiah(totalSpend);
+
+  document.getElementById('kpiBudget').textContent = rupiahShort(totalBudget);
+  document.getElementById('kpiSpendPPN').textContent = rupiahShort(totalSpend);
+  document.getElementById('kpiAccCount').textContent = accs.length;
+
+  // ---- performa advertiser ----
+  const prevRange = getPrevRange(range);
+  let totalLeads=0;
+  const advRows = ADVERTISERS.map(adv=>{
+    // Akun relevan = akun yang PERNAH (kapan pun) dimiliki advertiser ini — bukan cuma pemilik saat ini.
+    // Kontribusi tiap akun dihitung per-hari berdasarkan siapa pemiliknya pada hari itu (ownerHistory),
+    // jadi kalau akun pindah tangan, histori lama tetap teratribusi ke advertiser lama.
+    const relevantAccs = accs.filter(a=>everOwnedBy(a,adv));
+    if(relevantAccs.length===0) return null;
+    const budget = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,range),0);
+    const spendPPN = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,range),0);
+    const anySwitch = relevantAccs.some(a=>switchedInRange(a,range));
+    const real = sumIn(ADV_LEADS[adv].real, range);
+    const oo = sumIn(ADV_LEADS[adv].oo, range);
+    totalLeads += real+oo;
+    const pctLead = oo>0 ? real/oo*100 : 0;
+    const cplReal = real>0 ? budget/real : 0;
+    const cplOO = oo>0 ? budget/oo : 0;
+    const target = calcTargetInRange(adv, range);
+    const kekurangan = spendPPN - target;
+
+    // --- periode sebelumnya (untuk badge naik/turun) ---
+    const pBudget = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,prevRange),0);
+    const pSpendPPN = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,prevRange),0);
+    const pReal = sumIn(ADV_LEADS[adv].real, prevRange);
+    const pOO = sumIn(ADV_LEADS[adv].oo, prevRange);
+    const pPctLead = pOO>0 ? pReal/pOO*100 : 0;
+    const pCplReal = pReal>0 ? pBudget/pReal : 0;
+    const pCplOO = pOO>0 ? pBudget/pOO : 0;
+    const pTarget = calcTargetInRange(adv, prevRange);
+    const pKekurangan = pSpendPPN - pTarget;
+
+    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch,
+      prev:{real:pReal, oo:pOO, pctLead:pPctLead, budget:pBudget, spendPPN:pSpendPPN, kekurangan:pKekurangan, cplReal:pCplReal, cplOO:pCplOO}};
+  }).filter(Boolean);
+  document.getElementById('kpiLeads').textContent = num(totalLeads);
+
+  document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map(r=>
+    '<div class="adv-card">'+
+      '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.adv]+'"></span><span class="adv-card-name">'+r.adv+'</span>'+
+      (r.anySwitch?'<span class="tag blue" style="margin-left:auto;font-size:10px;" title="Ada akun yang pindah advertiser di periode ini — angka sudah dihitung sesuai pemilik pada tanggalnya masing-masing">🔀 ADA PERPINDAHAN AKUN</span>':'')+
+      '</div>'+
+      '<div class="adv-card-row"><span class="k">Real</span><span class="v">'+num(r.real)+deltaBadge(r.real,r.prev.real)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">OO</span><span class="v">'+num(r.oo)+deltaBadge(r.oo,r.prev.oo)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">% Lead</span><span class="v"><span class="tag blue">'+r.pctLead.toFixed(2)+'%</span>'+deltaBadge(r.pctLead,r.prev.pctLead)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Budget</span><span class="v">'+rupiah(r.budget)+deltaBadge(r.budget,r.prev.budget)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Budget + PPN</span><span class="v">'+rupiah(r.spendPPN)+deltaBadge(r.spendPPN,r.prev.spendPPN)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="v"><span class="tag '+(r.kekurangan<0?'yellow':'green')+'">'+rupiah(r.kekurangan)+'</span>'+deltaBadge(r.kekurangan,r.prev.kekurangan)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">CPL Real</span><span class="v"><span class="tag green">'+rupiah(r.cplReal)+'</span>'+deltaBadge(r.cplReal,r.prev.cplReal,true)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">CPL OO</span><span class="v"><span class="tag green">'+rupiah(r.cplOO)+'</span>'+deltaBadge(r.cplOO,r.prev.cplOO,true)+'</span></div>'+
+      '<div class="adv-card-note">dibandingkan periode sebelumnya (durasi sama)</div>'+
+    '</div>'
+  ).join('') : '<div class="muted-note">Tidak ada data</div>';
+
+  // ---- grafik performa advertiser (metrik bisa dipilih, sinkron filter dashboard utama) ----
+  renderAdvMetricChart(accs, range);
+}
+
+/* ===== MULTI-SELECT METRIC DROPDOWN LOGIC ===== */
+const METRIC_LABELS = {
+  budget:'Budget (Non PPN)', spendPPN:'Budget + PPN',
+  leadReal:'Lead Real', leadOO:'Lead OO',
+  cplReal:'CPL Real', cplOO:'CPL OO',
+  pctLead:'% Lead (Real dari Total Lead)'
+};
+// Warna berbeda per metrik (dipakai saat multi-metrik, satu advertiser)
+const METRIC_DASH = {budget:'solid',spendPPN:[6,3],leadReal:'solid',leadOO:[6,3],cplReal:'solid',cplOO:[6,3],pctLead:'solid'};
+
+function getSelectedMetrics(){
+  return [...document.querySelectorAll('#metricDropdownMenu input[type=checkbox]:checked')].map(c=>c.value);
+}
+function updateMetricLabel(){
+  const sel = getSelectedMetrics();
+  const lbl = document.getElementById('metricDropdownLabel');
+  if(sel.length===0) lbl.textContent='— Pilih metrik —';
+  else if(sel.length===1) lbl.textContent=METRIC_LABELS[sel[0]];
+  else lbl.textContent=sel.length+' metrik dipilih';
+}
+// Toggle menu open/close
+document.getElementById('metricDropdownBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  const menu = document.getElementById('metricDropdownMenu');
+  menu.style.display = menu.style.display==='none' ? 'block' : 'none';
+});
+// Close when clicking outside
+document.addEventListener('click', (e)=>{
+  if(!document.getElementById('metricDropdownWrap').contains(e.target)){
+    document.getElementById('metricDropdownMenu').style.display='none';
+  }
+});
+// Checkbox change
+document.querySelectorAll('#metricDropdownMenu input[type=checkbox]').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    updateMetricLabel();
+    const range = getRange();
+    const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+    renderAdvMetricChart(accs, range);
+  });
+});
+// Pilih semua / kosongkan
+document.getElementById('metricSelectAll').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.querySelectorAll('#metricDropdownMenu input[type=checkbox]').forEach(cb=>cb.checked=true);
+  updateMetricLabel();
+  const range=getRange(); const accs=ACCOUNTS.filter(a=>a.status!=='nonaktif'&&selectedAccounts.has(a.id));
+  renderAdvMetricChart(accs, range);
+});
+document.getElementById('metricClearAll').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  document.querySelectorAll('#metricDropdownMenu input[type=checkbox]').forEach(cb=>cb.checked=false);
+  updateMetricLabel();
+  const range=getRange(); const accs=ACCOUNTS.filter(a=>a.status!=='nonaktif'&&selectedAccounts.has(a.id));
+  renderAdvMetricChart(accs, range);
+});
+
+// Warna per kombinasi advertiser × metrik
+const MULTI_METRIC_COLORS=['#2FBE82','#F0566C','#4C8DFF','#9C7BFF','#F2C12E','#5FD0C7','#FF9F6B','#EF476F'];
+
+function renderAdvMetricChart(accs, range){
+  // Hanya hancurkan chart grafik advertiser, bukan semua chart
+  if(chartReg['chartAdvMetric']){ chartReg['chartAdvMetric'].destroy(); delete chartReg['chartAdvMetric']; }
+
+  const metrics = getSelectedMetrics();
+  const labels = trendLabels(range);
+  const advsWithAccs = ADVERTISERS.filter(adv=> accs.some(a=>everOwnedBy(a,adv)));
+  const datasets = [];
+  const multiMetric = metrics.length > 1;
+
+  // Palet warna khusus untuk multi-metrik
+  const metricColors = {
+    budget:'#2FBE82', spendPPN:'#9C7BFF', leadReal:'#4C8DFF',
+    leadOO:'#5FD0C7', cplReal:'#F2C12E', cplOO:'#FF9F6B', pctLead:'#F0566C'
+  };
+
+  advsWithAccs.forEach(adv=>{
+    const advAccs = accs.filter(a=>everOwnedBy(a,adv));
+    const advColor = ADV_COLOR[adv];
+    metrics.forEach(metric=>{
+      const series = ALL_DATES.map((_,i)=>{
+        // Per-hari: hanya hitung akun yang pemiliknya PADA HARI ITU adalah advertiser ini
+        const budget = advAccs.reduce((s,a)=> s + (ownerAtIndex(a,i)===adv ? (a.budgetSeries[i]||0) : 0), 0);
+        const spendPPN = advAccs.reduce((s,a)=> s + (ownerAtIndex(a,i)===adv ? (a.spendSeries[i]||0) : 0), 0);
+        const real = ADV_LEADS[adv].real[i]||0;
+        const oo = ADV_LEADS[adv].oo[i]||0;
+        switch(metric){
+          case 'budget': return budget;
+          case 'spendPPN': return spendPPN;
+          case 'leadReal': return real;
+          case 'leadOO': return oo;
+          case 'cplReal': return real>0 ? budget/real : 0;
+          case 'cplOO': return oo>0 ? budget/oo : 0;
+          case 'pctLead': return oo>0 ? real/oo*100 : 0;
+          default: return 0;
+        }
+      });
+      // Saat multi-metrik: warna per metrik; saat single: warna per advertiser
+      const color = multiMetric ? metricColors[metric] : advColor;
+      const dash = METRIC_DASH[metric];
+      datasets.push({
+        label: multiMetric ? adv+' · '+METRIC_LABELS[metric] : adv,
+        data: sliceIn(series, range),
+        borderColor: color,
+        backgroundColor: color+'1A',
+        borderDash: Array.isArray(dash) ? dash : [],
+        fill: false, tension:.35, pointRadius:0, borderWidth:2.4
+      });
+    });
+  });
+
+  if(datasets.length===0){
+    // Tampilkan canvas kosong dengan pesan
+    const ctx = document.getElementById('chartAdvMetric');
+    if(ctx){ const c=ctx.getContext('2d'); c.clearRect(0,0,ctx.width,ctx.height); }
+    document.getElementById('advChartLegend').innerHTML='';
+    return;
+  }
+  mkChart('chartAdvMetric',{type:'line',data:{labels,datasets}, options: baseOpts(true)});
+  renderAdvLegend(datasets, advsWithAccs, metrics, multiMetric, metricColors);
+}
+
+/* ===== CUSTOM LEGEND RENDERER ===== */
+const METRIC_SHORT = {
+  budget:'Non PPN', spendPPN:'+PPN', leadReal:'Lead Real',
+  leadOO:'Lead OO', cplReal:'CPL Real', cplOO:'CPL OO', pctLead:'% Lead'
+};
+function renderAdvLegend(datasets, advsWithAccs, metrics, multiMetric, metricColors){
+  const wrap = document.getElementById('advChartLegend');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  if(multiMetric){
+    advsWithAccs.forEach(adv=>{
+      const advColor = ADV_COLOR[adv];
+      const group = document.createElement('div');
+      group.className = 'legend-group';
+      group.innerHTML = '<div class="legend-group-title"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+advColor+';margin-right:5px;vertical-align:middle;"></span>'+adv+'</div>';
+      metrics.forEach(metric=>{
+        const color = metricColors[metric];
+        const dash = METRIC_DASH[metric];
+        const isDash = Array.isArray(dash);
+        const dsIndex = datasets.findIndex(d=>d.label===adv+' \u00b7 '+METRIC_LABELS[metric]);
+        const item = document.createElement('div');
+        item.className='legend-item';
+        item.dataset.dsIndex = dsIndex;
+        item.innerHTML =
+          '<span class="legend-swatch">' +
+          (isDash
+            ? '<span class="legend-swatch-line dashed" style="--lc:'+color+';border-top-color:'+color+';"></span>'
+            : '<span class="legend-swatch-line" style="background:'+color+';"></span>') +
+          '</span>' +
+          '<span>'+(METRIC_SHORT[metric]||metric)+'</span>';
+        item.onclick = ()=> toggleLegendItem(item, dsIndex);
+        group.appendChild(item);
+      });
+      wrap.appendChild(group);
+    });
+  } else {
+    const group = document.createElement('div');
+    group.className = 'legend-group';
+    group.style.cssText = 'flex-direction:row;flex-wrap:wrap;gap:4px 18px;';
+    const metric = metrics[0] || 'budget';
+    const titleEl = document.createElement('div');
+    titleEl.className='legend-group-title';
+    titleEl.style.cssText='width:100%;flex-basis:100%;margin-bottom:2px;';
+    titleEl.textContent = METRIC_LABELS[metric]||'';
+    group.appendChild(titleEl);
+    advsWithAccs.forEach((adv,i)=>{
+      const color = ADV_COLOR[adv];
+      const item = document.createElement('div');
+      item.className='legend-item';
+      item.dataset.dsIndex = i;
+      item.innerHTML =
+        '<span class="legend-swatch"><span class="legend-swatch-line" style="background:'+color+';"></span></span>' +
+        '<span>'+adv+'</span>';
+      item.onclick = ()=> toggleLegendItem(item, i);
+      group.appendChild(item);
+    });
+    wrap.appendChild(group);
+  }
+}
+function toggleLegendItem(item, dsIndex){
+  const chart = chartReg['chartAdvMetric'];
+  if(!chart) return;
+  const meta = chart.getDatasetMeta(dsIndex);
+  if(!meta) return;
+  meta.hidden = !meta.hidden;
+  item.classList.toggle('hidden-series', !!meta.hidden);
+  chart.update();
+}
+
+// Legacy listener untuk select (dipertahankan agar tidak error)
+document.getElementById('advMetricSelect').addEventListener('change', ()=>{
+  const range = getRange();
+  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+  renderAdvMetricChart(accs, range);
+});
+
+/* ============== INPUT MANUAL ============== */
+function renderInputSelectors(){
+  const accSel = document.getElementById('inAccSelect');
+  accSel.innerHTML = ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>'<option value="'+a.id+'">'+a.name+' ('+a.advertiser+')</option>').join('');
+  const leadSel = document.getElementById('inLeadSelect');
+  leadSel.innerHTML = ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  if(typeof calcSpendPreview==='function') calcSpendPreview();
+}
+function calcSpendPreview(){
+  const accId = document.getElementById('inAccSelect').value;
+  const acc = ACCOUNTS.find(a=>a.id===accId);
+  const ppn = acc ? (acc.ppn!=null ? acc.ppn : 3) : 3;
+  const budget = parseFloat(document.getElementById('inAccBudget').value);
+  const val = (!isNaN(budget) && budget>0) ? Math.round(budget*(1+ppn/100)) : 0;
+  document.getElementById('inAccSpend').value = val || '';
+  const previewEl = document.getElementById('accSpendPreviewVal');
+  const labelEl = document.getElementById('accPPNLabel');
+  if(labelEl) labelEl.textContent = ppn;
+  if(previewEl) previewEl.textContent = rupiah(val);
+}
+document.getElementById('inAccBudget').addEventListener('input', calcSpendPreview);
+document.getElementById('inAccSelect').addEventListener('change', calcSpendPreview);
+document.getElementById('toggleAccAdvanced').onclick=(e)=>{
+  e.preventDefault();
+  const box = document.getElementById('accAdvancedBox');
+  box.style.display = box.style.display==='none' ? 'block' : 'none';
+};
+calcSpendPreview();
+
+async function saveAccInput(){
+  const dateVal = document.getElementById('inSharedDate').value;
+  const accId = document.getElementById('inAccSelect').value;
+  const budget = parseFloat(document.getElementById('inAccBudget').value);
+  const spend = parseFloat(document.getElementById('inAccSpend').value);
+  const msg = document.getElementById('accInputMsg');
+  if(!dateVal || !accId || isNaN(budget) || isNaN(spend)){ msg.textContent='Isi tanggal & budget terlebih dahulu.'; msg.style.color='var(--red)'; return; }
+  const acc = ACCOUNTS.find(a=>a.id===accId);
+  if(!acc) return;
+  const d = new Date(dateVal);
+  setAt(acc.budgetSeries, d, budget);
+  setAt(acc.spendSeries, d, spend);
+  saveLocalState();
+  render();
+  document.getElementById('inAccBudget').value=''; document.getElementById('inAccSpend').value=''; calcSpendPreview();
+  document.getElementById('inAccBudget').focus();
+  msg.textContent = 'Tersimpan: '+acc.name+' · '+fmtDateID(d)+' — mengirim ke spreadsheet...';
+  msg.style.color='var(--muted)';
+  const status = await pushOneToSheet({type:'akun', tanggal:dateVal, nama:acc.name, budget, spendppn:spend});
+  if(status==='ok'){ msg.textContent='✅ Tersimpan & terkirim ke spreadsheet: '+acc.name+' · '+fmtDateID(d); msg.style.color='var(--green)'; }
+  else if(status==='no-url'){ msg.textContent='Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di bawah).'; msg.style.color='var(--yellow)'; }
+  else { msg.textContent='Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.'; msg.style.color='var(--red)'; }
+}
+document.getElementById('btnSaveAccInput').onclick=saveAccInput;
+document.getElementById('inAccBudget').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAccInput(); } });
+document.getElementById('inAccSpend').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAccInput(); } });
+
+async function saveLeadInput(){
+  const dateVal = document.getElementById('inSharedDate').value;
+  const adv = document.getElementById('inLeadSelect').value;
+  const real = parseFloat(document.getElementById('inLeadReal').value);
+  const oo = parseFloat(document.getElementById('inLeadOO').value);
+  const msg = document.getElementById('leadInputMsg');
+  if(!dateVal || !adv || isNaN(real) || isNaN(oo)){ msg.textContent='Isi tanggal, lead real & lead OO terlebih dahulu.'; msg.style.color='var(--red)'; return; }
+  const d = new Date(dateVal);
+  setAt(ADV_LEADS[adv].real, d, real);
+  setAt(ADV_LEADS[adv].oo, d, oo);
+  saveLocalState();
+  render();
+  document.getElementById('inLeadReal').value=''; document.getElementById('inLeadOO').value='';
+  document.getElementById('inLeadReal').focus();
+  msg.textContent = 'Tersimpan: '+adv+' · '+fmtDateID(d)+' — mengirim ke spreadsheet...';
+  msg.style.color='var(--muted)';
+  const status = await pushOneToSheet({type:'lead', tanggal:dateVal, advertiser:adv, real, oo});
+  if(status==='ok'){ msg.textContent='✅ Tersimpan & terkirim ke spreadsheet: '+adv+' · '+fmtDateID(d); msg.style.color='var(--green)'; }
+  else if(status==='no-url'){ msg.textContent='Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di bawah).'; msg.style.color='var(--yellow)'; }
+  else { msg.textContent='Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.'; msg.style.color='var(--red)'; }
+}
+document.getElementById('btnSaveLeadInput').onclick=saveLeadInput;
+document.getElementById('inLeadReal').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveLeadInput(); } });
+document.getElementById('inLeadOO').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveLeadInput(); } });
+
+/* ============== INTEGRASI GOOGLE APPS SCRIPT ============== */
+const APPS_SCRIPT_CODE = `// ============================================================
+// APPS SCRIPT — DASHBOARD ADVERTISER META
+// Paste di Google Apps Script → Deploy → Web App → Execute as: Me
+//                                                → Who has access: Anyone
+// ============================================================
+
+function doGet(e){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var akunSheet = ss.getSheetByName('Akun');
+  var leadSheet = ss.getSheetByName('Leads');
+  var akunWlSheet = ss.getSheetByName('AkunWL');
+  var akunHistoriSheet = ss.getSheetByName('AkunHistori');
+  var targetSheet = ss.getSheetByName('Target');
+  var akun = sheetToObjects(akunSheet);
+  var leads = sheetToObjects(leadSheet);
+  var akunwl = sheetToObjects(akunWlSheet);
+  var historiakun = sheetToObjects(akunHistoriSheet);
+  var target = sheetToObjects(targetSheet);
+  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target});
+}
+
+function doPost(e){
+  var data = JSON.parse(e.postData.contents);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if(data.type === 'akun'){
+    upsertAkun(ss, data);
+  } else if(data.type === 'lead'){
+    upsertLead(ss, data);
+  } else if(data.type === 'akunwl'){
+    upsertAkunWL(ss, data);
+  } else if(data.type === 'akunhistori'){
+    upsertAkunHistori(ss, data);
+  } else if(data.type === 'target'){
+    upsertTarget(ss, data);
+  }
+  return jsonOutput({status:'ok'});
+}
+
+// Format sel tanggal (bisa berupa Date object atau string) jadi 'yyyy-MM-dd'
+// supaya bisa dibandingkan apple-to-apple dengan tanggal yang dikirim dashboard.
+function formatCellDate(v){
+  if(Object.prototype.toString.call(v) === '[object Date]'){
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
+  return String(v).trim();
+}
+
+// Sheet "Akun" = data budget harian. Upsert berdasarkan (tanggal + nama akun) —
+// kalau hari itu akun ini sudah pernah diinput, baris lama DITIMPA (bukan
+// nambah baris baru), supaya tidak menumpuk walau diinput berkali-kali sehari.
+function upsertAkun(ss, data){
+  var sh = ss.getSheetByName('Akun');
+  var rows = sh.getDataRange().getValues();
+  var nama = String(data.nama).trim().toLowerCase();
+  for(var i=1;i<rows.length;i++){
+    if(formatCellDate(rows[i][0]) === String(data.tanggal).trim() && String(rows[i][1]).trim().toLowerCase() === nama){
+      sh.getRange(i+1,1,1,4).setValues([[data.tanggal, data.nama, data.budget, data.spendppn]]);
+      return;
+    }
+  }
+  sh.appendRow([data.tanggal, data.nama, data.budget, data.spendppn]);
+}
+
+// Sheet "Leads" = data lead harian. Upsert berdasarkan (tanggal + advertiser),
+// sama seperti sheet "Akun" di atas.
+function upsertLead(ss, data){
+  var sh = ss.getSheetByName('Leads');
+  var rows = sh.getDataRange().getValues();
+  var adv = String(data.advertiser).trim().toLowerCase();
+  for(var i=1;i<rows.length;i++){
+    if(formatCellDate(rows[i][0]) === String(data.tanggal).trim() && String(rows[i][1]).trim().toLowerCase() === adv){
+      sh.getRange(i+1,1,1,4).setValues([[data.tanggal, data.advertiser, data.real, data.oo]]);
+      return;
+    }
+  }
+  sh.appendRow([data.tanggal, data.advertiser, data.real, data.oo]);
+}
+
+// Sheet "AkunWL" = daftar MASTER akun WL (1 baris per akun, bukan data harian).
+// Otomatis di-upsert (dicari berdasarkan nama, ditimpa kalau sudah ada,
+// ditambah kalau belum) setiap kali akun ditambah/diedit/diaktif-nonaktifkan
+// di dashboard, atau saat klik "Kirim Semua Data ke Spreadsheet".
+function upsertAkunWL(ss, data){
+  var sh = ss.getSheetByName('AkunWL');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim().toLowerCase() === String(data.nama).trim().toLowerCase()){
+      sh.getRange(i+1,1,1,4).setValues([[data.nama, data.advertiser, data.ppn, data.aktif]]);
+      return;
+    }
+  }
+  sh.appendRow([data.nama, data.advertiser, data.ppn, data.aktif]);
+}
+
+// Sheet "AkunHistori" = LOG perpindahan advertiser per akun (append-only, beda dari AkunWL
+// yang cuma nyimpen kondisi TERKINI). 1 baris = 1 periode kepemilikan: nama | advertiser | tanggal_mulai.
+// Upsert berdasarkan (nama + tanggal_mulai) supaya kalau di-push ulang (misal klik "Kirim Semua
+// Data ke Spreadsheet" berkali-kali) tidak menumpuk baris duplikat untuk perpindahan yang sama.
+// Baris-baris lama TIDAK pernah dihapus/ditimpa oleh perpindahan baru — itulah yang membuat
+// histori budget/spend advertiser lama tetap aman walau akun sudah pindah tangan.
+function upsertAkunHistori(ss, data){
+  var sh = ss.getSheetByName('AkunHistori');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var nama = String(data.nama).trim().toLowerCase();
+  var tgl = String(data.tanggal_mulai).trim();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim().toLowerCase() === nama && formatCellDate(rows[i][2]) === tgl){
+      sh.getRange(i+1,1,1,3).setValues([[data.nama, data.advertiser, data.tanggal_mulai]]);
+      return;
+    }
+  }
+  sh.appendRow([data.nama, data.advertiser, data.tanggal_mulai]);
+}
+
+// Sheet "Target" = target harian per advertiser, sinkron dari menu "Target Bulanan".
+// Struktur baris: advertiser | tipe | tahun | bulan | nilai
+//  - tipe "default" → target harian default advertiser itu (tahun & bulan kosong)
+//  - tipe "bulanan" → override target harian khusus utk bulan+tahun tsb
+//  - baris khusus advertiser = "__MODE__" menyimpan mode aktif ("harian"/"bulanan") di kolom tipe
+// Upsert berdasarkan (advertiser + tipe + tahun + bulan) supaya tidak dobel;
+// baris "__MODE__" selalu dicari berdasarkan nama saja (hanya ada 1 baris mode).
+// Kirim payload dengan hapus:true untuk menghapus baris override bulanan (mis. saat "Reset ke Default Harian").
+function upsertTarget(ss, data){
+  var sh = ss.getSheetByName('Target');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var adv = String(data.advertiser).trim().toLowerCase();
+  var isMode = (adv === '__mode__');
+  var tahun = String(data.tahun==null?'':data.tahun).trim();
+  var bulan = String(data.bulan==null?'':data.bulan).trim();
+  var tipe = String(data.tipe||'').trim().toLowerCase();
+  for(var i=1;i<rows.length;i++){
+    var rAdv = String(rows[i][0]).trim().toLowerCase();
+    if(isMode){
+      if(rAdv === '__mode__'){
+        sh.getRange(i+1,1,1,5).setValues([[data.advertiser, data.tipe, '', '', '']]);
+        return;
+      }
+      continue;
+    }
+    var rTipe = String(rows[i][1]).trim().toLowerCase();
+    var rTahun = String(rows[i][2]).trim();
+    var rBulan = String(rows[i][3]).trim();
+    if(rAdv===adv && rTipe===tipe && rTahun===tahun && rBulan===bulan){
+      if(data.hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,5).setValues([[data.advertiser, data.tipe, data.tahun, data.bulan, data.nilai]]);
+      return;
+    }
+  }
+  if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
+  sh.appendRow([data.advertiser, data.tipe, data.tahun, data.bulan, data.nilai]);
+}
+
+function sheetToObjects(sheet){
+  if(!sheet) return [];
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0].map(function(h){ return String(h).toLowerCase().trim(); });
+  var out = [];
+  for(var i=1;i<rows.length;i++){
+    var obj = {};
+    headers.forEach(function(h,idx){ obj[h]=rows[i][idx]; });
+    out.push(obj);
+  }
+  return out;
+}
+
+function jsonOutput(obj){
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ============================================================
+// STRUKTUR SHEET YANG DIPERLUKAN (buat 5 sheet ini di spreadsheet):
+// Sheet "Akun"   → kolom: tanggal | nama | budget | spendppn   (1 baris per akun per tanggal — upsert, ditimpa kalau diinput ulang)
+// Sheet "Leads"  → kolom: tanggal | advertiser | real | oo     (1 baris per advertiser per tanggal — upsert, ditimpa kalau diinput ulang)
+// Sheet "AkunWL" → kolom: nama | advertiser | ppn | aktif      (daftar master akun — KONDISI TERKINI saja,
+//                  1 baris per akun — otomatis terisi/update dari dashboard)
+// Sheet "AkunHistori" → kolom: nama | advertiser | tanggal_mulai  (LOG perpindahan advertiser per akun,
+//                  APPEND-ONLY — 1 baris per periode kepemilikan. Ini yang membuat histori budget/spend
+//                  tetap teratribusi ke advertiser lama walau akun sudah dipindah ke advertiser baru.
+//                  Otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun.)
+// Sheet "Target" → kolom: advertiser | tipe | tahun | bulan | nilai (target harian per advertiser;
+//                  tipe "default" = target harian umum, tipe "bulanan" = override per bulan+tahun,
+//                  baris advertiser "__MODE__" menyimpan mode aktif harian/bulanan di kolom tipe)
+// ============================================================`;
+
+function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
+
+document.getElementById('btnShowScript').onclick=()=>{
+  const box = document.getElementById('scriptBox');
+  const visible = box.style.display!=='none';
+  box.style.display = visible?'none':'block';
+  document.getElementById('scriptCode').textContent = APPS_SCRIPT_CODE;
+};
+document.getElementById('btnCopyScript').onclick=()=>{
+  navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>{
+    document.getElementById('sheetSyncMsg').textContent='Kode Apps Script disalin ke clipboard.';
+    document.getElementById('sheetSyncMsg').style.color='var(--green)';
+  });
+};
+
+function parseIdDate(v){
+  if(!v) return null;
+  const d = new Date(v);
+  if(!isNaN(d.getTime())) return d;
+  return null;
+}
+
+/* ============== SHEET "AkunWL" — daftar master akun (bukan data harian) ============== */
+function applyAkunWLRow(r){
+  if(!r || !r.nama) return false;
+  let acc = findAccountByName(r.nama);
+  const adv = String(r.advertiser||'').toUpperCase().trim();
+  const ppnVal = parseFloat(r.ppn);
+  const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
+  const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
+  if(!acc){
+    if(adv && !ADVERTISERS.includes(adv)) makeNewAdvertiser(adv);
+    acc = makeNewAccount(r.nama, adv || (ADVERTISERS[0]||''), isNaN(ppnVal)?3:ppnVal);
+    ACCOUNTS.push(acc);
+    if(isActive) selectedAccounts.add(acc.id);
+  } else {
+    // Kalau advertiser di spreadsheet berbeda dari yang tersimpan, catat sebagai perpindahan
+    // (efektif hari ini, karena kolom AkunWL di sheet tidak membawa info tanggal efektif).
+    // Histori lama (sebelum tanggal ini) tetap teratribusi ke advertiser lama.
+    if(adv && adv!==acc.advertiser) recordOwnerChange(acc, adv, TODAY_REF);
+    if(!isNaN(ppnVal)) acc.ppn = ppnVal;
+  }
+  acc.status = isActive ? 'aktif' : 'nonaktif';
+  if(!isActive) selectedAccounts.delete(acc.id);
+  return true;
+}
+// Rekonstruksi ownerHistory tiap akun dari baris sheet "AkunHistori".
+// Sheet ini diperlakukan sebagai SUMBER KEBENARAN lintas device: kalau ada baris histori
+// untuk sebuah akun, seluruh ownerHistory akun itu di lokal DITIMPA dengan hasil dari sheet
+// (supaya kalau perpindahan advertiser dilakukan dari device/browser lain, riwayatnya tetap
+// ikut kebawa ke device ini). Kalau sheet belum punya baris histori utk akun tsb (mis. sheet
+// lama belum ada AkunHistori-nya), ownerHistory lokal yang sudah ada tetap dipakai apa adanya.
+function applyHistoriAkunRows(historiRows){
+  const byName = {};
+  (historiRows||[]).forEach(r=>{
+    if(!r || !r.nama) return;
+    const d = parseIdDate(r.tanggal_mulai);
+    const adv = String(r.advertiser||'').toUpperCase().trim();
+    if(!d || !adv) return;
+    const key = String(r.nama).trim().toLowerCase();
+    if(!byName[key]) byName[key] = [];
+    byName[key].push({advertiser:adv, fromIdx: idx(d)});
+  });
+  let countHistori = 0;
+  Object.keys(byName).forEach(key=>{
+    const acc = findAccountByName(key);
+    if(!acc) return;
+    const map = new Map();
+    byName[key].forEach(h=> map.set(h.fromIdx, h.advertiser));
+    const merged = [...map.entries()].map(([fromIdx,advertiser])=>({advertiser,fromIdx})).sort((a,b)=>a.fromIdx-b.fromIdx);
+    if(merged.length===0) return;
+    acc.ownerHistory = merged;
+    acc.advertiser = merged[merged.length-1].advertiser; // pemilik saat ini = entri histori paling akhir
+    countHistori += merged.length;
+  });
+  return countHistori;
+}
+async function syncAccountRoster(){
+  const url = getAppsScriptUrl();
+  if(!url) return;
+  for(const acc of ACCOUNTS){
+    await pushOneToSheet({type:'akunwl', nama:acc.name, advertiser:acc.advertiser, ppn:(acc.ppn!=null?acc.ppn:3), aktif:(acc.status!=='nonaktif')?'ya':'tidak'});
+    await pushOwnerHistoryAll(acc);
+  }
+}
+async function pullFromSheet(){
+  const url = getAppsScriptUrl();
+  const msg = document.getElementById('sheetSyncMsg');
+  if(!url){ msg.textContent='Isi URL Web App Apps Script terlebih dahulu.'; msg.style.color='var(--red)'; return; }
+  msg.textContent='Menarik data dari spreadsheet...'; msg.style.color='var(--muted)';
+  try{
+    const res = await fetch(url+'?action=read', {cache:'no-store'});
+    const json = await res.json();
+    let countAkun=0, countLead=0;
+    const skippedAkunNames = new Set();
+    const skippedLeadAdv = new Set();
+    (json.akun||[]).forEach(r=>{
+      const acc = findAccountByName(r.nama);
+      const d = parseIdDate(r.tanggal);
+      if(!d) return;
+      if(!acc){ if(r.nama) skippedAkunNames.add(r.nama); return; }
+      setAt(acc.budgetSeries, d, parseFloat(r.budget)||0);
+      setAt(acc.spendSeries, d, parseFloat(r.spendppn)||0);
+      countAkun++;
+    });
+    (json.leads||[]).forEach(r=>{
+      const adv = (ADVERTISERS.find(a=>a.toLowerCase()===String(r.advertiser||'').toLowerCase()));
+      const d = parseIdDate(r.tanggal);
+      if(!d) return;
+      if(!adv){ if(r.advertiser) skippedLeadAdv.add(r.advertiser); return; }
+      setAt(ADV_LEADS[adv].real, d, parseFloat(r.real)||0);
+      setAt(ADV_LEADS[adv].oo, d, parseFloat(r.oo)||0);
+      countLead++;
+    });
+    let countRoster=0;
+    (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster++; });
+    const countHistori = applyHistoriAkunRows(json.historiakun);
+    if(countRoster>0 || countHistori>0){ renderAccountGroups(); renderInputSelectors(); saveLocalState(); }
+    let countTarget=0, modeFromSheet=null;
+    (json.target||[]).forEach(r=>{
+      const advRaw = String(r.advertiser||'').trim();
+      if(!advRaw) return;
+      if(advRaw.toLowerCase()==='__mode__'){
+        const m = String(r.tipe||'').trim().toLowerCase();
+        if(m==='harian'||m==='bulanan') modeFromSheet = m;
+        return;
+      }
+      const adv = ADVERTISERS.find(a=>a.toLowerCase()===advRaw.toLowerCase());
+      if(!adv) return;
+      const tipe = String(r.tipe||'').trim().toLowerCase();
+      const nilai = parseFloat(r.nilai)||0;
+      if(tipe==='default'){
+        TARGETS[adv] = nilai; countTarget++;
+      } else if(tipe==='bulanan'){
+        const y = parseInt(r.tahun), m = parseInt(r.bulan);
+        if(y && m){ setMonthlyTarget(adv, m, nilai, y); countTarget++; }
+      }
+    });
+    if(modeFromSheet) applyTargetModeUI(modeFromSheet);
+    if(countTarget>0 || modeFromSheet){
+      renderTargetRows();
+      if(targetMode==='bulanan'){ renderMonthPicker(); renderTargetRowsMonthly(); renderCopyFromSelect(); }
+      saveLocalState();
+    }
+    if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
+      let warnParts=[];
+      if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
+      if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL. <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.style.color='var(--red)';
+    } else {
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), dan '+countTarget+' baris target dari spreadsheet. Semua baris cocok dengan akun yang terdaftar.';
+      msg.style.color='var(--green)';
+    }
+    render();
+  }catch(err){
+    msg.textContent = 'Gagal menarik data: '+err.message;
+    msg.style.color='var(--red)';
+  }
+}
+async function pushOneToSheet(payload){
+  const url = getAppsScriptUrl();
+  if(!url) return 'no-url';
+  try{
+    await fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload)});
+    return 'ok';
+  }catch(err){ return 'error'; }
+}
+
+/* ============== SYNC HISTORI KEPEMILIKAN AKUN KE SHEET "AkunHistori" ============== */
+function ownerHistoryEntryDate(entry){ const d=new Date(DATA_START); d.setDate(d.getDate()+entry.fromIdx); return d; }
+async function pushOwnerHistoryEntry(acc, entry){
+  return pushOneToSheet({type:'akunhistori', nama:acc.name, advertiser:entry.advertiser, tanggal_mulai: fmtISO(ownerHistoryEntryDate(entry))});
+}
+async function pushOwnerHistoryAll(acc){
+  for(const h of ensureOwnerHistory(acc)){ await pushOwnerHistoryEntry(acc, h); }
+}
+
+/* ============== SYNC TARGET KE SHEET "Target" ============== */
+async function pushTargetDefault(adv){
+  return pushOneToSheet({type:'target', advertiser:adv, tipe:'default', tahun:'', bulan:'', nilai:TARGETS[adv]||0});
+}
+async function pushTargetMonthly(adv, year, month, val){
+  return pushOneToSheet({type:'target', advertiser:adv, tipe:'bulanan', tahun:year, bulan:month, nilai:val});
+}
+async function pushTargetMonthlyDelete(adv, year, month){
+  return pushOneToSheet({type:'target', advertiser:adv, tipe:'bulanan', tahun:year, bulan:month, hapus:true});
+}
+async function pushTargetMode(mode){
+  return pushOneToSheet({type:'target', advertiser:'__MODE__', tipe:mode, tahun:'', bulan:'', nilai:''});
+}
+async function pushAllTargetsToSheet(){
+  await pushTargetMode(targetMode);
+  for(const adv of ADVERTISERS){
+    await pushTargetDefault(adv);
+    if(TARGETS_MONTHLY[adv]){
+      for(const key in TARGETS_MONTHLY[adv]){
+        const parts = String(key).split('-');
+        if(parts.length===2){
+          const y = parseInt(parts[0]), m = parseInt(parts[1]);
+          if(y && m) await pushTargetMonthly(adv, y, m, TARGETS_MONTHLY[adv][key]);
+        }
+      }
+    }
+  }
+}
+async function pushAllToSheet(){
+  const url = getAppsScriptUrl();
+  const msg = document.getElementById('sheetSyncMsg');
+  if(!url){ msg.textContent='Isi URL Web App Apps Script terlebih dahulu.'; msg.style.color='var(--red)'; return; }
+  msg.textContent='Mengirim seluruh data ke spreadsheet...'; msg.style.color='var(--muted)';
+  let sent=0;
+  for(const acc of ACCOUNTS){
+    await pushOneToSheet({type:'akunwl', nama:acc.name, advertiser:acc.advertiser, ppn:(acc.ppn!=null?acc.ppn:3), aktif:(acc.status!=='nonaktif')?'ya':'tidak'});
+    sent++;
+    await pushOwnerHistoryAll(acc); sent += ensureOwnerHistory(acc).length;
+    for(let i=0;i<ALL_DATES.length;i++){
+      if(acc.budgetSeries[i] || acc.spendSeries[i]){
+        await pushOneToSheet({type:'akun', tanggal:fmtISO(ALL_DATES[i]), nama:acc.name, budget:acc.budgetSeries[i], spendppn:acc.spendSeries[i]});
+        sent++;
+      }
+    }
+  }
+  for(const adv of ADVERTISERS){
+    for(let i=0;i<ALL_DATES.length;i++){
+      if(ADV_LEADS[adv].real[i] || ADV_LEADS[adv].oo[i]){
+        await pushOneToSheet({type:'lead', tanggal:fmtISO(ALL_DATES[i]), advertiser:adv, real:ADV_LEADS[adv].real[i], oo:ADV_LEADS[adv].oo[i]});
+        sent++;
+      }
+    }
+  }
+  await pushTargetMode(targetMode); sent++;
+  for(const adv of ADVERTISERS){
+    await pushTargetDefault(adv); sent++;
+    if(TARGETS_MONTHLY[adv]){
+      for(const key in TARGETS_MONTHLY[adv]){
+        const parts = String(key).split('-');
+        if(parts.length===2){
+          const y = parseInt(parts[0]), m = parseInt(parts[1]);
+          if(y && m){ await pushTargetMonthly(adv, y, m, TARGETS_MONTHLY[adv][key]); sent++; }
+        }
+      }
+    }
+  }
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL dan Target) ke spreadsheet.';
+  msg.style.color='var(--green)';
+}
+document.getElementById('btnPullSheet').onclick = pullFromSheet;
+document.getElementById('btnPushSheet').onclick = pushAllToSheet;
+
+/* ============== PENYIMPANAN LOKAL (agar data tidak hilang saat tab ditutup) ============== */
+const LOCAL_KEY = 'dashboardAdvertiserState_v1';
+function saveLocalState(){
+  try{
+    const state = {
+      advertisers: ADVERTISERS,
+      advColor: ADV_COLOR,
+      targets: TARGETS,
+      targetsMonthly: TARGETS_MONTHLY,
+      targetMode: targetMode,
+      accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
+      accCounter: accCounter,
+      advLeads: Object.fromEntries(Object.entries(ADV_LEADS).map(([k,v])=>[k,{real:v.real, oo:v.oo}])),
+      appsScriptUrl: document.getElementById('appsScriptUrl').value,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+  }catch(e){ console.warn('Gagal menyimpan ke localStorage:', e); }
+}
+function loadLocalState(){
+  let raw;
+  try{ raw = localStorage.getItem(LOCAL_KEY); }catch(e){ return false; }
+  if(!raw) return false;
+  try{
+    const state = JSON.parse(raw);
+    ADVERTISERS = state.advertisers || ADVERTISERS;
+    ADV_COLOR = state.advColor || ADV_COLOR;
+    TARGETS = state.targets || TARGETS;
+    if(state.targetsMonthly) TARGETS_MONTHLY = state.targetsMonthly;
+    if(state.targetMode) targetMode = state.targetMode;
+    accCounter = state.accCounter || accCounter;
+    ACCOUNTS.length = 0;
+    (state.accounts||[]).forEach(a=>{
+      if(a.ppn==null) a.ppn=3;
+      if(!Array.isArray(a.ownerHistory) || a.ownerHistory.length===0){
+        // Data lama (sebelum fitur histori ada) — anggap sudah dimiliki advertiser saat ini sejak awal data
+        a.ownerHistory = [{advertiser:a.advertiser, fromIdx:0}];
+      }
+      ACCOUNTS.push(a);
+    });
+    Object.keys(ADV_LEADS).forEach(k=> delete ADV_LEADS[k]);
+    Object.entries(state.advLeads||{}).forEach(([k,v])=>{ ADV_LEADS[k]={real:v.real, oo:v.oo}; });
+    selectedAccounts = new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id));
+    if(state.appsScriptUrl) document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
+    return true;
+  }catch(e){ console.warn('Gagal memuat localStorage:', e); return false; }
+}
+function clearLocalState(){
+  try{ localStorage.removeItem(LOCAL_KEY); }catch(e){}
+}
+
+function resetAllData(){
+  const sure = confirm('Yakin ingin menghapus SEMUA data dashboard (akun, advertiser, budget, lead, target) dan mengosongkan penyimpanan browser ini?\n\nTindakan ini TIDAK BISA dibatalkan. Data di Google Sheet (kalau sudah terhubung) tidak ikut terhapus.');
+  if(!sure) return;
+  clearLocalState();
+  ACCOUNTS.length = 0;
+  ADVERTISERS = [];
+  ADV_COLOR = {};
+  Object.keys(ADV_LEADS).forEach(k=> delete ADV_LEADS[k]);
+  TARGETS = {};
+  TARGETS_MONTHLY = {};
+  selectedAccounts = new Set();
+  accCounter = 0;
+  renderAccountGroups();
+  renderInputSelectors();
+  renderTargetRows();
+  renderMonthPicker();
+  renderTargetRowsMonthly();
+  render();
+  const msg = document.getElementById('resetDataMsg');
+  if(msg){ msg.textContent = 'Semua data berhasil dihapus. Dashboard sekarang benar-benar kosong.'; msg.style.color = 'var(--green)'; }
+}
+document.getElementById('btnResetAllData').onclick = resetAllData;
+
+/* ============================================================
+   FITUR REPORT WHATSAPP
+   ============================================================ */
+
+// State report
+let reportState = {
+  selectedAdvs: new Set(),   // advertiser yang dipilih
+  showBudget: true,
+  showSpend: true,
+  showLead: true,
+  showCPL: true,
+  showKekurangan: true,
+  phoneNumber: '',
+  customHeader: '',
+  customFooter: ''
+};
+
+function buildReportText(){
+  const range = getRange();
+  const nDays = daysIn(range);
+  const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
+    ? fmtDateID(range[0])
+    : fmtDateID(range[0]) + ' s/d ' + fmtDateID(range[1]);
+
+  const lines = [];
+
+  // Header
+  lines.push('*REPORT ADVERTISER META*');
+  lines.push('Periode: ' + dateLabel);
+  if(reportState.customHeader.trim()){
+    lines.push(reportState.customHeader.trim());
+  }
+  lines.push('');
+
+  // Loop per advertiser
+  const advList = ADVERTISERS.filter(adv => reportState.selectedAdvs.has(adv));
+  if(advList.length === 0) return null;
+
+  let grandBudget=0, grandSpend=0, grandReal=0, grandOO=0;
+
+  advList.forEach((adv, idx) => {
+    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && a.status!=='nonaktif' && selectedAccounts.has(a.id));
+    if(advAccs.length === 0) return;
+
+    const budget   = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,range),0);
+    const spendPPN = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,range),0);
+    const real   = sumIn(ADV_LEADS[adv].real, range);
+    const oo     = sumIn(ADV_LEADS[adv].oo, range);
+    const target = calcTargetInRange(adv, range);
+    const kekurangan = spendPPN - target;
+    const cplReal = real>0 ? budget/real : 0;
+    const cplOO   = oo>0  ? budget/oo  : 0;
+    const pctLead = oo>0 ? (real/oo*100).toFixed(1) : '0.0';
+
+    grandBudget += budget;
+    grandSpend  += spendPPN;
+    grandReal   += real;
+    grandOO     += oo;
+
+    lines.push((idx+1) + '. *' + adv + '*');
+
+    if(reportState.showBudget)      lines.push('   Budget       : ' + rupiah(budget));
+    if(reportState.showSpend)       lines.push('   Spend+PPN    : ' + rupiah(spendPPN));
+    if(reportState.showKekurangan){
+      lines.push('   Kekurangan   : ' + rupiah(kekurangan));
+    }
+    if(reportState.showLead){
+      lines.push('   Lead Real    : ' + num(real) + '  |  OO: ' + num(oo));
+      lines.push('   % Lead       : ' + pctLead + '%');
+    }
+    if(reportState.showCPL && real>0){
+      lines.push('   CPL Real     : ' + rupiah(cplReal));
+      if(oo>0) lines.push('   CPL OO       : ' + rupiah(cplOO));
+    }
+
+    // daftar akun
+    if(advAccs.length > 0){
+      lines.push('   Akun         :');
+      advAccs.forEach(a=>{
+        const aBud = sumIn(a.budgetSeries, range);
+        const aSp  = sumIn(a.spendSeries, range);
+        lines.push('      - ' + a.name + ' -> ' + rupiah(aBud) + ' / ' + rupiah(aSp));
+      });
+    }
+
+    if(idx < advList.length-1) lines.push('');
+  });
+
+  // Grand total (jika lebih dari 1 advertiser)
+  if(advList.length > 1){
+    lines.push('');
+    lines.push('──────────────────────');
+    lines.push('*TOTAL KESELURUHAN*');
+    if(reportState.showBudget) lines.push('   Budget       : ' + rupiah(grandBudget));
+    if(reportState.showSpend)  lines.push('   Spend+PPN    : ' + rupiah(grandSpend));
+    if(reportState.showLead){
+      lines.push('   Lead Real    : ' + num(grandReal) + '  |  OO: ' + num(grandOO));
+    }
+    lines.push('──────────────────────');
+  }
+
+  if(reportState.customFooter.trim()){
+    lines.push('');
+    lines.push(reportState.customFooter.trim());
+  }
+
+  lines.push('');
+  lines.push('_Generated: ' + new Date().toLocaleString('id-ID') + '_');
+
+  return lines.join('\n');
+}
+
+function refreshReportPreview(){
+  const txt = buildReportText();
+  const el = document.getElementById('reportPreviewBox');
+  if(!el) return;
+  if(!txt){
+    el.textContent = '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard.';
+    el.style.color = 'var(--red)';
+  } else {
+    el.textContent = txt;
+    el.style.color = '#A8E6C5';
+  }
+}
+
+function openReportModal(){
+  closeModal();
+
+  // default: pilih semua advertiser
+  if(reportState.selectedAdvs.size === 0){
+    ADVERTISERS.forEach(a=> reportState.selectedAdvs.add(a));
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'edit-modal-overlay';
+  overlay.id = 'modalOverlay';
+
+  overlay.innerHTML = `
+    <div class="report-modal">
+      <h3>📊 Buat & Kirim Report WhatsApp</h3>
+      <div class="muted-note" style="margin-bottom:18px;">Pilih advertiser, kolom yang ditampilkan, lalu kirim via WhatsApp.</div>
+
+      <!-- Pilih Advertiser -->
+      <div class="report-section">
+        <div class="report-section-title">Pilih Advertiser</div>
+        <div class="adv-chips" id="reportAdvChips"></div>
+      </div>
+
+      <!-- Kolom yang ditampilkan -->
+      <div class="report-section">
+        <div class="report-section-title">Kolom Report</div>
+        <div class="toggle-group">
+          <div class="toggle-chip ${reportState.showBudget?'on':''}" data-key="showBudget">💰 Budget</div>
+          <div class="toggle-chip ${reportState.showSpend?'on':''}" data-key="showSpend">💸 Spend+PPN</div>
+          <div class="toggle-chip ${reportState.showLead?'on':''}" data-key="showLead">📥 Lead</div>
+          <div class="toggle-chip ${reportState.showCPL?'on':''}" data-key="showCPL">🎯 CPL</div>
+          <div class="toggle-chip ${reportState.showKekurangan?'on':''}" data-key="showKekurangan">⚠️ Kekurangan</div>
+        </div>
+      </div>
+
+      <!-- Pesan tambahan -->
+      <div class="report-section">
+        <div class="report-section-title">Header Pesan (opsional)</div>
+        <input type="text" id="reportHeader" placeholder="Contoh: Laporan pagi Team Meta 🚀" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 11px;font-size:13px;" value="${reportState.customHeader}">
+      </div>
+      <div class="report-section">
+        <div class="report-section-title">Footer Pesan (opsional)</div>
+        <input type="text" id="reportFooter" placeholder="Contoh: Salam, Admin" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 11px;font-size:13px;" value="${reportState.customFooter}">
+      </div>
+
+      <!-- Nomor WA tujuan -->
+      <div class="report-section">
+        <div class="report-section-title">Nomor WhatsApp Tujuan</div>
+        <div class="wa-phone-row">
+          <input type="tel" id="reportPhone" placeholder="Contoh: 628123456789" value="${reportState.phoneNumber}">
+          <button class="btn-modal" id="btnClearPhone" style="color:var(--red);border-color:var(--red);">Hapus</button>
+        </div>
+        <div class="muted-note">Format: 62xxxxxxxxxx (tanpa + atau 0 di depan). Kosongkan untuk buka WA tanpa nomor spesifik.</div>
+      </div>
+
+      <!-- Preview -->
+      <div class="report-section">
+        <div class="report-section-title">Preview Pesan</div>
+        <div class="report-preview" id="reportPreviewBox">Memuat preview...</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="report-actions">
+        <button class="btn-wa" id="btnSendWA">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.119.553 4.111 1.518 5.843L0 24l6.335-1.49A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.724.876.936-3.617-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
+          Kirim via WhatsApp
+        </button>
+        <button class="btn-copy-report" id="btnCopyReport">📋 Salin Teks</button>
+        <button class="btn-modal" id="mCancel" style="margin-left:auto;">Tutup</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  // Render adv chips
+  const chipsWrap = document.getElementById('reportAdvChips');
+  ADVERTISERS.forEach(adv=>{
+    const chip = document.createElement('label');
+    chip.className = 'adv-chip' + (reportState.selectedAdvs.has(adv)?' selected':'');
+    chip.style.color = ADV_COLOR[adv] || '#fff';
+    chip.innerHTML = `<input type="checkbox" ${reportState.selectedAdvs.has(adv)?'checked':''}><span>${adv}</span>`;
+    chip.querySelector('input').addEventListener('change', e=>{
+      if(e.target.checked){ reportState.selectedAdvs.add(adv); chip.classList.add('selected'); }
+      else { reportState.selectedAdvs.delete(adv); chip.classList.remove('selected'); }
+      refreshReportPreview();
+    });
+    chipsWrap.appendChild(chip);
+  });
+
+  // Toggle kolom
+  overlay.querySelectorAll('.toggle-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const key = chip.dataset.key;
+      reportState[key] = !reportState[key];
+      chip.classList.toggle('on', reportState[key]);
+      refreshReportPreview();
+    });
+  });
+
+  // Header / Footer
+  document.getElementById('reportHeader').addEventListener('input', e=>{
+    reportState.customHeader = e.target.value;
+    refreshReportPreview();
+  });
+  document.getElementById('reportFooter').addEventListener('input', e=>{
+    reportState.customFooter = e.target.value;
+    refreshReportPreview();
+  });
+
+  // Phone
+  document.getElementById('reportPhone').addEventListener('input', e=>{
+    reportState.phoneNumber = e.target.value.replace(/\D/g,'');
+    document.getElementById('reportPhone').value = reportState.phoneNumber;
+  });
+  document.getElementById('btnClearPhone').onclick = ()=>{
+    reportState.phoneNumber = '';
+    document.getElementById('reportPhone').value = '';
+  };
+
+  // Kirim WA
+  document.getElementById('btnSendWA').onclick = ()=>{
+    const txt = buildReportText();
+    if(!txt){ alert('Tidak ada data untuk dikirim. Pastikan advertiser dan akun sudah dipilih.'); return; }
+    reportState.phoneNumber = document.getElementById('reportPhone').value.replace(/\D/g,'');
+    const encoded = encodeURIComponent(txt);
+    const phone = reportState.phoneNumber;
+    const waUrl = phone
+      ? 'https://wa.me/' + phone + '?text=' + encoded
+      : 'https://wa.me/?text=' + encoded;
+    window.open(waUrl, '_blank');
+  };
+
+  // Salin teks
+  document.getElementById('btnCopyReport').onclick = ()=>{
+    const txt = buildReportText();
+    if(!txt){ alert('Tidak ada data.'); return; }
+    navigator.clipboard.writeText(txt).then(()=>{
+      document.getElementById('btnCopyReport').textContent = '✅ Disalin!';
+      setTimeout(()=>{ document.getElementById('btnCopyReport').textContent = '📋 Salin Teks'; }, 2000);
+    });
+  };
+
+  document.getElementById('mCancel').onclick = closeModal;
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+
+  refreshReportPreview();
+}
+
+document.getElementById('btnOpenReport').onclick = openReportModal;
+
+/* ============== AUTO-PULL ON LOAD ============== */
+function setSidebarStatus(cls, text){
+  const el = document.getElementById('apiStatus');
+  const txt = document.getElementById('apiStatusText');
+  if(el) el.className = 'status ' + cls;
+  if(txt) txt.textContent = text;
+}
+
+async function autoPullOnLoad(){
+  const url = getAppsScriptUrl();
+  const msg = document.getElementById('sheetSyncMsg');
+  if(!url){
+    if(msg) msg.textContent = 'URL Apps Script belum diisi — data dari penyimpanan lokal browser ini digunakan.';
+    setSidebarStatus('sim', 'Mode lokal (belum terhubung)');
+    return;
+  }
+  if(msg){
+    msg.textContent = '🔄 Menyinkronkan data dari spreadsheet...';
+    msg.style.color = 'var(--muted)';
+  }
+  setSidebarStatus('', 'Menghubungkan…');
+  // Tampilkan overlay loading ringan di area konten
+  const loadBanner = document.createElement('div');
+  loadBanner.id = 'autoPullBanner';
+  loadBanner.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;max-width:340px;background:#171B22;background:rgba(45,212,191,.12);backdrop-filter:blur(6px);border:1px solid var(--green);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:10px 14px;display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--green);font-family:"Space Grotesk",sans-serif;font-weight:600;';
+  loadBanner.innerHTML = '<span style="animation:spin 1s linear infinite;display:inline-block;flex-shrink:0;">⟳</span> Memuat data terbaru dari spreadsheet...';
+  document.body.appendChild(loadBanner);
+
+  try{
+    const res = await fetch(url+'?action=read', {cache:'no-store'});
+    const json = await res.json();
+    let countAkun=0, countLead=0;
+    const skippedAkunNames2 = new Set();
+    const skippedLeadAdv2 = new Set();
+    (json.akun||[]).forEach(r=>{
+      const acc = findAccountByName(r.nama);
+      const d = parseIdDate(r.tanggal);
+      if(!d) return;
+      if(!acc){ if(r.nama) skippedAkunNames2.add(r.nama); return; }
+      setAt(acc.budgetSeries, d, parseFloat(r.budget)||0);
+      setAt(acc.spendSeries, d, parseFloat(r.spendppn)||0);
+      countAkun++;
+    });
+    (json.leads||[]).forEach(r=>{
+      const adv = (ADVERTISERS.find(a=>a.toLowerCase()===String(r.advertiser||'').toLowerCase()));
+      const d = parseIdDate(r.tanggal);
+      if(!d) return;
+      if(!adv){ if(r.advertiser) skippedLeadAdv2.add(r.advertiser); return; }
+      setAt(ADV_LEADS[adv].real, d, parseFloat(r.real)||0);
+      setAt(ADV_LEADS[adv].oo, d, parseFloat(r.oo)||0);
+      countLead++;
+    });
+    let countRoster2=0;
+    (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster2++; });
+    applyHistoriAkunRows(json.historiakun);
+    if(countRoster2>0){ renderAccountGroups(); renderInputSelectors(); }
+    saveLocalState();
+    render();
+    const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0);
+    if(msg){
+      const now = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+      if(hasSkipped2){
+        let warnParts2=[];
+        if(skippedAkunNames2.size>0) warnParts2.push('Akun tidak dikenal: '+[...skippedAkunNames2].join(', '));
+        if(skippedLeadAdv2.size>0) warnParts2.push('Advertiser tidak dikenal: '+[...skippedLeadAdv2].join(', '));
+        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL. <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
+        msg.style.color = 'var(--red)';
+        setSidebarStatus('err', 'Sinkron sebagian (ada baris dilewati)');
+      } else {
+        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL ('+now+')';
+        msg.style.color = 'var(--green)';
+        setSidebarStatus('ok', 'Terhubung ke spreadsheet');
+      }
+    }
+    loadBanner.innerHTML = hasSkipped2 ? '⚠️ Data dimuat, tapi ada akun/advertiser tidak dikenal — cek pesan sinkron' : '✅ Data spreadsheet berhasil dimuat — '+countAkun+' akun, '+countLead+' lead';
+    loadBanner.style.background = hasSkipped2 ? 'rgba(239,68,68,.12)' : 'rgba(45,212,191,.12)';
+    loadBanner.style.borderColor = hasSkipped2 ? 'var(--red)' : 'var(--green)';
+    loadBanner.style.color = hasSkipped2 ? 'var(--red)' : 'var(--green)';
+    setTimeout(()=>{ loadBanner.style.transition='opacity .5s'; loadBanner.style.opacity='0'; setTimeout(()=>loadBanner.remove(),500); }, 2200);
+  }catch(err){
+    if(msg){
+      msg.textContent = '⚠️ Gagal sinkron otomatis ('+err.message+'). Data lokal digunakan.';
+      msg.style.color = 'var(--yellow)';
+    }
+    setSidebarStatus('err', 'Gagal terhubung — pakai data lokal');
+    loadBanner.innerHTML = '⚠️ Gagal terhubung ke spreadsheet — data lokal digunakan';
+    loadBanner.style.background = 'rgba(245,197,24,.12)';
+    loadBanner.style.borderColor = 'var(--yellow)';
+    loadBanner.style.color = 'var(--yellow)';
+    setTimeout(()=>{ loadBanner.style.transition='opacity .5s'; loadBanner.style.opacity='0'; setTimeout(()=>loadBanner.remove(),500); }, 3000);
+  }
+}
+
+/* ============== THEME (GELAP / TERANG) ============== */
+function applyTheme(mode){
+  if(mode==='light'){ document.documentElement.setAttribute('data-theme','light'); }
+  else{ document.documentElement.removeAttribute('data-theme'); }
+  const btnDark = document.getElementById('btnThemeDark');
+  const btnLight = document.getElementById('btnThemeLight');
+  if(btnDark && btnLight){
+    btnDark.classList.toggle('active', mode!=='light');
+    btnLight.classList.toggle('active', mode==='light');
+  }
+  try{ localStorage.setItem('dashTheme', mode); }catch(e){}
+  // Chart.js menyimpan warna saat dibuat — perlu di-render ulang agar ikut tema baru
+  if(typeof destroyCharts==='function' && typeof render==='function'){
+    destroyCharts();
+    render();
+  }
+}
+function getSavedTheme(){
+  let t = 'dark';
+  try{ t = localStorage.getItem('dashTheme') || 'dark'; }catch(e){}
+  return t;
+}
+/* ============== TOAST SINGKAT (pojok kanan bawah, terlihat di halaman manapun) ============== */
+function showQuickToast(text, colorVar){
+  let el = document.getElementById('quickSyncToast');
+  if(el) el.remove();
+  el = document.createElement('div');
+  el.id = 'quickSyncToast';
+  el.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;max-width:340px;background:rgba(45,212,191,.12);backdrop-filter:blur(6px);border:1px solid '+colorVar+';border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:10px 14px;font-size:12.5px;color:'+colorVar+';font-family:"Space Grotesk",sans-serif;font-weight:600;';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(()=>{ el.style.transition='opacity .5s'; el.style.opacity='0'; setTimeout(()=>el.remove(),500); }, 2800);
+}
+async function quickRefresh(){
+  const btn = document.getElementById('btnQuickRefresh');
+  const url = getAppsScriptUrl();
+  if(!url){
+    showQuickToast('URL Apps Script belum diisi — atur dulu di menu Pengaturan Integrasi.', 'var(--yellow)');
+    return;
+  }
+  if(btn){ btn.disabled = true; btn.style.opacity = '.5'; btn.style.animation = 'spin 0.8s linear infinite'; }
+  const before = document.getElementById('sheetSyncMsg') ? document.getElementById('sheetSyncMsg').textContent : '';
+  await pullFromSheet();
+  const after = document.getElementById('sheetSyncMsg') ? document.getElementById('sheetSyncMsg').textContent : '';
+  const ok = !/Gagal|Isi URL/i.test(after);
+  showQuickToast(ok ? 'Data terbaru dari spreadsheet berhasil dimuat.' : 'Gagal menarik data — cek pesan di menu Pengaturan Integrasi.', ok?'var(--green)':'var(--red)');
+  if(btn){ btn.disabled = false; btn.style.opacity = '1'; btn.style.animation = ''; }
+}
+document.getElementById('btnQuickRefresh').onclick = quickRefresh;
+document.getElementById('btnThemeDark').addEventListener('click', ()=> applyTheme('dark'));
+document.getElementById('btnThemeLight').addEventListener('click', ()=> applyTheme('light'));
+// Terapkan tema tersimpan secepatnya (sebelum render chart) agar tidak "kedip"
+applyTheme(getSavedTheme());
+
+/* ============== INIT ============== */
+(function init(){
+  document.getElementById('customStart').value=fmtISO(TODAY_REF);
+  document.getElementById('customEnd').value=fmtISO(TODAY_REF);
+  document.getElementById('inSharedDate').value=fmtISO(TODAY_REF);
+  const restored = loadLocalState();
+  renderPeriodBtns();
+  updateCustomVisibility();
+  renderAccountGroups();
+  renderTargetRows();
+  // restore target mode UI
+  if(targetMode==='bulanan'){
+    document.getElementById('btnModeHarian').classList.remove('active');
+    document.getElementById('btnModeBulanan').classList.add('active');
+    document.getElementById('panelTargetHarian').style.display='none';
+    document.getElementById('panelTargetBulanan').style.display='';
+    document.getElementById('targetModeNote').innerHTML='<b>Mode Bulanan:</b> Atur target per bulan secara terpisah. Pilih bulan di bawah untuk mengedit. Kekurangan dihitung dengan target bulan masing-masing hari.';
+    renderMonthPicker(); renderTargetRowsMonthly(); renderCopyFromSelect();
+  }
+  renderInputSelectors();
+  render();
+  // Auto-pull dari spreadsheet saat halaman dibuka (berlaku juga untuk device/browser baru)
+  autoPullOnLoad();
+  document.getElementById('appsScriptUrl').addEventListener('change', ()=>{
+    saveLocalState();
+    // Jika URL baru diisi, langsung pull otomatis
+    const url = getAppsScriptUrl();
+    if(url) autoPullOnLoad();
+  });
+})();
+
+/* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
+document.querySelectorAll(".navbtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".navbtn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("page-" + btn.dataset.page).classList.add("active");
+  });
+});
+</script>
+</body></html>
