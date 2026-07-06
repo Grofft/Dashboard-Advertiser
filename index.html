@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Iklan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   .app{display:flex;min-height:100vh;}
@@ -14,7 +14,7 @@
   .sidebar{width:220px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:4px;}
   .brand{display:flex;align-items:center;gap:10px;padding:6px 8px 22px 8px;}
   .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);}
-  .brand span{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;}
+  .brand span{font-family:'Roboto',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;}
   .navbtn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:var(--muted);cursor:pointer;font-size:14px;font-weight:500;border:1px solid transparent;user-select:none;}
   .navbtn:hover{background:var(--panel-2);color:var(--text);}
   .navbtn.active{background:var(--accent-dim);color:#CFFFFA;border-color:var(--accent);}
@@ -64,7 +64,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6;letter-spacing:.01em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-variant-numeric:tabular-nums;transition:background .2s ease,color .2s ease;}
+body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font-size:15px;line-height:1.6;letter-spacing:.01em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-variant-numeric:tabular-nums;transition:background .2s ease,color .2s ease;}
 ::-webkit-scrollbar{width:8px;height:8px;}
 ::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px;}
 
@@ -78,11 +78,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .period-btn.active{background:var(--green);color:#06150E;}
 .filterbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .filterbar input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;}
-.range-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);padding:6px 4px;}
+.range-label{font-family:'Roboto',sans-serif;font-size:11px;color:var(--muted);padding:6px 4px;}
 
 .section-header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:30px 0 14px;}
 .section-header:first-of-type{margin-top:6px;}
-.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:19px;}
+.section-header h2{font-family:'Roboto',sans-serif;font-size:19px;}
 .muted-note{font-size:12.5px;color:var(--muted);line-height:1.55;}
 
 .grid{display:grid;gap:14px;}
@@ -94,10 +94,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow-card);}
 .kpi .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
-.kpi .value{font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;margin-top:8px;line-height:1.25;letter-spacing:.01em;}
+.kpi .value{font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;line-height:1.25;letter-spacing:.01em;}
 .bar-accent{height:3px;width:28px;border-radius:2px;margin-bottom:10px;}
 
-.panel-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:4px;}
+.panel-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:4px;}
 .panel-desc{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
 .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 18px 8px;}
 .chart-wrap{position:relative;height:300px;}
@@ -128,21 +128,21 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .adv-card{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:22px 26px;}
 .adv-card-head{display:flex;align-items:center;gap:10px;margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--line);}
 .adv-card-head .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-.adv-card-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:.01em;}
+.adv-card-name{font-family:'Roboto',sans-serif;font-weight:700;font-size:20px;letter-spacing:.01em;}
 .adv-card-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;font-size:17px;line-height:1.4;}
 .adv-card-row .k{color:var(--muted);}
-.adv-card-row .v{font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:18px;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px;}
+.adv-card-row .v{font-weight:600;font-family:'Roboto',sans-serif;font-size:18px;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px;}
 .adv-card-row .tag{font-size:15px;padding:5px 12px;}
-.delta-badge{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap;}
+.delta-badge{font-family:'Roboto',sans-serif;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap;}
 .delta-badge.up{color:var(--green);background:rgba(45,212,191,.12);}
 .delta-badge.down{color:var(--red);background:rgba(239,68,68,.12);}
 .delta-badge.flat{color:var(--muted);background:rgba(255,255,255,.05);}
 .adv-card-note{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);font-style:italic;line-height:1.5;}
 .acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
-.acc-total-bar b{font-family:'IBM Plex Mono',monospace;color:var(--green);margin-left:4px;}
+.acc-total-bar b{font-family:'Roboto',sans-serif;color:var(--green);margin-left:4px;}
 
 /* Generic button (banyak <button class="btn"> tidak punya style sebelumnya -> jatuh ke default browser yg besar/polos) */
-.btn{background:var(--green);color:#06201C;border:none;border-radius:7px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s,transform .1s;}
+.btn{background:var(--green);color:#06201C;border:none;border-radius:7px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Roboto',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s,transform .1s;}
 .btn:hover{opacity:.88;}
 .btn:active{transform:scale(.98);}
 
@@ -174,7 +174,7 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 
 .edit-modal-overlay{position:fixed;inset:0;background:var(--overlay-bg);display:flex;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px);}
 .edit-modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;width:380px;max-width:92vw;}
-.edit-modal h3{font-family:'Space Grotesk',sans-serif;font-size:15.5px;margin-bottom:14px;}
+.edit-modal h3{font-family:'Roboto',sans-serif;font-size:15.5px;margin-bottom:14px;}
 .edit-modal .field{margin-bottom:12px;}
 .edit-modal label{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
 .edit-modal input, .edit-modal select{width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px 11px;font-size:14px;font-variant-numeric:tabular-nums;}
@@ -186,9 +186,9 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .target-panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
 .target-row{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:center;margin-bottom:10px;}
 .target-row label{font-size:13px;font-weight:600;}
-.target-row input, .target-row select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 11px;font-size:14.5px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums;}
+.target-row input, .target-row select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 11px;font-size:14.5px;font-family:'Roboto',sans-serif;font-weight:500;font-variant-numeric:tabular-nums;}
 
-footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:'IBM Plex Mono',monospace;text-align:center;}
+footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:'Roboto',sans-serif;text-align:center;}
 
 /* ===== METRIC MULTI-SELECT DROPDOWN ===== */
 .metric-opt{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:12.5px;cursor:pointer;transition:background .1s;}
@@ -219,14 +219,14 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
 
 /* ===== REPORT WHATSAPP ===== */
 .report-modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 28px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;}
-.report-modal h3{font-family:'Space Grotesk',sans-serif;font-size:17px;margin-bottom:4px;}
+.report-modal h3{font-family:'Roboto',sans-serif;font-size:17px;margin-bottom:4px;}
 .report-section{margin-bottom:18px;}
 .report-section-title{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
 .adv-chips{display:flex;flex-wrap:wrap;gap:8px;}
 .adv-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;}
 .adv-chip.selected{border-color:currentColor;background:var(--soft-white);}
 .adv-chip input[type=checkbox]{accent-color:currentColor;width:14px;height:14px;}
-.report-preview{background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:var(--report-preview-text);white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;}
+.report-preview{background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-family:'Roboto',sans-serif;font-size:11.5px;line-height:1.75;color:var(--report-preview-text);white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto;}
 .report-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
 .btn-wa{display:flex;align-items:center;gap:8px;padding:10px 18px;background:#25D366;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;}
 .btn-wa:hover{background:#1ebe5d;}
@@ -238,7 +238,7 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
 .toggle-chip{padding:6px 12px;border:1px solid var(--line);border-radius:7px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;}
 .toggle-chip.on{background:var(--green);color:#06150E;border-color:var(--green);}
 .wa-phone-row{display:flex;gap:8px;align-items:center;margin-bottom:4px;}
-.wa-phone-row input{flex:1;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 11px;font-size:13px;font-family:'IBM Plex Mono',monospace;}
+.wa-phone-row input{flex:1;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 11px;font-size:13px;font-family:'Roboto',sans-serif;}
 .wa-phone-row .btn-modal{padding:7px 12px;font-size:12px;white-space:nowrap;}
 .btn-report-float{position:fixed;bottom:28px;right:28px;z-index:20;display:flex;align-items:center;gap:8px;padding:12px 20px;background:#25D366;color:#fff;border:none;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:all .2s;}
 .btn-report-float:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 6px 26px rgba(37,211,102,.5);}
@@ -276,7 +276,7 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
   height:0;border-top:2.4px dashed var(--lc);top:50%;transform:translateY(-50%);
 }
 .legend-metric-badge{
-  font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--muted);font-family:'Roboto',sans-serif;
   background:var(--soft-white);border-radius:4px;padding:1px 5px;margin-left:auto;white-space:nowrap;
 }
 
@@ -317,14 +317,14 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
 }
 
 /* ===== Page title header (h1) & global filter bar ===== */
-.section-header h1{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
+.section-header h1{font-family:'Roboto',sans-serif;font-size:20px;font-weight:700;}
 .global-filterbar{
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
   padding:12px 16px;margin-bottom:22px;
 }
 .global-filterbar .filterbar{gap:8px;}
-.global-filterbar input[type=date]{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;}
+.global-filterbar input[type=date]{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Roboto',sans-serif;}
   @media(max-width:860px){
     .app{flex-direction:column;}
     .sidebar{width:100%;flex-direction:row;overflow-x:auto;padding:12px;}
@@ -475,7 +475,7 @@ try{
 
   <div class="grid grid-2" style="gap:14px;">
     <div class="account-picker compact-form">
-      <h3 style="font-family:&#39;Space Grotesk&#39;,sans-serif;font-size:13.5px;margin-bottom:8px;">💰 Budget per Akun</h3>
+      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">💰 Budget per Akun</h3>
       <div class="target-row" style="grid-template-columns:1fr;"><label>Akun</label><select id="inAccSelect" autofocus><option value="acc1">DGT-07 (FIKI)</option><option value="acc2">Maldy 04 (MALDY)</option><option value="acc3">Maldy 05 (MALDY)</option><option value="acc4">DGT-05 (MALDY)</option><option value="acc5">Maldy-Eka (RIFAN)</option><option value="acc6">Aziz-01 (RIFAN)</option><option value="acc7">DGT-02 (RIFAN)</option><option value="acc8">Nextugo-03 (ALADIN)</option><option value="acc9">DGT-Nextug03 (ALADIN)</option><option value="acc10">DGT-Nextug06 (ALADIN)</option><option value="acc11">DGT-07 XUEFANG (YASIN)</option></select></div>
       <div class="target-row" style="grid-template-columns:1fr;"><label>Budget (Non PPN)</label><input type="number" id="inAccBudget" placeholder="Contoh: 2500000" step="1000" inputmode="numeric"></div>
       <div id="accSpendPreview" style="font-size:11.5px;color:var(--muted);margin:-2px 0 8px 2px;">Spend + PPN (<span id="accPPNLabel">3</span>%, dari PPN akun ini): <b id="accSpendPreviewVal">Rp 0</b> &nbsp;·&nbsp; <a href="#" id="toggleAccAdvanced" style="color:var(--green);text-decoration:none;">override manual</a></div>
@@ -487,7 +487,7 @@ try{
       <div class="muted-note" id="accInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
     </div>
     <div class="account-picker compact-form">
-      <h3 style="font-family:&#39;Space Grotesk&#39;,sans-serif;font-size:13.5px;margin-bottom:8px;">🎯 Lead per Advertiser</h3>
+      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">🎯 Lead per Advertiser</h3>
       <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="inLeadSelect" autofocus><option value="MALDY">MALDY</option><option value="FIKI">FIKI</option><option value="RIFAN">RIFAN</option><option value="ALADIN">ALADIN</option><option value="YASIN">YASIN</option></select></div>
       <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="inLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
       <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="inLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
@@ -557,7 +557,7 @@ try{
   <div class="target-panel">
     <div class="field-row" style="margin-bottom:14px;">
       <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;">URL Web App Apps Script</label>
-      <input type="url" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 11px;font-size:12.5px;font-family:&#39;IBM Plex Mono&#39;,monospace;">
+      <input type="url" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 11px;font-size:12.5px;font-family:'Roboto',sans-serif;">
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
       <button class="btn" id="btnPullSheet">Tarik Data dari Spreadsheet</button>
@@ -567,7 +567,7 @@ try{
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--green);">Berhasil menarik 231 baris akun &amp; 109 baris lead dari spreadsheet.</div>
     <div id="scriptBox" style="display:none;">
       <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 5 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target).</div>
-      <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:&#39;IBM Plex Mono&#39;,monospace;" id="scriptCode"></pre>
+      <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
   </div>
@@ -874,7 +874,7 @@ function renderTargetRowsMonthly(){
       (isCustom ? '<span class="tag yellow" style="margin-left:auto;font-size:10px;">KUSTOM</span>' : '')+
       '</div>'+
       '<div style="margin-bottom:10px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:4px;">Target Harian</label>'+
-      '<input type="number" step="10000" value="'+val+'" data-adv="'+adv+'" data-month="'+activeEditMonth+'" style="width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;font-family:\'IBM Plex Mono\',monospace;"></div>'+
+      '<input type="number" step="10000" value="'+val+'" data-adv="'+adv+'" data-month="'+activeEditMonth+'" style="width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;font-family:\'Roboto\',sans-serif;"></div>'+
       '<div class="adv-card-row"><span class="k">Target Bulan</span><span class="v">'+rupiah(targetBulan)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Spend Bulan Ini</span><span class="v">'+rupiah(spendBulan)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="tag '+(kekuranganBulan<0?'yellow':'green')+'">'+rupiah(kekuranganBulan)+'</span></div>';
@@ -1086,7 +1086,7 @@ function renderAccountGroups(){
           '<input type="checkbox" data-id="'+acc.id+'" '+(selectedAccounts.has(acc.id)?'checked':'')+(inactive?' disabled':'')+'>'+
           '<span class="nm">'+acc.name+'</span>'+
         '</label>'+
-        '<span style="font-size:10px;color:var(--muted);font-family:\'IBM Plex Mono\',monospace;flex-shrink:0;">PPN '+(acc.ppn!=null?acc.ppn:3)+'%</span>'+
+        '<span style="font-size:10px;color:var(--muted);font-family:\'Roboto\',sans-serif;flex-shrink:0;">PPN '+(acc.ppn!=null?acc.ppn:3)+'%</span>'+
         (inactive?'<span class="acc-tag-inactive">MATI</span>':'')+
         '<button class="icon-btn" data-act="edit" title="Edit akun">&#9998;</button>'+
         '<button class="icon-btn" data-act="toggle" title="'+(inactive?'Aktifkan kembali':'Tandai mati / nonaktif')+'">'+(inactive?'&#9654;':'&#10074;&#10074;')+'</button>'+
@@ -1135,7 +1135,7 @@ function ownerHistoryLogHTML(acc){
       const isFirst = k===hist.length-1;
       return '<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 9px;font-size:11.5px;'+(k>0?'border-top:1px solid var(--line);':'')+'">'+
         '<span><b>'+h.advertiser+'</b></span>'+
-        '<span style="color:var(--muted);font-family:\'IBM Plex Mono\',monospace;">'+(isFirst?'sejak awal data':'mulai '+fmtDateID(d))+'</span>'+
+        '<span style="color:var(--muted);font-family:\'Roboto\',sans-serif;">'+(isFirst?'sejak awal data':'mulai '+fmtDateID(d))+'</span>'+
       '</div>';
     }).join('')+
   '</div>';
@@ -2492,7 +2492,7 @@ async function autoPullOnLoad(){
   // Tampilkan overlay loading ringan di area konten
   const loadBanner = document.createElement('div');
   loadBanner.id = 'autoPullBanner';
-  loadBanner.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;max-width:340px;background:#171B22;background:rgba(45,212,191,.12);backdrop-filter:blur(6px);border:1px solid var(--green);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:10px 14px;display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--green);font-family:"Space Grotesk",sans-serif;font-weight:600;';
+  loadBanner.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;max-width:340px;background:#171B22;background:rgba(45,212,191,.12);backdrop-filter:blur(6px);border:1px solid var(--green);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:10px 14px;display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--green);font-family:"Roboto",sans-serif;font-weight:600;';
   loadBanner.innerHTML = '<span style="animation:spin 1s linear infinite;display:inline-block;flex-shrink:0;">⟳</span> Memuat data terbaru dari spreadsheet...';
   document.body.appendChild(loadBanner);
 
@@ -2608,7 +2608,7 @@ function showQuickToast(text, colorVar){
   if(el) el.remove();
   el = document.createElement('div');
   el.id = 'quickSyncToast';
-  el.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;max-width:340px;background:rgba(45,212,191,.12);backdrop-filter:blur(6px);border:1px solid '+colorVar+';border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:10px 14px;font-size:12.5px;color:'+colorVar+';font-family:"Space Grotesk",sans-serif;font-weight:600;';
+  el.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;max-width:340px;background:rgba(45,212,191,.12);backdrop-filter:blur(6px);border:1px solid '+colorVar+';border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:10px 14px;font-size:12.5px;color:'+colorVar+';font-family:"Roboto",sans-serif;font-weight:600;';
   el.textContent = text;
   document.body.appendChild(el);
   setTimeout(()=>{ el.style.transition='opacity .5s'; el.style.opacity='0'; setTimeout(()=>el.remove(),500); }, 2800);
