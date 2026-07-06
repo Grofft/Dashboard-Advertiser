@@ -89,8 +89,10 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .grid-2{grid-template-columns:repeat(2,1fr);}
 .grid-4{grid-template-columns:repeat(4,1fr);}
 .grid-3{grid-template-columns:repeat(3,1fr);}
-@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:640px){.grid-4,.grid-3{grid-template-columns:1fr;}}
+.grid-5{grid-template-columns:repeat(5,1fr);}
+@media(max-width:1300px){.grid-5{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:repeat(2,1fr);}.grid-5{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.grid-4,.grid-3,.grid-5{grid-template-columns:1fr;}}
 
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow-card);}
 .kpi .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
@@ -379,10 +381,11 @@ try{
   <div class="section-header" style="margin-top:0;"><h1>Overview</h1><div class="muted-note">Ringkasan performa iklan lintas akun &amp; advertiser</div></div>
 
   <div class="section-header"><h2>Ringkasan Budget</h2></div>
-  <div class="grid grid-4">
+  <div class="grid grid-5">
     <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Budget (Non PPN)</div><div class="value" id="kpiBudget">Rp 435.44jt</div></div>
     <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">Total Spend + PPN</div><div class="value" id="kpiSpendPPN">Rp 450.98jt</div></div>
-    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Lead (Real + OO)</div><div class="value" id="kpiLeads">11.732</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Lead Real</div><div class="value" id="kpiLeads">11.732</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:#FF9F6B"></div><div class="label">CPL Real</div><div class="value" id="kpiCPLReal">Rp 0</div></div>
     <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">Jumlah Akun Aktif</div><div class="value" id="kpiAccCount">11</div></div>
   </div>
   <div class="chart-card" style="margin-top:16px;">
@@ -1325,7 +1328,7 @@ function render(){
 
   // ---- performa advertiser ----
   const prevRange = getPrevRange(range);
-  let totalLeads=0;
+  let totalLeads=0, totalLeadsReal=0;
   const advRows = ADVERTISERS.map(adv=>{
     // Akun relevan = akun yang PERNAH (kapan pun) dimiliki advertiser ini — bukan cuma pemilik saat ini.
     // Kontribusi tiap akun dihitung per-hari berdasarkan siapa pemiliknya pada hari itu (ownerHistory),
@@ -1338,6 +1341,7 @@ function render(){
     const real = sumIn(ADV_LEADS[adv].real, range);
     const oo = sumIn(ADV_LEADS[adv].oo, range);
     totalLeads += real+oo;
+    totalLeadsReal += real;
     const pctLead = oo>0 ? real/oo*100 : 0;
     const cplReal = real>0 ? budget/real : 0;
     const cplOO = oo>0 ? budget/oo : 0;
@@ -1358,7 +1362,9 @@ function render(){
     return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch,
       prev:{real:pReal, oo:pOO, pctLead:pPctLead, budget:pBudget, spendPPN:pSpendPPN, kekurangan:pKekurangan, cplReal:pCplReal, cplOO:pCplOO}};
   }).filter(Boolean);
-  document.getElementById('kpiLeads').textContent = num(totalLeads);
+  document.getElementById('kpiLeads').textContent = num(totalLeadsReal);
+  const totalCPLReal = totalLeadsReal>0 ? totalBudget/totalLeadsReal : 0;
+  document.getElementById('kpiCPLReal').textContent = rupiah(totalCPLReal);
 
   document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map(r=>
     '<div class="adv-card">'+
