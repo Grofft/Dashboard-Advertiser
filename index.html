@@ -354,7 +354,9 @@ try{
     <div class="navbtn" data-page="akun"><span class="ic">▥</span> Data Akun</div>
     <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
     <div class="navbtn" data-page="target"><span class="ic">◎</span> Target &amp; Pengaturan</div>
-    <div class="navbtn" data-page="integrasi"><span class="ic">⚙</span> Pengaturan Integrasi</div>
+    <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
+    <div class="navbtn" data-page="cs"><span class="ic">📞</span> Hasil CS</div>
+
     <div class="sidebar-foot">
       <div class="status" id="apiStatus"><div class="sdot"></div><span id="apiStatusText">Menghubungkan…</span></div>
     </div>
@@ -372,6 +374,7 @@ try{
   </div>
   <div class="theme-toggle" id="themeToggle" title="Mode tampilan">
     <button class="theme-toggle-btn" id="btnQuickRefresh" type="button" title="Tarik data terbaru dari spreadsheet">⟳</button>
+    <button class="theme-toggle-btn" id="btnGotoIntegrasi" type="button" title="Pengaturan Integrasi">⚙</button>
     <button class="theme-toggle-btn" id="btnThemeDark" type="button" title="Mode Gelap">🌙</button>
     <button class="theme-toggle-btn" id="btnThemeLight" type="button" title="Mode Terang">☀️</button>
   </div>
@@ -569,7 +572,7 @@ try{
     </div>
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--green);">Berhasil menarik 231 baris akun &amp; 109 baris lead dari spreadsheet.</div>
     <div id="scriptBox" style="display:none;">
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 5 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target).</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 7 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis).</div>
       <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
@@ -583,6 +586,119 @@ try{
   </div>
 
 </div><!-- /page-integrasi -->
+
+<div class="page" id="page-testing">
+  <div class="section-header" style="margin-top:0;"><h1>Kampanye Testing</h1><div class="muted-note">Catatan campaign testing — nama campaign, tanggal, dan status per advertiser</div></div>
+
+  <div class="period-btns" id="testingAdvTabs" style="margin-bottom:16px;"></div>
+
+  <div class="section-header"><h2>Tambah Campaign Testing</h2></div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="grid grid-3">
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Nama Campaign</label>
+        <input type="text" id="tcNama" placeholder="cth: Testing Interest A" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Tanggal Mulai</label>
+        <input type="date" id="tcTanggal" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Status</label>
+        <select id="tcStatus" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+          <option value="berjalan">Berjalan</option>
+          <option value="selesai">Selesai</option>
+          <option value="dihentikan">Dihentikan</option>
+        </select>
+      </div>
+    </div>
+    <div class="muted-note" style="margin-top:10px;">Data Spending, Hasil Lead, CPC, CTR, dan CPM bisa langsung diisi di tabel di bawah setelah campaign ditambahkan. CPR dihitung otomatis (Spending ÷ Hasil Lead).</div>
+    <button class="btn" id="btnAddTestCampaign" style="margin-top:14px;">+ Tambah Campaign Testing</button>
+    <div class="muted-note" id="tcSyncMsg" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="section-header"><h2>Daftar Campaign Testing</h2><div class="muted-note" id="tcCount">0 campaign tercatat</div></div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);user-select:none;">
+      <input type="checkbox" id="tcShowMetricsToggle" checked style="width:15px;height:15px;accent-color:var(--green);cursor:pointer;">
+      Tampilkan kolom metrik performa
+    </label>
+  </div>
+  <div class="chart-card">
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Nama Campaign</th><th>Tanggal Mulai</th><th>Durasi Berjalan</th><th>Status</th>
+          <th class="metric-col">Spending</th><th class="metric-col">Hasil Lead</th><th class="metric-col">CPC</th><th class="metric-col">CTR</th><th class="metric-col">CPM</th><th class="metric-col">CPR (otomatis)</th>
+          <th>Aksi</th>
+        </tr></thead>
+        <tbody id="tblTestCampaigns"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /page-testing -->
+
+<div class="page" id="page-cs">
+  <div class="section-header" style="margin-top:0;"><h1>Hasil CS</h1><div class="muted-note">Omzet, hasil closing, dan closing rate harian tiap CS — per advertiser</div></div>
+
+  <div class="section-header" style="margin-top:0;"><h2>Kelola CS</h2></div>
+  <div class="account-picker" style="margin-bottom:16px;padding:14px 16px;">
+    <div class="acc-toolbar">
+      <div class="muted-note">Nama CS/Sales yang datanya ingin dicatat. Klik nama di bawah untuk pindah tampilan.</div>
+    </div>
+    <div id="csChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input type="text" id="csNewName" placeholder="cth: Rani" style="flex:1;min-width:160px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      <button class="btn" id="btnAddCs">+ Tambah CS</button>
+    </div>
+  </div>
+
+  <div class="period-btns" id="csTabs" style="margin-bottom:22px;"></div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-header" style="margin-top:0;"><h2>Ringkasan</h2><div class="muted-note" id="csCount">0 data tercatat</div></div>
+      <div class="grid grid-3" style="margin-bottom:18px;">
+        <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="csKpiOmzet">Rp 0</div></div>
+        <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Hasil Closing</div><div class="value" id="csKpiClosing">0</div></div>
+        <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">Closing Rate</div><div class="value" id="csKpiRate">0%</div></div>
+      </div>
+
+      <div class="chart-card" style="padding-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+          <div class="panel-title" style="margin-bottom:0;">Riwayat Harian</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label class="muted-note" style="margin:0;white-space:nowrap;">Filter Advertiser</label>
+            <select id="csFilterAdvertiser" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12.5px;"></select>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th>Tanggal</th><th>Advertiser</th><th>Omzet</th><th>Hasil Closing</th><th>Lead Real</th><th>Lead OO</th><th>Closing Rate</th><th>Aksi</th>
+            </tr></thead>
+            <tbody id="tblCsData"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-picker compact-form" style="align-self:start;">
+      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📝 Input Data Harian</h3>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label><input type="date" id="csTanggal"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
+      <div class="muted-note" style="margin:-2px 0 8px;">Closing rate dihitung otomatis: Hasil Closing ÷ Lead Real.</div>
+      <button class="btn" id="btnSaveCsInput" style="margin-top:3px;width:100%;">💾 Simpan Data CS</button>
+      <div class="muted-note" id="csInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+    </div>
+  </div>
+</div><!-- /page-cs -->
+
+
 
   </div><!-- /main -->
 </div><!-- /app -->
@@ -1385,6 +1501,9 @@ function render(){
 
   // ---- grafik performa advertiser (metrik bisa dipilih, sinkron filter dashboard utama) ----
   renderAdvMetricChart(accs, range);
+
+  // ---- kampanye testing: ikut sinkron dengan akun/advertiser yang sedang dipilih ----
+  if(typeof renderTestCampaigns==='function') renderTestCampaigns();
 }
 
 /* ===== MULTI-SELECT METRIC DROPDOWN LOGIC ===== */
@@ -1591,6 +1710,9 @@ function renderInputSelectors(){
   accSel.innerHTML = ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>'<option value="'+a.id+'">'+a.name+' ('+a.advertiser+')</option>').join('');
   const leadSel = document.getElementById('inLeadSelect');
   leadSel.innerHTML = ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  const csAdvSel = document.getElementById('csAdvertiser');
+  if(csAdvSel) csAdvSel.innerHTML = ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
   if(typeof calcSpendPreview==='function') calcSpendPreview();
 }
 function calcSpendPreview(){
@@ -1680,12 +1802,16 @@ function doGet(e){
   var akunWlSheet = ss.getSheetByName('AkunWL');
   var akunHistoriSheet = ss.getSheetByName('AkunHistori');
   var targetSheet = ss.getSheetByName('Target');
+  var tcSheet = ss.getSheetByName('TestCampaign');
+  var csSheet = ss.getSheetByName('CS');
   var akun = sheetToObjects(akunSheet);
   var leads = sheetToObjects(leadSheet);
   var akunwl = sheetToObjects(akunWlSheet);
   var historiakun = sheetToObjects(akunHistoriSheet);
   var target = sheetToObjects(targetSheet);
-  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target});
+  var testcampaign = sheetToObjects(tcSheet);
+  var csdata = sheetToObjects(csSheet);
+  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata});
 }
 
 function doPost(e){
@@ -1701,6 +1827,10 @@ function doPost(e){
     upsertAkunHistori(ss, data);
   } else if(data.type === 'target'){
     upsertTarget(ss, data);
+  } else if(data.type === 'testcampaign'){
+    upsertTestCampaign(ss, data);
+  } else if(data.type === 'cs'){
+    upsertCsData(ss, data);
   }
   return jsonOutput({status:'ok'});
 }
@@ -1743,6 +1873,25 @@ function upsertLead(ss, data){
     }
   }
   sh.appendRow([data.tanggal, data.advertiser, data.real, data.oo]);
+}
+
+// Sheet "CS" = data omzet & closing harian per CS per advertiser. Upsert berdasarkan
+// (tanggal + cs + advertiser) — 1 CS bisa punya beberapa baris per hari, satu per advertiser.
+function upsertCsData(ss, data){
+  var sh = ss.getSheetByName('CS');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var cs = String(data.cs).trim().toLowerCase();
+  var adv = String(data.advertiser||'').trim().toLowerCase();
+  for(var i=1;i<rows.length;i++){
+    if(formatCellDate(rows[i][0]) === String(data.tanggal).trim() && String(rows[i][1]).trim().toLowerCase() === cs && String(rows[i][2]).trim().toLowerCase() === adv){
+      if(data.hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,7).setValues([[data.tanggal, data.cs, data.advertiser, data.omzet, data.hasilclosing, data.leadreal, data.leadoo]]);
+      return;
+    }
+  }
+  if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
+  sh.appendRow([data.tanggal, data.cs, data.advertiser, data.omzet, data.hasilclosing, data.leadreal, data.leadoo]);
 }
 
 // Sheet "AkunWL" = daftar MASTER akun WL (1 baris per akun, bukan data harian).
@@ -1822,6 +1971,25 @@ function upsertTarget(ss, data){
   sh.appendRow([data.advertiser, data.tipe, data.tahun, data.bulan, data.nilai]);
 }
 
+// Sheet "TestCampaign" = daftar kampanye testing per advertiser. Upsert berdasarkan
+// kolom "id" (dibuat otomatis oleh dashboard) — kalau id sudah ada, baris lama DITIMPA;
+// kalau data.hapus true, baris dengan id tsb dihapus.
+function upsertTestCampaign(ss, data){
+  var sh = ss.getSheetByName('TestCampaign');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var id = String(data.id).trim();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim() === id){
+      if(data.hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,11).setValues([[id, data.advertiser, data.nama, data.tanggal, data.status, data.spending, data.hasillead, data.cpc, data.ctr, data.cpm, data.cpr]]);
+      return;
+    }
+  }
+  if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
+  sh.appendRow([id, data.advertiser, data.nama, data.tanggal, data.status, data.spending, data.hasillead, data.cpc, data.ctr, data.cpm, data.cpr]);
+}
+
 function sheetToObjects(sheet){
   if(!sheet) return [];
   var rows = sheet.getDataRange().getValues();
@@ -1841,7 +2009,7 @@ function jsonOutput(obj){
 }
 
 // ============================================================
-// STRUKTUR SHEET YANG DIPERLUKAN (buat 5 sheet ini di spreadsheet):
+// STRUKTUR SHEET YANG DIPERLUKAN (buat 7 sheet ini di spreadsheet):
 // Sheet "Akun"   → kolom: tanggal | nama | budget | spendppn   (1 baris per akun per tanggal — upsert, ditimpa kalau diinput ulang)
 // Sheet "Leads"  → kolom: tanggal | advertiser | real | oo     (1 baris per advertiser per tanggal — upsert, ditimpa kalau diinput ulang)
 // Sheet "AkunWL" → kolom: nama | advertiser | ppn | aktif      (daftar master akun — KONDISI TERKINI saja,
@@ -1853,6 +2021,14 @@ function jsonOutput(obj){
 // Sheet "Target" → kolom: advertiser | tipe | tahun | bulan | nilai (target harian per advertiser;
 //                  tipe "default" = target harian umum, tipe "bulanan" = override per bulan+tahun,
 //                  baris advertiser "__MODE__" menyimpan mode aktif harian/bulanan di kolom tipe)
+// Sheet "TestCampaign" → kolom: id | advertiser | nama | tanggal | status | spending | hasillead | cpc | ctr | cpm | cpr
+//                  (daftar kampanye testing per advertiser — upsert berdasarkan id,
+//                  otomatis terisi/update/hapus dari menu Kampanye Testing; cpr dihitung
+//                  otomatis di dashboard sebagai spending ÷ hasillead)
+// Sheet "CS" → kolom: tanggal | cs | advertiser | omzet | hasilclosing | leadreal | leadoo
+//                  (1 baris per CS per tanggal per advertiser — upsert berdasarkan
+//                  tanggal+cs+advertiser, ditimpa kalau diinput ulang; closing rate =
+//                  hasilclosing ÷ leadreal, dihitung otomatis di dashboard)
 // ============================================================`;
 
 function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
@@ -2018,15 +2194,54 @@ async function pullFromSheet(){
       if(targetMode==='bulanan'){ renderMonthPicker(); renderTargetRowsMonthly(); renderCopyFromSelect(); }
       saveLocalState();
     }
+    // ==== KAMPANYE TESTING: sheet "TestCampaign" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countTc=0;
+    if(Array.isArray(json.testcampaign)){
+      TEST_CAMPAIGNS = json.testcampaign.map(r=>({
+        id: r.id || genTcId(),
+        advertiser: String(r.advertiser||'').trim(),
+        nama: r.nama||'',
+        tanggal: r.tanggal||'',
+        status: r.status||'berjalan',
+        spending: (r.spending!==''&&r.spending!=null) ? parseFloat(r.spending) : null,
+        hasilLead: (r.hasillead!==''&&r.hasillead!=null) ? parseFloat(r.hasillead) : null,
+        cpc: (r.cpc!==''&&r.cpc!=null) ? parseFloat(r.cpc) : null,
+        ctr: (r.ctr!==''&&r.ctr!=null) ? parseFloat(r.ctr) : null,
+        cpm: (r.cpm!==''&&r.cpm!=null) ? parseFloat(r.cpm) : null,
+        cpr: (r.cpr!==''&&r.cpr!=null) ? parseFloat(r.cpr) : null
+      })).filter(c=>c.advertiser && c.nama);
+      countTc = TEST_CAMPAIGNS.length;
+      saveLocalState();
+      renderTestCampaigns();
+    }
+    // ==== OMZET & CLOSING CS: sheet "CS" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countCs=0;
+    if(Array.isArray(json.csdata)){
+      CS_DATA = json.csdata.map(r=>({
+        cs: String(r.cs||'').trim(),
+        tanggal: r.tanggal||'',
+        advertiser: String(r.advertiser||'').trim(),
+        omzet: (r.omzet!==''&&r.omzet!=null) ? parseFloat(r.omzet) : 0,
+        hasilClosing: (r.hasilclosing!==''&&r.hasilclosing!=null) ? parseFloat(r.hasilclosing) : 0,
+        leadReal: (r.leadreal!==''&&r.leadreal!=null) ? parseFloat(r.leadreal) : 0,
+        leadOO: (r.leadoo!==''&&r.leadoo!=null) ? parseFloat(r.leadoo) : 0
+      })).filter(c=>c.cs && c.tanggal);
+      CS_DATA.forEach(c=>{ if(!CS_LIST.includes(c.cs)) CS_LIST.push(c.cs); });
+      countCs = CS_DATA.length;
+      saveLocalState();
+      if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
+      if(typeof renderCsTabs==='function') renderCsTabs();
+      if(typeof renderCsData==='function') renderCsData();
+    }
     const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus dari dashboard karena sudah tidak ada di sheet AkunWL.') : '';
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCs+' data CS.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), dan '+countTarget+' baris target dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, dan '+countCs+' data CS dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
@@ -2119,11 +2334,449 @@ async function pushAllToSheet(){
       }
     }
   }
-  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL dan Target) ke spreadsheet.';
+  for(const c of TEST_CAMPAIGNS){
+    await pushTestCampaignRow(c); sent++;
+  }
+  for(const c of CS_DATA){
+    await pushCsRow(c); sent++;
+  }
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, dan data CS) ke spreadsheet.';
   msg.style.color='var(--green)';
 }
 document.getElementById('btnPullSheet').onclick = pullFromSheet;
 document.getElementById('btnPushSheet').onclick = pushAllToSheet;
+
+/* ============== KAMPANYE TESTING ============== */
+let TEST_CAMPAIGNS = [];
+function genTcId(){ return 'tc_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
+function ensureTcId(c){ if(!c.id) c.id = genTcId(); return c.id; }
+async function pushTestCampaignRow(c){
+  return pushOneToSheet({
+    type:'testcampaign', id:ensureTcId(c), advertiser:c.advertiser, nama:c.nama, tanggal:c.tanggal||'',
+    status:c.status||'berjalan', spending:c.spending, hasillead:c.hasilLead, cpc:c.cpc, ctr:c.ctr, cpm:c.cpm, cpr:calcCpr(c)
+  });
+}
+async function pushTestCampaignDelete(c){
+  return pushOneToSheet({type:'testcampaign', id:ensureTcId(c), hapus:true});
+}
+function setTcSyncMsg(text, colorVar){
+  const el = document.getElementById('tcSyncMsg');
+  if(!el) return;
+  el.textContent = text;
+  el.style.color = colorVar || 'var(--muted)';
+}
+function fmtTanggalID(iso){
+  if(!iso) return '-';
+  const d = new Date(iso+'T00:00:00');
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+}
+function statusTagClass(status){
+  if(status==='selesai') return 'green';
+  if(status==='dihentikan') return 'red';
+  return 'blue';
+}
+function statusLabel(status){
+  if(status==='selesai') return 'Selesai';
+  if(status==='dihentikan') return 'Dihentikan';
+  return 'Berjalan';
+}
+function statusSelectColor(status){
+  if(status==='selesai') return {bg:'rgba(45,212,191,.15)', color:'var(--green)'};
+  if(status==='dihentikan') return {bg:'rgba(239,68,68,.15)', color:'var(--red)'};
+  return {bg:'rgba(56,189,248,.15)', color:'var(--blue)'};
+}
+function statusSelect(idx, status){
+  const c = statusSelectColor(status);
+  return '<select data-status-idx="'+idx+'" style="background:'+c.bg+';color:'+c.color+';border:none;border-radius:5px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;">'
+    +'<option value="berjalan"'+(status==='berjalan'||!status?' selected':'')+'>Berjalan</option>'
+    +'<option value="selesai"'+(status==='selesai'?' selected':'')+'>Selesai</option>'
+    +'<option value="dihentikan"'+(status==='dihentikan'?' selected':'')+'>Dihentikan</option>'
+    +'</select>';
+}
+function durasiBerjalan(tanggal){
+  if(!tanggal) return '-';
+  const start = new Date(tanggal+'T00:00:00');
+  if(isNaN(start)) return '-';
+  const days = Math.floor((TODAY_REF-start)/86400000);
+  if(days<0) return 'Belum mulai';
+  if(days===0) return 'Hari ini';
+  if(days===1) return '1 hari';
+  return days+' hari';
+}
+function fmtMetric(val, type){
+  if(val===null || val===undefined || val==='') return '-';
+  const n = parseFloat(val);
+  if(isNaN(n)) return '-';
+  if(type==='pct') return n.toLocaleString('id-ID',{maximumFractionDigits:2})+'%';
+  return rupiah(n);
+}
+function activeAdvertisers(){
+  // Advertiser yang punya minimal satu akun aktif & sedang dicentang di menu Data Akun
+  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+  return ADVERTISERS.filter(adv=> accs.some(a=>everOwnedBy(a,adv)));
+}
+let testingActiveAdv = null;
+function renderTestingTabs(){
+  const wrap = document.getElementById('testingAdvTabs');
+  if(!wrap) return;
+  if(ADVERTISERS.length===0){ wrap.innerHTML=''; testingActiveAdv=null; return; }
+  if(!testingActiveAdv || !ADVERTISERS.includes(testingActiveAdv)) testingActiveAdv = ADVERTISERS[0];
+  wrap.innerHTML = ADVERTISERS.map(adv=>{
+    const color = ADV_COLOR[adv] || 'var(--muted)';
+    const isActive = adv===testingActiveAdv;
+    return '<div class="period-btn'+(isActive?' active':'')+'" data-adv-tab="'+escapeHtml(adv)+'" style="display:flex;align-items:center;gap:6px;'+(isActive?'':'')+'">'
+      +'<span style="width:7px;height:7px;border-radius:50%;background:'+color+';display:inline-block;"></span>'+escapeHtml(adv)
+      +'</div>';
+  }).join('');
+  wrap.querySelectorAll('[data-adv-tab]').forEach(btn=>{
+    btn.onclick = ()=>{
+      testingActiveAdv = btn.getAttribute('data-adv-tab');
+      renderTestCampaigns();
+    };
+  });
+}
+function applyTestMetricColVisibility(){
+  const show = document.getElementById('tcShowMetricsToggle') ? document.getElementById('tcShowMetricsToggle').checked : true;
+  document.querySelectorAll('#page-testing .metric-col').forEach(el=>{
+    el.style.display = show ? '' : 'none';
+  });
+}
+function calcCpr(c){
+  const s = parseFloat(c.spending);
+  const l = parseFloat(c.hasilLead);
+  if(!isNaN(s) && !isNaN(l) && l>0) return s/l;
+  return null;
+}
+function renderTestCampaigns(){
+  renderTestingTabs();
+  const tbody = document.getElementById('tblTestCampaigns');
+  const countEl = document.getElementById('tcCount');
+  if(!tbody) return;
+  if(!testingActiveAdv){
+    if(countEl) countEl.textContent = '0 campaign tercatat';
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--muted);">Belum ada advertiser terdaftar. Tambahkan advertiser dulu di menu Data Akun.</td></tr>';
+    applyTestMetricColVisibility();
+    return;
+  }
+  const filtered = TEST_CAMPAIGNS
+    .map((c, i)=>({...c, _idx:i}))
+    .filter(c=> c.advertiser===testingActiveAdv);
+  if(countEl) countEl.textContent = filtered.length + ' campaign tercatat untuk ' + testingActiveAdv;
+  if(filtered.length===0){
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--muted);">Belum ada campaign testing untuk advertiser '+escapeHtml(testingActiveAdv)+'. Tambahkan lewat form di atas.</td></tr>';
+    applyTestMetricColVisibility();
+    return;
+  }
+  const rows = filtered.slice().sort((a,b)=> (b.tanggal||'').localeCompare(a.tanggal||''));
+  tbody.innerHTML = rows.map(c=>{
+    return '<tr>'
+      +'<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+escapeHtml(c.nama||'-')+'">'+escapeHtml(c.nama||'-')+'</td>'
+      +'<td>'+fmtTanggalID(c.tanggal)+'</td>'
+      +'<td>'+durasiBerjalan(c.tanggal)+'</td>'
+      +'<td>'+statusSelect(c._idx,c.status)+'</td>'
+      +'<td class="metric-col">'+metricInput(c._idx,'spending',c.spending)+'</td>'
+      +'<td class="metric-col">'+metricInput(c._idx,'hasilLead',c.hasilLead)+'</td>'
+      +'<td class="metric-col">'+metricInput(c._idx,'cpc',c.cpc)+'</td>'
+      +'<td class="metric-col">'+metricInput(c._idx,'ctr',c.ctr)+'</td>'
+      +'<td class="metric-col">'+metricInput(c._idx,'cpm',c.cpm)+'</td>'
+      +'<td class="metric-col" style="font-weight:600;">'+(calcCpr(c)!=null ? rupiah(calcCpr(c)) : '-')+'</td>'
+      +'<td><button class="icon-btn" data-del-testcampaign="'+c._idx+'" title="Hapus">🗑</button></td>'
+      +'</tr>';
+  }).join('');
+  tbody.querySelectorAll('[data-del-testcampaign]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      e.preventDefault();
+      const i = parseInt(btn.getAttribute('data-del-testcampaign'));
+      if(btn.getAttribute('data-confirm')==='1'){
+        const c = TEST_CAMPAIGNS[i];
+        TEST_CAMPAIGNS.splice(i,1);
+        saveLocalState();
+        renderTestCampaigns();
+        if(c) pushTestCampaignDelete(c);
+        return;
+      }
+      btn.setAttribute('data-confirm','1');
+      btn.textContent = '✔ Yakin?';
+      btn.style.background = 'var(--bad)';
+      btn.style.color = '#fff';
+      btn.style.padding = '4px 8px';
+      btn.style.width = 'auto';
+      clearTimeout(btn._confirmTimer);
+      btn._confirmTimer = setTimeout(()=>{
+        btn.removeAttribute('data-confirm');
+        btn.textContent = '🗑';
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.padding = '';
+        btn.style.width = '';
+      }, 3000);
+    };
+  });
+  tbody.querySelectorAll('[data-metric-idx]').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const i = parseInt(inp.getAttribute('data-metric-idx'));
+      const field = inp.getAttribute('data-metric-field');
+      const v = inp.value;
+      if(TEST_CAMPAIGNS[i]){
+        TEST_CAMPAIGNS[i][field] = (v!==''? parseFloat(v) : null);
+        saveLocalState();
+        setTcSyncMsg('Menyimpan perubahan ke spreadsheet...', 'var(--muted)');
+        pushTestCampaignRow(TEST_CAMPAIGNS[i]).then(st=>{
+          if(st==='ok') setTcSyncMsg('✅ Perubahan tersimpan ke spreadsheet.', 'var(--green)');
+          else if(st==='no-url') setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet.', 'var(--yellow)');
+          else setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet.', 'var(--red)');
+        });
+      }
+    });
+  });
+  tbody.querySelectorAll('[data-status-idx]').forEach(sel=>{
+    sel.addEventListener('change', ()=>{
+      const i = parseInt(sel.getAttribute('data-status-idx'));
+      if(TEST_CAMPAIGNS[i]){
+        TEST_CAMPAIGNS[i].status = sel.value;
+        saveLocalState();
+        renderTestCampaigns();
+        setTcSyncMsg('Menyimpan status ke spreadsheet...', 'var(--muted)');
+        pushTestCampaignRow(TEST_CAMPAIGNS[i]).then(st=>{
+          if(st==='ok') setTcSyncMsg('✅ Status tersimpan ke spreadsheet.', 'var(--green)');
+          else if(st==='no-url') setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet.', 'var(--yellow)');
+          else setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet.', 'var(--red)');
+        });
+      }
+    });
+  });
+  applyTestMetricColVisibility();
+}
+function metricInput(idx, field, val){
+  const v = (val===null||val===undefined) ? '' : val;
+  const step = field==='ctr' ? '0.01' : '1';
+  const width = (field==='spending' || field==='cpm') ? '130px' : '90px';
+  return '<input type="number" step="'+step+'" placeholder="-" value="'+escapeHtml(v)+'" data-metric-idx="'+idx+'" data-metric-field="'+field+'" style="width:'+width+';background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;font-variant-numeric:tabular-nums;">';
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+async function addTestCampaign(){
+  const advertiser = testingActiveAdv;
+  const nama = document.getElementById('tcNama').value.trim();
+  const tanggal = document.getElementById('tcTanggal').value;
+  const status = document.getElementById('tcStatus').value;
+  if(!nama){ alert('Nama campaign wajib diisi.'); return; }
+  if(!advertiser){ alert('Pilih tab advertiser terlebih dahulu.'); return; }
+  const c = {id:genTcId(), advertiser, nama, tanggal: tanggal||fmtISO(TODAY_REF), status, spending:null, hasilLead:null, cpc:null, ctr:null, cpm:null, cpr:null};
+  TEST_CAMPAIGNS.push(c);
+  document.getElementById('tcNama').value='';
+  document.getElementById('tcTanggal').value='';
+  saveLocalState();
+  renderTestCampaigns();
+  setTcSyncMsg('Tersimpan: '+nama+' — mengirim ke spreadsheet...', 'var(--muted)');
+  const status2 = await pushTestCampaignRow(c);
+  if(status2==='ok') setTcSyncMsg('✅ Tersimpan & terkirim ke spreadsheet: '+nama, 'var(--green)');
+  else if(status2==='no-url') setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).', 'var(--yellow)');
+  else setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
+}
+document.getElementById('btnAddTestCampaign').addEventListener('click', addTestCampaign);
+document.getElementById('tcShowMetricsToggle').addEventListener('change', applyTestMetricColVisibility);
+
+/* ============== OMZET & CLOSING CS ============== */
+let CS_LIST = ['CS 1', 'CS 2'];
+let CS_DATA = []; // {cs, tanggal, advertiser, omzet, hasilClosing, leadReal, leadOO}
+let csActiveTab = null;
+let csFilterAdvertiser = 'semua';
+
+function calcClosingRate(c){
+  const lr = parseFloat(c.leadReal);
+  const hc = parseFloat(c.hasilClosing);
+  if(!isNaN(lr) && lr>0 && !isNaN(hc)) return (hc/lr)*100;
+  return null;
+}
+function pctFmt(v){ return v==null ? '-' : v.toFixed(1).replace('.', ',')+'%'; }
+
+function renderCsChips(){
+  const wrap = document.getElementById('csChips');
+  if(!wrap) return;
+  if(CS_LIST.length===0){ wrap.innerHTML = '<span class="muted-note">Belum ada CS. Tambahkan lewat form di bawah.</span>'; return; }
+  wrap.innerHTML = CS_LIST.map(cs=>
+    '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:5px 6px 5px 12px;font-size:12.5px;font-weight:600;">'+escapeHtml(cs)+
+    '<button class="icon-btn" data-del-cs="'+escapeHtml(cs)+'" title="Hapus CS" style="width:20px;height:20px;font-size:11px;">🗑</button></span>'
+  ).join('');
+  wrap.querySelectorAll('[data-del-cs]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const cs = btn.getAttribute('data-del-cs');
+      if(!confirm('Hapus CS "'+cs+'"? Data harian CS ini di dashboard (bukan di spreadsheet) juga akan disembunyikan.')) return;
+      CS_LIST = CS_LIST.filter(x=>x!==cs);
+      if(csActiveTab===cs) csActiveTab = null;
+      saveLocalState();
+      renderCsChips();
+      renderCsTabs();
+      renderCsData();
+    };
+  });
+}
+document.getElementById('btnAddCs').addEventListener('click', ()=>{
+  const inp = document.getElementById('csNewName');
+  const name = inp.value.trim();
+  if(!name){ alert('Nama CS wajib diisi.'); return; }
+  if(CS_LIST.some(x=>x.toLowerCase()===name.toLowerCase())){ alert('CS dengan nama itu sudah ada.'); return; }
+  CS_LIST.push(name);
+  csActiveTab = name;
+  inp.value = '';
+  saveLocalState();
+  renderCsChips();
+  renderCsTabs();
+  renderCsData();
+});
+
+function renderCsTabs(){
+  const wrap = document.getElementById('csTabs');
+  if(!wrap) return;
+  if(CS_LIST.length===0){ wrap.innerHTML=''; csActiveTab=null; return; }
+  if(!csActiveTab || !CS_LIST.includes(csActiveTab)) csActiveTab = CS_LIST[0];
+  wrap.innerHTML = CS_LIST.map(cs=>{
+    const isActive = cs===csActiveTab;
+    return '<div class="period-btn'+(isActive?' active':'')+'" data-cs-tab="'+escapeHtml(cs)+'">'+escapeHtml(cs)+'</div>';
+  }).join('');
+  wrap.querySelectorAll('[data-cs-tab]').forEach(btn=>{
+    btn.onclick = ()=>{
+      csActiveTab = btn.getAttribute('data-cs-tab');
+      renderCsTabs();
+      renderCsData();
+    };
+  });
+}
+
+function renderCsAdvertiserFilter(){
+  const sel = document.getElementById('csFilterAdvertiser');
+  if(!sel) return;
+  const prev = csFilterAdvertiser;
+  sel.innerHTML = '<option value="semua">Semua Advertiser</option>' + ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  sel.value = ADVERTISERS.includes(prev) || prev==='semua' ? prev : 'semua';
+  csFilterAdvertiser = sel.value;
+}
+document.getElementById('csFilterAdvertiser').addEventListener('change', ()=>{
+  csFilterAdvertiser = document.getElementById('csFilterAdvertiser').value;
+  renderCsData();
+});
+
+async function pushCsRow(c){
+  return pushOneToSheet({
+    type:'cs', cs:c.cs, tanggal:c.tanggal, advertiser:c.advertiser, omzet:c.omzet, hasilclosing:c.hasilClosing, leadreal:c.leadReal, leadoo:c.leadOO
+  });
+}
+async function pushCsDelete(c){
+  return pushOneToSheet({type:'cs', cs:c.cs, tanggal:c.tanggal, advertiser:c.advertiser, hapus:true});
+}
+
+function setCsMsg(text, colorVar){
+  const el = document.getElementById('csInputMsg');
+  if(el){ el.textContent = text; el.style.color = colorVar || 'var(--muted)'; }
+}
+
+async function saveCsInput(){
+  const cs = csActiveTab;
+  const tanggal = document.getElementById('csTanggal').value || fmtISO(TODAY_REF);
+  const advertiser = document.getElementById('csAdvertiser').value;
+  const omzet = parseFloat(document.getElementById('csOmzet').value) || 0;
+  const hasilClosing = parseFloat(document.getElementById('csHasilClosing').value) || 0;
+  const leadReal = parseFloat(document.getElementById('csLeadReal').value) || 0;
+  const leadOO = parseFloat(document.getElementById('csLeadOO').value) || 0;
+  if(!cs){ alert('Pilih atau tambahkan CS terlebih dahulu.'); return; }
+  if(!advertiser){ alert('Pilih advertiser terlebih dahulu.'); return; }
+  let entry = CS_DATA.find(c=> c.cs===cs && c.tanggal===tanggal && c.advertiser===advertiser);
+  if(entry){ entry.omzet=omzet; entry.hasilClosing=hasilClosing; entry.leadReal=leadReal; entry.leadOO=leadOO; }
+  else { entry = {cs, tanggal, advertiser, omzet, hasilClosing, leadReal, leadOO}; CS_DATA.push(entry); }
+  saveLocalState();
+  renderCsData();
+  document.getElementById('csOmzet').value = '';
+  document.getElementById('csHasilClosing').value = '';
+  document.getElementById('csLeadReal').value = '';
+  document.getElementById('csLeadOO').value = '';
+  setCsMsg('Tersimpan — mengirim ke spreadsheet...', 'var(--muted)');
+  const status = await pushCsRow(entry);
+  if(status==='ok') setCsMsg('✅ Tersimpan & terkirim ke spreadsheet.', 'var(--green)');
+  else if(status==='no-url') setCsMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).', 'var(--yellow)');
+  else setCsMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
+}
+document.getElementById('btnSaveCsInput').addEventListener('click', saveCsInput);
+
+function renderCsData(){
+  const tbody = document.getElementById('tblCsData');
+  const countEl = document.getElementById('csCount');
+  const kpiOmzet = document.getElementById('csKpiOmzet');
+  const kpiClosing = document.getElementById('csKpiClosing');
+  const kpiRate = document.getElementById('csKpiRate');
+  if(!tbody) return;
+  if(!csActiveTab){
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);">Belum ada CS terdaftar. Tambahkan dulu di atas.</td></tr>';
+    if(countEl) countEl.textContent = '0 data tercatat';
+    if(kpiOmzet) kpiOmzet.textContent = rupiah(0);
+    if(kpiClosing) kpiClosing.textContent = '0';
+    if(kpiRate) kpiRate.textContent = '0%';
+    return;
+  }
+  const filtered = CS_DATA.filter(c=>c.cs===csActiveTab && (csFilterAdvertiser==='semua' || c.advertiser===csFilterAdvertiser));
+  const filterNote = csFilterAdvertiser==='semua' ? '' : ' · advertiser: '+csFilterAdvertiser;
+  if(countEl) countEl.textContent = filtered.length + ' data tercatat untuk ' + csActiveTab + filterNote;
+  let totalOmzet=0, totalClosing=0, totalLeadReal=0, totalLeadOO=0;
+  filtered.forEach(c=>{ totalOmzet+=(c.omzet||0); totalClosing+=(c.hasilClosing||0); totalLeadReal+=(c.leadReal||0); totalLeadOO+=(c.leadOO||0); });
+  if(kpiOmzet) kpiOmzet.textContent = rupiah(totalOmzet);
+  if(kpiClosing) kpiClosing.textContent = num(totalClosing);
+  if(kpiRate) kpiRate.textContent = totalLeadReal>0 ? pctFmt((totalClosing/totalLeadReal)*100) : '0%';
+  if(filtered.length===0){
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);">Belum ada data untuk '+escapeHtml(csActiveTab)+filterNote+'. Tambahkan lewat form di atas.</td></tr>';
+    return;
+  }
+  const rows = filtered.slice().sort((a,b)=> (b.tanggal||'').localeCompare(a.tanggal||''));
+  tbody.innerHTML = rows.map(c=>{
+    const rate = calcClosingRate(c);
+    return '<tr>'
+      +'<td>'+fmtTanggalID(c.tanggal)+'</td>'
+      +'<td><span class="tag blue">'+escapeHtml(c.advertiser||'-')+'</span></td>'
+      +'<td>'+rupiah(c.omzet)+'</td>'
+      +'<td>'+num(c.hasilClosing)+'</td>'
+      +'<td>'+num(c.leadReal)+'</td>'
+      +'<td>'+num(c.leadOO)+'</td>'
+      +'<td style="font-weight:600;">'+pctFmt(rate)+'</td>'
+      +'<td><button class="icon-btn" data-del-cs-row="'+escapeHtml(c.cs)+'|'+escapeHtml(c.tanggal)+'|'+escapeHtml(c.advertiser||'')+'" title="Hapus">🗑</button></td>'
+      +'</tr>';
+  }).join('');
+  tbody.querySelectorAll('[data-del-cs-row]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      e.preventDefault();
+      if(btn.getAttribute('data-confirm')==='1'){
+        const [cs, tanggal, advertiser] = btn.getAttribute('data-del-cs-row').split('|');
+        const idx = CS_DATA.findIndex(c=>c.cs===cs && c.tanggal===tanggal && (c.advertiser||'')===advertiser);
+        if(idx>-1){
+          const c = CS_DATA[idx];
+          CS_DATA.splice(idx,1);
+          saveLocalState();
+          renderCsData();
+          pushCsDelete(c);
+        }
+        return;
+      }
+      btn.setAttribute('data-confirm','1');
+      btn.textContent = '✔ Yakin?';
+      btn.style.background = 'var(--bad)';
+      btn.style.color = '#fff';
+      btn.style.padding = '4px 8px';
+      btn.style.width = 'auto';
+      clearTimeout(btn._confirmTimer);
+      btn._confirmTimer = setTimeout(()=>{
+        btn.removeAttribute('data-confirm');
+        btn.textContent = '🗑';
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.padding = '';
+        btn.style.width = '';
+      }, 3000);
+    };
+  });
+}
+renderCsChips();
+renderCsTabs();
+renderCsData();
 
 /* ============== PENYIMPANAN LOKAL (agar data tidak hilang saat tab ditutup) ============== */
 const LOCAL_KEY = 'dashboardAdvertiserState_v1';
@@ -2138,6 +2791,9 @@ function saveLocalState(){
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
       accCounter: accCounter,
       advLeads: Object.fromEntries(Object.entries(ADV_LEADS).map(([k,v])=>[k,{real:v.real, oo:v.oo}])),
+      testCampaigns: TEST_CAMPAIGNS,
+      csList: CS_LIST,
+      csData: CS_DATA,
       appsScriptUrl: document.getElementById('appsScriptUrl').value,
       savedAt: new Date().toISOString()
     };
@@ -2167,6 +2823,9 @@ function loadLocalState(){
     });
     Object.keys(ADV_LEADS).forEach(k=> delete ADV_LEADS[k]);
     Object.entries(state.advLeads||{}).forEach(([k,v])=>{ ADV_LEADS[k]={real:v.real, oo:v.oo}; });
+    TEST_CAMPAIGNS = Array.isArray(state.testCampaigns) ? state.testCampaigns : [];
+    CS_LIST = Array.isArray(state.csList) && state.csList.length>0 ? state.csList : CS_LIST;
+    CS_DATA = Array.isArray(state.csData) ? state.csData : [];
     selectedAccounts = new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id));
     if(state.appsScriptUrl) document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
     return true;
@@ -2205,18 +2864,38 @@ document.getElementById('btnResetAllData').onclick = resetAllData;
 
 // State report
 let reportState = {
+  reportMode: 'advertiser',  // 'advertiser' | 'cs'
   selectedAdvs: new Set(),   // advertiser yang dipilih
   showBudget: true,
   showSpend: true,
   showLead: true,
   showCPL: true,
   showKekurangan: true,
+  selectedCsList: new Set(), // CS yang dipilih (untuk mode 'cs')
+  showCsOmzet: true,
+  showCsClosing: true,
+  showCsLeadReal: true,
+  showCsLeadOO: true,
+  showCsRate: true,
+  showCsPerAdv: false,       // rincian per advertiser di dalam laporan CS
   phoneNumber: '',
   customHeader: '',
   customFooter: ''
 };
 
+function csRowInRange(tanggal, range){
+  if(!tanggal) return false;
+  const d = new Date(tanggal);
+  if(isNaN(d)) return false;
+  d.setHours(0,0,0,0);
+  return d >= range[0] && d <= range[1];
+}
+
 function buildReportText(){
+  return reportState.reportMode === 'cs' ? buildCsReportText() : buildAdvertiserReportText();
+}
+
+function buildAdvertiserReportText(){
   const range = getRange();
   const nDays = daysIn(range);
   const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
@@ -2311,12 +2990,102 @@ function buildReportText(){
   return lines.join('\n');
 }
 
+function buildCsReportText(){
+  const range = getRange();
+  const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
+    ? fmtDateID(range[0])
+    : fmtDateID(range[0]) + ' s/d ' + fmtDateID(range[1]);
+
+  const lines = [];
+
+  lines.push('*REPORT HASIL CS*');
+  lines.push('Periode: ' + dateLabel);
+  if(reportState.customHeader.trim()){
+    lines.push(reportState.customHeader.trim());
+  }
+  lines.push('');
+
+  const csList = CS_LIST.filter(cs => reportState.selectedCsList.has(cs));
+  if(csList.length === 0) return null;
+
+  let grandOmzet=0, grandClosing=0, grandLeadReal=0, grandLeadOO=0;
+  let anyRow = false;
+
+  csList.forEach((cs, idx) => {
+    const rows = CS_DATA.filter(c=> c.cs===cs && csRowInRange(c.tanggal, range));
+
+    let omzet=0, closing=0, leadReal=0, leadOO=0;
+    rows.forEach(r=>{ omzet+=(r.omzet||0); closing+=(r.hasilClosing||0); leadReal+=(r.leadReal||0); leadOO+=(r.leadOO||0); });
+    const rate = leadReal>0 ? (closing/leadReal*100) : null;
+
+    if(rows.length>0) anyRow = true;
+    grandOmzet   += omzet;
+    grandClosing += closing;
+    grandLeadReal+= leadReal;
+    grandLeadOO  += leadOO;
+
+    lines.push((idx+1) + '. *' + cs + '*');
+    if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
+    if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
+    if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
+    if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
+    if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
+
+    if(reportState.showCsPerAdv && rows.length>0){
+      const byAdv = {};
+      rows.forEach(r=>{
+        const a = r.advertiser || '(tanpa advertiser)';
+        if(!byAdv[a]) byAdv[a] = {omzet:0, closing:0, leadReal:0, leadOO:0};
+        byAdv[a].omzet    += (r.omzet||0);
+        byAdv[a].closing  += (r.hasilClosing||0);
+        byAdv[a].leadReal += (r.leadReal||0);
+        byAdv[a].leadOO   += (r.leadOO||0);
+      });
+      lines.push('   Rincian per Advertiser:');
+      Object.keys(byAdv).sort().forEach(a=>{
+        const d = byAdv[a];
+        const r = d.leadReal>0 ? (d.closing/d.leadReal*100) : null;
+        lines.push('      - ' + a + ' -> Omzet ' + rupiah(d.omzet) + ' | Closing ' + num(d.closing) + ' | Lead OO ' + num(d.leadOO) + ' | Rate ' + pctFmt(r));
+      });
+    }
+
+    if(idx < csList.length-1) lines.push('');
+  });
+
+  if(!anyRow) return null;
+
+  if(csList.length > 1){
+    lines.push('');
+    lines.push('──────────────────────');
+    lines.push('*TOTAL KESELURUHAN*');
+    const grandRate = grandLeadReal>0 ? (grandClosing/grandLeadReal*100) : null;
+    if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(grandOmzet));
+    if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(grandClosing));
+    if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(grandLeadReal));
+    if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(grandLeadOO));
+    if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(grandRate));
+    lines.push('──────────────────────');
+  }
+
+  if(reportState.customFooter.trim()){
+    lines.push('');
+    lines.push(reportState.customFooter.trim());
+  }
+
+  lines.push('');
+  lines.push('_Generated: ' + new Date().toLocaleString('id-ID') + '_');
+
+  return lines.join('\n');
+}
+
 function refreshReportPreview(){
   const txt = buildReportText();
   const el = document.getElementById('reportPreviewBox');
   if(!el) return;
   if(!txt){
-    el.textContent = '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard.';
+    el.textContent = reportState.reportMode === 'cs'
+      ? '⚠ Pilih minimal satu CS yang punya data pada periode ini.'
+      : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard.';
     el.style.color = 'var(--red)';
   } else {
     el.textContent = txt;
@@ -2327,9 +3096,12 @@ function refreshReportPreview(){
 function openReportModal(){
   closeModal();
 
-  // default: pilih semua advertiser
+  // default: pilih semua advertiser & semua CS
   if(reportState.selectedAdvs.size === 0){
     ADVERTISERS.forEach(a=> reportState.selectedAdvs.add(a));
+  }
+  if(reportState.selectedCsList.size === 0){
+    CS_LIST.forEach(cs=> reportState.selectedCsList.add(cs));
   }
 
   const overlay = document.createElement('div');
@@ -2339,23 +3111,56 @@ function openReportModal(){
   overlay.innerHTML = `
     <div class="report-modal">
       <h3>📊 Buat & Kirim Report WhatsApp</h3>
-      <div class="muted-note" style="margin-bottom:18px;">Pilih advertiser, kolom yang ditampilkan, lalu kirim via WhatsApp.</div>
+      <div class="muted-note" style="margin-bottom:14px;">Pilih jenis laporan, data yang ditampilkan, lalu kirim via WhatsApp.</div>
 
-      <!-- Pilih Advertiser -->
-      <div class="report-section">
-        <div class="report-section-title">Pilih Advertiser</div>
-        <div class="adv-chips" id="reportAdvChips"></div>
+      <!-- Tab jenis laporan -->
+      <div class="period-btns" id="reportModeTabs" style="margin-bottom:18px;">
+        <div class="period-btn ${reportState.reportMode==='advertiser'?'active':''}" data-mode="advertiser">📢 Report Advertiser</div>
+        <div class="period-btn ${reportState.reportMode==='cs'?'active':''}" data-mode="cs">📞 Report CS</div>
       </div>
 
-      <!-- Kolom yang ditampilkan -->
-      <div class="report-section">
-        <div class="report-section-title">Kolom Report</div>
-        <div class="toggle-group">
-          <div class="toggle-chip ${reportState.showBudget?'on':''}" data-key="showBudget">💰 Budget</div>
-          <div class="toggle-chip ${reportState.showSpend?'on':''}" data-key="showSpend">💸 Spend+PPN</div>
-          <div class="toggle-chip ${reportState.showLead?'on':''}" data-key="showLead">📥 Lead</div>
-          <div class="toggle-chip ${reportState.showCPL?'on':''}" data-key="showCPL">🎯 CPL</div>
-          <div class="toggle-chip ${reportState.showKekurangan?'on':''}" data-key="showKekurangan">⚠️ Kekurangan</div>
+      <!-- ============ SECTION: REPORT ADVERTISER ============ -->
+      <div id="reportSectionAdvertiser" style="display:${reportState.reportMode==='advertiser'?'':'none'};">
+        <div class="report-section">
+          <div class="report-section-title">Pilih Advertiser</div>
+          <div class="adv-chips" id="reportAdvChips"></div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">Kolom Report</div>
+          <div class="toggle-group">
+            <div class="toggle-chip ${reportState.showBudget?'on':''}" data-key="showBudget">💰 Budget</div>
+            <div class="toggle-chip ${reportState.showSpend?'on':''}" data-key="showSpend">💸 Spend+PPN</div>
+            <div class="toggle-chip ${reportState.showLead?'on':''}" data-key="showLead">📥 Lead</div>
+            <div class="toggle-chip ${reportState.showCPL?'on':''}" data-key="showCPL">🎯 CPL</div>
+            <div class="toggle-chip ${reportState.showKekurangan?'on':''}" data-key="showKekurangan">⚠️ Kekurangan</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION: REPORT CS ============ -->
+      <div id="reportSectionCs" style="display:${reportState.reportMode==='cs'?'':'none'};">
+        <div class="report-section">
+          <div class="report-section-title">Pilih CS</div>
+          <div class="adv-chips" id="reportCsChips"></div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">Kolom Report</div>
+          <div class="toggle-group">
+            <div class="toggle-chip ${reportState.showCsOmzet?'on':''}" data-key="showCsOmzet">💰 Omzet</div>
+            <div class="toggle-chip ${reportState.showCsClosing?'on':''}" data-key="showCsClosing">✅ Hasil Closing</div>
+            <div class="toggle-chip ${reportState.showCsLeadReal?'on':''}" data-key="showCsLeadReal">📥 Lead Real</div>
+            <div class="toggle-chip ${reportState.showCsLeadOO?'on':''}" data-key="showCsLeadOO">📥 Lead OO</div>
+            <div class="toggle-chip ${reportState.showCsRate?'on':''}" data-key="showCsRate">📈 Closing Rate</div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">Opsi Tambahan</div>
+          <div class="toggle-group">
+            <div class="toggle-chip ${reportState.showCsPerAdv?'on':''}" data-key="showCsPerAdv">🧩 Rincian per Advertiser</div>
+          </div>
         </div>
       </div>
 
@@ -2413,6 +3218,36 @@ function openReportModal(){
     chipsWrap.appendChild(chip);
   });
 
+  // Render CS chips
+  const csChipsWrap = document.getElementById('reportCsChips');
+  if(CS_LIST.length===0){
+    csChipsWrap.innerHTML = '<span class="muted-note">Belum ada CS. Tambahkan dulu di menu Hasil CS.</span>';
+  } else {
+    CS_LIST.forEach(cs=>{
+      const chip = document.createElement('label');
+      chip.className = 'adv-chip' + (reportState.selectedCsList.has(cs)?' selected':'');
+      chip.style.color = 'var(--blue)';
+      chip.innerHTML = `<input type="checkbox" ${reportState.selectedCsList.has(cs)?'checked':''}><span>${cs}</span>`;
+      chip.querySelector('input').addEventListener('change', e=>{
+        if(e.target.checked){ reportState.selectedCsList.add(cs); chip.classList.add('selected'); }
+        else { reportState.selectedCsList.delete(cs); chip.classList.remove('selected'); }
+        refreshReportPreview();
+      });
+      csChipsWrap.appendChild(chip);
+    });
+  }
+
+  // Tab jenis laporan
+  overlay.querySelectorAll('#reportModeTabs .period-btn').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      reportState.reportMode = tab.dataset.mode;
+      overlay.querySelectorAll('#reportModeTabs .period-btn').forEach(t=> t.classList.toggle('active', t===tab));
+      document.getElementById('reportSectionAdvertiser').style.display = reportState.reportMode==='advertiser' ? '' : 'none';
+      document.getElementById('reportSectionCs').style.display = reportState.reportMode==='cs' ? '' : 'none';
+      refreshReportPreview();
+    });
+  });
+
   // Toggle kolom
   overlay.querySelectorAll('.toggle-chip').forEach(chip=>{
     chip.addEventListener('click', ()=>{
@@ -2446,7 +3281,7 @@ function openReportModal(){
   // Kirim WA
   document.getElementById('btnSendWA').onclick = ()=>{
     const txt = buildReportText();
-    if(!txt){ alert('Tidak ada data untuk dikirim. Pastikan advertiser dan akun sudah dipilih.'); return; }
+    if(!txt){ alert('Tidak ada data untuk dikirim. Pastikan pilihan di atas sudah benar dan datanya tersedia.'); return; }
     reportState.phoneNumber = document.getElementById('reportPhone').value.replace(/\D/g,'');
     const encoded = encodeURIComponent(txt);
     const phone = reportState.phoneNumber;
@@ -2548,6 +3383,43 @@ async function autoPullOnLoad(){
       countLead++;
     });
     if(countRoster2>0 || countRemoved2>0){ renderAccountGroups(); renderInputSelectors(); }
+    // ==== KAMPANYE TESTING: sheet "TestCampaign" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countTc2=0;
+    if(Array.isArray(json.testcampaign)){
+      TEST_CAMPAIGNS = json.testcampaign.map(r=>({
+        id: r.id || genTcId(),
+        advertiser: String(r.advertiser||'').trim(),
+        nama: r.nama||'',
+        tanggal: r.tanggal||'',
+        status: r.status||'berjalan',
+        spending: (r.spending!==''&&r.spending!=null) ? parseFloat(r.spending) : null,
+        hasilLead: (r.hasillead!==''&&r.hasillead!=null) ? parseFloat(r.hasillead) : null,
+        cpc: (r.cpc!==''&&r.cpc!=null) ? parseFloat(r.cpc) : null,
+        ctr: (r.ctr!==''&&r.ctr!=null) ? parseFloat(r.ctr) : null,
+        cpm: (r.cpm!==''&&r.cpm!=null) ? parseFloat(r.cpm) : null,
+        cpr: (r.cpr!==''&&r.cpr!=null) ? parseFloat(r.cpr) : null
+      })).filter(c=>c.advertiser && c.nama);
+      countTc2 = TEST_CAMPAIGNS.length;
+      if(typeof renderTestCampaigns==='function') renderTestCampaigns();
+    }
+    // ==== OMZET & CLOSING CS: sheet "CS" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countCs2=0;
+    if(Array.isArray(json.csdata)){
+      CS_DATA = json.csdata.map(r=>({
+        cs: String(r.cs||'').trim(),
+        tanggal: r.tanggal||'',
+        advertiser: String(r.advertiser||'').trim(),
+        omzet: (r.omzet!==''&&r.omzet!=null) ? parseFloat(r.omzet) : 0,
+        hasilClosing: (r.hasilclosing!==''&&r.hasilclosing!=null) ? parseFloat(r.hasilclosing) : 0,
+        leadReal: (r.leadreal!==''&&r.leadreal!=null) ? parseFloat(r.leadreal) : 0,
+        leadOO: (r.leadoo!==''&&r.leadoo!=null) ? parseFloat(r.leadoo) : 0
+      })).filter(c=>c.cs && c.tanggal);
+      CS_DATA.forEach(c=>{ if(!CS_LIST.includes(c.cs)) CS_LIST.push(c.cs); });
+      countCs2 = CS_DATA.length;
+      if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
+      if(typeof renderCsTabs==='function') renderCsTabs();
+      if(typeof renderCsData==='function') renderCsData();
+    }
     saveLocalState();
     render();
     const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0);
@@ -2558,11 +3430,11 @@ async function autoPullOnLoad(){
         let warnParts2=[];
         if(skippedAkunNames2.size>0) warnParts2.push('Akun tidak dikenal: '+[...skippedAkunNames2].join(', '));
         if(skippedLeadAdv2.size>0) warnParts2.push('Advertiser tidak dikenal: '+[...skippedLeadAdv2].join(', '));
-        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL.'+removedNote2+' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
+        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS.'+removedNote2+' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
         msg.style.color = 'var(--red)';
         setSidebarStatus('err', 'Sinkron sebagian (ada baris dilewati)');
       } else {
-        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL ('+now+').'+removedNote2;
+        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS ('+now+').'+removedNote2;
         msg.style.color = 'var(--green)';
         setSidebarStatus('ok', 'Terhubung ke spreadsheet');
       }
@@ -2661,6 +3533,7 @@ applyTheme(getSavedTheme());
   }
   renderInputSelectors();
   render();
+  renderTestCampaigns();
   // Auto-pull dari spreadsheet saat halaman dibuka (berlaku juga untuk device/browser baru)
   autoPullOnLoad();
   document.getElementById('appsScriptUrl').addEventListener('change', ()=>{
@@ -2679,6 +3552,13 @@ document.querySelectorAll(".navbtn").forEach(btn => {
     btn.classList.add("active");
     document.getElementById("page-" + btn.dataset.page).classList.add("active");
   });
+});
+
+/* Tombol ikon ⚙ di sebelah refresh — pintasan langsung ke halaman Pengaturan Integrasi */
+document.getElementById('btnGotoIntegrasi').addEventListener('click', () => {
+  document.querySelectorAll(".navbtn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-integrasi").classList.add("active");
 });
 </script>
 </body></html>
