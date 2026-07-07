@@ -126,20 +126,20 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .account-picker{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
 
 /* ===== Kartu hasil per advertiser (Data Hasil Advertiser) ===== */
-.adv-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:18px;}
-.adv-card{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:22px 26px;}
-.adv-card-head{display:flex;align-items:center;gap:10px;margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--line);}
-.adv-card-head .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-.adv-card-name{font-family:'Roboto',sans-serif;font-weight:700;font-size:20px;letter-spacing:.01em;}
-.adv-card-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;font-size:17px;line-height:1.4;}
+.adv-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.adv-card{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+.adv-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--line);}
+.adv-card-head .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.adv-card-name{font-family:'Roboto',sans-serif;font-weight:700;font-size:15.5px;letter-spacing:.01em;}
+.adv-card-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;font-size:13px;line-height:1.4;}
 .adv-card-row .k{color:var(--muted);}
-.adv-card-row .v{font-weight:600;font-family:'Roboto',sans-serif;font-size:18px;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px;}
-.adv-card-row .tag{font-size:15px;padding:5px 12px;}
-.delta-badge{font-family:'Roboto',sans-serif;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap;}
+.adv-card-row .v{font-weight:600;font-family:'Roboto',sans-serif;font-size:13.5px;letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.adv-card-row .tag{font-size:11.5px;padding:3px 8px;}
+.delta-badge{font-family:'Roboto',sans-serif;font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:5px;white-space:nowrap;}
 .delta-badge.up{color:var(--green);background:rgba(45,212,191,.12);}
 .delta-badge.down{color:var(--red);background:rgba(239,68,68,.12);}
 .delta-badge.flat{color:var(--muted);background:rgba(255,255,255,.05);}
-.adv-card-note{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);font-style:italic;line-height:1.5;}
+.adv-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;}
 .acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
 .acc-total-bar b{font-family:'Roboto',sans-serif;color:var(--green);margin-left:4px;}
 
@@ -185,19 +185,6 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .edit-modal .btn-modal.primary{background:var(--green);color:#06150E;border:none;}
 .edit-modal .btn-modal.danger{background:var(--red);color:#fff;border:none;}
 
-/* Modal Analisa AI */
-.ai-modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px 26px;width:640px;max-width:94vw;max-height:86vh;display:flex;flex-direction:column;}
-.ai-modal h3{font-family:'Roboto',sans-serif;font-size:17px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
-.ai-modal .ai-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
-.ai-modal .ai-body{overflow-y:auto;flex:1;font-size:14px;line-height:1.7;padding-right:6px;}
-.ai-modal .ai-body h4{font-size:14px;margin:16px 0 6px;color:var(--green);}
-.ai-modal .ai-body h4:first-child{margin-top:0;}
-.ai-modal .ai-body ul{margin:0 0 4px 18px;padding:0;}
-.ai-modal .ai-body li{margin-bottom:6px;}
-.ai-modal .ai-loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:20px 0;}
-.ai-modal .ai-spinner{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--green);animation:aiSpin .7s linear infinite;}
-@keyframes aiSpin{to{transform:rotate(360deg);}}
-.ai-modal .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
 
 /* Banner tanggal input harian — dibuat menonjol biar dicek dulu sebelum isi data */
 .daterow-banner{
@@ -405,7 +392,6 @@ try{
   <div class="theme-toggle" id="themeToggle" title="Mode tampilan">
     <button class="theme-toggle-btn" id="btnQuickRefresh" type="button" title="Tarik data terbaru dari spreadsheet">⟳</button>
     <button class="theme-toggle-btn" id="btnGotoIntegrasi" type="button" title="Pengaturan Integrasi">⚙</button>
-    <button class="theme-toggle-btn" id="btnAiAnalysis" type="button" title="Analisa AI" style="width:auto;padding:0 10px;gap:6px;background:linear-gradient(135deg,#7C3AED,#2DD4BF);color:#fff;font-weight:700;font-size:12.5px;">✨ Analisa AI</button>
     <button class="theme-toggle-btn" id="btnThemeDark" type="button" title="Mode Gelap">🌙</button>
     <button class="theme-toggle-btn" id="btnThemeLight" type="button" title="Mode Terang">☀️</button>
   </div>
@@ -1133,7 +1119,6 @@ function calcTargetInRange(adv, range){
 
 
 let selectedAccounts = new Set(ACCOUNTS.map(a=>a.id));
-let LAST_ANALYSIS_SNAPSHOT = null;
 
 /* Update tampilan tanggal harian (banner besar di halaman Data Input) — dipanggil
    saat load & tiap kali tanggalnya diganti, supaya user cek dulu sebelum isi angka. */
@@ -1532,17 +1517,6 @@ function render(){
   document.getElementById('kpiLeads').textContent = num(totalLeadsReal);
   const totalCPLReal = totalLeadsReal>0 ? totalBudget/totalLeadsReal : 0;
   document.getElementById('kpiCPLReal').textContent = rupiah(totalCPLReal);
-
-  // Simpan snapshot data terakhir untuk fitur Analisa AI
-  LAST_ANALYSIS_SNAPSHOT = {
-    periode: fmtDateID(range[0])+' s/d '+fmtDateID(range[1]),
-    totalBudget, totalSpend, totalLeadsReal, totalCPLReal, jumlahAkunAktif: accs.length,
-    advertiser: advRows.map(r=>({
-      nama: r.adv, leadReal: r.real, leadOO: r.oo, pctLead: r.pctLead,
-      budget: r.budget, spendPPN: r.spendPPN, kekurangan: r.kekurangan,
-      cplReal: r.cplReal, cplOO: r.cplOO
-    }))
-  };
 
   document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map(r=>
     '<div class="adv-card">'+
@@ -3634,87 +3608,6 @@ document.getElementById('btnGotoIntegrasi').addEventListener('click', () => {
   syncGlobalFilterbarVisibility('integrasi');
 });
 
-/* ============== FITUR ANALISA AI ==============
-   Mengirim ringkasan data (budget, spend, lead, CPL, kekurangan per advertiser)
-   dari periode yang sedang aktif ke Claude, lalu menampilkan insight & rekomendasi. */
-function buildAiPrompt(){
-  const s = LAST_ANALYSIS_SNAPSHOT;
-  if(!s) return null;
-  const lines = [];
-  lines.push('Kamu adalah analis performa iklan digital untuk sebuah agency. Berikut data ringkasan dashboard iklan untuk periode '+s.periode+':');
-  lines.push('');
-  lines.push('TOTAL KESELURUHAN:');
-  lines.push('- Total Budget (Non PPN): '+rupiah(s.totalBudget));
-  lines.push('- Total Spend + PPN: '+rupiah(s.totalSpend));
-  lines.push('- Total Lead Real: '+num(s.totalLeadsReal));
-  lines.push('- CPL Real (rata-rata): '+rupiah(s.totalCPLReal));
-  lines.push('- Jumlah Akun Aktif: '+s.jumlahAkunAktif);
-  lines.push('');
-  lines.push('PER ADVERTISER:');
-  s.advertiser.forEach(a=>{
-    lines.push('- '+a.nama+': Lead Real '+num(a.leadReal)+', Lead OO '+num(a.leadOO)+', %Lead '+a.pctLead.toFixed(1)+'%, Budget '+rupiah(a.budget)+', Spend+PPN '+rupiah(a.spendPPN)+', Kekurangan '+rupiah(a.kekurangan)+', CPL Real '+rupiah(a.cplReal)+', CPL OO '+rupiah(a.cplOO));
-  });
-  lines.push('');
-  lines.push('Buatkan analisa singkat dalam Bahasa Indonesia dengan format berikut (gunakan heading "##" dan bullet "-", tanpa basa-basi pembuka):');
-  lines.push('## Ringkasan');
-  lines.push('## Advertiser Perlu Perhatian');
-  lines.push('## Rekomendasi');
-  lines.push('Maksimal sekitar 250-300 kata. Fokus ke insight yang actionable — misalnya CPL yang jauh lebih tinggi dibanding advertiser lain, kekurangan budget yang signifikan, atau %Lead yang rendah. Jangan mengulang seluruh angka mentah satu per satu, cukup sorot yang penting saja.');
-  return lines.join('\n');
-}
-
-async function callClaudeForAnalysis(promptText){
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: promptText }]
-    })
-  });
-  const data = await response.json();
-  if(data && data.error) throw new Error(data.error.message || 'Terjadi kesalahan pada API');
-  return (data.content||[]).map(b=>b.text||'').join('\n').trim();
-}
-
-function simpleMdToHtml(md){
-  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  let html = esc(md||'');
-  html = html.replace(/^##\s?(.*)$/gm,'<h4>$1</h4>');
-  html = html.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
-  html = html.replace(/(^|\n)((?:-\s.*(?:\n|$))+)/g, (m,p1,block)=>{
-    const items = block.trim().split('\n').map(l=>'<li>'+l.replace(/^-\s?/,'')+'</li>').join('');
-    return p1+'<ul>'+items+'</ul>';
-  });
-  html = html.replace(/\n{2,}/g,'<br>').replace(/\n/g,' ');
-  return html;
-}
-
-function openAiAnalysisModal(){
-  if(!LAST_ANALYSIS_SNAPSHOT){ alert('Data belum siap, coba lagi sesaat lagi.'); return; }
-  const overlay=document.createElement('div'); overlay.className='edit-modal-overlay'; overlay.id='aiModalOverlay';
-  overlay.innerHTML = '<div class="ai-modal">'+
-    '<h3>✨ Analisa AI</h3>'+
-    '<div class="ai-sub">Periode: '+LAST_ANALYSIS_SNAPSHOT.periode+'</div>'+
-    '<div class="ai-body" id="aiBody"><div class="ai-loading"><div class="ai-spinner"></div> Menganalisa data...</div></div>'+
-    '<div class="modal-actions"><button class="btn-modal" id="btnCloseAiModal">Tutup</button></div>'+
-  '</div>';
-  document.body.appendChild(overlay);
-  overlay.addEventListener('click', e=>{ if(e.target===overlay && document.body.contains(overlay)) document.body.removeChild(overlay); });
-  document.getElementById('btnCloseAiModal').onclick = ()=>{ if(document.body.contains(overlay)) document.body.removeChild(overlay); };
-
-  const prompt = buildAiPrompt();
-  callClaudeForAnalysis(prompt).then(text=>{
-    const bodyEl = document.getElementById('aiBody');
-    if(bodyEl) bodyEl.innerHTML = simpleMdToHtml(text || 'Tidak ada hasil analisa.');
-  }).catch(err=>{
-    const bodyEl = document.getElementById('aiBody');
-    if(bodyEl) bodyEl.innerHTML = '<div style="color:var(--red);">Gagal memuat analisa AI. Coba lagi beberapa saat lagi. ('+(err && err.message ? err.message : 'error')+')</div>';
-  });
-}
-
-document.getElementById('btnAiAnalysis').addEventListener('click', openAiAnalysisModal);
 
 // Set kondisi awal saat halaman pertama kali dimuat (halaman aktif default: overview)
 syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.page || 'overview');
