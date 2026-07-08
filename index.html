@@ -630,8 +630,8 @@ try{
         <div id="inAccBudgetList"></div>
 
         <div class="muted-note" style="margin:10px 0 6px;font-weight:600;color:var(--text);">🎯 Lead Advertiser</div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="inLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="inLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="text" id="inLeadReal" placeholder="Contoh: 40" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="text" id="inLeadOO" placeholder="Contoh: 68" inputmode="numeric"></div>
 
         <button class="btn" id="btnSaveAllInput" style="margin-top:6px;width:100%;">💾 Simpan Semua Data</button>
         <div class="muted-note" id="allInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
@@ -2043,18 +2043,18 @@ function renderInsightPanel(){
 
   let totalBudget=0, totalSpend=0, filledCount=0;
   document.querySelectorAll('.accBudgetInput').forEach(inp=>{
-    const budget = parseFloat(inp.value);
-    if(!isNaN(budget) && budget>0){
+    const budget = parseIndoNumber(inp.value);
+    if(budget!=null && budget>0){
       const ppn = parseFloat(inp.dataset.ppn)||0;
       totalBudget += budget;
       totalSpend += Math.round(budget*(1+ppn/100));
       filledCount++;
     }
   });
-  const real = parseFloat(document.getElementById('inLeadReal').value);
-  const oo = parseFloat(document.getElementById('inLeadOO').value);
-  const hasReal = !isNaN(real) && real>0;
-  const hasOO = !isNaN(oo) && oo>0;
+  const real = parseIndoNumber(document.getElementById('inLeadReal').value);
+  const oo = parseIndoNumber(document.getElementById('inLeadOO').value);
+  const hasReal = real!=null && real>0;
+  const hasOO = oo!=null && oo>0;
   const cplReal = (hasReal && totalSpend>0) ? totalSpend/real : null;
   const cplOO = (hasOO && totalSpend>0) ? totalSpend/oo : null;
 
@@ -2117,25 +2117,28 @@ function renderAccBudgetRows(){
     const ppn = a.ppn!=null ? a.ppn : 3;
     return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
       '<label>'+a.name+'</label>'+
-      '<input type="number" class="accBudgetInput" data-acc="'+a.id+'" data-ppn="'+ppn+'" placeholder="Contoh: 2500000" step="1000" inputmode="numeric">'+
+      '<input type="text" class="accBudgetInput" data-acc="'+a.id+'" data-ppn="'+ppn+'" placeholder="Contoh: 2500000" inputmode="decimal">'+
       '<div class="acc-budget-preview" data-preview-for="'+a.id+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Spend + PPN ('+ppn+'%): <b>Rp 0</b></div>'+
     '</div>';
   }).join('');
   listEl.querySelectorAll('.accBudgetInput').forEach(inp=>{
     inp.addEventListener('input', e=>{ updateAccBudgetPreview(e); renderInsightPanel(); });
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllInput(); } });
+    inp.addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); if(v!=null) e.target.value=v; });
   });
   renderInsightPanel();
 }
 function updateAccBudgetPreview(e){
   const inp = e.target;
   const ppn = parseFloat(inp.dataset.ppn) || 0;
-  const budget = parseFloat(inp.value);
-  const val = (!isNaN(budget) && budget>0) ? Math.round(budget*(1+ppn/100)) : 0;
+  const budget = parseIndoNumber(inp.value);
+  const val = (budget!=null && budget>0) ? Math.round(budget*(1+ppn/100)) : 0;
   const previewEl = document.querySelector('[data-preview-for="'+inp.dataset.acc+'"]');
   if(previewEl) previewEl.innerHTML = 'Spend + PPN ('+ppn+'%): <b>'+rupiah(val)+'</b>';
 }
 document.getElementById('inAdvSelect').addEventListener('change', renderAccBudgetRows);
+document.getElementById('inLeadReal').addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); if(v!=null) e.target.value=v; });
+document.getElementById('inLeadOO').addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); if(v!=null) e.target.value=v; });
 
 async function saveAllInput(){
   const dateVal = document.getElementById('inSharedDate').value;
@@ -2146,8 +2149,8 @@ async function saveAllInput(){
   const budgetInputs = Array.from(document.querySelectorAll('.accBudgetInput'));
   const savedAccounts = [];
   budgetInputs.forEach(inp=>{
-    const budget = parseFloat(inp.value);
-    if(!isNaN(budget) && budget>0){
+    const budget = parseIndoNumber(inp.value);
+    if(budget!=null && budget>0){
       const acc = ACCOUNTS.find(a=>a.id===inp.dataset.acc);
       if(acc){
         const ppn = parseFloat(inp.dataset.ppn) || 0;
@@ -2158,10 +2161,10 @@ async function saveAllInput(){
       }
     }
   });
-  const real = parseFloat(document.getElementById('inLeadReal').value);
-  const oo = parseFloat(document.getElementById('inLeadOO').value);
+  const real = parseIndoNumber(document.getElementById('inLeadReal').value);
+  const oo = parseIndoNumber(document.getElementById('inLeadOO').value);
   let savedLead = false;
-  if(!isNaN(real) && !isNaN(oo)){
+  if(real!=null && oo!=null){
     setAt(ADV_LEADS[adv].real, d, real);
     setAt(ADV_LEADS[adv].oo, d, oo);
     savedLead = true;
