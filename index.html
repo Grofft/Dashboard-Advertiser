@@ -824,6 +824,44 @@ function fmtISO(d){ return d.toISOString().slice(0,10); }
 function fmtDateID(d){ return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
 function rupiah(n){ n=Math.round(n||0); const sign=n<0?'-':''; n=Math.abs(n); return sign+'Rp '+n.toLocaleString('id-ID'); }
 function rupiahShort(n){ n=n||0; const sign=n<0?'-':''; n=Math.abs(n); if(n>=1e9) return sign+'Rp '+(n/1e9).toFixed(2)+'M'; if(n>=1e6) return sign+'Rp '+(n/1e6).toFixed(2)+'jt'; if(n>=1e3) return sign+'Rp '+(n/1e3).toFixed(0)+'rb'; return sign+'Rp '+Math.round(n); }
+
+/* Parser angka pintar: menangani hasil copy-paste dari Meta Ads / Excel yang pakai
+   titik atau koma sebagai pemisah ribuan (mis. "2.111" atau "2,111" = 2111, bukan 2.111).
+   Aturan: kalau grup setelah titik/koma persis 3 digit -> itu pemisah ribuan, dibuang.
+   Kalau ada lebih dari satu titik/koma -> pasti pemisah ribuan, semua dibuang.
+   Selain itu (misal "2.5" atau "2,5") -> dianggap desimal asli. */
+function parseIndoNumber(raw){
+  if(raw==null) return null;
+  let s = String(raw).trim().replace(/[^\d.,-]/g,'');
+  if(s==='' || s==='-') return null;
+  const hasDot = s.includes('.'), hasComma = s.includes(',');
+  if(hasDot && hasComma){
+    s = s.replace(/\./g,'').replace(',', '.');
+  } else if(hasDot){
+    const parts = s.split('.');
+    if(parts.length>2 || (parts[1] && parts[1].length===3)) s = parts.join('');
+  } else if(hasComma){
+    const parts = s.split(',');
+    if(parts.length>2 || (parts[1] && parts[1].length===3)) s = parts.join('');
+    else s = s.replace(',', '.');
+  }
+  const num = parseFloat(s);
+  return isNaN(num) ? null : num;
+}
+/* Terapkan ke semua input angka di seluruh dashboard, supaya paste dari Meta Ads/Excel
+   selalu kebaca benar (2.111 -> 2111), bukan kebaca sebagai desimal (2.111 -> 2). */
+document.addEventListener('paste', function(e){
+  const t = e.target;
+  if(t && t.tagName==='INPUT' && t.type==='number'){
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    const parsed = parseIndoNumber(text);
+    if(parsed!==null){
+      e.preventDefault();
+      t.value = parsed;
+      t.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+  }
+}, true);
 function num(n){ return Math.round(n||0).toLocaleString('id-ID'); }
 function idx(date){ return Math.round((date-DATA_START)/86400000); }
 
