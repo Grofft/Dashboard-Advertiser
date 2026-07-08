@@ -80,6 +80,46 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .filterbar input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;}
 .range-label{font-family:'Roboto',sans-serif;font-size:11px;color:var(--muted);padding:6px 4px;}
 
+/* ===== Date Range Picker (dropdown, gaya "trigger + panel kalender") ===== */
+.daterange-wrap{position:relative;}
+.daterange-trigger{display:flex;align-items:center;gap:9px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 12px 8px 14px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;font-family:'Roboto',sans-serif;}
+.daterange-trigger .drt-ic{font-size:14px;}
+.daterange-trigger .drt-chev{margin-left:2px;width:20px;height:20px;border-radius:50%;background:var(--green);color:#06150E;display:flex;align-items:center;justify-content:center;font-size:10px;transition:transform .15s ease;flex-shrink:0;}
+.daterange-trigger.open .drt-chev{transform:rotate(180deg);}
+.daterange-panel{position:absolute;top:calc(100% + 8px);left:0;z-index:60;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;width:max-content;max-width:94vw;}
+.drp-body{display:flex;}
+.drp-quick{display:flex;flex-direction:column;gap:2px;padding:14px 10px;border-right:1px solid var(--line);min-width:152px;}
+.drp-quick-item{padding:8px 10px;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;}
+.drp-quick-item:hover{background:var(--panel-2);color:var(--text);}
+.drp-quick-item.active{background:var(--accent-dim);color:var(--green);font-weight:700;}
+.drp-cal{padding:14px 18px;}
+.drp-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:20px;}
+.drp-cal-nav button{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:4px 9px;border-radius:6px;}
+.drp-cal-nav button:hover{background:var(--panel-2);color:var(--text);}
+.drp-cal-heads{display:flex;gap:40px;flex:1;justify-content:space-around;}
+.drp-cal-heads div{font-family:'Roboto',sans-serif;font-weight:700;font-size:13.5px;color:var(--text);text-transform:capitalize;}
+.drp-cal-grids{display:flex;gap:28px;}
+.drp-grid{display:grid;grid-template-columns:repeat(7,30px);gap:2px;}
+.drp-grid .dow{font-size:10.5px;color:var(--muted);text-align:center;font-weight:600;padding-bottom:4px;}
+.drp-day{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:6px;cursor:pointer;color:var(--text);}
+.drp-day.muted{visibility:hidden;pointer-events:none;}
+.drp-day:hover{background:var(--panel-2);}
+.drp-day.in-range{background:var(--accent-dim);border-radius:0;}
+.drp-day.range-start{background:var(--green);color:#06150E;border-radius:6px 0 0 6px;font-weight:700;}
+.drp-day.range-end{background:var(--green);color:#06150E;border-radius:0 6px 6px 0;font-weight:700;}
+.drp-day.range-single{background:var(--green);color:#06150E;border-radius:6px;font-weight:700;}
+.drp-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel-2);flex-shrink:0;}
+.drp-footer button{flex:none;width:auto;padding:8px 18px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);font-family:'Roboto',sans-serif;}
+.drp-footer .drp-cancel{background:transparent;color:var(--text);}
+.drp-footer .drp-apply{background:var(--green);color:#06150E;border-color:var(--green);}
+@media(max-width:700px){
+  .daterange-panel{min-width:88vw;left:50%;transform:translateX(-50%);}
+  .drp-body{flex-direction:column;}
+  .drp-quick{flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--line);}
+  .drp-cal{overflow-x:auto;}
+  .drp-cal-grids{gap:16px;}
+}
+
 .section-header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:30px 0 14px;}
 .section-header:first-of-type{margin-top:6px;}
 .section-header h2{font-family:'Roboto',sans-serif;font-size:19px;}
@@ -140,6 +180,8 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .delta-badge.down{color:var(--red);background:rgba(239,68,68,.12);}
 .delta-badge.flat{color:var(--muted);background:rgba(255,255,255,.05);}
 .adv-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;}
+.adv-card-chart-title{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--line);}
+.adv-card-chart-wrap{position:relative;height:100px;}
 .acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
 .acc-total-bar b{font-family:'Roboto',sans-serif;color:var(--green);margin-left:4px;}
 
@@ -255,6 +297,7 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
 .toggle-group{display:flex;gap:8px;flex-wrap:wrap;}
 .toggle-chip{padding:6px 12px;border:1px solid var(--line);border-radius:7px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;}
 .toggle-chip.on{background:var(--green);color:#06150E;border-color:var(--green);}
+.toggle-chip-wa.on{background:#25D366;color:#fff;border-color:#25D366;}
 .wa-phone-row{display:flex;gap:8px;align-items:center;margin-bottom:4px;}
 .wa-phone-row input{flex:1;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 11px;font-size:13px;font-family:'Roboto',sans-serif;}
 .wa-phone-row .btn-modal{padding:7px 12px;font-size:12px;white-space:nowrap;}
@@ -304,7 +347,6 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
   .filterbar{width:100%;gap:6px;}
   .period-btns{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;}
   .period-btn{flex-shrink:0;padding:8px 11px;font-size:12.5px;}
-  #customStart, #customEnd{flex:1;min-width:0;}
   .section-header{margin:22px 0 10px;}
   .section-header h2{font-size:16px;}
 
@@ -370,7 +412,6 @@ try{
     <div class="navbtn" data-page="advertiser"><span class="ic">▤</span> Data Hasil Advertiser</div>
     <div class="navbtn" data-page="akun"><span class="ic">▥</span> Data Akun</div>
     <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
-    <div class="navbtn" data-page="target"><span class="ic">◎</span> Target &amp; Pengaturan</div>
     <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
     <div class="navbtn" data-page="cs"><span class="ic">📞</span> Hasil CS</div>
 
@@ -382,12 +423,32 @@ try{
   <div class="main">
 
 <div class="global-filterbar">
-  <div class="period-btns" id="periodBtns"></div>
-  <div class="filterbar">
-    <input type="date" id="customStart">
-    <span id="customDash" style="color:var(--muted);">—</span>
-    <input type="date" id="customEnd">
-    <div class="range-label" id="rangeLabel"></div>
+  <div class="daterange-wrap" id="dateRangeWrap">
+    <button class="daterange-trigger" id="dateRangeTrigger" type="button">
+      <span class="drt-ic">📅</span>
+      <span id="dateRangeLabel">—</span>
+      <span class="drt-chev">▾</span>
+    </button>
+    <div class="daterange-panel" id="dateRangePanel" style="display:none;">
+      <div class="drp-body">
+        <div class="drp-quick" id="drpQuick"></div>
+        <div class="drp-cal">
+          <div class="drp-cal-nav">
+            <button type="button" id="drpPrev">←</button>
+            <div class="drp-cal-heads"><div id="drpMonthLabel1"></div><div id="drpMonthLabel2"></div></div>
+            <button type="button" id="drpNext">→</button>
+          </div>
+          <div class="drp-cal-grids">
+            <div class="drp-grid" id="drpGrid1"></div>
+            <div class="drp-grid" id="drpGrid2"></div>
+          </div>
+        </div>
+      </div>
+      <div class="drp-footer">
+        <button type="button" class="drp-cancel" id="drpCancel">Batal</button>
+        <button type="button" class="drp-apply" id="drpApply">Terapkan</button>
+      </div>
+    </div>
   </div>
   <div class="theme-toggle" id="themeToggle" title="Mode tampilan">
     <button class="theme-toggle-btn" id="btnQuickRefresh" type="button" title="Tarik data terbaru dari spreadsheet">⟳</button>
@@ -452,13 +513,68 @@ try{
 </div><!-- /page-overview -->
 
 <div class="page" id="page-advertiser">
-  <div class="section-header" style="margin-top:0;"><h1>Data Hasil Advertiser</h1><div class="muted-note">Real, OO, budget, kekurangan, dan CPL tiap advertiser pada periode terpilih</div></div>
-  <div class="section-header"><h2>Performa Advertiser</h2></div>
-  <div class="chart-card">
-    <div class="panel-title">Lead, CPL &amp; Kekurangan vs Target Budget</div>
-    <div class="panel-desc">Berdasarkan akun terpilih pada periode terpilih</div>
-    <div class="adv-cards-grid" id="tblAdvertiser"></div>
+  <div class="section-header" style="margin-top:0;"><h1>Data Hasil Advertiser</h1><div class="muted-note">Real, OO, budget, kekurangan, CPL, dan pengaturan target tiap advertiser</div></div>
+
+  <!-- Tab: Hasil vs Target -->
+  <div class="period-btns" id="advPageTabs" style="margin-bottom:18px;">
+    <div class="period-btn active" data-advtab="hasil">📊 Hasil</div>
+    <div class="period-btn" data-advtab="target">◎ Target</div>
   </div>
+
+  <!-- ============ SUB-TAB: HASIL ============ -->
+  <div id="advTabHasil" class="advsubtab">
+    <div class="section-header" style="margin-top:0;"><h2>Performa Advertiser</h2></div>
+    <div class="chart-card">
+      <div class="panel-title">Lead, CPL &amp; Kekurangan vs Target Budget</div>
+      <div class="panel-desc">Berdasarkan akun terpilih pada periode terpilih</div>
+      <div class="adv-cards-grid" id="tblAdvertiser"></div>
+    </div>
+  </div>
+
+  <!-- ============ SUB-TAB: TARGET & PENGATURAN ============ -->
+  <div id="advTabTarget" class="advsubtab" style="display:none;">
+    <div class="section-header" style="margin-top:0;"><h2>Target Budget per Advertiser</h2><div class="muted-note">Atur target harian atau bulanan — kalkulasi Kekurangan otomatis menyesuaikan</div></div>
+
+    <!-- Mode Toggle: Harian vs Bulanan -->
+    <div class="target-panel" style="margin-bottom:14px;">
+      <div class="target-mode-toggle">
+        <label>Mode Target:</label>
+        <button class="target-mode-btn active" id="btnModeHarian" onclick="setTargetMode('harian')">📅 Harian</button>
+        <button class="target-mode-btn" id="btnModeBulanan" onclick="setTargetMode('bulanan')">🗓️ Bulanan</button>
+      </div>
+      <div class="monthly-target-note" id="targetModeNote">
+        <b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Spend+PPN − (Target Harian × jumlah hari dalam periode).
+      </div>
+
+      <!-- PANEL HARIAN -->
+      <div id="panelTargetHarian">
+        <div id="targetRows"></div>
+        <div class="muted-note" style="margin-top:8px;">Kekurangan = Spend+PPN periode − (Target Harian × jumlah hari). Positif = melebihi target, negatif = di bawah target.</div>
+      </div>
+
+      <!-- PANEL BULANAN -->
+      <div id="panelTargetBulanan" style="display:none;">
+        <div style="margin-bottom:12px;">
+          <div class="muted-note" style="margin-bottom:10px;">Pilih bulan untuk diedit. Bulan dengan target khusus ditandai <span style="color:var(--yellow);font-weight:700;">kuning</span>.</div>
+          <div class="month-picker" id="monthPicker"></div>
+        </div>
+
+        <!-- Copy from month -->
+        <div class="target-copy-bar">
+          <span style="font-size:12px;color:var(--muted);font-weight:600;">Salin dari bulan:</span>
+          <select id="copyFromMonth">
+            <option value="">-- Pilih bulan sumber --</option>
+          </select>
+          <button class="btn" id="btnCopyFromMonth" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Bulan Ini</button>
+          <button class="btn" id="btnCopyToAll" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Semua Bulan</button>
+        </div>
+
+        <div id="targetRowsMonthly"></div>
+        <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Spend+PPN bulan ini − (Target Harian × 28 hari, standar tetap). Ditampilkan otomatis per advertiser di atas. Kekurangan periode dashboard tetap dihitung berdasarkan jumlah hari asli pada periode yang dipilih.</div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /page-advertiser -->
 
 <div class="page" id="page-akun">
@@ -529,52 +645,6 @@ try{
   <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: tekan <b>Enter</b> di kolom angka untuk langsung menyimpan — gak perlu klik tombol. Setelah simpan, kolom otomatis bersih dan siap diisi data berikutnya (akun/advertiser & tanggal tetap sama).</div>
 
 </div><!-- /page-input -->
-
-<div class="page" id="page-target">
-  <div class="section-header" style="margin-top:0;"><h1>Target &amp; Pengaturan</h1><div class="muted-note">Atur target budget per advertiser — harian atau bulanan</div></div>
-
-  <div class="section-header"><h2>Target Budget per Advertiser</h2><div class="muted-note">Atur target harian atau bulanan — kalkulasi Kekurangan otomatis menyesuaikan</div></div>
-
-  <!-- Mode Toggle: Harian vs Bulanan -->
-  <div class="target-panel" style="margin-bottom:14px;">
-    <div class="target-mode-toggle">
-      <label>Mode Target:</label>
-      <button class="target-mode-btn active" id="btnModeHarian" onclick="setTargetMode('harian')">📅 Harian</button>
-      <button class="target-mode-btn" id="btnModeBulanan" onclick="setTargetMode('bulanan')">🗓️ Bulanan</button>
-    </div>
-    <div class="monthly-target-note" id="targetModeNote">
-      <b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Spend+PPN − (Target Harian × jumlah hari dalam periode).
-    </div>
-
-    <!-- PANEL HARIAN -->
-    <div id="panelTargetHarian">
-      <div id="targetRows"></div>
-      <div class="muted-note" style="margin-top:8px;">Kekurangan = Spend+PPN periode − (Target Harian × jumlah hari). Positif = melebihi target, negatif = di bawah target.</div>
-    </div>
-
-    <!-- PANEL BULANAN -->
-    <div id="panelTargetBulanan" style="display:none;">
-      <div style="margin-bottom:12px;">
-        <div class="muted-note" style="margin-bottom:10px;">Pilih bulan untuk diedit. Bulan dengan target khusus ditandai <span style="color:var(--yellow);font-weight:700;">kuning</span>.</div>
-        <div class="month-picker" id="monthPicker"></div>
-      </div>
-
-      <!-- Copy from month -->
-      <div class="target-copy-bar">
-        <span style="font-size:12px;color:var(--muted);font-weight:600;">Salin dari bulan:</span>
-        <select id="copyFromMonth">
-          <option value="">-- Pilih bulan sumber --</option>
-        </select>
-        <button class="btn" id="btnCopyFromMonth" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Bulan Ini</button>
-        <button class="btn" id="btnCopyToAll" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Semua Bulan</button>
-      </div>
-
-      <div id="targetRowsMonthly"></div>
-      <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Spend+PPN bulan ini − (Target Harian × 28 hari, standar tetap). Ditampilkan otomatis per advertiser di atas. Kekurangan periode dashboard tetap dihitung berdasarkan jumlah hari asli pada periode yang dipilih.</div>
-    </div>
-  </div>
-
-</div><!-- /page-target -->
 
 <div class="page" id="page-integrasi">
   <div class="section-header" style="margin-top:0;"><h1>Pengaturan Integrasi</h1><div class="muted-note">Panduan menghubungkan dashboard ke Google Sheet via Apps Script</div></div>
@@ -993,7 +1063,8 @@ function renderTargetRowsMonthly(){
   wrap.appendChild(grid);
 
   const daysInActiveMonth = 28; // standar tetap 28 hari untuk kalkulasi Target Bulan (bukan jumlah hari kalender asli)
-  let totalTargetBulan = 0, totalSpendBulan = 0;
+  const TARGET_CPL_BULANAN = 89000; // asumsi target CPL untuk hitung target lead real
+  let totalTargetBulan = 0, totalSpendBulan = 0, totalTargetLead = 0, totalLeadRealBulan = 0;
 
   ADVERTISERS.forEach(adv=>{
     const val = getMonthlyTarget(adv, activeEditMonth, activeEditYear);
@@ -1001,15 +1072,20 @@ function renderTargetRowsMonthly(){
 
     const targetBulan = val * daysInActiveMonth;
     const advAccs = ACCOUNTS.filter(a=>everOwnedBy(a,adv));
-    let spendBulan = 0;
+    let spendBulan = 0, leadRealBulan = 0;
     ALL_DATES.forEach((d,i)=>{
       if(d.getFullYear()===activeEditYear && (d.getMonth()+1)===activeEditMonth){
         advAccs.forEach(a=>{ if(ownerAtIndex(a,i)===adv) spendBulan += (a.spendSeries[i]||0); });
+        leadRealBulan += (ADV_LEADS[adv] ? (ADV_LEADS[adv].real[i]||0) : 0);
       }
     });
     const kekuranganBulan = spendBulan - targetBulan;
+    const targetLeadBulan = targetBulan / TARGET_CPL_BULANAN;
+    const kekuranganLeadBulan = leadRealBulan - targetLeadBulan;
     totalTargetBulan += targetBulan;
     totalSpendBulan += spendBulan;
+    totalTargetLead += targetLeadBulan;
+    totalLeadRealBulan += leadRealBulan;
 
     const card = document.createElement('div');
     card.className = 'adv-card';
@@ -1020,8 +1096,11 @@ function renderTargetRowsMonthly(){
       '<div style="margin-bottom:10px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:4px;">Target Harian</label>'+
       '<input type="number" step="10000" value="'+val+'" data-adv="'+adv+'" data-month="'+activeEditMonth+'" style="width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;font-family:\'Roboto\',sans-serif;"></div>'+
       '<div class="adv-card-row"><span class="k">Target Bulan</span><span class="v">'+rupiah(targetBulan)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Target Lead</span><span class="v">'+num(targetLeadBulan)+' lead</span></div>'+
       '<div class="adv-card-row"><span class="k">Spend Bulan Ini</span><span class="v">'+rupiah(spendBulan)+'</span></div>'+
-      '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="tag '+(kekuranganBulan<0?'yellow':'green')+'">'+rupiah(kekuranganBulan)+'</span></div>';
+      '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="tag '+(kekuranganBulan<0?'yellow':'green')+'">'+rupiah(kekuranganBulan)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Lead Real Bulan Ini</span><span class="v">'+num(leadRealBulan)+' lead</span></div>'+
+      '<div class="adv-card-row"><span class="k">Kekurangan Lead</span><span class="tag '+(kekuranganLeadBulan<0?'yellow':'green')+'">'+num(kekuranganLeadBulan)+' lead</span></div>';
     const inp = card.querySelector('input');
     inp.onchange = (e)=>{
       const v = parseFloat(e.target.value)||0;
@@ -1034,13 +1113,17 @@ function renderTargetRowsMonthly(){
 
   // --- Ringkasan total semua advertiser ---
   const totalKekurangan = totalSpendBulan - totalTargetBulan;
+  const totalKekuranganLead = totalLeadRealBulan - totalTargetLead;
   const totalBox = document.createElement('div');
   totalBox.style.cssText = 'margin-top:6px;margin-bottom:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);display:flex;flex-wrap:wrap;gap:16px;align-items:center;';
   totalBox.innerHTML =
     '<div style="font-size:12.5px;font-weight:700;">Total Kekurangan Target Spending Bulanan</div>'+
     '<div style="font-size:12px;color:var(--muted);">Target: <b style="color:var(--text);">'+rupiah(totalTargetBulan)+'</b></div>'+
+    '<div style="font-size:12px;color:var(--muted);">Target Lead: <b style="color:var(--text);">'+num(totalTargetLead)+' lead</b></div>'+
     '<div style="font-size:12px;color:var(--muted);">Spend: <b style="color:var(--text);">'+rupiah(totalSpendBulan)+'</b></div>'+
-    '<div style="font-size:12px;color:var(--muted);">Kekurangan: <span class="tag '+(totalKekurangan<0?'yellow':'green')+'" style="font-size:12px;">'+rupiah(totalKekurangan)+'</span></div>';
+    '<div style="font-size:12px;color:var(--muted);">Kekurangan: <span class="tag '+(totalKekurangan<0?'yellow':'green')+'" style="font-size:12px;">'+rupiah(totalKekurangan)+'</span></div>'+
+    '<div style="font-size:12px;color:var(--muted);">Lead Real: <b style="color:var(--text);">'+num(totalLeadRealBulan)+' lead</b></div>'+
+    '<div style="font-size:12px;color:var(--muted);">Kekurangan Lead: <span class="tag '+(totalKekuranganLead<0?'yellow':'green')+'" style="font-size:12px;">'+num(totalKekuranganLead)+' lead</span></div>';
   wrap.appendChild(totalBox);
 
   // Reset bulan ini ke default harian
@@ -1137,29 +1220,44 @@ const PERIODS = [
   {id:'hari_ini', label:'Hari Ini'},
   {id:'kemarin', label:'Kemarin'},
   {id:'bulan_ini', label:'Bulan Ini'},
+  {id:'bulan_lalu', label:'Bulan Lalu'},
   {id:'7_hari', label:'7 Hari Terakhir'},
   {id:'30_hari', label:'30 Hari Terakhir'},
+  {id:'90_hari', label:'90 Hari Terakhir'},
   {id:'q1', label:'Quartal 1'},
   {id:'q2', label:'Quartal 2'},
-  {id:'q3', label:'Quartal 3'},
-  {id:'custom', label:'Custom'}
+  {id:'q3', label:'Quartal 3'}
 ];
+let customRangeStart = null, customRangeEnd = null; // dipakai saat periodType==='custom' (dari pilih tanggal manual di kalender)
 function getRange(){
   const t = new Date(ANCHOR_DATE); t.setHours(0,0,0,0);
   if(periodType==='hari_ini') return [t,t];
   if(periodType==='kemarin'){ const y=new Date(t); y.setDate(y.getDate()-1); return [y,y]; }
   if(periodType==='bulan_ini') return [new Date(t.getFullYear(),t.getMonth(),1), new Date(t.getFullYear(),t.getMonth()+1,0)];
+  if(periodType==='bulan_lalu') return [new Date(t.getFullYear(),t.getMonth()-1,1), new Date(t.getFullYear(),t.getMonth(),0)];
   if(periodType==='7_hari'){ const s=new Date(t); s.setDate(s.getDate()-6); return [s,t]; }
   if(periodType==='30_hari'){ const s=new Date(t); s.setDate(s.getDate()-29); return [s,t]; }
+  if(periodType==='90_hari'){ const s=new Date(t); s.setDate(s.getDate()-89); return [s,t]; }
   if(periodType==='q1') return [new Date(t.getFullYear(),0,1), new Date(t.getFullYear(),2,31)];
   if(periodType==='q2') return [new Date(t.getFullYear(),3,1), new Date(t.getFullYear(),5,30)];
   if(periodType==='q3') return [new Date(t.getFullYear(),6,1), new Date(t.getFullYear(),8,30)];
   if(periodType==='custom'){
-    const s=new Date(document.getElementById('customStart').value||fmtISO(DATA_START));
-    const e=new Date(document.getElementById('customEnd').value||fmtISO(ANCHOR_DATE));
+    const s=new Date(customRangeStart||fmtISO(DATA_START));
+    const e=new Date(customRangeEnd||fmtISO(ANCHOR_DATE));
     return [s,e];
   }
   return [t,t];
+}
+// Rentang tanggal khusus untuk Report WhatsApp — tidak mengikuti filter periode global
+// kalau reportState.useCustomDate aktif; kalau tidak, jatuh kembali ke getRange() seperti biasa.
+function getReportRange(){
+  if(reportState.useCustomDate && reportState.dateStart && reportState.dateEnd){
+    const s = new Date(reportState.dateStart);
+    const e = new Date(reportState.dateEnd);
+    s.setHours(0,0,0,0); e.setHours(0,0,0,0);
+    if(!isNaN(s) && !isNaN(e)) return s<=e ? [s,e] : [e,s];
+  }
+  return getRange();
 }
 function indicesForRange(range){
   const [s,e]=range;
@@ -1193,26 +1291,132 @@ function deltaBadge(curr, prev, invert){
   return '<span class="delta-badge '+cls+'">'+arrow+' '+Math.abs(pct).toFixed(0)+'%</span>';
 }
 
-/* ============== UI: PERIOD BUTTONS ============== */
-function renderPeriodBtns(){
-  const wrap=document.getElementById('periodBtns'); wrap.innerHTML='';
+/* ============== UI: DATE RANGE PICKER (dropdown: trigger + panel kalender) ============== */
+let drpOpen = false;
+let drpPendingType = periodType;        // pilihan sementara di dalam panel, sebelum "Terapkan"
+let drpPendingStart = null, drpPendingEnd = null; // Date, hasil pilihan sementara (preview di kalender)
+let drpPickStage = 0;                   // 0 = klik berikutnya mulai rentang baru, 1 = sedang menunggu tanggal akhir
+let drpViewMonth = null;                // Date (tgl 1) bulan pertama yang ditampilkan di kalender
+const DRP_DOW = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+
+function drpRangeForType(type, base){
+  const t = new Date(base); t.setHours(0,0,0,0);
+  if(type==='hari_ini') return [t,t];
+  if(type==='kemarin'){ const y=new Date(t); y.setDate(y.getDate()-1); return [y,y]; }
+  if(type==='bulan_ini') return [new Date(t.getFullYear(),t.getMonth(),1), new Date(t.getFullYear(),t.getMonth()+1,0)];
+  if(type==='bulan_lalu') return [new Date(t.getFullYear(),t.getMonth()-1,1), new Date(t.getFullYear(),t.getMonth(),0)];
+  if(type==='7_hari'){ const s=new Date(t); s.setDate(s.getDate()-6); return [s,t]; }
+  if(type==='30_hari'){ const s=new Date(t); s.setDate(s.getDate()-29); return [s,t]; }
+  if(type==='90_hari'){ const s=new Date(t); s.setDate(s.getDate()-89); return [s,t]; }
+  if(type==='q1') return [new Date(t.getFullYear(),0,1), new Date(t.getFullYear(),2,31)];
+  if(type==='q2') return [new Date(t.getFullYear(),3,1), new Date(t.getFullYear(),5,30)];
+  if(type==='q3') return [new Date(t.getFullYear(),6,1), new Date(t.getFullYear(),8,30)];
+  return [t,t];
+}
+function sameDay(a,b){ return a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function buildMonthCells(monthDate){
+  const year=monthDate.getFullYear(), month=monthDate.getMonth();
+  const firstDay = new Date(year,month,1);
+  const startOffset = (firstDay.getDay()+6)%7; // Senin = kolom pertama
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  const cells=[];
+  for(let i=0;i<startOffset;i++) cells.push(null);
+  for(let d=1; d<=daysInMonth; d++) cells.push(new Date(year,month,d));
+  while(cells.length%7!==0) cells.push(null);
+  return cells;
+}
+function openDrp(){
+  drpOpen = true;
+  drpPendingType = periodType;
+  const cur = getRange();
+  drpPendingStart = new Date(cur[0]); drpPendingEnd = new Date(cur[1]);
+  drpPickStage = 0;
+  drpViewMonth = new Date(drpPendingEnd.getFullYear(), drpPendingEnd.getMonth(), 1);
+  document.getElementById('dateRangePanel').style.display = 'flex';
+  document.getElementById('dateRangeTrigger').classList.add('open');
+  renderDrpQuick();
+  renderDrpCalendars();
+}
+function closeDrp(){
+  drpOpen = false;
+  document.getElementById('dateRangePanel').style.display = 'none';
+  document.getElementById('dateRangeTrigger').classList.remove('open');
+}
+function renderDrpQuick(){
+  const wrap=document.getElementById('drpQuick'); wrap.innerHTML='';
   PERIODS.forEach(p=>{
-    const b=document.createElement('div');
-    b.className='period-btn'+(p.id===periodType?' active':'');
-    b.textContent=p.label;
-    b.onclick=()=>{ periodType=p.id; updateCustomVisibility(); renderPeriodBtns(); render(); };
-    wrap.appendChild(b);
+    const el=document.createElement('div');
+    el.className='drp-quick-item'+(p.id===drpPendingType?' active':'');
+    el.textContent=p.label;
+    el.onclick=()=>{
+      drpPendingType=p.id; drpPickStage=0;
+      const r=drpRangeForType(p.id, ANCHOR_DATE);
+      drpPendingStart=r[0]; drpPendingEnd=r[1];
+      drpViewMonth=new Date(drpPendingEnd.getFullYear(), drpPendingEnd.getMonth(), 1);
+      renderDrpQuick(); renderDrpCalendars();
+    };
+    wrap.appendChild(el);
   });
 }
-function updateCustomVisibility(){
-  const cs=document.getElementById('customStart'), ce=document.getElementById('customEnd'), dash=document.getElementById('customDash');
-  const show = periodType==='custom';
-  cs.style.display = show?'inline-block':'none';
-  ce.style.display = show?'inline-block':'none';
-  dash.style.display = show?'inline':'none';
+function renderOneCalendar(gridEl, monthDate){
+  gridEl.innerHTML='';
+  DRP_DOW.forEach(d=>{ const el=document.createElement('div'); el.className='dow'; el.textContent=d; gridEl.appendChild(el); });
+  const cells = buildMonthCells(monthDate);
+  const s=drpPendingStart, e=drpPendingEnd;
+  cells.forEach(dt=>{
+    const el=document.createElement('div');
+    if(!dt){ el.className='drp-day muted'; gridEl.appendChild(el); return; }
+    el.className='drp-day';
+    el.textContent=dt.getDate();
+    if(s && e){
+      if(dt>=s && dt<=e){
+        if(sameDay(dt,s) && sameDay(dt,e)) el.classList.add('range-single');
+        else if(sameDay(dt,s)) el.classList.add('range-start');
+        else if(sameDay(dt,e)) el.classList.add('range-end');
+        else el.classList.add('in-range');
+      }
+    } else if(s && sameDay(dt,s)){
+      el.classList.add('range-single');
+    }
+    el.onclick=()=>{
+      if(drpPickStage===0){
+        drpPendingStart=dt; drpPendingEnd=dt; drpPickStage=1; drpPendingType='custom';
+      } else {
+        if(dt < drpPendingStart){ drpPendingEnd=drpPendingStart; drpPendingStart=dt; }
+        else { drpPendingEnd=dt; }
+        drpPickStage=0; drpPendingType='custom';
+      }
+      renderDrpQuick(); renderDrpCalendars();
+    };
+    gridEl.appendChild(el);
+  });
 }
-document.getElementById('customStart').addEventListener('change', render);
-document.getElementById('customEnd').addEventListener('change', render);
+function renderDrpCalendars(){
+  const m1=drpViewMonth, m2=new Date(m1.getFullYear(), m1.getMonth()+1, 1);
+  document.getElementById('drpMonthLabel1').textContent = m1.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  document.getElementById('drpMonthLabel2').textContent = m2.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  renderOneCalendar(document.getElementById('drpGrid1'), m1);
+  renderOneCalendar(document.getElementById('drpGrid2'), m2);
+}
+document.getElementById('dateRangeTrigger').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  if(drpOpen) closeDrp(); else openDrp();
+});
+document.getElementById('drpPrev').addEventListener('click', ()=>{ drpViewMonth=new Date(drpViewMonth.getFullYear(), drpViewMonth.getMonth()-1, 1); renderDrpCalendars(); });
+document.getElementById('drpNext').addEventListener('click', ()=>{ drpViewMonth=new Date(drpViewMonth.getFullYear(), drpViewMonth.getMonth()+1, 1); renderDrpCalendars(); });
+document.getElementById('drpCancel').addEventListener('click', closeDrp);
+document.getElementById('drpApply').addEventListener('click', ()=>{
+  periodType = drpPendingType;
+  if(periodType==='custom'){
+    customRangeStart = fmtISO(drpPendingStart);
+    customRangeEnd = fmtISO(drpPendingEnd);
+  }
+  closeDrp();
+  render();
+});
+document.getElementById('dateRangePanel').addEventListener('click', (e)=> e.stopPropagation());
+document.addEventListener('click', ()=>{ if(drpOpen) closeDrp(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && drpOpen) closeDrp(); });
 
 /* ============== UI: ACCOUNT PICKER (grouped by advertiser) ============== */
 function renderAccountGroups(){
@@ -1447,7 +1651,7 @@ const baseOpts=(legend)=>({
 /* ============== MAIN RENDER ============== */
 function render(){
   const range = getRange();
-  document.getElementById('rangeLabel').textContent = fmtDateID(range[0])+'  →  '+fmtDateID(range[1]);
+  document.getElementById('dateRangeLabel').textContent = fmtDateID(range[0])+' - '+fmtDateID(range[1]);
   const nDays = daysIn(range);
 
   const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
@@ -1500,6 +1704,10 @@ function render(){
     const target = calcTargetInRange(adv, range);
     const kekurangan = spendPPN - target;
 
+    // --- data harian untuk mini grafik trend di kartu ---
+    const dailySpendPPN = sliceIn(ALL_DATES.map((_,i)=> relevantAccs.reduce((s,a)=> s + (ownerAtIndex(a,i)===adv ? (a.spendSeries[i]||0) : 0), 0)), range);
+    const dailyLeadReal = sliceIn(ADV_LEADS[adv].real, range);
+
     // --- periode sebelumnya (untuk badge naik/turun) ---
     const pBudget = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,prevRange),0);
     const pSpendPPN = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,prevRange),0);
@@ -1511,14 +1719,14 @@ function render(){
     const pTarget = calcTargetInRange(adv, prevRange);
     const pKekurangan = pSpendPPN - pTarget;
 
-    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch,
+    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch, dailySpendPPN, dailyLeadReal,
       prev:{real:pReal, oo:pOO, pctLead:pPctLead, budget:pBudget, spendPPN:pSpendPPN, kekurangan:pKekurangan, cplReal:pCplReal, cplOO:pCplOO}};
   }).filter(Boolean);
   document.getElementById('kpiLeads').textContent = num(totalLeadsReal);
   const totalCPLReal = totalLeadsReal>0 ? totalBudget/totalLeadsReal : 0;
   document.getElementById('kpiCPLReal').textContent = rupiah(totalCPLReal);
 
-  document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map(r=>
+  document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map((r,idx)=>
     '<div class="adv-card">'+
       '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.adv]+'"></span><span class="adv-card-name">'+r.adv+'</span>'+
       (r.anySwitch?'<span class="tag blue" style="margin-left:auto;font-size:10px;" title="Ada akun yang pindah advertiser di periode ini — angka sudah dihitung sesuai pemilik pada tanggalnya masing-masing">🔀 ADA PERPINDAHAN AKUN</span>':'')+
@@ -1531,9 +1739,14 @@ function render(){
       '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="v"><span class="tag '+(r.kekurangan<0?'yellow':'green')+'">'+rupiah(r.kekurangan)+'</span>'+deltaBadge(r.kekurangan,r.prev.kekurangan)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">CPL Real</span><span class="v"><span class="tag green">'+rupiah(r.cplReal)+'</span>'+deltaBadge(r.cplReal,r.prev.cplReal,true)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">CPL OO</span><span class="v"><span class="tag green">'+rupiah(r.cplOO)+'</span>'+deltaBadge(r.cplOO,r.prev.cplOO,true)+'</span></div>'+
+      '<div class="adv-card-chart-title">Tren Harian — Spend &amp; Lead Real</div>'+
+      '<div class="adv-card-chart-wrap"><canvas id="advCardChart_'+idx+'"></canvas></div>'+
       '<div class="adv-card-note">dibandingkan periode sebelumnya (durasi sama)</div>'+
     '</div>'
   ).join('') : '<div class="muted-note">Tidak ada data</div>';
+
+  // ---- mini grafik trend per kartu advertiser ----
+  renderAdvCardMiniCharts(advRows, range);
 
   // ---- grafik performa advertiser (metrik bisa dipilih, sinkron filter dashboard utama) ----
   renderAdvMetricChart(accs, range);
@@ -1662,6 +1875,41 @@ function renderAdvMetricChart(accs, range){
   }
   mkChart('chartAdvMetric',{type:'line',data:{labels,datasets}, options: baseOpts(true)});
   renderAdvLegend(datasets, advsWithAccs, metrics, multiMetric, metricColors);
+}
+
+// Mini grafik trend harian di dalam tiap kartu advertiser (Spend+PPN vs Lead Real)
+function renderAdvCardMiniCharts(advRows, range){
+  // Hancurkan mini chart kartu lama sebelum bikin ulang (canvas-nya sudah diganti lewat innerHTML)
+  Object.keys(chartReg).forEach(k=>{
+    if(k.indexOf('advCardChart_')===0){ chartReg[k].destroy(); delete chartReg[k]; }
+  });
+  const labels = trendLabels(range);
+  advRows.forEach((r,idx)=>{
+    const id = 'advCardChart_'+idx;
+    const ctx = document.getElementById(id);
+    if(!ctx || typeof Chart==='undefined') return;
+    const color = ADV_COLOR[r.adv] || '#2FBE82';
+    chartReg[id] = new Chart(ctx, {
+      type:'line',
+      data:{ labels, datasets:[
+        { label:'Spend + PPN', data:r.dailySpendPPN, borderColor:color, backgroundColor:color+'22',
+          fill:true, tension:.35, pointRadius:0, borderWidth:2, yAxisID:'y' },
+        { label:'Lead Real', data:r.dailyLeadReal, borderColor:cssVar('--blue')||'#38BDF8', backgroundColor:'transparent',
+          borderDash:[5,3], fill:false, tension:.35, pointRadius:0, borderWidth:1.8, yAxisID:'y1' }
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+        plugins:{ legend:{display:false},
+          tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text'),titleFont:{size:11},bodyFont:{size:11}} },
+        scales:{
+          x:{ grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:5} },
+          y:{ position:'left', grid:{color:cssVar('--chart-grid')}, ticks:{color:cssVar('--chart-tick'),font:{size:9},maxTicksLimit:4,
+              callback:v=>rupiahShort(v)} },
+          y1:{ position:'right', grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:9},maxTicksLimit:4,precision:0}, beginAtZero:true }
+        }
+      }
+    });
+  });
 }
 
 /* ===== CUSTOM LEGEND RENDERER ===== */
@@ -2901,6 +3149,9 @@ document.getElementById('btnResetAllData').onclick = resetAllData;
 // State report
 let reportState = {
   reportMode: 'advertiser',  // 'advertiser' | 'cs'
+  useCustomDate: false,      // true = pakai tanggal khusus report, bukan filter periode global
+  dateStart: '',
+  dateEnd: '',
   selectedAdvs: new Set(),   // advertiser yang dipilih
   showBudget: true,
   showSpend: true,
@@ -2932,7 +3183,7 @@ function buildReportText(){
 }
 
 function buildAdvertiserReportText(){
-  const range = getRange();
+  const range = getReportRange();
   const nDays = daysIn(range);
   const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
     ? fmtDateID(range[0])
@@ -3027,7 +3278,7 @@ function buildAdvertiserReportText(){
 }
 
 function buildCsReportText(){
-  const range = getRange();
+  const range = getReportRange();
   const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
     ? fmtDateID(range[0])
     : fmtDateID(range[0]) + ' s/d ' + fmtDateID(range[1]);
@@ -3139,6 +3390,12 @@ function openReportModal(){
   if(reportState.selectedCsList.size === 0){
     CS_LIST.forEach(cs=> reportState.selectedCsList.add(cs));
   }
+  // Prefill tanggal khusus report dengan periode dashboard aktif saat ini, kalau belum pernah diisi
+  if(!reportState.dateStart || !reportState.dateEnd){
+    const curRange = getRange();
+    reportState.dateStart = fmtISO(curRange[0]);
+    reportState.dateEnd = fmtISO(curRange[1]);
+  }
 
   const overlay = document.createElement('div');
   overlay.className = 'edit-modal-overlay';
@@ -3153,6 +3410,21 @@ function openReportModal(){
       <div class="period-btns" id="reportModeTabs" style="margin-bottom:18px;">
         <div class="period-btn ${reportState.reportMode==='advertiser'?'active':''}" data-mode="advertiser">📢 Report Advertiser</div>
         <div class="period-btn ${reportState.reportMode==='cs'?'active':''}" data-mode="cs">📞 Report CS</div>
+      </div>
+
+      <!-- Tanggal Report (independen dari filter periode global) -->
+      <div class="report-section">
+        <div class="report-section-title">Tanggal Report</div>
+        <div class="toggle-group" style="margin-bottom:${reportState.useCustomDate?'10px':'0'};">
+          <div class="toggle-chip toggle-chip-wa ${!reportState.useCustomDate?'on':''}" id="reportDateModeGlobal">🔗 Ikuti Filter Periode Dashboard</div>
+          <div class="toggle-chip toggle-chip-wa ${reportState.useCustomDate?'on':''}" id="reportDateModeCustom">📅 Tanggal Khusus Report</div>
+        </div>
+        <div id="reportCustomDateRow" style="display:${reportState.useCustomDate?'flex':'none'};gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="date" id="reportDateStart" value="${reportState.dateStart}" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Roboto',sans-serif;">
+          <span class="muted-note">s/d</span>
+          <input type="date" id="reportDateEnd" value="${reportState.dateEnd}" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Roboto',sans-serif;">
+        </div>
+        <div class="muted-note" style="margin-top:6px;">${reportState.useCustomDate ? 'Report ini akan pakai tanggal di atas, terlepas dari filter periode dashboard (Hari Ini/Bulan Ini/dll).' : 'Report ini otomatis mengikuti filter periode yang aktif di dashboard saat ini.'}</div>
       </div>
 
       <!-- ============ SECTION: REPORT ADVERTISER ============ -->
@@ -3284,8 +3556,30 @@ function openReportModal(){
     });
   });
 
+  // Mode tanggal report: ikuti filter global vs tanggal khusus
+  const dateModeGlobalBtn = document.getElementById('reportDateModeGlobal');
+  const dateModeCustomBtn = document.getElementById('reportDateModeCustom');
+  const customDateRow = document.getElementById('reportCustomDateRow');
+  function setReportDateMode(useCustom){
+    reportState.useCustomDate = useCustom;
+    dateModeGlobalBtn.classList.toggle('on', !useCustom);
+    dateModeCustomBtn.classList.toggle('on', useCustom);
+    customDateRow.style.display = useCustom ? 'flex' : 'none';
+    refreshReportPreview();
+  }
+  dateModeGlobalBtn.addEventListener('click', ()=> setReportDateMode(false));
+  dateModeCustomBtn.addEventListener('click', ()=> setReportDateMode(true));
+  document.getElementById('reportDateStart').addEventListener('change', e=>{
+    reportState.dateStart = e.target.value;
+    refreshReportPreview();
+  });
+  document.getElementById('reportDateEnd').addEventListener('change', e=>{
+    reportState.dateEnd = e.target.value;
+    refreshReportPreview();
+  });
+
   // Toggle kolom
-  overlay.querySelectorAll('.toggle-chip').forEach(chip=>{
+  overlay.querySelectorAll('.toggle-chip[data-key]').forEach(chip=>{
     chip.addEventListener('click', ()=>{
       const key = chip.dataset.key;
       reportState[key] = !reportState[key];
@@ -3550,15 +3844,11 @@ applyTheme(getSavedTheme());
 
 /* ============== INIT ============== */
 (function init(){
-  document.getElementById('customStart').value=fmtISO(TODAY_REF);
-  document.getElementById('customEnd').value=fmtISO(TODAY_REF);
   document.getElementById('inSharedDate').value=fmtISO(TODAY_REF);
   updateSharedDateDisplay();
   document.getElementById('inSharedDate').addEventListener('change', updateSharedDateDisplay);
   document.getElementById('inSharedDate').addEventListener('input', updateSharedDateDisplay);
   const restored = loadLocalState();
-  renderPeriodBtns();
-  updateCustomVisibility();
   renderAccountGroups();
   renderTargetRows();
   // restore target mode UI
@@ -3584,7 +3874,7 @@ applyTheme(getSavedTheme());
 })();
 
 /* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
-const PAGES_WITHOUT_DATE_FILTER = ['input','target','integrasi','testing'];
+const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing'];
 function syncGlobalFilterbarVisibility(pageId){
   const bar = document.querySelector('.global-filterbar');
   if(!bar) return;
@@ -3597,6 +3887,16 @@ document.querySelectorAll(".navbtn").forEach(btn => {
     btn.classList.add("active");
     document.getElementById("page-" + btn.dataset.page).classList.add("active");
     syncGlobalFilterbarVisibility(btn.dataset.page);
+  });
+});
+
+/* Sub-tab "Hasil" / "Target" di dalam halaman Data Hasil Advertiser */
+document.querySelectorAll('#advPageTabs .period-btn').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#advPageTabs .period-btn').forEach(t=> t.classList.toggle('active', t===tab));
+    const key = tab.dataset.advtab;
+    document.getElementById('advTabHasil').style.display = key==='hasil' ? '' : 'none';
+    document.getElementById('advTabTarget').style.display = key==='target' ? '' : 'none';
   });
 });
 
