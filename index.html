@@ -2172,23 +2172,23 @@ async function saveAllInput(){
   if(!savedAccounts.length && !savedLead){ msg.textContent='Isi minimal satu budget akun, atau lead real & OO.'; msg.style.color='var(--red)'; return; }
   saveLocalState();
   render();
-  msg.textContent = 'Tersimpan: '+adv+' · '+fmtDateID(d)+' — mengirim ke spreadsheet...';
-  msg.style.color='var(--muted)';
-  let allOk = true, anyNoUrl = false;
-  for(const s of savedAccounts){
-    const st = await pushOneToSheet({type:'akun', tanggal:dateVal, nama:s.acc.name, budget:s.budget, spendppn:s.spend});
-    if(st==='no-url') anyNoUrl = true; else if(st!=='ok') allOk = false;
-  }
-  if(savedLead){
-    const st = await pushOneToSheet({type:'lead', tanggal:dateVal, advertiser:adv, real, oo});
-    if(st==='no-url') anyNoUrl = true; else if(st!=='ok') allOk = false;
-  }
+
+  // Bersihkan form & kasih konfirmasi lokal LANGSUNG, gak perlu nunggu jaringan
   budgetInputs.forEach(inp=>{ inp.value=''; });
   document.querySelectorAll('.acc-budget-preview').forEach(p=>{ const ppn=p.textContent.match(/\((\d+(\.\d+)?)%\)/); p.innerHTML = ppn ? 'Spend + PPN ('+ppn[1]+'%): <b>Rp 0</b>' : p.innerHTML; });
   document.getElementById('inLeadReal').value=''; document.getElementById('inLeadOO').value='';
   renderInsightPanel();
   const firstBudgetInput = document.querySelector('.accBudgetInput');
   if(firstBudgetInput) firstBudgetInput.focus();
+  msg.textContent = '✅ Tersimpan: '+adv+' · '+fmtDateID(d)+' — mengirim ke spreadsheet...';
+  msg.style.color='var(--green)';
+
+  // Kirim semua ke spreadsheet SEKALIGUS (paralel), bukan satu-satu — jauh lebih cepat
+  const pushPromises = savedAccounts.map(s=>pushOneToSheet({type:'akun', tanggal:dateVal, nama:s.acc.name, budget:s.budget, spendppn:s.spend}));
+  if(savedLead) pushPromises.push(pushOneToSheet({type:'lead', tanggal:dateVal, advertiser:adv, real, oo}));
+  const results = await Promise.all(pushPromises);
+  let allOk = true, anyNoUrl = false;
+  results.forEach(st=>{ if(st==='no-url') anyNoUrl = true; else if(st!=='ok') allOk = false; });
   if(anyNoUrl){ msg.textContent='Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di bawah).'; msg.style.color='var(--yellow)'; }
   else if(allOk){ msg.textContent='✅ Tersimpan & terkirim ke spreadsheet: '+adv+' · '+fmtDateID(d); msg.style.color='var(--green)'; }
   else { msg.textContent='Tersimpan di dashboard, tapi sebagian gagal terkirim ke spreadsheet. Cek URL Apps Script & koneksi internet.'; msg.style.color='var(--red)'; }
@@ -2665,7 +2665,10 @@ async function pushOneToSheet(payload){
   const url = getAppsScriptUrl();
   if(!url) return 'no-url';
   try{
-    await fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload)});
+    const controller = new AbortController();
+    const timer = setTimeout(()=>controller.abort(), 15000);
+    await fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload), signal: controller.signal});
+    clearTimeout(timer);
     return 'ok';
   }catch(err){ return 'error'; }
 }
