@@ -394,6 +394,12 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
     .grid-2{grid-template-columns:1fr;}
     .main{padding:18px;}
   }
+@media print{
+  .sidebar, .global-filterbar, .navbtn{ display:none !important; }
+  .main{ padding:0 !important; max-width:100% !important; margin:0 !important; }
+  body{ background:#fff !important; }
+  .laporan-noprint{ display:none !important; }
+}
 </style>
 </head>
 <script>
@@ -414,6 +420,7 @@ try{
     <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
     <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
     <div class="navbtn" data-page="cs"><span class="ic">📞</span> Hasil CS</div>
+    <div class="navbtn" data-page="laporan"><span class="ic">🗒️</span> Laporan</div>
 
     <div class="sidebar-foot">
       <div class="status" id="apiStatus"><div class="sdot"></div><span id="apiStatusText">Menghubungkan…</span></div>
@@ -794,6 +801,34 @@ try{
   </div>
 </div><!-- /page-cs -->
 
+<div class="page" id="page-laporan">
+  <div class="section-header laporan-noprint" style="margin-top:0;">
+    <h1>Laporan</h1>
+    <div class="muted-note">Rekap siap kirim per advertiser — ikut periode yang dipilih di atas · <span id="laporanPeriodLabel">—</span></div>
+  </div>
+  <div class="laporan-noprint" style="margin-bottom:16px;">
+    <button class="btn" id="btnPrintLaporan">🖨️ Cetak / Simpan PDF</button>
+  </div>
+
+  <div id="laporanReportArea">
+    <div class="section-header" style="margin-top:0;"><h2>Laporan Performa Iklan — <span id="laporanPeriodLabel2">—</span></h2></div>
+    <div class="grid grid-4" id="laporanSummary" style="margin-bottom:18px;"></div>
+
+    <div class="section-header"><h2>Rincian per Advertiser</h2></div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Advertiser</th><th>Budget</th><th>Spend + PPN</th><th>Lead Real</th><th>Lead OO</th><th>CPL Real</th><th>CPL OO</th><th>vs Target</th>
+        </tr></thead>
+        <tbody id="laporanTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section-header"><h2>Catatan Otomatis</h2></div>
+    <div id="laporanNotes" class="account-picker" style="padding:14px 16px;"></div>
+  </div>
+</div><!-- /page-laporan -->
+
 
 
   </div><!-- /main -->
@@ -820,7 +855,7 @@ const DATA_END   = new Date(TODAY_REF.getFullYear(), 11, 31);
 const ALL_DATES = dateRangeArray(DATA_START, DATA_END);
 
 
-function fmtISO(d){ return d.toISOString().slice(0,10); }
+function fmtISO(d){ const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return y+'-'+m+'-'+day; }
 function fmtDateID(d){ return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
 function rupiah(n){ n=Math.round(n||0); const sign=n<0?'-':''; n=Math.abs(n); return sign+'Rp '+n.toLocaleString('id-ID'); }
 function rupiahShort(n){ n=n||0; const sign=n<0?'-':''; n=Math.abs(n); if(n>=1e9) return sign+'Rp '+(n/1e9).toFixed(2)+'M'; if(n>=1e6) return sign+'Rp '+(n/1e6).toFixed(2)+'jt'; if(n>=1e3) return sign+'Rp '+(n/1e3).toFixed(0)+'rb'; return sign+'Rp '+Math.round(n); }
@@ -1766,6 +1801,8 @@ function render(){
   const totalCPLReal = totalLeadsReal>0 ? totalBudget/totalLeadsReal : 0;
   document.getElementById('kpiCPLReal').textContent = rupiah(totalCPLReal);
 
+  if(document.getElementById('laporanTable')) renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, totalCPLReal, range);
+
   document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map((r,idx)=>
     '<div class="adv-card">'+
       '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.adv]+'"></span><span class="adv-card-name">'+r.adv+'</span>'+
@@ -1794,6 +1831,62 @@ function render(){
   // ---- kampanye testing: ikut sinkron dengan akun/advertiser yang sedang dipilih ----
   if(typeof renderTestCampaigns==='function') renderTestCampaigns();
 }
+
+/* ============== HALAMAN LAPORAN (rekap siap kirim per advertiser) ============== */
+function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, totalCPLReal, range){
+  const periodLabel = fmtDateID(range[0])+' - '+fmtDateID(range[1]);
+  const lbl1 = document.getElementById('laporanPeriodLabel'); if(lbl1) lbl1.textContent = periodLabel;
+  const lbl2 = document.getElementById('laporanPeriodLabel2'); if(lbl2) lbl2.textContent = periodLabel;
+
+  const prevTotalBudget = advRows.reduce((s,r)=>s+r.prev.budget,0);
+  const pct = (cur, prev)=> prev>0 ? ((cur-prev)/prev*100) : (cur>0?100:0);
+  const changeBudget = pct(totalBudget, prevTotalBudget);
+  const changeColor = changeBudget>=0 ? 'var(--green)' : 'var(--red)';
+  const changeSign = changeBudget>=0 ? '+' : '';
+
+  const summaryEl = document.getElementById('laporanSummary');
+  if(summaryEl){
+    summaryEl.innerHTML =
+      '<div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Budget</div><div class="value">'+rupiahShort(totalBudget)+'</div></div>'+
+      '<div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">Total Spend + PPN</div><div class="value">'+rupiahShort(totalSpend)+'</div></div>'+
+      '<div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Lead Real</div><div class="value">'+num(totalLeadsReal)+'</div></div>'+
+      '<div class="card kpi"><div class="bar-accent" style="background:'+changeColor+'"></div><div class="label">vs Periode Sebelumnya</div><div class="value" style="color:'+changeColor+';">'+changeSign+changeBudget.toFixed(1)+'%</div></div>';
+  }
+
+  const tblEl = document.getElementById('laporanTable');
+  if(tblEl){
+    tblEl.innerHTML = advRows.length ? advRows.map(r=>{
+      const target = r.spendPPN - r.kekurangan;
+      const pctTarget = target>0 ? (r.spendPPN/target*100) : null;
+      const targetColor = pctTarget==null ? 'var(--muted)' : (pctTarget>=100 ? 'var(--green)' : 'var(--yellow)');
+      return '<tr>'+
+        '<td><span class="dot" style="background:'+ADV_COLOR[r.adv]+';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;"></span>'+r.adv+'</td>'+
+        '<td>'+rupiah(r.budget)+'</td>'+
+        '<td>'+rupiah(r.spendPPN)+'</td>'+
+        '<td>'+num(r.real)+'</td>'+
+        '<td>'+num(r.oo)+'</td>'+
+        '<td style="color:'+(r.cplReal>CPL_BENCHMARK?'var(--red)':'inherit')+';">'+rupiah(r.cplReal)+'</td>'+
+        '<td style="color:'+(r.cplOO>CPL_BENCHMARK?'var(--red)':'inherit')+';">'+rupiah(r.cplOO)+'</td>'+
+        '<td style="color:'+targetColor+';">'+(pctTarget==null?'-':pctTarget.toFixed(0)+'%')+'</td>'+
+      '</tr>';
+    }).join('') : '<tr><td colspan="8" class="muted-note">Tidak ada data pada periode ini</td></tr>';
+  }
+
+  const notesEl = document.getElementById('laporanNotes');
+  if(notesEl){
+    const notes = [];
+    advRows.forEach(r=>{
+      const target = r.spendPPN - r.kekurangan;
+      if(r.cplReal > CPL_BENCHMARK && r.real>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL Real '+rupiah(r.cplReal)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
+      if(r.cplOO > CPL_BENCHMARK && r.oo>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL OO '+rupiah(r.cplOO)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
+      if(target>0 && r.kekurangan<0) notes.push('⚠️ <b>'+r.adv+'</b>: belum capai target, kurang '+rupiah(Math.abs(r.kekurangan))+'.');
+    });
+    notesEl.innerHTML = notes.length ? notes.map(n=>'<div style="padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;">'+n+'</div>').join('') : '<div class="muted-note">✅ Semua advertiser aman — gak ada CPL kemahalan atau kekurangan target di periode ini.</div>';
+  }
+}
+const btnPrintLaporan = document.getElementById('btnPrintLaporan');
+if(btnPrintLaporan) btnPrintLaporan.addEventListener('click', ()=> window.print());
+
 
 /* ===== MULTI-SELECT METRIC DROPDOWN LOGIC ===== */
 const METRIC_LABELS = {
