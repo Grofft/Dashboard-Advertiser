@@ -378,14 +378,27 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
 
 /* ===== Page title header (h1) & global filter bar ===== */
 .section-header h1{font-family:'Roboto',sans-serif;font-size:20px;font-weight:700;}
+.global-filterbar-wrap{
+  position:sticky;top:0;z-index:10;
+  background:var(--bg);
+  padding-bottom:10px;margin-bottom:12px;
+}
 .global-filterbar{
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-  padding:12px 16px;margin-bottom:22px;
-  position:sticky;top:0;z-index:10;
+  padding:12px 16px;margin-bottom:10px;
 }
 .global-filterbar .filterbar{gap:8px;}
 .global-filterbar input[type=date]{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Roboto',sans-serif;}
+.global-notes-marquee{
+  background:var(--green);border:1px solid var(--greendark);border-radius:var(--radius);
+  padding:9px 16px;
+}
+.global-notes-marquee .notes-marquee-item,
+.global-notes-marquee .notes-marquee-item b,
+.global-notes-marquee .notes-marquee-sep,
+.global-notes-marquee .muted-note{ color:#000 !important; }
+.global-notes-marquee:empty{ display:none; }
   @media(max-width:860px){
     .app{flex-direction:column;}
     .sidebar{width:100%;flex-direction:row;overflow-x:auto;overflow-y:visible;padding:12px;height:auto;top:0;z-index:15;}
@@ -395,10 +408,36 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
     .main{padding:18px;}
   }
 @media print{
-  .sidebar, .global-filterbar, .navbtn{ display:none !important; }
+  .sidebar, .global-filterbar, .global-filterbar-wrap, .navbtn{ display:none !important; }
   .main{ padding:0 !important; max-width:100% !important; margin:0 !important; }
   body{ background:#fff !important; }
   .laporan-noprint{ display:none !important; }
+  .notes-marquee-wrap{ overflow:visible !important; -webkit-mask-image:none !important; mask-image:none !important; }
+  .notes-marquee-track{ animation:none !important; transform:none !important; width:auto !important; flex-direction:column !important; align-items:flex-start !important; gap:4px !important; }
+  .notes-marquee-sep{ display:none !important; }
+}
+.notes-marquee-wrap{
+  position:relative;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+  mask-image:linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+}
+.notes-marquee-track{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  gap:36px;
+  animation:notesMarqueeScroll 28s linear infinite;
+}
+.notes-marquee-wrap:hover .notes-marquee-track{ animation-play-state:paused; }
+.notes-marquee-item{
+  white-space:nowrap;
+  font-size:13px;
+}
+.notes-marquee-sep{ opacity:.4; }
+@keyframes notesMarqueeScroll{
+  0%{ transform:translateX(0); }
+  100%{ transform:translateX(-50%); }
 }
 </style>
 </head>
@@ -429,6 +468,7 @@ try{
 
   <div class="main">
 
+<div class="global-filterbar-wrap" id="globalFilterbarWrap">
 <div class="global-filterbar">
   <div class="daterange-wrap" id="dateRangeWrap">
     <button class="daterange-trigger" id="dateRangeTrigger" type="button">
@@ -464,6 +504,10 @@ try{
     <button class="theme-toggle-btn" id="btnThemeLight" type="button" title="Mode Terang">☀️</button>
   </div>
 </div>
+
+<div class="global-notes-marquee notes-marquee-wrap" id="globalNotesMarquee"></div>
+</div><!-- /global-filterbar-wrap -->
+
 
 <div class="page active" id="page-overview">
   <div class="section-header" style="margin-top:0;"><h1>Overview</h1><div class="muted-note">Ringkasan performa iklan lintas akun &amp; advertiser</div></div>
@@ -824,8 +868,6 @@ try{
       </table>
     </div>
 
-    <div class="section-header"><h2>Catatan Otomatis</h2></div>
-    <div id="laporanNotes" class="account-picker" style="padding:14px 16px;"></div>
   </div>
 </div><!-- /page-laporan -->
 
@@ -1872,16 +1914,27 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
     }).join('') : '<tr><td colspan="8" class="muted-note">Tidak ada data pada periode ini</td></tr>';
   }
 
-  const notesEl = document.getElementById('laporanNotes');
-  if(notesEl){
-    const notes = [];
-    advRows.forEach(r=>{
-      const target = r.spendPPN - r.kekurangan;
-      if(r.cplReal > CPL_BENCHMARK && r.real>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL Real '+rupiah(r.cplReal)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
-      if(r.cplOO > CPL_BENCHMARK && r.oo>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL OO '+rupiah(r.cplOO)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
-      if(target>0 && r.kekurangan<0) notes.push('⚠️ <b>'+r.adv+'</b>: belum capai target, kurang '+rupiah(Math.abs(r.kekurangan))+'.');
-    });
-    notesEl.innerHTML = notes.length ? notes.map(n=>'<div style="padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;">'+n+'</div>').join('') : '<div class="muted-note">✅ Semua advertiser aman — gak ada CPL kemahalan atau kekurangan target di periode ini.</div>';
+  const notes = [];
+  advRows.forEach(r=>{
+    const target = r.spendPPN - r.kekurangan;
+    if(r.cplReal > CPL_BENCHMARK && r.real>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL Real '+rupiah(r.cplReal)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
+    if(r.cplOO > CPL_BENCHMARK && r.oo>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL OO '+rupiah(r.cplOO)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
+    if(target>0 && r.kekurangan<0) notes.push('⚠️ <b>'+r.adv+'</b>: belum capai target, kurang '+rupiah(Math.abs(r.kekurangan))+'.');
+  });
+  renderNotesMarquee(document.getElementById('laporanNotes'), notes);
+  renderNotesMarquee(document.getElementById('globalNotesMarquee'), notes);
+}
+function renderNotesMarquee(notesEl, notes){
+  if(!notesEl) return;
+  if(notes.length){
+    const itemsHtml = notes.map(n=>'<span class="notes-marquee-item">'+n+'</span>').join('<span class="notes-marquee-sep">•</span>');
+    // durasi disesuaikan jumlah catatan biar kecepatan geser konsisten
+    const dur = Math.max(14, notes.length*4.5);
+    notesEl.innerHTML = '<div class="notes-marquee-track" style="animation-duration:'+dur+'s;">'+
+      itemsHtml+'<span class="notes-marquee-sep">•</span>'+itemsHtml+
+    '</div>';
+  } else {
+    notesEl.innerHTML = '<div class="muted-note" style="white-space:nowrap;">✅ Semua advertiser aman — gak ada CPL kemahalan atau kekurangan target di periode ini.</div>';
   }
 }
 const btnPrintLaporan = document.getElementById('btnPrintLaporan');
