@@ -3040,8 +3040,11 @@ function renderTestCampaigns(){
       +'<td class="metric-col">'+metricInput(c._idx,'cpc',c.cpc)+'</td>'
       +'<td class="metric-col">'+metricInput(c._idx,'ctr',c.ctr)+'</td>'
       +'<td class="metric-col">'+metricInput(c._idx,'cpm',c.cpm)+'</td>'
-      +'<td class="metric-col" style="font-weight:600;">'+(calcCpr(c)!=null ? rupiah(calcCpr(c)) : '-')+'</td>'
-      +'<td><button class="icon-btn" data-del-testcampaign="'+c._idx+'" title="Hapus">🗑</button></td>'
+      +'<td class="metric-col" id="cprCell-'+c._idx+'" style="font-weight:600;">'+(calcCpr(c)!=null ? rupiah(calcCpr(c)) : '-')+'</td>'
+      +'<td style="white-space:nowrap;">'
+        +'<span id="rowStatus-'+c._idx+'" style="display:inline-block;min-width:16px;text-align:center;margin-right:6px;font-size:13px;vertical-align:middle;"></span>'
+        +'<button class="icon-btn" data-del-testcampaign="'+c._idx+'" title="Hapus">🗑</button>'
+      +'</td>'
       +'</tr>';
   }).join('');
   tbody.querySelectorAll('[data-del-testcampaign]').forEach(btn=>{
@@ -3074,6 +3077,19 @@ function renderTestCampaigns(){
     };
   });
   tbody.querySelectorAll('[data-metric-idx]').forEach(inp=>{
+    // Update CPR & tandai "belum tersimpan" langsung saat mengetik (real-time), tanpa nunggu pindah kolom
+    inp.addEventListener('input', ()=>{
+      const i = parseInt(inp.getAttribute('data-metric-idx'));
+      const field = inp.getAttribute('data-metric-field');
+      const v = inp.value;
+      if(!TEST_CAMPAIGNS[i]) return;
+      const preview = {...TEST_CAMPAIGNS[i], [field]: (v!==''? parseFloat(v) : null)};
+      const cprCell = document.getElementById('cprCell-'+i);
+      if(cprCell) cprCell.textContent = (calcCpr(preview)!=null ? rupiah(calcCpr(preview)) : '-');
+      inp.style.borderColor = 'var(--yellow)';
+      setRowStatus(i, 'editing');
+    });
+    // Simpan ke storage + kirim ke spreadsheet saat pindah dari kolom (blur/enter)
     inp.addEventListener('change', ()=>{
       const i = parseInt(inp.getAttribute('data-metric-idx'));
       const field = inp.getAttribute('data-metric-field');
@@ -3081,11 +3097,15 @@ function renderTestCampaigns(){
       if(TEST_CAMPAIGNS[i]){
         TEST_CAMPAIGNS[i][field] = (v!==''? parseFloat(v) : null);
         saveLocalState();
+        const cprCell = document.getElementById('cprCell-'+i);
+        if(cprCell) cprCell.textContent = (calcCpr(TEST_CAMPAIGNS[i])!=null ? rupiah(calcCpr(TEST_CAMPAIGNS[i])) : '-');
+        setRowStatus(i, 'saving');
         setTcSyncMsg('Menyimpan perubahan ke spreadsheet...', 'var(--muted)');
         pushTestCampaignRow(TEST_CAMPAIGNS[i]).then(st=>{
-          if(st==='ok') setTcSyncMsg('✅ Perubahan tersimpan ke spreadsheet.', 'var(--green)');
-          else if(st==='no-url') setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet.', 'var(--yellow)');
-          else setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet.', 'var(--red)');
+          if(st==='ok'){ setRowStatus(i,'ok'); inp.style.borderColor='var(--green)'; setTcSyncMsg('✅ Perubahan tersimpan ke spreadsheet.', 'var(--green)'); }
+          else if(st==='no-url'){ setRowStatus(i,'no-url'); inp.style.borderColor='var(--yellow)'; setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet.', 'var(--yellow)'); }
+          else { setRowStatus(i,'error'); inp.style.borderColor='var(--red)'; setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet.', 'var(--red)'); }
+          setTimeout(()=>{ inp.style.borderColor=''; }, 2500);
         });
       }
     });
@@ -3112,7 +3132,19 @@ function metricInput(idx, field, val){
   const v = (val===null||val===undefined) ? '' : val;
   const step = field==='ctr' ? '0.01' : '1';
   const width = (field==='spending' || field==='cpm') ? '130px' : '90px';
-  return '<input type="number" step="'+step+'" placeholder="-" value="'+escapeHtml(v)+'" data-metric-idx="'+idx+'" data-metric-field="'+field+'" style="width:'+width+';background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;font-variant-numeric:tabular-nums;">';
+  return '<input type="number" step="'+step+'" placeholder="-" value="'+escapeHtml(v)+'" data-metric-idx="'+idx+'" data-metric-field="'+field+'" style="width:'+width+';background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;font-variant-numeric:tabular-nums;transition:border-color .25s ease;">';
+}
+function setRowStatus(idx, state){
+  const el = document.getElementById('rowStatus-'+idx);
+  if(!el) return;
+  clearTimeout(el._fadeTimer);
+  el.style.opacity = '1';
+  if(state==='editing'){ el.textContent='✏️'; el.title='Belum tersimpan'; }
+  else if(state==='saving'){ el.textContent='⏳'; el.title='Menyimpan...'; }
+  else if(state==='ok'){ el.textContent='✅'; el.title='Tersimpan ke spreadsheet'; el._fadeTimer=setTimeout(()=>{ el.style.transition='opacity .8s ease'; el.style.opacity='0'; }, 2500); }
+  else if(state==='no-url'){ el.textContent='⚠️'; el.title='Tersimpan di dashboard, belum terhubung spreadsheet'; }
+  else if(state==='error'){ el.textContent='❌'; el.title='Gagal mengirim ke spreadsheet'; }
+  else { el.textContent=''; }
 }
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
