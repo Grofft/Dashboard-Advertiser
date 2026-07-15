@@ -752,6 +752,48 @@ try{
     <div id="tuAccAgensiList" class="tu-agensi-list-grid" style="display:none;"></div>
   </div>
 
+  <div class="section-header"><h2>💰 Saldo Titipan Agensi</h2><div class="muted-note">Catat tiap transfer masuk ke agensi — saldo otomatis berkurang tiap ada top up ke akun yang di-assign ke agensi itu</div></div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="grid grid-4">
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Agensi</label>
+        <select id="saldoAgensiSelect" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;"><option value="">— Pilih Agensi —</option></select>
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Tanggal Transfer</label>
+        <input type="date" id="saldoTanggal" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Nominal Masuk</label>
+        <input type="text" id="saldoNominal" placeholder="cth: 5000000" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Catatan (opsional)</label>
+        <input type="text" id="saldoCatatan" placeholder="cth: transfer termin 1" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+    </div>
+    <button class="btn" id="btnAddSaldoMasuk" style="margin-top:10px;width:100%;">+ Catat Saldo Masuk</button>
+    <div class="muted-note" id="saldoMasukMsg" style="margin-top:6px;font-size:11.5px;"></div>
+  </div>
+
+  <div class="adv-cards-grid" id="saldoAgensiCards" style="margin-bottom:18px;"></div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 8px;">
+    <span class="muted-note" style="font-weight:600;color:var(--text);margin:0;">Riwayat Saldo Masuk</span>
+    <span class="tu-chip" id="tuToggleSaldoHist" style="cursor:pointer;">Tampilkan riwayat ▾</span>
+  </div>
+  <div id="saldoMasukHistWrap" style="display:none;margin-bottom:10px;">
+    <div class="chart-card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Tanggal</th><th>Agensi</th><th>Nominal Masuk</th><th>Catatan</th><th>Aksi</th></tr></thead>
+          <tbody id="tblSaldoMasuk"></tbody>
+        </table>
+      </div>
+      <div class="acc-total-bar"><span>Total Saldo Masuk (semua agensi, semua waktu)</span><span id="saldoMasukHistTotal">Rp 0</span></div>
+    </div>
+  </div>
+
   <div class="section-header"><h2>Riwayat Top Up</h2><div class="muted-note" id="tuHistCount">0 top up tercatat</div></div>
   <div class="card" style="margin-bottom:14px;">
     <div class="grid grid-4">
@@ -876,7 +918,7 @@ try{
     </div>
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--green);">Berhasil menarik 231 baris akun &amp; 109 baris lead dari spreadsheet.</div>
     <div id="scriptBox" style="display:none;">
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 9 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TopUp</code> (kolom: id, tanggal, jam, akun, nominal, catatan — LOG tiap kali top up budget dicatat per akun WL, bisa beberapa baris per akun per hari untuk top up bertahap, otomatis terisi/update/hapus dari menu Top Up Budget), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunAgensi</code> (kolom: akun, agensi — pemetaan 1 akun WL ke 1 nama agensi penyedia, BEDA dari advertiser/brand, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun).</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 10 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TopUp</code> (kolom: id, tanggal, jam, akun, nominal, catatan — LOG tiap kali top up budget dicatat per akun WL, bisa beberapa baris per akun per hari untuk top up bertahap, otomatis terisi/update/hapus dari menu Top Up Budget), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunAgensi</code> (kolom: akun, agensi — pemetaan 1 akun WL ke 1 nama agensi penyedia, BEDA dari advertiser/brand, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">SaldoAgensi</code> (kolom: id, tanggal, agensi, nominal, catatan — LOG tiap kali ada transfer/saldo titipan masuk ke sebuah agensi, bisa beberapa baris per agensi, otomatis terisi/update/hapus dari menu Top Up Budget → Saldo Titipan Agensi; sisa saldo per agensi dihitung otomatis di dashboard sebagai total saldo masuk dikurangi total top up ke akun-akun agensi tsb, TIDAK disimpan sebagai kolom terpisah).</div>
       <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
@@ -2584,6 +2626,7 @@ function doGet(e){
   var csSheet = ss.getSheetByName('CS');
   var topupSheet = ss.getSheetByName('TopUp');
   var agensiSheet = ss.getSheetByName('AkunAgensi');
+  var saldoAgensiSheet = ss.getSheetByName('SaldoAgensi');
   var akun = sheetToObjects(akunSheet);
   var leads = sheetToObjects(leadSheet);
   var akunwl = sheetToObjects(akunWlSheet);
@@ -2593,7 +2636,8 @@ function doGet(e){
   var csdata = sheetToObjects(csSheet);
   var topup = sheetToObjects(topupSheet);
   var akunagensi = sheetToObjects(agensiSheet);
-  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, topup: topup, akunagensi: akunagensi});
+  var saldoagensi = sheetToObjects(saldoAgensiSheet);
+  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, topup: topup, akunagensi: akunagensi, saldoagensi: saldoagensi});
 }
 
 function doPost(e){
@@ -2617,6 +2661,8 @@ function doPost(e){
     upsertTopUp(ss, data);
   } else if(data.type === 'akunagensi'){
     upsertAkunAgensi(ss, data);
+  } else if(data.type === 'saldoagensi'){
+    upsertSaldoAgensi(ss, data);
   }
   return jsonOutput({status:'ok'});
 }
@@ -2815,6 +2861,28 @@ function upsertAkunAgensi(ss, data){
   sh.appendRow([akun, data.agensi]);
 }
 
+// Sheet "SaldoAgensi" = LOG tiap kali ada transfer/saldo titipan masuk ke sebuah agensi
+// (bisa beberapa baris per agensi). Sisa saldo dihitung otomatis di dashboard sebagai
+// (total nominal di sheet ini untuk agensi tsb) - (total nominal di sheet "TopUp" untuk
+// semua akun yang di-assign ke agensi tsb lewat sheet "AkunAgensi") — jadi setiap top up
+// otomatis mengurangi saldo agensi tanpa perlu kolom "sisa saldo" terpisah. Upsert
+// berdasarkan kolom "id"; kalau data.hapus true, baris dengan id tsb dihapus.
+function upsertSaldoAgensi(ss, data){
+  var sh = ss.getSheetByName('SaldoAgensi');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var id = String(data.id).trim();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim() === id){
+      if(data.hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,5).setValues([[id, data.tanggal, data.agensi, data.nominal, data.catatan]]);
+      return;
+    }
+  }
+  if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
+  sh.appendRow([id, data.tanggal, data.agensi, data.nominal, data.catatan]);
+}
+
 function sheetToObjects(sheet){
   if(!sheet) return [];
   var rows = sheet.getDataRange().getValues();
@@ -2862,6 +2930,13 @@ function jsonOutput(obj){
 //                  (pemetaan 1 akun WL ke 1 nama agensi PENYEDIA akun WL-nya — BEDA dari
 //                  advertiser/brand yang diiklankan. 1 baris per akun, upsert berdasarkan
 //                  akun, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun)
+// Sheet "SaldoAgensi" → kolom: id | tanggal | agensi | nominal | catatan
+//                  (LOG tiap kali ada transfer/saldo titipan masuk ke sebuah agensi — bisa
+//                  BEBERAPA baris per agensi, upsert berdasarkan id, otomatis
+//                  terisi/update/hapus dari menu Top Up Budget → Saldo Titipan Agensi. Sisa
+//                  saldo TIDAK disimpan sebagai kolom terpisah — dihitung otomatis di
+//                  dashboard sebagai total di sini dikurangi total top up di sheet "TopUp"
+//                  untuk akun-akun yang di-assign ke agensi tsb)
 // ============================================================`;
 
 function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
@@ -3097,14 +3172,29 @@ async function pullFromSheet(){
       saveLocalState();
       if(typeof renderTopupPage==='function') renderTopupPage();
     }
+    // ==== SALDO TITIPAN AGENSI: sheet "SaldoAgensi" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countSaldo=0;
+    if(Array.isArray(json.saldoagensi)){
+      SALDO_MASUK = json.saldoagensi.map(r=>({
+        id: r.id || genSaldoId(),
+        tanggal: r.tanggal||'',
+        agensi: String(r.agensi||'').trim(),
+        nominal: (r.nominal!==''&&r.nominal!=null) ? parseFloat(r.nominal) : 0,
+        catatan: r.catatan||''
+      })).filter(s=>s.agensi && s.tanggal);
+      SALDO_MASUK.forEach(s=>{ if(!AGENSI_LIST.includes(s.agensi)) AGENSI_LIST.push(s.agensi); });
+      countSaldo = SALDO_MASUK.length;
+      saveLocalState();
+      if(typeof renderTopupPage==='function') renderTopupPage();
+    }
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCs+' data CS, '+countTu+' top up budget.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCs+' data CS, '+countTu+' top up budget, '+countSaldo+' saldo masuk agensi.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCs+' data CS, dan '+countTu+' top up budget dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCs+' data CS, '+countTu+' top up budget, dan '+countSaldo+' saldo masuk agensi dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
@@ -3212,7 +3302,10 @@ async function pushAllToSheet(){
   for(const akun of Object.keys(ACC_AGENSI)){
     await pushOneToSheet({type:'akunagensi', akun, agensi:ACC_AGENSI[akun]}); sent++;
   }
-  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, data CS, Top Up Budget, dan Agensi Akun) ke spreadsheet.';
+  for(const s of SALDO_MASUK){
+    await pushSaldoMasukRow(s); sent++;
+  }
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, data CS, Top Up Budget, Agensi Akun, dan Saldo Titipan Agensi) ke spreadsheet.';
   msg.style.color='var(--green)';
 }
 document.getElementById('btnPullSheet').onclick = pullFromSheet;
@@ -3660,6 +3753,7 @@ renderCsData();
 let TOPUPS = []; // {id, tanggal, jam, akun, nominal, catatan}
 let AGENSI_LIST = []; // daftar nama agensi (penyedia akun WL) — TERPISAH dari advertiser/brand
 let ACC_AGENSI = {}; // nama akun -> nama agensi
+let SALDO_MASUK = []; // log saldo titipan masuk per agensi: {id, tanggal, agensi, nominal, catatan}
 function addAgensi(){
   const inp = document.getElementById('tuNewAgensiName');
   const name = inp.value.trim();
@@ -3672,6 +3766,8 @@ function addAgensi(){
   renderAccAgensiList();
   renderTopupFilterAkunSelect();
   renderTopupRecap();
+  if(typeof renderSaldoAgensiSelect==='function') renderSaldoAgensiSelect();
+  if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
 }
 function removeAgensi(name){
   const idx = AGENSI_LIST.indexOf(name);
@@ -3685,6 +3781,8 @@ function removeAgensi(name){
   renderAccAgensiList();
   renderTopupFilterAkunSelect();
   renderTopupRecap();
+  if(typeof renderSaldoAgensiSelect==='function') renderSaldoAgensiSelect();
+  if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
   affected.forEach(akun=> pushOneToSheet({type:'akunagensi', akun, agensi:''}));
 }
 function renderAgensiChips(){
@@ -3709,6 +3807,7 @@ function setAccAgensi(accName, agensiVal){
   saveLocalState();
   renderTopupFilterAkunSelect();
   renderTopupRecap();
+  if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
   pushOneToSheet({type:'akunagensi', akun:accName, agensi:agensiVal||''});
 }
 function renderAccAgensiList(){
@@ -3752,6 +3851,155 @@ async function pushTopupRow(t){
 async function pushTopupDelete(t){
   return pushOneToSheet({type:'topup', id:ensureTopupId(t), hapus:true});
 }
+
+/* ============== SALDO TITIPAN AGENSI ==============
+   Konsep: tiap agensi punya saldo titipan (dari transfer ke agensi itu). Tiap top up ke akun
+   yang di-assign ke agensi tsb otomatis mengurangi saldo agensi itu — dihitung langsung dari
+   selisih (total SALDO_MASUK milik agensi) - (total TOPUPS ke akun2 yang ACC_AGENSI-nya
+   agensi itu), tidak perlu field "sisa saldo" tersimpan terpisah supaya selalu akurat &
+   otomatis konsisten kalau ada top up/saldo masuk baru atau dihapus/diedit. */
+function genSaldoId(){ return 'sm_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
+function ensureSaldoId(s){ if(!s.id) s.id = genSaldoId(); return s.id; }
+async function pushSaldoMasukRow(s){
+  return pushOneToSheet({type:'saldoagensi', id:ensureSaldoId(s), tanggal:s.tanggal||'', agensi:s.agensi, nominal:s.nominal, catatan:s.catatan||''});
+}
+async function pushSaldoMasukDelete(s){
+  return pushOneToSheet({type:'saldoagensi', id:ensureSaldoId(s), hapus:true});
+}
+/* Nama-nama agensi yang perlu ditampilkan di kartu saldo: gabungan daftar agensi aktif +
+   nama agensi lama yang masih punya riwayat saldo masuk (biar histori tidak hilang dari
+   tampilan walau agensinya sudah dihapus dari daftar). */
+function saldoAgensiNames(){
+  const names = new Set(AGENSI_LIST);
+  SALDO_MASUK.forEach(s=> names.add(s.agensi));
+  return Array.from(names);
+}
+function computeAgensiBalance(name){
+  const masuk = SALDO_MASUK.filter(s=>s.agensi===name).reduce((sum,s)=> sum+(parseFloat(s.nominal)||0), 0);
+  const akunAgensiIni = Object.keys(ACC_AGENSI).filter(akun=> ACC_AGENSI[akun]===name);
+  const terpakai = TOPUPS.filter(t=> akunAgensiIni.includes(t.akun)).reduce((sum,t)=> sum+(parseFloat(t.nominal)||0), 0);
+  return {masuk, terpakai, sisa: masuk - terpakai};
+}
+function renderSaldoAgensiSelect(){
+  const sel = document.getElementById('saldoAgensiSelect');
+  if(!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— Pilih Agensi —</option>' + AGENSI_LIST.map(a=>'<option value="'+escapeHtml(a)+'">'+escapeHtml(a)+'</option>').join('');
+  if(prev && AGENSI_LIST.includes(prev)) sel.value = prev;
+}
+async function addSaldoMasuk(){
+  const sel = document.getElementById('saldoAgensiSelect');
+  const tanggalEl = document.getElementById('saldoTanggal');
+  const nominalEl = document.getElementById('saldoNominal');
+  const catatanEl = document.getElementById('saldoCatatan');
+  const msg = document.getElementById('saldoMasukMsg');
+  const agensi = sel.value;
+  const tanggal = tanggalEl.value || fmtISO(TODAY_REF);
+  const nominal = parseIndoNumber(nominalEl.value);
+  const catatan = catatanEl.value.trim();
+  if(!agensi){ msg.textContent='Pilih agensi terlebih dahulu.'; msg.style.color='var(--red)'; return; }
+  if(nominal==null || nominal<=0){ msg.textContent='Isi nominal saldo masuk yang valid.'; msg.style.color='var(--red)'; return; }
+  const s = {id:genSaldoId(), tanggal, agensi, nominal, catatan};
+  SALDO_MASUK.push(s);
+  saveLocalState();
+  nominalEl.value=''; catatanEl.value='';
+  renderSaldoAgensiCards();
+  renderSaldoMasukHistory();
+  msg.textContent = '✅ Tersimpan: saldo masuk '+rupiah(nominal)+' untuk '+agensi+' — mengirim ke spreadsheet...';
+  msg.style.color='var(--green)';
+  const st = await pushSaldoMasukRow(s);
+  if(st==='no-url'){ msg.textContent='Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).'; msg.style.color='var(--yellow)'; }
+  else if(st==='ok'){ msg.textContent='✅ Saldo masuk tersimpan & terkirim ke spreadsheet: '+rupiah(nominal)+' — '+agensi; msg.style.color='var(--green)'; }
+  else { msg.textContent='Tersimpan di dashboard, tapi gagal terkirim ke spreadsheet. Cek URL Apps Script & koneksi internet.'; msg.style.color='var(--red)'; }
+}
+function renderSaldoAgensiCards(){
+  const wrap = document.getElementById('saldoAgensiCards');
+  if(!wrap) return;
+  const names = saldoAgensiNames();
+  const rows = names.map(name=> ({name, ...computeAgensiBalance(name)}));
+  if(!rows.length){
+    wrap.innerHTML = '<div class="muted-note">Belum ada agensi atau saldo masuk yang dicatat. Tambahkan agensi di atas, lalu catat saldo masuknya di form "Saldo Titipan Agensi".</div>';
+    return;
+  }
+  rows.sort((a,b)=> b.sisa - a.sisa);
+  wrap.innerHTML = rows.map(r=>{
+    const color = tuAgensiColor(r.name);
+    const isMinus = r.sisa < 0;
+    return '<div class="adv-card tu-card" style="border-left-color:'+color+';">'
+      + '<div class="adv-card-head"><span class="dot" style="background:'+color+';"></span><span class="adv-card-name">'+escapeHtml(r.name)+'</span></div>'
+      + '<div class="tu-hero-lbl" style="margin-bottom:2px;">Sisa Saldo</div>'
+      + '<div class="tu-hero-num" style="font-size:24px;color:'+(isMinus?'var(--red)':'var(--green)')+';">'+rupiah(r.sisa)+'</div>'
+      + '<div class="adv-card-row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);"><span class="k">Total Saldo Masuk</span><span class="v">'+rupiah(r.masuk)+'</span></div>'
+      + '<div class="adv-card-row"><span class="k">Terpakai (Top Up)</span><span class="v">'+rupiah(r.terpakai)+'</span></div>'
+      + (isMinus ? '<div class="adv-card-note" style="color:var(--red);font-style:normal;">⚠️ Saldo minus — top up ke akun agensi ini sudah melebihi saldo titipan yang tercatat.</div>' : '')
+      + '</div>';
+  }).join('');
+}
+function renderSaldoMasukHistory(){
+  const tbody = document.getElementById('tblSaldoMasuk');
+  const totalEl = document.getElementById('saldoMasukHistTotal');
+  if(!tbody) return;
+  const list = SALDO_MASUK.slice().sort((a,b)=> (b.tanggal||'').localeCompare(a.tanggal||''));
+  let total = 0;
+  list.forEach(s=> total += (parseFloat(s.nominal)||0));
+  if(totalEl) totalEl.innerHTML = '<b>'+rupiah(total)+'</b>';
+  if(!list.length){
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);">Belum ada saldo masuk yang dicatat.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(s=>{
+    const color = tuAgensiColor(s.agensi);
+    return '<tr>'
+      + '<td>'+fmtTanggalID(s.tanggal)+'</td>'
+      + '<td><span class="tu-acc-dot" style="background:'+color+';"></span>'+escapeHtml(s.agensi)+'</td>'
+      + '<td style="font-weight:700;">'+rupiah(s.nominal)+'</td>'
+      + '<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+escapeHtml(s.catatan||'-')+'">'+escapeHtml(s.catatan||'-')+'</td>'
+      + '<td><button class="icon-btn" data-del-saldo="'+escapeHtml(s.id)+'" title="Hapus">🗑</button></td>'
+      + '</tr>';
+  }).join('');
+  tbody.querySelectorAll('[data-del-saldo]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      e.preventDefault();
+      const id = btn.getAttribute('data-del-saldo');
+      if(btn.getAttribute('data-confirm')==='1'){
+        const i = SALDO_MASUK.findIndex(s=>s.id===id);
+        const s = i>=0 ? SALDO_MASUK[i] : null;
+        if(i>=0) SALDO_MASUK.splice(i,1);
+        saveLocalState();
+        renderSaldoAgensiCards();
+        renderSaldoMasukHistory();
+        if(s) pushSaldoMasukDelete(s);
+        return;
+      }
+      btn.setAttribute('data-confirm','1');
+      btn.textContent = '✔ Yakin?';
+      btn.style.background = 'var(--bad)';
+      btn.style.color = '#fff';
+      btn.style.padding = '4px 8px';
+      btn.style.width = 'auto';
+      clearTimeout(btn._confirmTimer);
+      btn._confirmTimer = setTimeout(()=>{
+        btn.removeAttribute('data-confirm');
+        btn.textContent = '🗑';
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.padding = '';
+        btn.style.width = '';
+      }, 3000);
+    };
+  });
+}
+document.getElementById('btnAddSaldoMasuk').addEventListener('click', addSaldoMasuk);
+document.getElementById('saldoNominal').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addSaldoMasuk(); } });
+document.getElementById('saldoCatatan').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addSaldoMasuk(); } });
+document.getElementById('tuToggleSaldoHist').addEventListener('click', ()=>{
+  const wrap = document.getElementById('saldoMasukHistWrap');
+  const btn = document.getElementById('tuToggleSaldoHist');
+  const isOpen = wrap.style.display !== 'none';
+  wrap.style.display = isOpen ? 'none' : '';
+  btn.textContent = (isOpen? 'Tampilkan':'Sembunyikan')+' riwayat '+(isOpen?'▾':'▴');
+});
+
 function nowHHMM(){
   const d = new Date();
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
@@ -4018,6 +4266,7 @@ function renderTopupHistory(){
         if(i>=0) TOPUPS.splice(i,1);
         saveLocalState();
         renderTopupPage();
+        if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
         if(t) pushTopupDelete(t);
         return;
       }
@@ -4047,6 +4296,9 @@ function renderTopupPage(){
   renderTopupSummaryForDate();
   renderTopupHistory();
   renderTopupRecap();
+  if(typeof renderSaldoAgensiSelect==='function') renderSaldoAgensiSelect();
+  if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
+  if(typeof renderSaldoMasukHistory==='function') renderSaldoMasukHistory();
 }
 async function saveAllTopup(){
   const dateVal = document.getElementById('tuSharedDate').value;
@@ -4074,6 +4326,7 @@ async function saveAllTopup(){
   renderTopupSummaryForDate();
   renderTopupHistory();
   renderTopupRecap();
+  if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
   const firstInput = document.querySelector('.tuAccInput');
   if(firstInput) firstInput.focus();
   msg.textContent = '✅ Tersimpan: '+saved.length+' akun · '+fmtTanggalID(dateVal)+' — mengirim ke spreadsheet...';
@@ -4128,6 +4381,7 @@ function saveLocalState(){
       topups: TOPUPS,
       agensiList: AGENSI_LIST,
       accAgensi: ACC_AGENSI,
+      saldoMasuk: SALDO_MASUK,
       appsScriptUrl: document.getElementById('appsScriptUrl').value,
       savedAt: new Date().toISOString()
     };
@@ -4163,6 +4417,7 @@ function loadLocalState(){
     TOPUPS = Array.isArray(state.topups) ? state.topups : [];
     AGENSI_LIST = Array.isArray(state.agensiList) ? state.agensiList : [];
     ACC_AGENSI = (state.accAgensi && typeof state.accAgensi==='object') ? state.accAgensi : {};
+    SALDO_MASUK = Array.isArray(state.saldoMasuk) ? state.saldoMasuk : [];
     selectedAccounts = new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id));
     if(state.appsScriptUrl) document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
     return true;
@@ -4187,6 +4442,7 @@ function resetAllData(){
   TOPUPS = [];
   AGENSI_LIST = [];
   ACC_AGENSI = {};
+  SALDO_MASUK = [];
   renderAccountGroups();
   renderInputSelectors();
   renderTargetRows();
@@ -4949,6 +5205,8 @@ applyTheme(getSavedTheme());
   document.getElementById('tuSharedDate').value = fmtISO(TODAY_REF);
   document.getElementById('tuFilterFrom').value = fmtISO(new Date(TODAY_REF.getFullYear(), TODAY_REF.getMonth(), TODAY_REF.getDate()-6));
   document.getElementById('tuFilterTo').value = fmtISO(TODAY_REF);
+  const saldoTanggalEl = document.getElementById('saldoTanggal');
+  if(saldoTanggalEl) saldoTanggalEl.value = fmtISO(TODAY_REF);
   renderTopupPage();
   const tuReadableEl = document.getElementById('tuSharedDateReadable');
   if(tuReadableEl) tuReadableEl.textContent = TODAY_REF.toLocaleDateString('id-ID',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
