@@ -182,6 +182,39 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .adv-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;}
 .adv-card-chart-title{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--line);}
 .adv-card-chart-wrap{position:relative;height:100px;}
+#tblAdvertiser{display:flex;flex-direction:column;gap:14px;}
+.adv-card-pair{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+.adv-card-pair .adv-card{flex:1 1 300px;}
+.tu-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.tu-chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;user-select:none;transition:border-color .15s,color .15s,background .15s;}
+.tu-chip:hover{border-color:var(--accent);color:var(--accent);}
+.tu-nominal-wrap{position:relative;}
+.tu-nominal-preview{font-size:11.5px;color:var(--green);font-weight:700;margin-top:5px;min-height:15px;font-variant-numeric:tabular-nums;}
+.tu-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:16px;}
+.tu-hero-lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.tu-hero-num{font-family:'Roboto',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.01em;color:var(--green);line-height:1.1;}
+.tu-hero-sub{font-size:12px;color:var(--muted);}
+.tu-acc-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;flex-shrink:0;vertical-align:middle;}
+.tu-group-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:14px 0 6px;padding-top:8px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px;}
+.tu-agensi-list-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 20px;}
+.tu-agensi-list-grid .tu-group-label{grid-column:1/-1;}
+.tu-agensi-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);}
+.tu-agensi-row span{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tu-agensi-row select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:4px 6px;font-size:11px;min-width:110px;flex-shrink:0;}
+@media(max-width:640px){.tu-agensi-list-grid{grid-template-columns:1fr;}}
+.tu-group-label:first-child{margin-top:0;padding-top:0;border-top:none;}
+.adv-card.tu-card{border-left:3px solid var(--line);}
+.adv-week-card{flex:1 1 360px;display:flex;flex-direction:column;gap:12px;}
+@media(max-width:700px){ .adv-week-card{flex:1 1 100%;} }
+
+.week-result-card{border-radius:10px;overflow:hidden;border:1px solid var(--line);}
+.wrc-banner{background:#111;color:#F5D90A;text-align:center;font-weight:800;font-size:12.5px;letter-spacing:.02em;padding:9px 10px;text-transform:uppercase;font-family:'Roboto',sans-serif;}
+.wrc-table{width:100%;border-collapse:collapse;background:#fff;font-family:'Roboto',sans-serif;}
+.wrc-table thead th{background:var(--greendark);color:#fff;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;padding:7px 6px;text-align:center;border:1px solid rgba(255,255,255,.15);}
+.wrc-table tr.wrc-sub td{background:var(--green);color:#0b2b26;font-size:10.5px;font-weight:700;text-align:center;padding:5px 6px;border:1px solid rgba(0,0,0,.08);}
+.wrc-table tbody tr:not(.wrc-sub) td{background:#fff;color:#111;font-weight:800;font-size:13px;text-align:center;padding:8px 6px;border:1px solid #e5e5e5;font-variant-numeric:tabular-nums;}
+.wrc-table td.wrc-hl{background:#FDE047;color:#111;}
+.wrc-table td.wrc-hl-head{background:var(--greendark);}
 .acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
 .acc-total-bar b{font-family:'Roboto',sans-serif;color:var(--green);margin-left:4px;}
 
@@ -456,6 +489,7 @@ try{
     <div class="navbtn active" data-page="overview"><span class="ic">◧</span> Overview</div>
     <div class="navbtn" data-page="advertiser"><span class="ic">▤</span> Data Hasil Advertiser</div>
     <div class="navbtn" data-page="akun"><span class="ic">▥</span> Data Akun</div>
+    <div class="navbtn" data-page="topup"><span class="ic">💳</span> Top Up Budget</div>
     <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
     <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
     <div class="navbtn" data-page="cs"><span class="ic">📞</span> Hasil CS</div>
@@ -653,6 +687,129 @@ try{
   </div>
 </div><!-- /page-akun -->
 
+<div class="page" id="page-topup">
+  <div class="section-header" style="margin-top:0;"><h1>Top Up Budget</h1><div class="muted-note">Input cepat top up per akun, harian — bisa disimpan berkali-kali dalam sehari (top up bertahap), totalnya otomatis terjumlah</div></div>
+
+  <div class="section-header"><h2>Catat Top Up Harian</h2><div class="muted-note">Isi cepat — pilih advertiser & isi nominal tiap akun yang di-top up, sisanya otomatis</div></div>
+
+  <div class="daterow-banner" id="tuSharedDateBanner">
+    <div class="daterow-left">
+      <span class="daterow-icon">📅</span>
+      <div>
+        <div class="daterow-label">Tanggal untuk top up di bawah</div>
+        <div class="daterow-readable" id="tuSharedDateReadable">-</div>
+      </div>
+    </div>
+    <div class="daterow-right">
+      <input type="date" id="tuSharedDate">
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="gap:14px;align-items:start;">
+    <div>
+      <div class="account-picker compact-form">
+        <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📋 Top Up per Akun</h3>
+
+        <div class="muted-note" style="margin:2px 0 6px;font-weight:600;color:var(--text);">💳 Nominal Top Up per Akun (semua advertiser)</div>
+        <div id="tuAccTopupList"></div>
+
+        <div class="target-row" style="grid-template-columns:1fr;margin-top:4px;"><label>Catatan (opsional, berlaku untuk semua akun yang diisi)</label><input type="text" id="tuSharedCatatan" placeholder="cth: top up ke-2 hari ini"></div>
+
+        <button class="btn" id="btnSaveAllTopup" style="margin-top:6px;width:100%;">💾 Simpan Top Up</button>
+        <div class="muted-note" id="allTopupMsg" style="margin-top:6px;font-size:11.5px;"></div>
+      </div>
+      <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: pilih advertiser sekali, isi nominal tiap akun yang di-top up sekaligus, lalu tekan <b>Enter</b> atau tombol Simpan. Kolom di bawah tiap akun otomatis menghitung total top up tanggal itu — termasuk yang baru diketik. Setelah simpan, kolom otomatis bersih dan siap dipakai lagi kalau ada top up susulan hari yang sama (advertiser &amp; tanggal tetap sama).</div>
+    </div>
+    <div class="account-picker compact-form">
+      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Ringkasan Top Up</h3>
+      <div class="muted-note" id="tuTodaySummaryNote" style="margin-bottom:10px;">Terhitung otomatis untuk tanggal yang dipilih di atas</div>
+      <div class="tu-hero">
+        <div>
+          <div class="tu-hero-lbl">Total Top Up Tanggal Ini</div>
+          <div class="tu-hero-num" id="tuHeroTotal">Rp 0</div>
+          <div class="tu-hero-sub" id="tuHeroSub">Belum ada top up</div>
+        </div>
+      </div>
+      <div class="adv-cards-grid" id="tuTodaySummary"></div>
+    </div>
+  </div>
+
+  <div class="section-header"><h2>Kelola Agensi Akun</h2><div class="muted-note">Agensi = penyedia akun WL-nya, beda dari advertiser/brand yang diiklankan — dipakai buat filter &amp; rekap audit di bawah</div></div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="target-row" style="grid-template-columns:2fr auto;align-items:end;">
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Tambah nama agensi baru</label>
+        <input type="text" id="tuNewAgensiName" placeholder="cth: Agensi Mitra A">
+      </div>
+      <button class="btn" id="btnAddAgensi" style="white-space:nowrap;">+ Tambah Agensi</button>
+    </div>
+    <div id="tuAgensiChips" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:7px;"></div>
+    <div class="muted-note" id="tuAgensiListNote" style="margin-top:6px;">Belum ada agensi ditambahkan.</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 6px;">
+      <span class="muted-note" style="font-weight:600;color:var(--text);margin:0;">Set agensi tiap akun</span>
+      <span class="tu-chip" id="tuToggleAgensiList" style="cursor:pointer;">Tampilkan daftar akun ▾</span>
+    </div>
+    <div id="tuAccAgensiList" class="tu-agensi-list-grid" style="display:none;"></div>
+  </div>
+
+  <div class="section-header"><h2>Riwayat Top Up</h2><div class="muted-note" id="tuHistCount">0 top up tercatat</div></div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="grid grid-4">
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Agensi</label>
+        <select id="tuFilterAdv" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;"><option value="">Semua Agensi</option></select>
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Akun</label>
+        <select id="tuFilterAkun" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;"><option value="">Semua Akun</option></select>
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Dari Tanggal</label>
+        <input type="date" id="tuFilterFrom" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;">Sampai Tanggal</label>
+        <input type="date" id="tuFilterTo" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
+      </div>
+    </div>
+  </div>
+
+  <div class="period-btns" id="tuViewTabs" style="margin-bottom:12px;">
+    <div class="period-btn active" data-tuview="recap">📊 Rekap per Akun (buat audit)</div>
+    <div class="period-btn" data-tuview="detail">📋 Detail Transaksi</div>
+  </div>
+
+  <div id="tuRecapView">
+    <div class="muted-note" style="margin:-4px 0 10px;">Sudah dijumlahkan otomatis per akun untuk periode &amp; filter di atas — tinggal cocokkan angkanya, tidak perlu jumlahin satu-satu baris top up.</div>
+    <div class="chart-card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>Akun</th><th>Jumlah Top Up</th><th>Total Nominal</th>
+          </tr></thead>
+          <tbody id="tblTopupRecap"></tbody>
+        </table>
+      </div>
+      <div class="acc-total-bar"><span>Total (sesuai filter)</span><span id="tuRecapTotal">Rp 0</span></div>
+    </div>
+  </div>
+
+  <div id="tuDetailView" style="display:none;">
+    <div class="chart-card">
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>Tanggal</th><th>Jam</th><th>Akun</th><th>Advertiser</th><th>Nominal</th><th>Catatan</th><th>Aksi</th>
+          </tr></thead>
+          <tbody id="tblTopups"></tbody>
+        </table>
+      </div>
+      <div class="acc-total-bar"><span>Total (sesuai filter)</span><span id="tuHistTotal">Rp 0</span></div>
+    </div>
+  </div>
+</div><!-- /page-topup -->
+
+
 <div class="page" id="page-input">
   <div class="section-header" style="margin-top:0;"><h1>Data Input</h1><div class="muted-note">Input cepat budget per akun &amp; lead per advertiser, harian</div></div>
 
@@ -719,7 +876,7 @@ try{
     </div>
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--green);">Berhasil menarik 231 baris akun &amp; 109 baris lead dari spreadsheet.</div>
     <div id="scriptBox" style="display:none;">
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 7 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis).</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 9 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TopUp</code> (kolom: id, tanggal, jam, akun, nominal, catatan — LOG tiap kali top up budget dicatat per akun WL, bisa beberapa baris per akun per hari untuk top up bertahap, otomatis terisi/update/hapus dari menu Top Up Budget), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunAgensi</code> (kolom: akun, agensi — pemetaan 1 akun WL ke 1 nama agensi penyedia, BEDA dari advertiser/brand, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun).</div>
       <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
@@ -1387,6 +1544,63 @@ function sliceIn(series, range){ const [s,e]=indicesForRange(range); return seri
 function datesIn(range){ const [s,e]=indicesForRange(range); return ALL_DATES.slice(s,e+1); }
 function trendLabels(range){ return datesIn(range).map(d=>d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})); }
 function daysIn(range){ const [s,e]=indicesForRange(range); return e-s+1; }
+const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const MINGGU_ORDINAL = ['Pertama','Kedua','Ketiga','Keempat','Kelima','Keenam'];
+function fmtDayMonth(d){ return d.getDate()+' '+BULAN_ID[d.getMonth()]+' '+d.getFullYear(); }
+function fmtWeekRangeLabel(start, end){
+  if(start.getMonth()===end.getMonth() && start.getFullYear()===end.getFullYear()){
+    return start.getDate()+'-'+end.getDate()+' '+BULAN_ID[end.getMonth()]+' '+end.getFullYear();
+  }
+  return start.getDate()+' '+BULAN_ID[start.getMonth()]+' - '+fmtDayMonth(end);
+}
+// Pecah data harian jadi kelompok per minggu (7 hari) dalam periode yang dipilih, lengkap dengan target per minggu.
+function weeklyBreakdown(adv, dailySpend, dailyLeadReal, dailyLeadOO, dates){
+  const weeks=[];
+  for(let i=0;i<dailySpend.length;i+=7){
+    const wDates = dates.slice(i,i+7);
+    if(!wDates.length) continue;
+    const spend = dailySpend.slice(i,i+7).reduce((a,b)=>a+b,0);
+    const leadReal = dailyLeadReal.slice(i,i+7).reduce((a,b)=>a+b,0);
+    const leadOO = dailyLeadOO.slice(i,i+7).reduce((a,b)=>a+b,0);
+    const start = wDates[0], end = wDates[wDates.length-1];
+    const target = calcTargetInRange(adv, [start,end]);
+    const targetLead = target>0 ? Math.round(target/CPL_BENCHMARK) : 0;
+    weeks.push({start, end, spend, leadReal, leadOO, target, targetLead});
+  }
+  return weeks;
+}
+function weeklyResultCardHtml(adv, w, idx){
+  const diffSpend = w.spend - w.target;
+  const diffLead = w.leadReal - w.targetLead;
+  const cplReal = w.leadReal>0 ? w.spend/w.leadReal : 0;
+  const cplOO = w.leadOO>0 ? w.spend/w.leadOO : 0;
+  const pctLead = w.leadOO>0 ? w.leadReal/w.leadOO*100 : 0;
+  const spendColor = diffSpend>0 ? 'var(--red)' : (diffSpend<0 ? 'var(--green)' : 'var(--text)');
+  const leadColor = diffLead<0 ? 'var(--red)' : (diffLead>0 ? 'var(--green)' : 'var(--text)');
+  const label = 'MINGGU '+(MINGGU_ORDINAL[idx]||(idx+1)).toString().toUpperCase();
+  return ''+
+  '<div class="week-result-card">'+
+    '<div class="wrc-banner">HASIL '+adv+' '+label+' &middot; '+fmtWeekRangeLabel(w.start,w.end)+'</div>'+
+    '<table class="wrc-table">'+
+      '<thead><tr><th>HASIL MINGGU '+(idx+1)+'</th><th>TARGET</th><th>KURANG/LEBIH</th></tr></thead>'+
+      '<tbody>'+
+        '<tr class="wrc-sub"><td>Spending + PPN</td><td>Spending + PPN</td><td>Spending + PPN</td></tr>'+
+        '<tr><td>'+rupiah(w.spend)+'</td><td>'+rupiah(w.target)+'</td><td style="color:'+spendColor+';font-weight:800;">'+(diffSpend>0?'+':'')+rupiah(diffSpend)+'</td></tr>'+
+        '<tr class="wrc-sub"><td>Lead Real</td><td>Lead Real</td><td>Lead Real</td></tr>'+
+        '<tr><td>'+num(w.leadReal)+'</td><td>'+num(w.targetLead)+'</td><td style="color:'+leadColor+';font-weight:800;">'+(diffLead>0?'+':'')+num(diffLead)+'</td></tr>'+
+        '<tr class="wrc-sub"><td>Avg. CPL + PPN</td><td>Target CPL</td><td class="wrc-hl-head">CPL Order Online</td></tr>'+
+        '<tr><td>'+rupiah(cplReal)+'</td><td>'+rupiah(CPL_BENCHMARK)+'</td><td class="wrc-hl">'+rupiah(cplOO)+'</td></tr>'+
+        '<tr class="wrc-sub"><td>Lead Order Online</td><td>Lead Real</td><td>Presentasi Lead</td></tr>'+
+        '<tr><td>'+num(w.leadOO)+'</td><td>'+num(w.targetLead)+'</td><td>'+pctLead.toFixed(2).replace('.',',')+'%</td></tr>'+
+      '</tbody>'+
+    '</table>'+
+  '</div>';
+}
+function weeklyBreakdownCard(adv, dailySpend, dailyLeadReal, dailyLeadOO, dates){
+  const weeks = weeklyBreakdown(adv, dailySpend, dailyLeadReal, dailyLeadOO, dates);
+  if(weeks.length<=1) return '';
+  return '<div class="adv-week-card">'+weeks.map((w,i)=>weeklyResultCardHtml(adv,w,i)).join('')+'</div>';
+}
 
 // Periode sebelumnya dengan durasi yang sama, langsung sebelum range saat ini.
 function getPrevRange(range){
@@ -1824,6 +2038,7 @@ function render(){
     // --- data harian untuk mini grafik trend di kartu ---
     const dailySpendPPN = sliceIn(ALL_DATES.map((_,i)=> relevantAccs.reduce((s,a)=> s + (ownerAtIndex(a,i)===adv ? (a.spendSeries[i]||0) : 0), 0)), range);
     const dailyLeadReal = sliceIn(ADV_LEADS[adv].real, range);
+    const dailyLeadOO = sliceIn(ADV_LEADS[adv].oo, range);
 
     // --- periode sebelumnya (untuk badge naik/turun) ---
     const pBudget = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,prevRange),0);
@@ -1836,7 +2051,7 @@ function render(){
     const pTarget = calcTargetInRange(adv, prevRange);
     const pKekurangan = pSpendPPN - pTarget;
 
-    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch, dailySpendPPN, dailyLeadReal,
+    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch, dailySpendPPN, dailyLeadReal, dailyLeadOO,
       prev:{real:pReal, oo:pOO, pctLead:pPctLead, budget:pBudget, spendPPN:pSpendPPN, kekurangan:pKekurangan, cplReal:pCplReal, cplOO:pCplOO}};
   }).filter(Boolean);
   document.getElementById('kpiLeads').textContent = num(totalLeadsReal);
@@ -1846,6 +2061,7 @@ function render(){
   if(document.getElementById('laporanTable')) renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, totalCPLReal, range);
 
   document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map((r,idx)=>
+    '<div class="adv-card-pair">'+
     '<div class="adv-card">'+
       '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.adv]+'"></span><span class="adv-card-name">'+r.adv+'</span>'+
       (r.anySwitch?'<span class="tag blue" style="margin-left:auto;font-size:10px;" title="Ada akun yang pindah advertiser di periode ini — angka sudah dihitung sesuai pemilik pada tanggalnya masing-masing">🔀 ADA PERPINDAHAN AKUN</span>':'')+
@@ -1861,6 +2077,8 @@ function render(){
       '<div class="adv-card-chart-title">Tren Harian — Spend &amp; Lead Real</div>'+
       '<div class="adv-card-chart-wrap"><canvas id="advCardChart_'+idx+'"></canvas></div>'+
       '<div class="adv-card-note">dibandingkan periode sebelumnya (durasi sama)</div>'+
+    '</div>'+
+    weeklyBreakdownCard(r.adv, r.dailySpendPPN, r.dailyLeadReal, r.dailyLeadOO, datesIn(range))+
     '</div>'
   ).join('') : '<div class="muted-note">Tidak ada data</div>';
 
@@ -2251,6 +2469,9 @@ function renderInputSelectors(){
   const csAdvSel = document.getElementById('csAdvertiser');
   if(csAdvSel) csAdvSel.innerHTML = ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
   if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
+  if(typeof renderTopupFilterAkunSelect==='function') renderTopupFilterAkunSelect();
+  if(typeof renderTopupAccList==='function' && document.getElementById('tuAccTopupList')) renderTopupAccList();
+  if(typeof renderAccAgensiList==='function' && document.getElementById('tuAccAgensiList')) renderAccAgensiList();
   renderAccBudgetRows();
   renderInsightPanel();
 }
@@ -2361,6 +2582,8 @@ function doGet(e){
   var targetSheet = ss.getSheetByName('Target');
   var tcSheet = ss.getSheetByName('TestCampaign');
   var csSheet = ss.getSheetByName('CS');
+  var topupSheet = ss.getSheetByName('TopUp');
+  var agensiSheet = ss.getSheetByName('AkunAgensi');
   var akun = sheetToObjects(akunSheet);
   var leads = sheetToObjects(leadSheet);
   var akunwl = sheetToObjects(akunWlSheet);
@@ -2368,7 +2591,9 @@ function doGet(e){
   var target = sheetToObjects(targetSheet);
   var testcampaign = sheetToObjects(tcSheet);
   var csdata = sheetToObjects(csSheet);
-  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata});
+  var topup = sheetToObjects(topupSheet);
+  var akunagensi = sheetToObjects(agensiSheet);
+  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, topup: topup, akunagensi: akunagensi});
 }
 
 function doPost(e){
@@ -2388,6 +2613,10 @@ function doPost(e){
     upsertTestCampaign(ss, data);
   } else if(data.type === 'cs'){
     upsertCsData(ss, data);
+  } else if(data.type === 'topup'){
+    upsertTopUp(ss, data);
+  } else if(data.type === 'akunagensi'){
+    upsertAkunAgensi(ss, data);
   }
   return jsonOutput({status:'ok'});
 }
@@ -2547,6 +2776,45 @@ function upsertTestCampaign(ss, data){
   sh.appendRow([id, data.advertiser, data.nama, data.tanggal, data.status, data.spending, data.hasillead, data.cpc, data.ctr, data.cpm, data.cpr]);
 }
 
+// Sheet "TopUp" = LOG tiap kali top up budget dicatat per akun WL (bisa beberapa baris per akun
+// per hari, beda dari sheet "Akun" yang cuma 1 angka budget per akun per tanggal). Upsert
+// berdasarkan kolom "id" (dibuat otomatis oleh dashboard) — kalau id sudah ada, baris lama
+// DITIMPA; kalau data.hapus true, baris dengan id tsb dihapus.
+function upsertTopUp(ss, data){
+  var sh = ss.getSheetByName('TopUp');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var id = String(data.id).trim();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim() === id){
+      if(data.hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,6).setValues([[id, data.tanggal, data.jam, data.akun, data.nominal, data.catatan]]);
+      return;
+    }
+  }
+  if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
+  sh.appendRow([id, data.tanggal, data.jam, data.akun, data.nominal, data.catatan]);
+}
+
+// Sheet "AkunAgensi" = pemetaan 1 akun WL -> 1 nama agensi (penyedia akun WL-nya, BEDA dari
+// advertiser/brand yang diiklankan). Upsert berdasarkan kolom "akun" (1 baris per akun,
+// ditimpa kalau agensinya diganti); kalau data.agensi kosong, baris akun tsb dihapus.
+function upsertAkunAgensi(ss, data){
+  var sh = ss.getSheetByName('AkunAgensi');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var akun = String(data.akun).trim();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim() === akun){
+      if(!data.agensi){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,2).setValues([[akun, data.agensi]]);
+      return;
+    }
+  }
+  if(!data.agensi) return; // tidak ada baris yang cocok untuk dihapus
+  sh.appendRow([akun, data.agensi]);
+}
+
 function sheetToObjects(sheet){
   if(!sheet) return [];
   var rows = sheet.getDataRange().getValues();
@@ -2586,6 +2854,14 @@ function jsonOutput(obj){
 //                  (1 baris per CS per tanggal per advertiser — upsert berdasarkan
 //                  tanggal+cs+advertiser, ditimpa kalau diinput ulang; closing rate =
 //                  hasilclosing ÷ leadreal, dihitung otomatis di dashboard)
+// Sheet "TopUp" → kolom: id | tanggal | jam | akun | nominal | catatan
+//                  (LOG tiap kali top up budget dicatat per akun WL — bisa BEBERAPA baris
+//                  per akun per hari untuk top up bertahap, upsert berdasarkan id,
+//                  otomatis terisi/update/hapus dari menu Top Up Budget)
+// Sheet "AkunAgensi" → kolom: akun | agensi
+//                  (pemetaan 1 akun WL ke 1 nama agensi PENYEDIA akun WL-nya — BEDA dari
+//                  advertiser/brand yang diiklankan. 1 baris per akun, upsert berdasarkan
+//                  akun, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun)
 // ============================================================`;
 
 function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
@@ -2790,15 +3066,45 @@ async function pullFromSheet(){
       if(typeof renderCsTabs==='function') renderCsTabs();
       if(typeof renderCsData==='function') renderCsData();
     }
-    const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus dari dashboard karena sudah tidak ada di sheet AkunWL.') : '';
+    // ==== TOP UP BUDGET: sheet "TopUp" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countTu=0;
+    if(Array.isArray(json.topup)){
+      TOPUPS = json.topup.map(r=>({
+        id: r.id || genTopupId(),
+        tanggal: r.tanggal||'',
+        jam: r.jam||'',
+        akun: String(r.akun||'').trim(),
+        nominal: (r.nominal!==''&&r.nominal!=null) ? parseFloat(r.nominal) : 0,
+        catatan: r.catatan||''
+      })).filter(t=>t.akun && t.tanggal);
+      countTu = TOPUPS.length;
+      saveLocalState();
+      if(typeof renderTopupPage==='function') renderTopupPage();
+    }
+    // ==== AGENSI AKUN: sheet "AkunAgensi" jadi sumber kebenaran buat pemetaan akun->agensi ====
+    let countAgensi=0;
+    if(Array.isArray(json.akunagensi)){
+      const newAccAgensi = {};
+      json.akunagensi.forEach(r=>{
+        const akun = String(r.akun||'').trim();
+        const agensi = String(r.agensi||'').trim();
+        if(akun && agensi) newAccAgensi[akun] = agensi;
+      });
+      ACC_AGENSI = newAccAgensi;
+      const namesFromSheet = new Set(Object.values(ACC_AGENSI));
+      namesFromSheet.forEach(n=>{ if(!AGENSI_LIST.includes(n)) AGENSI_LIST.push(n); });
+      countAgensi = Object.keys(ACC_AGENSI).length;
+      saveLocalState();
+      if(typeof renderTopupPage==='function') renderTopupPage();
+    }
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCs+' data CS.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCs+' data CS, '+countTu+' top up budget.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, dan '+countCs+' data CS dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCs+' data CS, dan '+countTu+' top up budget dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
@@ -2900,7 +3206,13 @@ async function pushAllToSheet(){
   for(const c of CS_DATA){
     await pushCsRow(c); sent++;
   }
-  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, dan data CS) ke spreadsheet.';
+  for(const t of TOPUPS){
+    await pushTopupRow(t); sent++;
+  }
+  for(const akun of Object.keys(ACC_AGENSI)){
+    await pushOneToSheet({type:'akunagensi', akun, agensi:ACC_AGENSI[akun]}); sent++;
+  }
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, data CS, Top Up Budget, dan Agensi Akun) ke spreadsheet.';
   msg.style.color='var(--green)';
 }
 document.getElementById('btnPullSheet').onclick = pullFromSheet;
@@ -3040,11 +3352,8 @@ function renderTestCampaigns(){
       +'<td class="metric-col">'+metricInput(c._idx,'cpc',c.cpc)+'</td>'
       +'<td class="metric-col">'+metricInput(c._idx,'ctr',c.ctr)+'</td>'
       +'<td class="metric-col">'+metricInput(c._idx,'cpm',c.cpm)+'</td>'
-      +'<td class="metric-col" id="cprCell-'+c._idx+'" style="font-weight:600;">'+(calcCpr(c)!=null ? rupiah(calcCpr(c)) : '-')+'</td>'
-      +'<td style="white-space:nowrap;">'
-        +'<span id="rowStatus-'+c._idx+'" style="display:inline-block;min-width:16px;text-align:center;margin-right:6px;font-size:13px;vertical-align:middle;"></span>'
-        +'<button class="icon-btn" data-del-testcampaign="'+c._idx+'" title="Hapus">🗑</button>'
-      +'</td>'
+      +'<td class="metric-col" style="font-weight:600;">'+(calcCpr(c)!=null ? rupiah(calcCpr(c)) : '-')+'</td>'
+      +'<td><button class="icon-btn" data-del-testcampaign="'+c._idx+'" title="Hapus">🗑</button></td>'
       +'</tr>';
   }).join('');
   tbody.querySelectorAll('[data-del-testcampaign]').forEach(btn=>{
@@ -3077,19 +3386,6 @@ function renderTestCampaigns(){
     };
   });
   tbody.querySelectorAll('[data-metric-idx]').forEach(inp=>{
-    // Update CPR & tandai "belum tersimpan" langsung saat mengetik (real-time), tanpa nunggu pindah kolom
-    inp.addEventListener('input', ()=>{
-      const i = parseInt(inp.getAttribute('data-metric-idx'));
-      const field = inp.getAttribute('data-metric-field');
-      const v = inp.value;
-      if(!TEST_CAMPAIGNS[i]) return;
-      const preview = {...TEST_CAMPAIGNS[i], [field]: (v!==''? parseFloat(v) : null)};
-      const cprCell = document.getElementById('cprCell-'+i);
-      if(cprCell) cprCell.textContent = (calcCpr(preview)!=null ? rupiah(calcCpr(preview)) : '-');
-      inp.style.borderColor = 'var(--yellow)';
-      setRowStatus(i, 'editing');
-    });
-    // Simpan ke storage + kirim ke spreadsheet saat pindah dari kolom (blur/enter)
     inp.addEventListener('change', ()=>{
       const i = parseInt(inp.getAttribute('data-metric-idx'));
       const field = inp.getAttribute('data-metric-field');
@@ -3097,15 +3393,11 @@ function renderTestCampaigns(){
       if(TEST_CAMPAIGNS[i]){
         TEST_CAMPAIGNS[i][field] = (v!==''? parseFloat(v) : null);
         saveLocalState();
-        const cprCell = document.getElementById('cprCell-'+i);
-        if(cprCell) cprCell.textContent = (calcCpr(TEST_CAMPAIGNS[i])!=null ? rupiah(calcCpr(TEST_CAMPAIGNS[i])) : '-');
-        setRowStatus(i, 'saving');
         setTcSyncMsg('Menyimpan perubahan ke spreadsheet...', 'var(--muted)');
         pushTestCampaignRow(TEST_CAMPAIGNS[i]).then(st=>{
-          if(st==='ok'){ setRowStatus(i,'ok'); inp.style.borderColor='var(--green)'; setTcSyncMsg('✅ Perubahan tersimpan ke spreadsheet.', 'var(--green)'); }
-          else if(st==='no-url'){ setRowStatus(i,'no-url'); inp.style.borderColor='var(--yellow)'; setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet.', 'var(--yellow)'); }
-          else { setRowStatus(i,'error'); inp.style.borderColor='var(--red)'; setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet.', 'var(--red)'); }
-          setTimeout(()=>{ inp.style.borderColor=''; }, 2500);
+          if(st==='ok') setTcSyncMsg('✅ Perubahan tersimpan ke spreadsheet.', 'var(--green)');
+          else if(st==='no-url') setTcSyncMsg('Tersimpan di dashboard. Belum terhubung ke spreadsheet.', 'var(--yellow)');
+          else setTcSyncMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet.', 'var(--red)');
         });
       }
     });
@@ -3132,19 +3424,7 @@ function metricInput(idx, field, val){
   const v = (val===null||val===undefined) ? '' : val;
   const step = field==='ctr' ? '0.01' : '1';
   const width = (field==='spending' || field==='cpm') ? '130px' : '90px';
-  return '<input type="number" step="'+step+'" placeholder="-" value="'+escapeHtml(v)+'" data-metric-idx="'+idx+'" data-metric-field="'+field+'" style="width:'+width+';background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;font-variant-numeric:tabular-nums;transition:border-color .25s ease;">';
-}
-function setRowStatus(idx, state){
-  const el = document.getElementById('rowStatus-'+idx);
-  if(!el) return;
-  clearTimeout(el._fadeTimer);
-  el.style.opacity = '1';
-  if(state==='editing'){ el.textContent='✏️'; el.title='Belum tersimpan'; }
-  else if(state==='saving'){ el.textContent='⏳'; el.title='Menyimpan...'; }
-  else if(state==='ok'){ el.textContent='✅'; el.title='Tersimpan ke spreadsheet'; el._fadeTimer=setTimeout(()=>{ el.style.transition='opacity .8s ease'; el.style.opacity='0'; }, 2500); }
-  else if(state==='no-url'){ el.textContent='⚠️'; el.title='Tersimpan di dashboard, belum terhubung spreadsheet'; }
-  else if(state==='error'){ el.textContent='❌'; el.title='Gagal mengirim ke spreadsheet'; }
-  else { el.textContent=''; }
+  return '<input type="number" step="'+step+'" placeholder="-" value="'+escapeHtml(v)+'" data-metric-idx="'+idx+'" data-metric-field="'+field+'" style="width:'+width+';background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;font-variant-numeric:tabular-nums;">';
 }
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -3370,6 +3650,465 @@ renderCsChips();
 renderCsTabs();
 renderCsData();
 
+/* ============== TOP UP BUDGET ==============
+   Log tiap kali top up budget dicatat per akun WL. Beda dari "Data Akun"/"Data Input"
+   yang cuma nyimpen 1 angka budget per akun per hari (ditimpa kalau diinput ulang) —
+   di sini tiap top up jadi baris tersendiri, jadi kalau top up 3x sehari, 3x tercatat.
+   Form input dibuat senada dengan "Data Input": pilih advertiser, isi nominal tiap akun
+   sekaligus, dan tiap baris akun otomatis menampilkan total top up tanggal itu (termasuk
+   yang baru diketik) — dihitung otomatis dari TOPUPS, bukan input manual. */
+let TOPUPS = []; // {id, tanggal, jam, akun, nominal, catatan}
+let AGENSI_LIST = []; // daftar nama agensi (penyedia akun WL) — TERPISAH dari advertiser/brand
+let ACC_AGENSI = {}; // nama akun -> nama agensi
+function addAgensi(){
+  const inp = document.getElementById('tuNewAgensiName');
+  const name = inp.value.trim();
+  if(!name) return;
+  if(AGENSI_LIST.some(a=>a.toLowerCase()===name.toLowerCase())){ inp.value=''; return; }
+  AGENSI_LIST.push(name);
+  inp.value='';
+  saveLocalState();
+  renderAgensiChips();
+  renderAccAgensiList();
+  renderTopupFilterAkunSelect();
+  renderTopupRecap();
+}
+function removeAgensi(name){
+  const idx = AGENSI_LIST.indexOf(name);
+  if(idx===-1) return;
+  if(!confirm('Hapus agensi "'+name+'"? Akun yang sudah di-assign ke agensi ini akan jadi "Belum Diset".')) return;
+  AGENSI_LIST.splice(idx,1);
+  const affected = [];
+  Object.keys(ACC_AGENSI).forEach(akun=>{ if(ACC_AGENSI[akun]===name){ delete ACC_AGENSI[akun]; affected.push(akun); } });
+  saveLocalState();
+  renderAgensiChips();
+  renderAccAgensiList();
+  renderTopupFilterAkunSelect();
+  renderTopupRecap();
+  affected.forEach(akun=> pushOneToSheet({type:'akunagensi', akun, agensi:''}));
+}
+function renderAgensiChips(){
+  const wrap = document.getElementById('tuAgensiChips');
+  const note = document.getElementById('tuAgensiListNote');
+  if(!wrap) return;
+  if(!AGENSI_LIST.length){
+    wrap.innerHTML = '';
+    if(note) note.textContent = 'Belum ada agensi ditambahkan.';
+    return;
+  }
+  if(note) note.textContent = '';
+  wrap.innerHTML = AGENSI_LIST.map(name=>
+    '<span class="tu-chip" style="cursor:default;">'+escapeHtml(name)+' <span data-rm-agensi="'+escapeHtml(name)+'" style="cursor:pointer;margin-left:5px;color:var(--red);font-weight:800;" title="Hapus agensi ini">×</span></span>'
+  ).join('');
+  wrap.querySelectorAll('[data-rm-agensi]').forEach(el=>{
+    el.addEventListener('click', ()=> removeAgensi(el.getAttribute('data-rm-agensi')));
+  });
+}
+function setAccAgensi(accName, agensiVal){
+  if(agensiVal){ ACC_AGENSI[accName] = agensiVal; } else { delete ACC_AGENSI[accName]; }
+  saveLocalState();
+  renderTopupFilterAkunSelect();
+  renderTopupRecap();
+  pushOneToSheet({type:'akunagensi', akun:accName, agensi:agensiVal||''});
+}
+function renderAccAgensiList(){
+  const wrap = document.getElementById('tuAccAgensiList');
+  const toggleBtn = document.getElementById('tuToggleAgensiList');
+  if(!wrap) return;
+  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif');
+  if(toggleBtn){
+    const setCount = accs.filter(a=>ACC_AGENSI[a.name]).length;
+    const isOpen = wrap.style.display !== 'none';
+    toggleBtn.textContent = (isOpen? 'Sembunyikan':'Tampilkan')+' daftar akun ('+setCount+'/'+accs.length+' sudah diset) '+(isOpen?'▴':'▾');
+  }
+  if(!accs.length){ wrap.innerHTML = '<div class="muted-note">Belum ada akun aktif.</div>'; return; }
+  const groups = {};
+  accs.forEach(a=>{ (groups[a.advertiser] = groups[a.advertiser]||[]).push(a); });
+  const agensiOptions = '<option value="">— Belum Diset —</option>' + AGENSI_LIST.map(a=>'<option value="'+escapeHtml(a)+'">'+escapeHtml(a)+'</option>').join('');
+  wrap.innerHTML = Object.keys(groups).map(adv=>{
+    const color = ADV_COLOR[adv] || 'var(--muted)';
+    const rows = groups[adv].map(a=>{
+      const cur = ACC_AGENSI[a.name] || '';
+      return '<div class="tu-agensi-row">'+
+        '<span title="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+'</span>'+
+        '<select class="tuAccAgensiSelect" data-acc-name="'+escapeHtml(a.name)+'">'+agensiOptions.replace('value="'+escapeHtml(cur)+'"','value="'+escapeHtml(cur)+'" selected')+'</select>'+
+      '</div>';
+    }).join('');
+    return '<div class="tu-group-label"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:'+color+';display:inline-block;"></span>'+escapeHtml(adv)+'</div>' + rows;
+  }).join('');
+  wrap.querySelectorAll('.tuAccAgensiSelect').forEach(sel=>{
+    sel.addEventListener('change', ()=> setAccAgensi(sel.getAttribute('data-acc-name'), sel.value));
+  });
+}
+async function pushAllAgensiRows(){
+  const names = Object.keys(ACC_AGENSI);
+  for(const akun of names){ await pushOneToSheet({type:'akunagensi', akun, agensi:ACC_AGENSI[akun]}); }
+}
+function genTopupId(){ return 'tu_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
+function ensureTopupId(t){ if(!t.id) t.id = genTopupId(); return t.id; }
+async function pushTopupRow(t){
+  return pushOneToSheet({type:'topup', id:ensureTopupId(t), tanggal:t.tanggal||'', jam:t.jam||'', akun:t.akun, nominal:t.nominal, catatan:t.catatan||''});
+}
+async function pushTopupDelete(t){
+  return pushOneToSheet({type:'topup', id:ensureTopupId(t), hapus:true});
+}
+function nowHHMM(){
+  const d = new Date();
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function tuSelectedDate(){
+  const el = document.getElementById('tuSharedDate');
+  return (el && el.value) ? el.value : fmtISO(TODAY_REF);
+}
+/* Update tampilan tanggal harian (banner besar di halaman Top Up Budget) — dipanggil
+   saat load & tiap kali tanggalnya diganti, supaya user cek dulu sebelum isi angka. */
+function updateTuSharedDateDisplay(){
+  const el = document.getElementById('tuSharedDate');
+  const readableEl = document.getElementById('tuSharedDateReadable');
+  if(!el || !readableEl) return;
+  const val = el.value || fmtISO(TODAY_REF);
+  const d = new Date(val+'T00:00:00');
+  readableEl.textContent = isNaN(d.getTime()) ? '-' : d.toLocaleDateString('id-ID',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  renderTopupAccList();
+  renderTopupSummaryForDate();
+}
+function renderTopupFilterAkunSelect(){
+  const advSel = document.getElementById('tuFilterAdv');
+  if(advSel){
+    const prevAdv = advSel.value;
+    advSel.innerHTML = '<option value="">Semua Agensi</option>' + AGENSI_LIST.map(a=>'<option value="'+escapeHtml(a)+'">'+escapeHtml(a)+'</option>').join('') + '<option value="__none__">— Belum Diset Agensi —</option>';
+    if(prevAdv && (AGENSI_LIST.includes(prevAdv) || prevAdv==='__none__')) advSel.value = prevAdv;
+  }
+  const advFilter = advSel ? advSel.value : '';
+  const accs = ACCOUNTS.filter(a=>{
+    if(a.status==='nonaktif') return false;
+    if(!advFilter) return true;
+    if(advFilter==='__none__') return !ACC_AGENSI[a.name];
+    return ACC_AGENSI[a.name]===advFilter;
+  });
+  const groups = {};
+  accs.forEach(a=>{ (groups[a.advertiser] = groups[a.advertiser]||[]).push(a); });
+  const optgroups = Object.keys(groups).map(adv=>
+    '<optgroup label="'+escapeHtml(adv)+'">' +
+      groups[adv].map(a=>'<option value="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+'</option>').join('') +
+    '</optgroup>'
+  ).join('');
+  const fSel = document.getElementById('tuFilterAkun');
+  if(fSel){
+    const prevF = fSel.value;
+    fSel.innerHTML = '<option value="">Semua Akun'+(advFilter? ' (agensi terpilih)':'')+'</option>' + optgroups;
+    if(prevF && accs.some(a=>a.name===prevF)) fSel.value = prevF;
+  }
+}
+/* Baris input untuk SEMUA akun WL aktif (lintas advertiser/agensi), dikelompokkan per
+   advertiser sebagai penanda saja — tidak perlu pilih advertiser dulu. Tiap baris punya
+   kolom preview "Total top up tanggal ini" yang otomatis dihitung dari TOPUPS yang sudah
+   tersimpan, dan ikut update live kalau user sedang ngetik nominal baru (preview "jadi total..."). */
+function renderTopupAccList(){
+  const dateVal = tuSelectedDate();
+  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif');
+  const listEl = document.getElementById('tuAccTopupList');
+  if(!listEl) return;
+  if(!accs.length){ listEl.innerHTML='<div class="muted-note" style="margin-bottom:8px;">Belum ada akun aktif.</div>'; return; }
+  const groups = {};
+  accs.forEach(a=>{ (groups[a.advertiser] = groups[a.advertiser]||[]).push(a); });
+  listEl.innerHTML = Object.keys(groups).map(adv=>{
+    const color = ADV_COLOR[adv] || 'var(--muted)';
+    const rows = groups[adv].map(a=>{
+      const existing = TOPUPS.filter(t=>t.tanggal===dateVal && t.akun===a.name);
+      const total = existing.reduce((s,t)=>s+(parseFloat(t.nominal)||0),0);
+      return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
+        '<label>'+escapeHtml(a.name)+'</label>'+
+        '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500000" inputmode="decimal">'+
+        '<div class="tu-acc-preview" data-preview-for="'+escapeHtml(a.name)+'" data-base="'+total+'" data-count="'+existing.length+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Total top up '+fmtTanggalID(dateVal)+': <b>'+rupiah(total)+'</b>'+(existing.length? ' ('+existing.length+'x)':'')+'</div>'+
+      '</div>';
+    }).join('');
+    return '<div class="tu-group-label"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:'+color+';display:inline-block;"></span>'+escapeHtml(adv)+'</div>' + rows;
+  }).join('');
+  listEl.querySelectorAll('.tuAccInput').forEach(inp=>{
+    inp.addEventListener('input', updateTuAccPreview);
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllTopup(); } });
+    inp.addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); if(v!=null) e.target.value=v; });
+  });
+}
+function updateTuAccPreview(e){
+  const inp = e.target;
+  const dateVal = tuSelectedDate();
+  const previewEl = document.querySelector('.tu-acc-preview[data-preview-for="'+cssEscapeSafe(inp.dataset.accName)+'"]');
+  if(!previewEl) return;
+  const base = parseFloat(previewEl.dataset.base)||0;
+  const count = parseInt(previewEl.dataset.count)||0;
+  const typed = parseIndoNumber(inp.value);
+  if(typed!=null && typed>0){
+    previewEl.innerHTML = 'Jadi total top up '+fmtTanggalID(dateVal)+': <b style="color:var(--green);">'+rupiah(base+typed)+'</b> ('+(count+1)+'x)';
+  } else {
+    previewEl.innerHTML = 'Total top up '+fmtTanggalID(dateVal)+': <b>'+rupiah(base)+'</b>'+(count? ' ('+count+'x)':'');
+  }
+}
+// querySelector dengan atribut butuh escaping kalau nama akun mengandung karakter aneh (", \, dll)
+function cssEscapeSafe(str){
+  if(window.CSS && CSS.escape) return CSS.escape(str);
+  return String(str).replace(/["\\]/g, '\\$&');
+}
+function renderTopupSummaryForDate(){
+  const wrap = document.getElementById('tuTodaySummary');
+  const note = document.getElementById('tuTodaySummaryNote');
+  const heroTotal = document.getElementById('tuHeroTotal');
+  const heroSub = document.getElementById('tuHeroSub');
+  if(!wrap) return;
+  const dateVal = tuSelectedDate();
+  const todays = TOPUPS.filter(t=>t.tanggal===dateVal);
+  if(note) note.textContent = todays.length ? (todays.length+' top up tercatat untuk '+fmtTanggalID(dateVal)) : ('Belum ada top up untuk '+fmtTanggalID(dateVal));
+  const grandTotal = todays.reduce((s,t)=> s+(parseFloat(t.nominal)||0), 0);
+  if(heroTotal) heroTotal.textContent = rupiah(grandTotal);
+  if(heroSub) heroSub.textContent = todays.length ? (todays.length+' top up · '+new Set(todays.map(t=>t.akun)).size+' akun') : 'Belum ada top up';
+  if(todays.length===0){ wrap.innerHTML = '<div class="muted-note">Belum ada top up yang dicatat untuk tanggal ini.</div>'; return; }
+  const byAkun = {};
+  todays.forEach(t=>{
+    if(!byAkun[t.akun]) byAkun[t.akun] = {total:0, count:0};
+    byAkun[t.akun].total += (parseFloat(t.nominal)||0);
+    byAkun[t.akun].count += 1;
+  });
+  wrap.innerHTML = Object.keys(byAkun).map(akun=>{
+    const acc = findAccountByName(akun);
+    const adv = acc ? acc.advertiser : '-';
+    const color = ADV_COLOR[adv] || 'var(--muted)';
+    const info = byAkun[akun];
+    return '<div class="adv-card tu-card" style="border-left-color:'+color+';">'
+      + '<div class="adv-card-head"><span class="dot" style="background:'+color+';"></span><span class="adv-card-name">'+escapeHtml(akun)+'</span></div>'
+      + '<div class="adv-card-row"><span class="k">Advertiser</span><span class="v">'+escapeHtml(adv)+'</span></div>'
+      + '<div class="adv-card-row"><span class="k">Jumlah Top Up</span><span class="v"><span class="tag blue">'+info.count+'x</span></span></div>'
+      + '<div class="adv-card-row"><span class="k">Total Nominal</span><span class="v" style="font-size:15px;">'+rupiah(info.total)+'</span></div>'
+      + '</div>';
+  }).join('');
+}
+/* Rekap per akun (buat audit budget) — pakai filter yang SAMA dengan Detail Transaksi
+   (akun/rentang tanggal), tapi sudah dijumlahkan otomatis per akun. Jadi kalau lagi
+   audit dan satu akun di-top up berkali-kali dalam periode itu, tinggal lihat 1 baris
+   totalnya, tidak perlu jumlahin manual satu-satu baris transaksi. */
+function tuFilteredTopups(){
+  const advFilter = document.getElementById('tuFilterAdv') ? document.getElementById('tuFilterAdv').value : '';
+  const akunFilter = document.getElementById('tuFilterAkun') ? document.getElementById('tuFilterAkun').value : '';
+  const from = document.getElementById('tuFilterFrom') ? document.getElementById('tuFilterFrom').value : '';
+  const to = document.getElementById('tuFilterTo') ? document.getElementById('tuFilterTo').value : '';
+  let filtered = TOPUPS.slice();
+  if(advFilter){
+    if(advFilter==='__none__') filtered = filtered.filter(t=> !ACC_AGENSI[t.akun]);
+    else filtered = filtered.filter(t=> ACC_AGENSI[t.akun]===advFilter);
+  }
+  if(akunFilter) filtered = filtered.filter(t=>t.akun===akunFilter);
+  if(from) filtered = filtered.filter(t=>t.tanggal >= from);
+  if(to) filtered = filtered.filter(t=>t.tanggal <= to);
+  return filtered;
+}
+const TU_AGENSI_PALETTE = ['#6d5efc','#2ec4b6','#ff9f43','#ee6c75','#4aa8ff','#a78bfa','#20c997','#f472b6'];
+function tuAgensiColor(name){
+  if(!name) return 'var(--muted)';
+  const idx = AGENSI_LIST.indexOf(name);
+  return TU_AGENSI_PALETTE[(idx>=0?idx:0) % TU_AGENSI_PALETTE.length];
+}
+function renderTopupRecap(){
+  const tbody = document.getElementById('tblTopupRecap');
+  const totalEl = document.getElementById('tuRecapTotal');
+  if(!tbody) return;
+  const filtered = tuFilteredTopups();
+  const byAkun = {};
+  filtered.forEach(t=>{
+    if(!byAkun[t.akun]) byAkun[t.akun] = {total:0, count:0};
+    byAkun[t.akun].total += (parseFloat(t.nominal)||0);
+    byAkun[t.akun].count += 1;
+  });
+  const byAgensi = {}; // nama agensi -> [{akun,advertiser,total,count}]
+  const UNSET = '__UNSET__';
+  Object.keys(byAkun).forEach(akun=>{
+    const acc = findAccountByName(akun);
+    const agensi = ACC_AGENSI[akun] || UNSET;
+    if(!byAgensi[agensi]) byAgensi[agensi] = [];
+    byAgensi[agensi].push({akun, advertiser: acc ? acc.advertiser : '-', total: byAkun[akun].total, count: byAkun[akun].count});
+  });
+  const agensiOrder = Object.keys(byAgensi).sort((a,b)=>{
+    if(a===UNSET) return 1;
+    if(b===UNSET) return -1;
+    const ia = AGENSI_LIST.indexOf(a), ib = AGENSI_LIST.indexOf(b);
+    if(ia===-1 && ib===-1) return a.localeCompare(b);
+    if(ia===-1) return 1;
+    if(ib===-1) return -1;
+    return ia-ib;
+  });
+  let grandTotal = 0, grandCount = 0;
+  Object.values(byAkun).forEach(v=>{ grandTotal += v.total; grandCount += v.count; });
+  if(totalEl) totalEl.innerHTML = '<b>'+rupiah(grandTotal)+'</b>';
+  if(agensiOrder.length===0){
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);">Belum ada top up yang cocok dengan filter ini.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = agensiOrder.map(agensi=>{
+    const isUnset = agensi===UNSET;
+    const label = isUnset ? 'Belum Diset Agensi' : agensi;
+    const color = isUnset ? 'var(--muted)' : tuAgensiColor(agensi);
+    const rows = byAgensi[agensi].sort((a,b)=> b.total - a.total);
+    let subTotal = 0, subCount = 0;
+    rows.forEach(r=>{ subTotal += r.total; subCount += r.count; });
+    const groupHead = '<tr style="background:var(--panel-2);">'
+      + '<td colspan="3" style="font-weight:800;padding:9px 12px;"><span class="tu-acc-dot" style="background:'+color+';"></span>'+escapeHtml(label)+'</td>'
+      + '</tr>';
+    const accRows = rows.map(r=>
+      '<tr>'
+      + '<td style="padding-left:26px;">'+escapeHtml(r.akun)+' <span style="color:var(--muted);font-size:11px;">· '+escapeHtml(r.advertiser)+'</span></td>'
+      + '<td><span class="tag blue">'+r.count+'x</span></td>'
+      + '<td style="font-weight:700;">'+rupiah(r.total)+'</td>'
+      + '</tr>'
+    ).join('');
+    const subTotalRow = '<tr style="border-top:1px solid var(--line);">'
+      + '<td style="padding-left:26px;color:var(--muted);font-weight:700;">Sub-total '+escapeHtml(label)+'</td>'
+      + '<td style="color:var(--muted);font-weight:700;">'+subCount+'x</td>'
+      + '<td style="font-weight:800;color:var(--green);">'+rupiah(subTotal)+'</td>'
+      + '</tr>';
+    return groupHead + accRows + subTotalRow;
+  }).join('') + '<tr style="border-top:2px solid var(--line);background:var(--panel-2);">'
+    + '<td style="font-weight:800;">Grand Total (semua agensi)</td>'
+    + '<td style="font-weight:800;">'+grandCount+'x</td>'
+    + '<td style="font-weight:800;color:var(--green);">'+rupiah(grandTotal)+'</td>'
+    + '</tr>';
+}
+document.getElementById('tuViewTabs').querySelectorAll('[data-tuview]').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.getElementById('tuViewTabs').querySelectorAll('[data-tuview]').forEach(t=> t.classList.toggle('active', t===tab));
+    const view = tab.getAttribute('data-tuview');
+    document.getElementById('tuRecapView').style.display = (view==='recap') ? '' : 'none';
+    document.getElementById('tuDetailView').style.display = (view==='detail') ? '' : 'none';
+  });
+});
+function renderTopupHistory(){
+  const tbody = document.getElementById('tblTopups');
+  const countEl = document.getElementById('tuHistCount');
+  const totalEl = document.getElementById('tuHistTotal');
+  if(!tbody) return;
+  let filtered = tuFilteredTopups();
+  filtered.sort((a,b)=> (b.tanggal+b.jam).localeCompare(a.tanggal+a.jam));
+  if(countEl) countEl.textContent = filtered.length + ' top up tercatat';
+  let total = 0;
+  filtered.forEach(t=> total += (parseFloat(t.nominal)||0));
+  if(totalEl) totalEl.innerHTML = '<b>'+rupiah(total)+'</b>';
+  if(filtered.length===0){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Belum ada top up yang cocok dengan filter ini.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(t=>{
+    const acc = findAccountByName(t.akun);
+    const adv = acc ? acc.advertiser : '-';
+    const color = ADV_COLOR[adv] || 'var(--muted)';
+    return '<tr>'
+      + '<td>'+fmtTanggalID(t.tanggal)+'</td>'
+      + '<td>'+escapeHtml(t.jam||'-')+'</td>'
+      + '<td><span class="tu-acc-dot" style="background:'+color+';"></span>'+escapeHtml(t.akun)+'</td>'
+      + '<td>'+escapeHtml(adv)+'</td>'
+      + '<td style="font-weight:700;">'+rupiah(t.nominal)+'</td>'
+      + '<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+escapeHtml(t.catatan||'-')+'">'+escapeHtml(t.catatan||'-')+'</td>'
+      + '<td><button class="icon-btn" data-del-topup="'+escapeHtml(t.id)+'" title="Hapus">🗑</button></td>'
+      + '</tr>';
+  }).join('');
+  tbody.querySelectorAll('[data-del-topup]').forEach(btn=>{
+    btn.onclick = (e)=>{
+      e.preventDefault();
+      const id = btn.getAttribute('data-del-topup');
+      if(btn.getAttribute('data-confirm')==='1'){
+        const i = TOPUPS.findIndex(t=>t.id===id);
+        const t = i>=0 ? TOPUPS[i] : null;
+        if(i>=0) TOPUPS.splice(i,1);
+        saveLocalState();
+        renderTopupPage();
+        if(t) pushTopupDelete(t);
+        return;
+      }
+      btn.setAttribute('data-confirm','1');
+      btn.textContent = '✔ Yakin?';
+      btn.style.background = 'var(--bad)';
+      btn.style.color = '#fff';
+      btn.style.padding = '4px 8px';
+      btn.style.width = 'auto';
+      clearTimeout(btn._confirmTimer);
+      btn._confirmTimer = setTimeout(()=>{
+        btn.removeAttribute('data-confirm');
+        btn.textContent = '🗑';
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.padding = '';
+        btn.style.width = '';
+      }, 3000);
+    };
+  });
+}
+function renderTopupPage(){
+  renderAgensiChips();
+  renderAccAgensiList();
+  renderTopupFilterAkunSelect();
+  renderTopupAccList();
+  renderTopupSummaryForDate();
+  renderTopupHistory();
+  renderTopupRecap();
+}
+async function saveAllTopup(){
+  const dateVal = document.getElementById('tuSharedDate').value;
+  const catatan = document.getElementById('tuSharedCatatan').value.trim();
+  const msg = document.getElementById('allTopupMsg');
+  if(!dateVal){ msg.textContent='Pilih tanggal terlebih dahulu.'; msg.style.color='var(--red)'; return; }
+  const jam = nowHHMM();
+  const inputs = Array.from(document.querySelectorAll('.tuAccInput'));
+  const saved = [];
+  inputs.forEach(inp=>{
+    const nominal = parseIndoNumber(inp.value);
+    if(nominal!=null && nominal>0){
+      const t = {id:genTopupId(), tanggal:dateVal, jam, akun:inp.dataset.accName, nominal, catatan};
+      TOPUPS.push(t);
+      saved.push(t);
+    }
+  });
+  if(!saved.length){ msg.textContent='Isi minimal satu nominal top up akun.'; msg.style.color='var(--red)'; return; }
+  saveLocalState();
+
+  // Bersihkan form & kasih konfirmasi lokal LANGSUNG, gak perlu nunggu jaringan
+  inputs.forEach(inp=>{ inp.value=''; });
+  document.getElementById('tuSharedCatatan').value='';
+  renderTopupAccList();
+  renderTopupSummaryForDate();
+  renderTopupHistory();
+  renderTopupRecap();
+  const firstInput = document.querySelector('.tuAccInput');
+  if(firstInput) firstInput.focus();
+  msg.textContent = '✅ Tersimpan: '+saved.length+' akun · '+fmtTanggalID(dateVal)+' — mengirim ke spreadsheet...';
+  msg.style.color='var(--green)';
+
+  // Kirim semua ke spreadsheet SEKALIGUS (paralel), bukan satu-satu — jauh lebih cepat
+  const results = await Promise.all(saved.map(t=>pushTopupRow(t)));
+  let allOk = true, anyNoUrl = false;
+  results.forEach(st=>{ if(st==='no-url') anyNoUrl = true; else if(st!=='ok') allOk = false; });
+  if(anyNoUrl){ msg.textContent='Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).'; msg.style.color='var(--yellow)'; }
+  else if(allOk){ msg.textContent='✅ Top up tersimpan & terkirim ke spreadsheet: '+saved.length+' akun · '+fmtTanggalID(dateVal); msg.style.color='var(--green)'; }
+  else { msg.textContent='Tersimpan di dashboard, tapi sebagian gagal terkirim ke spreadsheet. Cek URL Apps Script & koneksi internet.'; msg.style.color='var(--red)'; }
+}
+document.getElementById('tuSharedDate').addEventListener('change', updateTuSharedDateDisplay);
+document.getElementById('tuSharedDate').addEventListener('input', updateTuSharedDateDisplay);
+document.getElementById('btnSaveAllTopup').addEventListener('click', saveAllTopup);
+document.getElementById('tuSharedCatatan').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllTopup(); } });
+['tuFilterAkun','tuFilterFrom','tuFilterTo'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('change', ()=>{ renderTopupHistory(); renderTopupRecap(); });
+});
+document.getElementById('tuFilterAdv').addEventListener('change', ()=>{
+  document.getElementById('tuFilterAkun').value = ''; // reset pilihan akun tiap ganti agensi biar gak nyangkut ke akun agensi lain
+  renderTopupFilterAkunSelect();
+  renderTopupHistory();
+  renderTopupRecap();
+});
+document.getElementById('btnAddAgensi').addEventListener('click', addAgensi);
+document.getElementById('tuNewAgensiName').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addAgensi(); } });
+document.getElementById('tuToggleAgensiList').addEventListener('click', ()=>{
+  const wrap = document.getElementById('tuAccAgensiList');
+  wrap.style.display = (wrap.style.display==='none') ? '' : 'none';
+  renderAccAgensiList();
+});
+
 /* ============== PENYIMPANAN LOKAL (agar data tidak hilang saat tab ditutup) ============== */
 const LOCAL_KEY = 'dashboardAdvertiserState_v1';
 function saveLocalState(){
@@ -3386,6 +4125,9 @@ function saveLocalState(){
       testCampaigns: TEST_CAMPAIGNS,
       csList: CS_LIST,
       csData: CS_DATA,
+      topups: TOPUPS,
+      agensiList: AGENSI_LIST,
+      accAgensi: ACC_AGENSI,
       appsScriptUrl: document.getElementById('appsScriptUrl').value,
       savedAt: new Date().toISOString()
     };
@@ -3418,6 +4160,9 @@ function loadLocalState(){
     TEST_CAMPAIGNS = Array.isArray(state.testCampaigns) ? state.testCampaigns : [];
     CS_LIST = Array.isArray(state.csList) && state.csList.length>0 ? state.csList : CS_LIST;
     CS_DATA = Array.isArray(state.csData) ? state.csData : [];
+    TOPUPS = Array.isArray(state.topups) ? state.topups : [];
+    AGENSI_LIST = Array.isArray(state.agensiList) ? state.agensiList : [];
+    ACC_AGENSI = (state.accAgensi && typeof state.accAgensi==='object') ? state.accAgensi : {};
     selectedAccounts = new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id));
     if(state.appsScriptUrl) document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
     return true;
@@ -3439,12 +4184,16 @@ function resetAllData(){
   TARGETS_MONTHLY = {};
   selectedAccounts = new Set();
   accCounter = 0;
+  TOPUPS = [];
+  AGENSI_LIST = [];
+  ACC_AGENSI = {};
   renderAccountGroups();
   renderInputSelectors();
   renderTargetRows();
   renderMonthPicker();
   renderTargetRowsMonthly();
   render();
+  if(typeof renderTopupPage==='function') renderTopupPage();
   const msg = document.getElementById('resetDataMsg');
   if(msg){ msg.textContent = 'Semua data berhasil dihapus. Dashboard sekarang benar-benar kosong.'; msg.style.color = 'var(--green)'; }
 }
@@ -4058,6 +4807,32 @@ async function autoPullOnLoad(){
       if(typeof renderCsTabs==='function') renderCsTabs();
       if(typeof renderCsData==='function') renderCsData();
     }
+    // ==== TOP UP BUDGET: sheet "TopUp" adalah sumber kebenaran, ganti seluruh daftar lokal ====
+    let countTu2=0;
+    if(Array.isArray(json.topup)){
+      TOPUPS = json.topup.map(r=>({
+        id: r.id || genTopupId(),
+        tanggal: r.tanggal||'',
+        jam: r.jam||'',
+        akun: String(r.akun||'').trim(),
+        nominal: (r.nominal!==''&&r.nominal!=null) ? parseFloat(r.nominal) : 0,
+        catatan: r.catatan||''
+      })).filter(t=>t.akun && t.tanggal);
+      countTu2 = TOPUPS.length;
+      if(typeof renderTopupPage==='function') renderTopupPage();
+    }
+    if(Array.isArray(json.akunagensi)){
+      const newAccAgensi2 = {};
+      json.akunagensi.forEach(r=>{
+        const akun = String(r.akun||'').trim();
+        const agensi = String(r.agensi||'').trim();
+        if(akun && agensi) newAccAgensi2[akun] = agensi;
+      });
+      ACC_AGENSI = newAccAgensi2;
+      const namesFromSheet2 = new Set(Object.values(ACC_AGENSI));
+      namesFromSheet2.forEach(n=>{ if(!AGENSI_LIST.includes(n)) AGENSI_LIST.push(n); });
+      if(typeof renderTopupPage==='function') renderTopupPage();
+    }
     saveLocalState();
     render();
     const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0);
@@ -4068,11 +4843,11 @@ async function autoPullOnLoad(){
         let warnParts2=[];
         if(skippedAkunNames2.size>0) warnParts2.push('Akun tidak dikenal: '+[...skippedAkunNames2].join(', '));
         if(skippedLeadAdv2.size>0) warnParts2.push('Advertiser tidak dikenal: '+[...skippedLeadAdv2].join(', '));
-        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS.'+removedNote2+' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
+        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS, '+countTu2+' top up budget.'+removedNote2+' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
         msg.style.color = 'var(--red)';
         setSidebarStatus('err', 'Sinkron sebagian (ada baris dilewati)');
       } else {
-        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS ('+now+').'+removedNote2;
+        msg.textContent = '✅ Sinkron otomatis berhasil — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS, '+countTu2+' top up budget ('+now+').'+removedNote2;
         msg.style.color = 'var(--green)';
         setSidebarStatus('ok', 'Terhubung ke spreadsheet');
       }
@@ -4171,6 +4946,12 @@ applyTheme(getSavedTheme());
   renderInputSelectors();
   render();
   renderTestCampaigns();
+  document.getElementById('tuSharedDate').value = fmtISO(TODAY_REF);
+  document.getElementById('tuFilterFrom').value = fmtISO(new Date(TODAY_REF.getFullYear(), TODAY_REF.getMonth(), TODAY_REF.getDate()-6));
+  document.getElementById('tuFilterTo').value = fmtISO(TODAY_REF);
+  renderTopupPage();
+  const tuReadableEl = document.getElementById('tuSharedDateReadable');
+  if(tuReadableEl) tuReadableEl.textContent = TODAY_REF.toLocaleDateString('id-ID',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
   // Auto-pull dari spreadsheet saat halaman dibuka (berlaku juga untuk device/browser baru)
   autoPullOnLoad();
   document.getElementById('appsScriptUrl').addEventListener('change', ()=>{
@@ -4182,7 +4963,7 @@ applyTheme(getSavedTheme());
 })();
 
 /* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
-const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing'];
+const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing','topup'];
 function syncGlobalFilterbarVisibility(pageId){
   const bar = document.querySelector('.global-filterbar');
   if(!bar) return;
@@ -4221,3 +5002,4 @@ document.getElementById('btnGotoIntegrasi').addEventListener('click', () => {
 syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.page || 'overview');
 </script>
 </body></html>
+
