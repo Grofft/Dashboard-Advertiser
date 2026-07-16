@@ -710,7 +710,11 @@ try{
       <div class="account-picker compact-form">
         <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📋 Top Up per Akun</h3>
 
-        <div class="muted-note" style="margin:2px 0 6px;font-weight:600;color:var(--text);">💳 Nominal Top Up per Akun (semua advertiser)</div>
+        <div class="muted-note" style="margin:2px 0 6px;font-weight:600;color:var(--text);">💳 Nominal Top Up per Akun</div>
+        <div class="target-row" style="grid-template-columns:1fr;margin-bottom:10px;">
+          <label>Pilih Agensi</label>
+          <select id="tuAdvSelect"></select>
+        </div>
         <div id="tuAccTopupList"></div>
 
         <div class="target-row" style="grid-template-columns:1fr;margin-top:4px;"><label>Catatan (opsional, berlaku untuk semua akun yang diisi)</label><input type="text" id="tuSharedCatatan" placeholder="cth: top up ke-2 hari ini"></div>
@@ -718,7 +722,7 @@ try{
         <button class="btn" id="btnSaveAllTopup" style="margin-top:6px;width:100%;">💾 Simpan Top Up</button>
         <div class="muted-note" id="allTopupMsg" style="margin-top:6px;font-size:11.5px;"></div>
       </div>
-      <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: pilih advertiser sekali, isi nominal tiap akun yang di-top up sekaligus, lalu tekan <b>Enter</b> atau tombol Simpan. Kolom di bawah tiap akun otomatis menghitung total top up tanggal itu — termasuk yang baru diketik. Setelah simpan, kolom otomatis bersih dan siap dipakai lagi kalau ada top up susulan hari yang sama (advertiser &amp; tanggal tetap sama).</div>
+      <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: pilih agensi di dropdown, isi nominal tiap akun yang di-top up sekaligus, lalu tekan <b>Enter</b> atau tombol Simpan. Kolom di bawah tiap akun otomatis menghitung total top up tanggal itu — termasuk yang baru diketik. Setelah simpan, kolom otomatis bersih dan siap dipakai lagi kalau ada top up susulan hari yang sama (agensi &amp; tanggal tetap sama). Ganti agensi kapan saja lewat dropdown di atas.</div>
     </div>
     <div class="account-picker compact-form">
       <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Ringkasan Top Up</h3>
@@ -3782,6 +3786,7 @@ function removeAgensi(name){
   renderAccAgensiList();
   renderTopupFilterAkunSelect();
   renderTopupRecap();
+  if(typeof renderTopupAccList==='function') renderTopupAccList();
   if(typeof renderSaldoAgensiSelect==='function') renderSaldoAgensiSelect();
   if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
   affected.forEach(akun=> pushOneToSheet({type:'akunagensi', akun, agensi:''}));
@@ -3808,6 +3813,7 @@ function setAccAgensi(accName, agensiVal){
   saveLocalState();
   renderTopupFilterAkunSelect();
   renderTopupRecap();
+  if(typeof renderTopupAccList==='function') renderTopupAccList();
   if(typeof renderSaldoAgensiCards==='function') renderSaldoAgensiCards();
   pushOneToSheet({type:'akunagensi', akun:accName, agensi:agensiVal||''});
 }
@@ -4053,27 +4059,37 @@ function renderTopupFilterAkunSelect(){
    advertiser sebagai penanda saja — tidak perlu pilih advertiser dulu. Tiap baris punya
    kolom preview "Total top up tanggal ini" yang otomatis dihitung dari TOPUPS yang sudah
    tersimpan, dan ikut update live kalau user sedang ngetik nominal baru (preview "jadi total..."). */
+let tuSelectedAgensi = '';
 function renderTopupAccList(){
   const dateVal = tuSelectedDate();
-  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif');
+  const allAccs = ACCOUNTS.filter(a=>a.status!=='nonaktif');
+  const advSel = document.getElementById('tuAdvSelect');
+  // Ambil daftar agensi yang benar-benar punya akun aktif ter-assign, plus opsi "Belum Diset" kalau ada akun yang belum di-assign.
+  const agensiWithAcc = Array.from(new Set(allAccs.map(a=>ACC_AGENSI[a.name]).filter(Boolean))).sort((x,y)=>x.localeCompare(y));
+  const hasUnassigned = allAccs.some(a=>!ACC_AGENSI[a.name]);
+  const optionList = agensiWithAcc.concat(hasUnassigned ? ['__none__'] : []);
+  if(advSel){
+    if(!tuSelectedAgensi || !optionList.includes(tuSelectedAgensi)) tuSelectedAgensi = optionList[0]||'';
+    advSel.innerHTML = optionList.map(ag=>'<option value="'+escapeHtml(ag)+'"'+(ag===tuSelectedAgensi?' selected':'')+'>'+(ag==='__none__'?'Belum Diset':escapeHtml(ag))+'</option>').join('');
+    advSel.value = tuSelectedAgensi;
+    advSel.onchange = ()=>{ tuSelectedAgensi = advSel.value; renderTopupAccList(); };
+  }
+  const accs = tuSelectedAgensi==='__none__'
+    ? allAccs.filter(a=>!ACC_AGENSI[a.name])
+    : allAccs.filter(a=>ACC_AGENSI[a.name]===tuSelectedAgensi);
   const listEl = document.getElementById('tuAccTopupList');
   if(!listEl) return;
-  if(!accs.length){ listEl.innerHTML='<div class="muted-note" style="margin-bottom:8px;">Belum ada akun aktif.</div>'; return; }
-  const groups = {};
-  accs.forEach(a=>{ (groups[a.advertiser] = groups[a.advertiser]||[]).push(a); });
-  listEl.innerHTML = Object.keys(groups).map(adv=>{
-    const color = ADV_COLOR[adv] || 'var(--muted)';
-    const rows = groups[adv].map(a=>{
-      const existing = TOPUPS.filter(t=>t.tanggal===dateVal && t.akun===a.name);
-      const total = existing.reduce((s,t)=>s+(parseFloat(t.nominal)||0),0);
-      return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
-        '<label>'+escapeHtml(a.name)+'</label>'+
-        '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500000" inputmode="decimal">'+
-        '<div class="tu-acc-preview" data-preview-for="'+escapeHtml(a.name)+'" data-base="'+total+'" data-count="'+existing.length+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Total top up '+fmtTanggalID(dateVal)+': <b>'+rupiah(total)+'</b>'+(existing.length? ' ('+existing.length+'x)':'')+'</div>'+
-      '</div>';
-    }).join('');
-    return '<div class="tu-group-label"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:'+color+';display:inline-block;"></span>'+escapeHtml(adv)+'</div>' + rows;
+  if(!accs.length){ listEl.innerHTML='<div class="muted-note" style="margin-bottom:8px;">Belum ada akun untuk agensi ini. Assign akun lewat "Kelola Agensi Akun" di bawah.</div>'; return; }
+  const rows = accs.map(a=>{
+    const existing = TOPUPS.filter(t=>t.tanggal===dateVal && t.akun===a.name);
+    const total = existing.reduce((s,t)=>s+(parseFloat(t.nominal)||0),0);
+    return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
+      '<label>'+escapeHtml(a.name)+'</label>'+
+      '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500000" inputmode="decimal">'+
+      '<div class="tu-acc-preview" data-preview-for="'+escapeHtml(a.name)+'" data-base="'+total+'" data-count="'+existing.length+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Total top up '+fmtTanggalID(dateVal)+': <b>'+rupiah(total)+'</b>'+(existing.length? ' ('+existing.length+'x)':'')+'</div>'+
+    '</div>';
   }).join('');
+  listEl.innerHTML = rows;
   listEl.querySelectorAll('.tuAccInput').forEach(inp=>{
     inp.addEventListener('input', updateTuAccPreview);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllTopup(); } });
