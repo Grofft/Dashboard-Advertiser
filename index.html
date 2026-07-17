@@ -203,7 +203,12 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .tu-agensi-row select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:4px 6px;font-size:11px;min-width:110px;flex-shrink:0;}
 @media(max-width:640px){.tu-agensi-list-grid{grid-template-columns:1fr;}}
 .tu-group-label:first-child{margin-top:0;padding-top:0;border-top:none;}
-.adv-card.tu-card{border-left:3px solid var(--line);}
+.adv-card.tu-card{border-left:3px solid var(--line);padding:11px 14px;}
+.adv-card.tu-card .adv-card-head{margin-bottom:6px;padding-bottom:6px;}
+.adv-card.tu-card .adv-card-name{font-size:13.5px;}
+.adv-card.tu-card .adv-card-row{padding:4px 0;font-size:12px;}
+.adv-card.tu-card .adv-card-row .v{font-size:12.5px;}
+#tuTodaySummary.adv-cards-grid{grid-template-columns:repeat(auto-fill,minmax(220px,260px));gap:10px;}
 .adv-week-card{flex:1 1 360px;display:flex;flex-direction:column;gap:12px;}
 @media(max-width:700px){ .adv-week-card{flex:1 1 100%;} }
 
@@ -2894,7 +2899,15 @@ function sheetToObjects(sheet){
   var out = [];
   for(var i=1;i<rows.length;i++){
     var obj = {};
-    headers.forEach(function(h,idx){ obj[h]=rows[i][idx]; });
+    headers.forEach(function(h,idx){
+      // Sheets otomatis mengubah cell yang isinya mirip tanggal jadi Date object.
+      // Kalau ini tidak dinormalisasi ke 'yyyy-MM-dd' di sini, JSON.stringify()
+      // akan serialize-nya sebagai ISO UTC — yang karena timezone spreadsheet
+      // (GMT+7) bisa mundur 1 hari (mis. tengah malam 1 Juli lokal jadi
+      // '...T17:00:00.000Z' alias 30 Juni jam 17:00 UTC). Normalisasi di sini
+      // supaya tanggal yang dikirim ke dashboard selalu konsisten 'yyyy-MM-dd'.
+      obj[h] = formatCellDate(rows[i][idx]);
+    });
     out.push(obj);
   }
   return out;
@@ -3337,7 +3350,12 @@ function setTcSyncMsg(text, colorVar){
 }
 function fmtTanggalID(iso){
   if(!iso) return '-';
-  const d = new Date(iso+'T00:00:00');
+  // Jaga-jaga kalau yang masuk sudah berupa datetime lengkap (mis. dari cell
+  // Google Sheets bertipe Date yang lolos ter-serialize sebagai ISO UTC) —
+  // ambil bagian tanggalnya saja (10 karakter pertama 'yyyy-MM-dd') supaya
+  // tidak jadi 'yyyy-MM-ddThh:mm:ss.sssZT00:00:00' yang invalid.
+  const datePart = String(iso).slice(0,10);
+  const d = new Date(datePart+'T00:00:00');
   if(isNaN(d)) return iso;
   return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
 }
@@ -5277,4 +5295,3 @@ document.getElementById('btnGotoIntegrasi').addEventListener('click', () => {
 syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.page || 'overview');
 </script>
 </body></html>
-
