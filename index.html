@@ -2652,26 +2652,40 @@ function doGet(e){
 function doPost(e){
   var data = JSON.parse(e.postData.contents);
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  if(data.type === 'akun'){
-    upsertAkun(ss, data);
-  } else if(data.type === 'lead'){
-    upsertLead(ss, data);
-  } else if(data.type === 'akunwl'){
-    upsertAkunWL(ss, data);
-  } else if(data.type === 'akunhistori'){
-    upsertAkunHistori(ss, data);
-  } else if(data.type === 'target'){
-    upsertTarget(ss, data);
-  } else if(data.type === 'testcampaign'){
-    upsertTestCampaign(ss, data);
-  } else if(data.type === 'cs'){
-    upsertCsData(ss, data);
-  } else if(data.type === 'topup'){
-    upsertTopUp(ss, data);
-  } else if(data.type === 'akunagensi'){
-    upsertAkunAgensi(ss, data);
-  } else if(data.type === 'saldoagensi'){
-    upsertSaldoAgensi(ss, data);
+  // PENTING: dashboard sering ngirim beberapa request SEKALIGUS/paralel (misal simpan
+  // top up buat beberapa akun bersamaan). Tanpa lock, 2 appendRow() yang jalan nyaris
+  // barengan bisa nulis ke baris yang sama dan salah satunya HILANG/ketimpa. Lock ini
+  // bikin tiap request nunggu giliran, jadi nggak ada lagi data yang bentrok/ilang.
+  var lock = LockService.getScriptLock();
+  try{
+    lock.waitLock(30000);
+  } catch(lockErr){
+    return jsonOutput({status:'error', message:'Server sibuk, coba lagi.'});
+  }
+  try{
+    if(data.type === 'akun'){
+      upsertAkun(ss, data);
+    } else if(data.type === 'lead'){
+      upsertLead(ss, data);
+    } else if(data.type === 'akunwl'){
+      upsertAkunWL(ss, data);
+    } else if(data.type === 'akunhistori'){
+      upsertAkunHistori(ss, data);
+    } else if(data.type === 'target'){
+      upsertTarget(ss, data);
+    } else if(data.type === 'testcampaign'){
+      upsertTestCampaign(ss, data);
+    } else if(data.type === 'cs'){
+      upsertCsData(ss, data);
+    } else if(data.type === 'topup'){
+      upsertTopUp(ss, data);
+    } else if(data.type === 'akunagensi'){
+      upsertAkunAgensi(ss, data);
+    } else if(data.type === 'saldoagensi'){
+      upsertSaldoAgensi(ss, data);
+    }
+  } finally {
+    lock.releaseLock();
   }
   return jsonOutput({status:'ok'});
 }
@@ -3232,8 +3246,13 @@ async function pushOneToSheet(payload){
   try{
     const controller = new AbortController();
     const timer = setTimeout(()=>controller.abort(), 15000);
-    await fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload), signal: controller.signal});
+    const res = await fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload), signal: controller.signal});
     clearTimeout(timer);
+    // Apps Script Web App hampir selalu balikin HTTP 200 walaupun terjadi error logis
+    // (mis. lock timeout pas ada request lain yang bentrok) — jadi statusnya harus
+    // dicek dari BODY JSON-nya, bukan cuma asumsi "fetch gak error = berhasil".
+    const body = await res.json().catch(()=>null);
+    if(body && body.status === 'error') return 'error';
     return 'ok';
   }catch(err){ return 'error'; }
 }
