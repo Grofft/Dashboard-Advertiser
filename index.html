@@ -2680,7 +2680,12 @@ function doPost(e){
 // supaya bisa dibandingkan apple-to-apple dengan tanggal yang dikirim dashboard.
 function formatCellDate(v){
   if(Object.prototype.toString.call(v) === '[object Date]'){
-    return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+    // PENTING: pakai timezone SPREADSHEET (File > Pengaturan Spreadsheet > Zona Waktu),
+    // bukan Session.getScriptTimeZone() (timezone project Apps Script). Google Sheets
+    // otomatis mengonversi teks tanggal jadi Date object memakai timezone SPREADSHEET —
+    // kalau timezone script beda dengan timezone spreadsheet, tanggal yang dibalikin ke
+    // dashboard bisa kegeser 1 hari (mis. data tanggal 16 jadi kebaca 15 atau 17).
+    return Utilities.formatDate(v, SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone(), 'yyyy-MM-dd');
   }
   return String(v).trim();
 }
@@ -4103,7 +4108,7 @@ function renderTopupAccList(){
     const total = existing.reduce((s,t)=>s+(parseFloat(t.nominal)||0),0);
     return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
       '<label>'+escapeHtml(a.name)+'</label>'+
-      '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500000" inputmode="decimal">'+
+      '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500.000" inputmode="decimal">'+
       '<div class="tu-acc-preview" data-preview-for="'+escapeHtml(a.name)+'" data-base="'+total+'" data-count="'+existing.length+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Total top up '+fmtTanggalID(dateVal)+': <b>'+rupiah(total)+'</b>'+(existing.length? ' ('+existing.length+'x)':'')+'</div>'+
     '</div>';
   }).join('');
@@ -4111,11 +4116,23 @@ function renderTopupAccList(){
   listEl.querySelectorAll('.tuAccInput').forEach(inp=>{
     inp.addEventListener('input', updateTuAccPreview);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllTopup(); } });
-    inp.addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); if(v!=null) e.target.value=v; });
+    inp.addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); e.target.value = (v!=null) ? v.toLocaleString('id-ID') : ''; });
   });
+}
+/* Format angka otomatis pakai titik ribuan SAAT USER NGETIK (500000 -> 500.000),
+   supaya kelihatan langsung kalau kelebihan/kekurangan nol — ini titik utama sumber
+   salah ketik nominal top up. Posisi kursor dijaga relatif dari akhir string. */
+function formatThousandsLive(inputEl){
+  const cursorFromEnd = inputEl.value.length - inputEl.selectionStart;
+  const raw = inputEl.value.replace(/[^\d]/g,'');
+  const formatted = raw ? Number(raw).toLocaleString('id-ID') : '';
+  inputEl.value = formatted;
+  const newPos = Math.max(0, formatted.length - cursorFromEnd);
+  try{ inputEl.setSelectionRange(newPos, newPos); }catch(e){}
 }
 function updateTuAccPreview(e){
   const inp = e.target;
+  formatThousandsLive(inp);
   const dateVal = tuSelectedDate();
   const previewEl = document.querySelector('.tu-acc-preview[data-preview-for="'+cssEscapeSafe(inp.dataset.accName)+'"]');
   if(!previewEl) return;
@@ -4342,20 +4359,56 @@ async function saveAllTopup(){
   if(!dateVal){ msg.textContent='Pilih tanggal terlebih dahulu.'; msg.style.color='var(--red)'; return; }
   const jam = nowHHMM();
   const inputs = Array.from(document.querySelectorAll('.tuAccInput'));
-  const saved = [];
+  const pending = [];
   inputs.forEach(inp=>{
     const nominal = parseIndoNumber(inp.value);
     if(nominal!=null && nominal>0){
-      const t = {id:genTopupId(), tanggal:dateVal, jam, akun:inp.dataset.accName, nominal, catatan};
-      TOPUPS.push(t);
-      saved.push(t);
+      pending.push({id:genTopupId(), tanggal:dateVal, jam, akun:inp.dataset.accName, nominal, catatan});
     }
   });
-  if(!saved.length){ msg.textContent='Isi minimal satu nominal top up akun.'; msg.style.color='var(--red)'; return; }
+  if(!pending.length){ msg.textContent='Isi minimal satu nominal top up akun.'; msg.style.color='var(--red)'; return; }
+  showTopupConfirmModal(pending, dateVal);
+}
+/* Ringkasan besar & jelas sebelum data beneran kekirim — titik cek terakhir
+   buat nangkep salah ketik nominal (kelebihan/kekurangan nol dsb) sebelum tersimpan. */
+function showTopupConfirmModal(pending, dateVal){
+  const total = pending.reduce((s,t)=>s+t.nominal,0);
+  const overlay=document.createElement('div'); overlay.className='edit-modal-overlay'; overlay.id='modalOverlay';
+  overlay.innerHTML = `
+    <div class="edit-modal">
+      <h3>Cek Dulu Sebelum Simpan</h3>
+      <div class="muted-note" style="margin-bottom:10px;">${fmtTanggalID(dateVal)} · ${pending.length} akun</div>
+      <div style="max-height:50vh;overflow-y:auto;">
+        ${pending.map(t=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);">
+            <span style="font-size:14px;">${escapeHtml(t.akun)}</span>
+            <span style="font-size:18px;font-weight:700;color:var(--green);">${rupiah(t.nominal)}</span>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 4px;font-weight:700;">
+        <span>Total</span>
+        <span style="font-size:19px;color:var(--green);">${rupiah(total)}</span>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal" id="tuConfirmCancel">Batal, Cek Lagi</button>
+        <button class="btn-modal primary" id="tuConfirmSave">✅ Ya, Simpan</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('tuConfirmCancel').onclick = closeModal;
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+  document.getElementById('tuConfirmSave').onclick = ()=>{
+    closeModal();
+    doSaveAllTopup(pending, dateVal);
+  };
+}
+async function doSaveAllTopup(saved, dateVal){
+  const msg = document.getElementById('allTopupMsg');
+  saved.forEach(t=> TOPUPS.push(t));
   saveLocalState();
 
   // Bersihkan form & kasih konfirmasi lokal LANGSUNG, gak perlu nunggu jaringan
-  inputs.forEach(inp=>{ inp.value=''; });
+  document.querySelectorAll('.tuAccInput').forEach(inp=>{ inp.value=''; });
   document.getElementById('tuSharedCatatan').value='';
   renderTopupAccList();
   renderTopupSummaryForDate();
