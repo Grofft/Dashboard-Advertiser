@@ -145,6 +145,19 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .chart-wrap{position:relative;height:300px;}
 .two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
 @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+.cs-stack{display:flex;flex-direction:column;gap:18px;}
+.cs-input-panel{padding:20px 22px !important;}
+.cs-input-panel h3{font-size:15px !important;margin-bottom:14px !important;}
+.cs-input-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 20px;margin-bottom:16px;}
+.cs-input-grid .target-row{margin-bottom:0;gap:6px;}
+.cs-input-grid .target-row label{font-size:12.5px !important;color:var(--muted);}
+.cs-input-grid .target-row input, .cs-input-grid .target-row select{padding:10px 12px !important;font-size:14px !important;}
+@media(max-width:900px){.cs-input-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.cs-input-grid{grid-template-columns:1fr;}}
+.cs-insight-card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:2px 0 16px;}
+.cs-insight-card .adv-card-row{padding:7px 0;font-size:13.5px;}
+.cs-insight-card .adv-card-row .v{font-size:14.5px;}
+.cs-input-panel .btn{padding:11px 18px !important;font-size:13.5px !important;}
 
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;}
@@ -182,7 +195,14 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .adv-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;}
 .adv-card-chart-title{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--line);}
 .adv-card-chart-wrap{position:relative;height:100px;}
-#tblAdvertiser{display:flex;flex-direction:column;gap:14px;}
+#tblAdvertiser{display:flex;flex-direction:column;gap:12px;}
+#tblAdvertiser .adv-card{padding:14px 16px;}
+#tblAdvertiser .adv-card-head{margin-bottom:6px;padding-bottom:6px;}
+#tblAdvertiser .adv-card-row{padding:3px 0;font-size:12.5px;}
+#tblAdvertiser .adv-card-row .v{font-size:13px;}
+#tblAdvertiser .adv-card-chart-title{margin:6px 0 4px;padding-top:6px;}
+#tblAdvertiser .adv-card-chart-wrap{height:64px;}
+#tblAdvertiser .adv-card-note{margin-top:4px;padding-top:4px;font-size:10.5px;}
 .adv-card-pair{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;}
 .adv-card-pair .adv-card{flex:1 1 300px;}
 .tu-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
@@ -633,13 +653,13 @@ try{
         <button class="target-mode-btn" id="btnModeBulanan" onclick="setTargetMode('bulanan')">🗓️ Bulanan</button>
       </div>
       <div class="monthly-target-note" id="targetModeNote">
-        <b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Spend+PPN − (Target Harian × jumlah hari dalam periode).
+        <b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Budget (Non PPN) − (Target Harian × jumlah hari dalam periode).
       </div>
 
       <!-- PANEL HARIAN -->
       <div id="panelTargetHarian">
         <div id="targetRows"></div>
-        <div class="muted-note" style="margin-top:8px;">Kekurangan = Spend+PPN periode − (Target Harian × jumlah hari). Positif = melebihi target, negatif = di bawah target.</div>
+        <div class="muted-note" style="margin-top:8px;">Kekurangan = Budget (Non PPN) periode − (Target Harian × jumlah hari). Positif = melebihi target, negatif = di bawah target.</div>
       </div>
 
       <!-- PANEL BULANAN -->
@@ -660,7 +680,7 @@ try{
         </div>
 
         <div id="targetRowsMonthly"></div>
-        <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Spend+PPN bulan ini − (Target Harian × 28 hari, standar tetap). Ditampilkan otomatis per advertiser di atas. Kekurangan periode dashboard tetap dihitung berdasarkan jumlah hari asli pada periode yang dipilih.</div>
+        <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Budget (Non PPN) bulan ini − (Target Harian × 28 hari, standar tetap). Ditampilkan otomatis per advertiser di atas. Kekurangan periode dashboard tetap dihitung berdasarkan jumlah hari asli pada periode yang dipilih.</div>
       </div>
     </div>
   </div>
@@ -1006,11 +1026,31 @@ try{
       <input type="text" id="csNewName" placeholder="cth: Rani" style="flex:1;min-width:160px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
       <button class="btn" id="btnAddCs">+ Tambah CS</button>
     </div>
+    <div class="muted-note" id="csRosterMsg" style="margin-top:8px;"></div>
   </div>
 
   <div class="period-btns" id="csTabs" style="margin-bottom:22px;"></div>
 
-  <div class="two-col">
+  <div class="cs-stack">
+    <div class="account-picker compact-form cs-input-panel">
+      <h3 style="font-family:'Roboto',sans-serif;margin-bottom:8px;">📝 Input Data Harian</h3>
+      <div class="cs-input-grid">
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label><input type="date" id="csTanggal"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
+      </div>
+      <div class="cs-insight-card">
+        <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Insight Otomatis</h3>
+        <div class="muted-note" style="margin-bottom:10px;">Terhitung langsung dari angka yang sedang diisi — closing rate &amp; status vs standar KPI CS</div>
+        <div id="csInsightPanel"></div>
+      </div>
+      <button class="btn" id="btnSaveCsInput" style="margin-top:3px;">💾 Simpan Data CS</button>
+      <div class="muted-note" id="csInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+    </div>
+
     <div>
       <div class="section-header" style="margin-top:0;"><h2>Ringkasan</h2><div class="muted-note" id="csCount">0 data tercatat</div></div>
       <div class="grid grid-3" style="margin-bottom:18px;">
@@ -1036,19 +1076,6 @@ try{
           </table>
         </div>
       </div>
-    </div>
-
-    <div class="account-picker compact-form" style="align-self:start;">
-      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📝 Input Data Harian</h3>
-      <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label><input type="date" id="csTanggal"></div>
-      <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
-      <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
-      <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
-      <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
-      <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
-      <div class="muted-note" style="margin:-2px 0 8px;">Closing rate dihitung otomatis: Hasil Closing ÷ Lead Real.</div>
-      <button class="btn" id="btnSaveCsInput" style="margin-top:3px;width:100%;">💾 Simpan Data CS</button>
-      <div class="muted-note" id="csInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
     </div>
   </div>
 </div><!-- /page-cs -->
@@ -1310,7 +1337,7 @@ function applyTargetModeUI(mode){
   document.getElementById('panelTargetBulanan').style.display = mode==='bulanan' ? '' : 'none';
   const note = document.getElementById('targetModeNote');
   if(mode==='harian'){
-    note.innerHTML = '<b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Spend+PPN − (Target Harian × jumlah hari dalam periode).';
+    note.innerHTML = '<b>Mode Harian:</b> Masukkan target spend per hari. Kekurangan = Budget (Non PPN) − (Target Harian × jumlah hari dalam periode).';
   } else {
     note.innerHTML = '<b>Mode Bulanan:</b> Atur target per bulan secara terpisah. Pilih bulan di bawah untuk mengedit. Kekurangan dihitung dengan target bulan masing-masing hari.';
     renderMonthPicker();
@@ -1396,18 +1423,18 @@ function renderTargetRowsMonthly(){
 
     const targetBulan = val * daysInActiveMonth;
     const advAccs = ACCOUNTS.filter(a=>everOwnedBy(a,adv));
-    let spendBulan = 0, leadRealBulan = 0;
+    let budgetBulan = 0, leadRealBulan = 0;
     ALL_DATES.forEach((d,i)=>{
       if(d.getFullYear()===activeEditYear && (d.getMonth()+1)===activeEditMonth){
-        advAccs.forEach(a=>{ if(ownerAtIndex(a,i)===adv) spendBulan += (a.spendSeries[i]||0); });
+        advAccs.forEach(a=>{ if(ownerAtIndex(a,i)===adv) budgetBulan += (a.budgetSeries[i]||0); });
         leadRealBulan += (ADV_LEADS[adv] ? (ADV_LEADS[adv].real[i]||0) : 0);
       }
     });
-    const kekuranganBulan = spendBulan - targetBulan;
+    const kekuranganBulan = budgetBulan - targetBulan;
     const targetLeadBulan = targetBulan / TARGET_CPL_BULANAN;
     const kekuranganLeadBulan = leadRealBulan - targetLeadBulan;
     totalTargetBulan += targetBulan;
-    totalSpendBulan += spendBulan;
+    totalSpendBulan += budgetBulan;
     totalTargetLead += targetLeadBulan;
     totalLeadRealBulan += leadRealBulan;
 
@@ -1421,7 +1448,7 @@ function renderTargetRowsMonthly(){
       '<input type="number" step="10000" value="'+val+'" data-adv="'+adv+'" data-month="'+activeEditMonth+'" style="width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;font-family:\'Roboto\',sans-serif;"></div>'+
       '<div class="adv-card-row"><span class="k">Target Bulan</span><span class="v">'+rupiah(targetBulan)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Target Lead</span><span class="v">'+num(targetLeadBulan)+' lead</span></div>'+
-      '<div class="adv-card-row"><span class="k">Spend Bulan Ini</span><span class="v">'+rupiah(spendBulan)+'</span></div>'+
+      '<div class="adv-card-row"><span class="k">Budget Bulan Ini (Non PPN)</span><span class="v">'+rupiah(budgetBulan)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Kekurangan</span><span class="tag '+(kekuranganBulan<0?'yellow':'green')+'">'+rupiah(kekuranganBulan)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Lead Real Bulan Ini</span><span class="v">'+num(leadRealBulan)+' lead</span></div>'+
       '<div class="adv-card-row"><span class="k">Kekurangan Lead</span><span class="tag '+(kekuranganLeadBulan<0?'yellow':'green')+'">'+num(kekuranganLeadBulan)+' lead</span></div>';
@@ -1444,7 +1471,7 @@ function renderTargetRowsMonthly(){
     '<div style="font-size:12.5px;font-weight:700;">Total Kekurangan Target Spending Bulanan</div>'+
     '<div style="font-size:12px;color:var(--muted);">Target: <b style="color:var(--text);">'+rupiah(totalTargetBulan)+'</b></div>'+
     '<div style="font-size:12px;color:var(--muted);">Target Lead: <b style="color:var(--text);">'+num(totalTargetLead)+' lead</b></div>'+
-    '<div style="font-size:12px;color:var(--muted);">Spend: <b style="color:var(--text);">'+rupiah(totalSpendBulan)+'</b></div>'+
+    '<div style="font-size:12px;color:var(--muted);">Budget (Non PPN): <b style="color:var(--text);">'+rupiah(totalSpendBulan)+'</b></div>'+
     '<div style="font-size:12px;color:var(--muted);">Kekurangan: <span class="tag '+(totalKekurangan<0?'yellow':'green')+'" style="font-size:12px;">'+rupiah(totalKekurangan)+'</span></div>'+
     '<div style="font-size:12px;color:var(--muted);">Lead Real: <b style="color:var(--text);">'+num(totalLeadRealBulan)+' lead</b></div>'+
     '<div style="font-size:12px;color:var(--muted);">Kekurangan Lead: <span class="tag '+(totalKekuranganLead<0?'yellow':'green')+'" style="font-size:12px;">'+num(totalKekuranganLead)+' lead</span></div>';
@@ -1635,11 +1662,11 @@ function weeklyResultCardHtml(adv, w, idx){
     '<table class="wrc-table">'+
       '<thead><tr><th>HASIL MINGGU '+(idx+1)+'</th><th>TARGET</th><th>KURANG/LEBIH</th></tr></thead>'+
       '<tbody>'+
-        '<tr class="wrc-sub"><td>Spending + PPN</td><td>Spending + PPN</td><td>Spending + PPN</td></tr>'+
+        '<tr class="wrc-sub"><td>Budget (Non PPN)</td><td>Budget (Non PPN)</td><td>Budget (Non PPN)</td></tr>'+
         '<tr><td>'+rupiah(w.spend)+'</td><td>'+rupiah(w.target)+'</td><td style="color:'+spendColor+';font-weight:800;">'+(diffSpend>0?'+':'')+rupiah(diffSpend)+'</td></tr>'+
         '<tr class="wrc-sub"><td>Lead Real</td><td>Lead Real</td><td>Lead Real</td></tr>'+
         '<tr><td>'+num(w.leadReal)+'</td><td>'+num(w.targetLead)+'</td><td style="color:'+leadColor+';font-weight:800;">'+(diffLead>0?'+':'')+num(diffLead)+'</td></tr>'+
-        '<tr class="wrc-sub"><td>Avg. CPL + PPN</td><td>Target CPL</td><td class="wrc-hl-head">CPL Order Online</td></tr>'+
+        '<tr class="wrc-sub"><td>Avg. CPL (Non PPN)</td><td>Target CPL</td><td class="wrc-hl-head">CPL Order Online</td></tr>'+
         '<tr><td>'+rupiah(cplReal)+'</td><td>'+rupiah(CPL_BENCHMARK)+'</td><td class="wrc-hl">'+rupiah(cplOO)+'</td></tr>'+
         '<tr class="wrc-sub"><td>Lead Order Online</td><td>Lead Real</td><td>Presentasi Lead</td></tr>'+
         '<tr><td>'+num(w.leadOO)+'</td><td>'+num(w.targetLead)+'</td><td>'+pctLead.toFixed(2).replace('.',',')+'%</td></tr>'+
@@ -2084,10 +2111,11 @@ function render(){
     const cplReal = real>0 ? budget/real : 0;
     const cplOO = oo>0 ? budget/oo : 0;
     const target = calcTargetInRange(adv, range);
-    const kekurangan = spendPPN - target;
+    const kekurangan = budget - target;
 
     // --- data harian untuk mini grafik trend di kartu ---
     const dailySpendPPN = sliceIn(ALL_DATES.map((_,i)=> relevantAccs.reduce((s,a)=> s + (ownerAtIndex(a,i)===adv ? (a.spendSeries[i]||0) : 0), 0)), range);
+    const dailyBudget = sliceIn(ALL_DATES.map((_,i)=> relevantAccs.reduce((s,a)=> s + (ownerAtIndex(a,i)===adv ? (a.budgetSeries[i]||0) : 0), 0)), range);
     const dailyLeadReal = sliceIn(ADV_LEADS[adv].real, range);
     const dailyLeadOO = sliceIn(ADV_LEADS[adv].oo, range);
 
@@ -2100,9 +2128,9 @@ function render(){
     const pCplReal = pReal>0 ? pBudget/pReal : 0;
     const pCplOO = pOO>0 ? pBudget/pOO : 0;
     const pTarget = calcTargetInRange(adv, prevRange);
-    const pKekurangan = pSpendPPN - pTarget;
+    const pKekurangan = pBudget - pTarget;
 
-    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch, dailySpendPPN, dailyLeadReal, dailyLeadOO,
+    return {adv, real, oo, pctLead, budget, spendPPN, kekurangan, cplReal, cplOO, anySwitch, dailySpendPPN, dailyBudget, dailyLeadReal, dailyLeadOO,
       prev:{real:pReal, oo:pOO, pctLead:pPctLead, budget:pBudget, spendPPN:pSpendPPN, kekurangan:pKekurangan, cplReal:pCplReal, cplOO:pCplOO}};
   }).filter(Boolean);
   document.getElementById('kpiLeads').textContent = num(totalLeadsReal);
@@ -2129,7 +2157,7 @@ function render(){
       '<div class="adv-card-chart-wrap"><canvas id="advCardChart_'+idx+'"></canvas></div>'+
       '<div class="adv-card-note">dibandingkan periode sebelumnya (durasi sama)</div>'+
     '</div>'+
-    weeklyBreakdownCard(r.adv, r.dailySpendPPN, r.dailyLeadReal, r.dailyLeadOO, datesIn(range))+
+    weeklyBreakdownCard(r.adv, r.dailyBudget, r.dailyLeadReal, r.dailyLeadOO, datesIn(range))+
     '</div>'
   ).join('') : '<div class="muted-note">Tidak ada data</div>';
 
@@ -2167,8 +2195,8 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   const tblEl = document.getElementById('laporanTable');
   if(tblEl){
     tblEl.innerHTML = advRows.length ? advRows.map(r=>{
-      const target = r.spendPPN - r.kekurangan;
-      const pctTarget = target>0 ? (r.spendPPN/target*100) : null;
+      const target = r.budget - r.kekurangan;
+      const pctTarget = target>0 ? (r.budget/target*100) : null;
       const targetColor = pctTarget==null ? 'var(--muted)' : (pctTarget>=100 ? 'var(--green)' : 'var(--yellow)');
       return '<tr>'+
         '<td><span class="dot" style="background:'+ADV_COLOR[r.adv]+';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;"></span>'+r.adv+'</td>'+
@@ -2185,7 +2213,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
 
   const notes = [];
   advRows.forEach(r=>{
-    const target = r.spendPPN - r.kekurangan;
+    const target = r.budget - r.kekurangan;
     if(r.cplReal > CPL_BENCHMARK && r.real>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL Real '+rupiah(r.cplReal)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
     if(r.cplOO > CPL_BENCHMARK && r.oo>0) notes.push('🔥 <b>'+r.adv+'</b>: CPL OO '+rupiah(r.cplOO)+' — di atas patokan '+rupiah(CPL_BENCHMARK)+'.');
     if(target>0 && r.kekurangan<0) notes.push('⚠️ <b>'+r.adv+'</b>: belum capai target, kurang '+rupiah(Math.abs(r.kekurangan))+'.');
@@ -2445,6 +2473,7 @@ document.getElementById('advMetricSelect').addEventListener('change', ()=>{
 
 /* ============== INPUT MANUAL (1 panel per advertiser) ============== */
 const CPL_BENCHMARK = 89000; // patokan CPL wajar — di atas ini dianggap mahal
+const CS_CLOSING_RATE_KPI = 85; // standar KPI closing rate CS — minimal 85%
 function renderInsightPanel(){
   const panel = document.getElementById('insightPanel');
   if(!panel) return;
@@ -2633,6 +2662,7 @@ function doGet(e){
   var targetSheet = ss.getSheetByName('Target');
   var tcSheet = ss.getSheetByName('TestCampaign');
   var csSheet = ss.getSheetByName('CS');
+  var csRosterSheet = ss.getSheetByName('CSRoster');
   var topupSheet = ss.getSheetByName('TopUp');
   var agensiSheet = ss.getSheetByName('AkunAgensi');
   var saldoAgensiSheet = ss.getSheetByName('SaldoAgensi');
@@ -2643,10 +2673,11 @@ function doGet(e){
   var target = sheetToObjects(targetSheet);
   var testcampaign = sheetToObjects(tcSheet);
   var csdata = sheetToObjects(csSheet);
+  var csroster = sheetToObjects(csRosterSheet);
   var topup = sheetToObjects(topupSheet);
   var akunagensi = sheetToObjects(agensiSheet);
   var saldoagensi = sheetToObjects(saldoAgensiSheet);
-  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, topup: topup, akunagensi: akunagensi, saldoagensi: saldoagensi});
+  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, topup: topup, akunagensi: akunagensi, saldoagensi: saldoagensi});
 }
 
 function doPost(e){
@@ -2677,6 +2708,8 @@ function doPost(e){
       upsertTestCampaign(ss, data);
     } else if(data.type === 'cs'){
       upsertCsData(ss, data);
+    } else if(data.type === 'csroster'){
+      upsertCsRoster(ss, data);
     } else if(data.type === 'topup'){
       upsertTopUp(ss, data);
     } else if(data.type === 'akunagensi'){
@@ -2752,6 +2785,24 @@ function upsertCsData(ss, data){
   }
   if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
   sh.appendRow([data.tanggal, data.cs, data.advertiser, data.omzet, data.hasilclosing, data.leadreal, data.leadoo]);
+}
+
+// Sheet "CSRoster" = daftar MASTER nama CS/Sales (1 baris per nama, bukan data harian).
+// Otomatis di-upsert setiap kali nama CS ditambah/dihapus dari dashboard (menu Hasil CS),
+// supaya nama CS langsung muncul di browser/device lain begitu "Tarik Data dari Spreadsheet",
+// walaupun CS itu belum pernah diisi data harian sama sekali.
+function upsertCsRoster(ss, data){
+  var sh = ss.getSheetByName('CSRoster');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var nama = String(data.nama).trim().toLowerCase();
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim().toLowerCase() === nama){
+      sh.getRange(i+1,1,1,2).setValues([[data.nama, data.aktif ? 'ya' : 'tidak']]);
+      return;
+    }
+  }
+  sh.appendRow([data.nama, data.aktif ? 'ya' : 'tidak']);
 }
 
 // Sheet "AkunWL" = daftar MASTER akun WL (1 baris per akun, bukan data harian).
@@ -2938,7 +2989,7 @@ function jsonOutput(obj){
 }
 
 // ============================================================
-// STRUKTUR SHEET YANG DIPERLUKAN (buat 7 sheet ini di spreadsheet):
+// STRUKTUR SHEET YANG DIPERLUKAN (buat 11 sheet ini di spreadsheet):
 // Sheet "Akun"   → kolom: tanggal | nama | budget | spendppn   (1 baris per akun per tanggal — upsert, ditimpa kalau diinput ulang)
 // Sheet "Leads"  → kolom: tanggal | advertiser | real | oo     (1 baris per advertiser per tanggal — upsert, ditimpa kalau diinput ulang)
 // Sheet "AkunWL" → kolom: nama | advertiser | ppn | aktif      (daftar master akun — KONDISI TERKINI saja,
@@ -2958,6 +3009,11 @@ function jsonOutput(obj){
 //                  (1 baris per CS per tanggal per advertiser — upsert berdasarkan
 //                  tanggal+cs+advertiser, ditimpa kalau diinput ulang; closing rate =
 //                  hasilclosing ÷ leadreal, dihitung otomatis di dashboard)
+// Sheet "CSRoster" → kolom: nama | aktif    (daftar master nama CS/Sales — KONDISI TERKINI saja,
+//                  1 baris per nama CS — otomatis terisi/update saat CS ditambah/dihapus dari
+//                  menu Hasil CS. Ini yang membuat nama CS baru langsung sinkron ke semua
+//                  browser/device begitu "Tarik Data dari Spreadsheet", meski belum ada data
+//                  harian sama sekali untuk CS itu)
 // Sheet "TopUp" → kolom: id | tanggal | jam | akun | nominal | catatan
 //                  (LOG tiap kali top up budget dicatat per akun WL — bisa BEBERAPA baris
 //                  per akun per hari untuk top up bertahap, upsert berdasarkan id,
@@ -3158,6 +3214,29 @@ async function pullFromSheet(){
       saveLocalState();
       renderTestCampaigns();
     }
+    // ==== ROSTER CS: sheet "CSRoster" adalah sumber kebenaran untuk daftar nama CS ====
+    // (dibaca SEBELUM data harian CS, supaya nama CS baru yang belum ada datanya sama sekali
+    // tetap ikut muncul, dan CS yang dihapus tetap disembunyikan meski masih ada data lama di sheet "CS")
+    let countCsRoster=0;
+    if(Array.isArray(json.csroster) && json.csroster.length>0){
+      json.csroster.forEach(r=>{
+        const nama = String(r.nama||'').trim();
+        if(!nama) return;
+        const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
+        const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
+        if(isActive){
+          if(!CS_LIST.some(x=>x.toLowerCase()===nama.toLowerCase())) CS_LIST.push(nama);
+          CS_HIDDEN = CS_HIDDEN.filter(x=>x.toLowerCase()!==nama.toLowerCase());
+        } else {
+          CS_LIST = CS_LIST.filter(x=>x.toLowerCase()!==nama.toLowerCase());
+          if(!CS_HIDDEN.some(x=>x.toLowerCase()===nama.toLowerCase())) CS_HIDDEN.push(nama);
+        }
+        countCsRoster++;
+      });
+      saveLocalState();
+      if(typeof renderCsChips==='function') renderCsChips();
+      if(typeof renderCsTabs==='function') renderCsTabs();
+    }
     // ==== OMZET & CLOSING CS: sheet "CS" adalah sumber kebenaran, ganti seluruh daftar lokal ====
     let countCs=0;
     if(Array.isArray(json.csdata)){
@@ -3170,7 +3249,7 @@ async function pullFromSheet(){
         leadReal: (r.leadreal!==''&&r.leadreal!=null) ? parseFloat(r.leadreal) : 0,
         leadOO: (r.leadoo!==''&&r.leadoo!=null) ? parseFloat(r.leadoo) : 0
       })).filter(c=>c.cs && c.tanggal);
-      CS_DATA.forEach(c=>{ if(!CS_LIST.includes(c.cs)) CS_LIST.push(c.cs); });
+      CS_DATA.forEach(c=>{ if(!CS_LIST.includes(c.cs) && !CS_HIDDEN.includes(c.cs)) CS_LIST.push(c.cs); });
       countCs = CS_DATA.length;
       saveLocalState();
       if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
@@ -3228,10 +3307,10 @@ async function pullFromSheet(){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCs+' data CS, '+countTu+' top up budget, '+countSaldo+' saldo masuk agensi.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countTu+' top up budget, '+countSaldo+' saldo masuk agensi.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCs+' data CS, '+countTu+' top up budget, dan '+countSaldo+' saldo masuk agensi dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countTu+' top up budget, dan '+countSaldo+' saldo masuk agensi dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
@@ -3335,6 +3414,12 @@ async function pushAllToSheet(){
   for(const c of TEST_CAMPAIGNS){
     await pushTestCampaignRow(c); sent++;
   }
+  for(const cs of CS_LIST){
+    await pushCsRoster(cs, true); sent++;
+  }
+  for(const cs of CS_HIDDEN){
+    await pushCsRoster(cs, false); sent++;
+  }
   for(const c of CS_DATA){
     await pushCsRow(c); sent++;
   }
@@ -3347,7 +3432,7 @@ async function pushAllToSheet(){
   for(const s of SALDO_MASUK){
     await pushSaldoMasukRow(s); sent++;
   }
-  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, data CS, Top Up Budget, Agensi Akun, dan Saldo Titipan Agensi) ke spreadsheet.';
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, daftar nama CS, data CS, Top Up Budget, Agensi Akun, dan Saldo Titipan Agensi) ke spreadsheet.';
   msg.style.color='var(--green)';
 }
 document.getElementById('btnPullSheet').onclick = pullFromSheet;
@@ -3593,6 +3678,7 @@ document.getElementById('tcShowMetricsToggle').addEventListener('change', applyT
 
 /* ============== OMZET & CLOSING CS ============== */
 let CS_LIST = ['CS 1', 'CS 2'];
+let CS_HIDDEN = []; // nama CS yang sudah dihapus user — jangan dimunculkan lagi meski masih ada datanya di spreadsheet
 let CS_DATA = []; // {cs, tanggal, advertiser, omzet, hasilClosing, leadReal, leadOO}
 let csActiveTab = null;
 let csFilterAdvertiser = 'semua';
@@ -3605,6 +3691,56 @@ function calcClosingRate(c){
 }
 function pctFmt(v){ return v==null ? '-' : v.toFixed(1).replace('.', ',')+'%'; }
 
+/* Ringkasan otomatis di form Input Data Harian CS — sama seperti Insight Otomatis
+   di menu Data Input, tapi untuk Omzet/Hasil Closing/Lead/Closing Rate CS. */
+function renderCsInsight(){
+  const panel = document.getElementById('csInsightPanel');
+  if(!panel) return;
+  const omzet = parseFloat(document.getElementById('csOmzet').value);
+  const hasilClosing = parseFloat(document.getElementById('csHasilClosing').value);
+  const leadReal = parseFloat(document.getElementById('csLeadReal').value);
+  const leadOO = parseFloat(document.getElementById('csLeadOO').value);
+  const hasOmzet = !isNaN(omzet) && omzet>0;
+  const hasHC = !isNaN(hasilClosing) && hasilClosing>0;
+  const hasLR = !isNaN(leadReal) && leadReal>0;
+  const hasLOO = !isNaN(leadOO) && leadOO>0;
+
+  if(!hasOmzet && !hasHC && !hasLR && !hasLOO){
+    panel.innerHTML = '<div class="muted-note">Isi angka di atas — omzet, closing, lead, dan status vs standar KPI closing rate ('+CS_CLOSING_RATE_KPI+'%) otomatis muncul di sini.</div>';
+    return;
+  }
+
+  let html = '';
+  if(hasOmzet) html += '<div class="adv-card-row"><span class="k">Omzet</span><span class="v">'+rupiah(omzet)+'</span></div>';
+  if(hasHC) html += '<div class="adv-card-row"><span class="k">Hasil Closing</span><span class="v">'+hasilClosing+'</span></div>';
+
+  if(hasHC && hasLR){
+    const rate = (hasilClosing/leadReal)*100;
+    const selisih = rate - CS_CLOSING_RATE_KPI;
+    if(selisih < 0){
+      html += '<div style="font-size:12px;color:var(--yellow);margin:6px 0 10px;">⚠️ Closing rate masih kurang <b>'+pctFmt(Math.abs(selisih))+'</b> dari standar KPI minimal ('+CS_CLOSING_RATE_KPI+'%).</div>';
+    } else {
+      html += '<div style="font-size:12px;color:var(--green);margin:6px 0 10px;">✅ Sudah capai standar KPI closing rate ('+CS_CLOSING_RATE_KPI+'%)'+(selisih>0?' — lebih '+pctFmt(selisih):'')+'.</div>';
+    }
+  } else {
+    html += '<div class="muted-note" style="margin:6px 0 10px;">Isi Hasil Closing &amp; Lead Real untuk melihat status vs standar KPI ('+CS_CLOSING_RATE_KPI+'%).</div>';
+  }
+
+  if(hasLR || hasLOO){
+    html += '<div class="adv-card-row"><span class="k">Lead Real / OO</span><span class="v">'+(hasLR?leadReal:'-')+' / '+(hasLOO?leadOO:'-')+'</span></div>';
+  }
+  if(hasHC && hasLR){
+    const rate = (hasilClosing/leadReal)*100;
+    const kurang = rate < CS_CLOSING_RATE_KPI;
+    html += '<div class="adv-card-row"><span class="k">Closing Rate</span><span class="v" style="color:'+(kurang?'var(--red)':'var(--green)')+';font-weight:700;">'+pctFmt(rate)+'</span></div>';
+  }
+  panel.innerHTML = html;
+}
+['csOmzet','csHasilClosing','csLeadReal','csLeadOO'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', renderCsInsight);
+});
+
 function renderCsChips(){
   const wrap = document.getElementById('csChips');
   if(!wrap) return;
@@ -3614,23 +3750,34 @@ function renderCsChips(){
     '<button class="icon-btn" data-del-cs="'+escapeHtml(cs)+'" title="Hapus CS" style="width:20px;height:20px;font-size:11px;">🗑</button></span>'
   ).join('');
   wrap.querySelectorAll('[data-del-cs]').forEach(btn=>{
-    btn.onclick = ()=>{
+    btn.onclick = async ()=>{
       const cs = btn.getAttribute('data-del-cs');
       if(!confirm('Hapus CS "'+cs+'"? Data harian CS ini di dashboard (bukan di spreadsheet) juga akan disembunyikan.')) return;
       CS_LIST = CS_LIST.filter(x=>x!==cs);
+      if(!CS_HIDDEN.includes(cs)) CS_HIDDEN.push(cs);
       if(csActiveTab===cs) csActiveTab = null;
       saveLocalState();
       renderCsChips();
       renderCsTabs();
       renderCsData();
+      setCsRosterMsg('Menyimpan penghapusan CS "'+cs+'"...', 'var(--muted)');
+      const status = await pushCsRoster(cs, false);
+      if(status==='ok') setCsRosterMsg('✅ CS "'+cs+'" dihapus & tersinkron ke spreadsheet.', 'var(--green)');
+      else if(status==='no-url') setCsRosterMsg('CS dihapus di dashboard ini saja. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).', 'var(--yellow)');
+      else setCsRosterMsg('CS dihapus di dashboard ini saja, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
     };
   });
 }
-document.getElementById('btnAddCs').addEventListener('click', ()=>{
+function setCsRosterMsg(text, colorVar){
+  const el = document.getElementById('csRosterMsg');
+  if(el){ el.textContent = text; el.style.color = colorVar || 'var(--muted)'; }
+}
+document.getElementById('btnAddCs').addEventListener('click', async ()=>{
   const inp = document.getElementById('csNewName');
   const name = inp.value.trim();
   if(!name){ alert('Nama CS wajib diisi.'); return; }
   if(CS_LIST.some(x=>x.toLowerCase()===name.toLowerCase())){ alert('CS dengan nama itu sudah ada.'); return; }
+  CS_HIDDEN = CS_HIDDEN.filter(x=>x.toLowerCase()!==name.toLowerCase());
   CS_LIST.push(name);
   csActiveTab = name;
   inp.value = '';
@@ -3638,6 +3785,11 @@ document.getElementById('btnAddCs').addEventListener('click', ()=>{
   renderCsChips();
   renderCsTabs();
   renderCsData();
+  setCsRosterMsg('Tersimpan — mengirim ke spreadsheet...', 'var(--muted)');
+  const status = await pushCsRoster(name, true);
+  if(status==='ok') setCsRosterMsg('✅ CS "'+name+'" tersimpan & tersinkron ke spreadsheet — otomatis muncul di browser/device lain.', 'var(--green)');
+  else if(status==='no-url') setCsRosterMsg('CS tersimpan di dashboard ini saja. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).', 'var(--yellow)');
+  else setCsRosterMsg('CS tersimpan di dashboard ini saja, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
 });
 
 function renderCsTabs(){
@@ -3679,6 +3831,9 @@ async function pushCsRow(c){
 async function pushCsDelete(c){
   return pushOneToSheet({type:'cs', cs:c.cs, tanggal:c.tanggal, advertiser:c.advertiser, hapus:true});
 }
+async function pushCsRoster(nama, aktif){
+  return pushOneToSheet({type:'csroster', nama:nama, aktif:!!aktif});
+}
 
 function setCsMsg(text, colorVar){
   const el = document.getElementById('csInputMsg');
@@ -3704,6 +3859,7 @@ async function saveCsInput(){
   document.getElementById('csHasilClosing').value = '';
   document.getElementById('csLeadReal').value = '';
   document.getElementById('csLeadOO').value = '';
+  renderCsInsight();
   setCsMsg('Tersimpan — mengirim ke spreadsheet...', 'var(--muted)');
   const status = await pushCsRow(entry);
   if(status==='ok') setCsMsg('✅ Tersimpan & terkirim ke spreadsheet.', 'var(--green)');
@@ -3789,6 +3945,7 @@ function renderCsData(){
 renderCsChips();
 renderCsTabs();
 renderCsData();
+renderCsInsight();
 
 /* ============== TOP UP BUDGET ==============
    Log tiap kali top up budget dicatat per akun WL. Beda dari "Data Akun"/"Data Input"
@@ -4484,6 +4641,7 @@ function saveLocalState(){
       advLeads: Object.fromEntries(Object.entries(ADV_LEADS).map(([k,v])=>[k,{real:v.real, oo:v.oo}])),
       testCampaigns: TEST_CAMPAIGNS,
       csList: CS_LIST,
+      csHidden: CS_HIDDEN,
       csData: CS_DATA,
       topups: TOPUPS,
       agensiList: AGENSI_LIST,
@@ -4520,6 +4678,7 @@ function loadLocalState(){
     Object.entries(state.advLeads||{}).forEach(([k,v])=>{ ADV_LEADS[k]={real:v.real, oo:v.oo}; });
     TEST_CAMPAIGNS = Array.isArray(state.testCampaigns) ? state.testCampaigns : [];
     CS_LIST = Array.isArray(state.csList) && state.csList.length>0 ? state.csList : CS_LIST;
+    CS_HIDDEN = Array.isArray(state.csHidden) ? state.csHidden : CS_HIDDEN;
     CS_DATA = Array.isArray(state.csData) ? state.csData : [];
     TOPUPS = Array.isArray(state.topups) ? state.topups : [];
     AGENSI_LIST = Array.isArray(state.agensiList) ? state.agensiList : [];
@@ -4634,7 +4793,7 @@ function buildAdvertiserReportText(){
     const real   = sumIn(ADV_LEADS[adv].real, range);
     const oo     = sumIn(ADV_LEADS[adv].oo, range);
     const target = calcTargetInRange(adv, range);
-    const kekurangan = spendPPN - target;
+    const kekurangan = budget - target;
     const cplReal = real>0 ? budget/real : 0;
     const cplOO   = oo>0  ? budget/oo  : 0;
     const pctLead = oo>0 ? (real/oo*100).toFixed(1) : '0.0';
@@ -5164,7 +5323,7 @@ async function autoPullOnLoad(){
         leadReal: (r.leadreal!==''&&r.leadreal!=null) ? parseFloat(r.leadreal) : 0,
         leadOO: (r.leadoo!==''&&r.leadoo!=null) ? parseFloat(r.leadoo) : 0
       })).filter(c=>c.cs && c.tanggal);
-      CS_DATA.forEach(c=>{ if(!CS_LIST.includes(c.cs)) CS_LIST.push(c.cs); });
+      CS_DATA.forEach(c=>{ if(!CS_LIST.includes(c.cs) && !CS_HIDDEN.includes(c.cs)) CS_LIST.push(c.cs); });
       countCs2 = CS_DATA.length;
       if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
       if(typeof renderCsTabs==='function') renderCsTabs();
