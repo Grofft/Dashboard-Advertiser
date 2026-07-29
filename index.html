@@ -1127,7 +1127,23 @@ try{
 
   <div id="laporanReportArea">
     <div class="section-header" style="margin-top:0;"><h2>Laporan Performa Iklan — <span id="laporanPeriodLabel2">—</span></h2></div>
-    <div class="grid grid-4" id="laporanSummary" style="margin-bottom:18px;"></div>
+    <div id="laporanSummary" style="margin-bottom:4px;"></div>
+
+    <div class="chart-card" style="margin-bottom:16px;">
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:10px;">📈 Tren Performa Harian</div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="laporanTrendChart"></canvas></div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:18px;">
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:10px;">📊 Analisis Performa Advertiser</div>
+      <div class="table-scroll" style="margin-bottom:12px;">
+        <table>
+          <thead><tr><th>Advertiser</th><th>Spending</th><th>Leads</th><th>CPL</th></tr></thead>
+          <tbody id="laporanAnalisisTable"></tbody>
+        </table>
+      </div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="laporanAdvBarChart"></canvas></div>
+    </div>
 
     <div class="section-header"><h2>Rincian per Advertiser</h2></div>
     <div class="table-scroll">
@@ -1333,6 +1349,11 @@ let defaultTargetMigrated = false;
 
 /* Target bulanan: TARGETS_MONTHLY[adv]["tahun-bulan"] = nilai harian */
 let TARGETS_MONTHLY = {};
+/* Penanda edit Target Harian yang BELUM konfirmasi tersimpan ke spreadsheet (key: "adv|tahun|bulan").
+   Dipakai supaya tombol Refresh/pull dari sheet tidak menimpa balik angka yang baru diketik user
+   kalau proses simpan ke sheet belum selesai (mis. koneksi lambat / halaman keburu di-refresh). */
+let DIRTY_TARGETS = {};
+function dirtyTargetKey(adv, year, month){ return adv+'|'+year+'|'+month; }
 function initMonthlyTargets(adv){
   if(!TARGETS_MONTHLY[adv]) TARGETS_MONTHLY[adv] = {};
 }
@@ -1493,11 +1514,19 @@ function renderTargetRowsMonthly(){
       '<div class="adv-card-row"><span class="k">Lead Real Bulan Ini</span><span class="v">'+num(leadRealBulan)+' lead</span></div>'+
       '<div class="adv-card-row"><span class="k">Kekurangan Lead</span><span class="tag '+(kekuranganLeadBulan<0?'yellow':'green')+'">'+num(kekuranganLeadBulan)+' lead</span></div>';
     const inp = card.querySelector('input');
-    inp.onchange = (e)=>{
+    inp.onchange = async (e)=>{
       const v = parseFloat(e.target.value)||0;
       setMonthlyTarget(adv, activeEditMonth, v, activeEditYear);
+      const key = dirtyTargetKey(adv, activeEditYear, activeEditMonth);
+      DIRTY_TARGETS[key] = true;
       saveLocalState(); render(); renderMonthPicker(); renderTargetRowsMonthly();
-      pushTargetMonthly(adv, activeEditYear, activeEditMonth, v);
+      const status = await pushTargetMonthly(adv, activeEditYear, activeEditMonth, v);
+      if(status==='ok'){
+        delete DIRTY_TARGETS[key];
+        saveLocalState();
+      } else {
+        showQuickToast('Target Harian '+adv+' belum tersimpan ke spreadsheet (koneksi gagal) — akan dicoba lagi otomatis.', 'var(--yellow)');
+      }
     };
     grid.appendChild(card);
   });
@@ -2273,16 +2302,151 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   const prevTotalBudget = advRows.reduce((s,r)=>s+r.prev.budget,0);
   const pct = (cur, prev)=> prev>0 ? ((cur-prev)/prev*100) : (cur>0?100:0);
   const changeBudget = pct(totalBudget, prevTotalBudget);
-  const changeColor = changeBudget>=0 ? 'var(--green)' : 'var(--red)';
-  const changeSign = changeBudget>=0 ? '+' : '';
+
+  // ---- ringkasan gaya "Insight Otomatis" (sama seperti panel per-advertiser), diagregat semua advertiser ----
+  // Target diambil langsung dari Target Bulanan (sheet Target) per bulan kalender yang tercakup
+  // periode yang dipilih — bukan dihitung ulang dikali jumlah hari di range, supaya angkanya
+  // selalu sama dengan yang diatur di halaman Target Bulanan, apapun rentang tanggal filternya.
+  const monthsInRange = Array.from(new Set(datesIn(range).map(d=> d.getFullYear()+'-'+(d.getMonth()+1))));
+  const totalTarget = ADVERTISERS.reduce((s,adv)=>{
+    const advTarget = monthsInRange.reduce((s2,key)=>{
+      const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
+      return s2 + getMonthlyTarget(adv, m, y) * 28;
+    }, 0);
+    return s + advTarget;
+  }, 0);
+  const totalTargetLead = totalTarget>0 ? Math.round(totalTarget/CPL_BENCHMARK) : 0;
+  const pctBudget = totalTarget>0 ? (totalBudget/totalTarget*100) : 0;
+  const sisaBudget = totalTarget - totalBudget;
+  const pctLead = totalTargetLead>0 ? (totalLeadsReal/totalTargetLead*100) : 0;
+  const sisaLead = totalTargetLead - totalLeadsReal;
+  const cplOk = totalLeadsReal>0 ? (totalCPLReal<=CPL_BENCHMARK) : null;
+  const cplDiff = totalLeadsReal>0 ? (totalCPLReal - CPL_BENCHMARK) : null;
+  const barBudget = Math.min(pctBudget,100);
+  const barLead = Math.min(pctLead,100);
+
+  const dates = datesIn(range);
+  const hariBerjalan = Math.min(dates.filter(d=>d<=TODAY_REF).length, 28);
+  const sisaHari = Math.max(28-hariBerjalan,0);
+  const kebutuhanSpendingHari = sisaHari>0 ? Math.max(sisaBudget,0)/sisaHari : 0;
+  const kebutuhanLeadsHari = sisaHari>0 ? Math.round(Math.max(sisaLead,0)/sisaHari) : 0;
+
+  let insightMsg;
+  if(totalBudget===0 && totalLeadsReal===0){
+    insightMsg = 'Belum ada data aktual harian untuk periode ini — insight otomatis akan muncul begitu data mulai masuk.';
+  } else {
+    const expectedByNow = totalTarget * (hariBerjalan/28);
+    const parts = [];
+    if(expectedByNow>0){
+      if(totalBudget >= expectedByNow) parts.push('pace spending gabungan semua advertiser sudah sesuai atau lebih cepat dari target harian rata-rata');
+      else parts.push('pace spending gabungan tertinggal '+rupiah(expectedByNow-totalBudget)+' dari target harian rata-rata sampai hari ini');
+    }
+    if(cplOk===false) parts.push('rata-rata CPL saat ini di atas patokan '+rupiah(CPL_BENCHMARK));
+    else if(cplOk===true) parts.push('rata-rata CPL masih di bawah/sesuai patokan '+rupiah(CPL_BENCHMARK));
+    insightMsg = parts.length ? (parts[0].charAt(0).toUpperCase()+parts[0].slice(1)+(parts[1]?', dan '+parts[1]+'.':'.')) : 'Data sudah masuk, belum ada catatan khusus.';
+  }
 
   const summaryEl = document.getElementById('laporanSummary');
   if(summaryEl){
     summaryEl.innerHTML =
-      '<div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Budget</div><div class="value">'+rupiahShort(totalBudget)+'</div></div>'+
-      '<div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">Total Spend + PPN</div><div class="value">'+rupiahShort(totalSpend)+'</div></div>'+
-      '<div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Lead Real</div><div class="value">'+num(totalLeadsReal)+'</div></div>'+
-      '<div class="card kpi"><div class="bar-accent" style="background:'+changeColor+'"></div><div class="label">vs Periode Sebelumnya</div><div class="value" style="color:'+changeColor+';">'+changeSign+changeBudget.toFixed(1)+'%</div></div>';
+    '<div class="insight-mini-grid">'+
+      '<div class="insight-mini-card">'+
+        '<div class="insight-mini-head"><span class="insight-mini-title">💰 Total Spending</span></div>'+
+        '<div class="insight-mini-value">'+rupiah(totalBudget)+'</div>'+
+        '<div class="insight-mini-target">Target: '+rupiah(totalTarget)+' ('+pctBudget.toFixed(1)+'% tercapai)</div>'+
+        '<div class="insight-progress-track"><div class="insight-progress-fill'+(pctBudget>100?' over':'')+'" style="width:'+barBudget+'%;"></div></div>'+
+        '<div class="insight-mini-foot"><span>Sisa menuju target</span><span class="v '+(sisaBudget>0?'bad':'good')+'">'+(sisaBudget>0?rupiah(sisaBudget)+' lagi':'Tercapai')+'</span></div>'+
+      '</div>'+
+      '<div class="insight-mini-card">'+
+        '<div class="insight-mini-head"><span class="insight-mini-title">🎯 Total Lead Real</span></div>'+
+        '<div class="insight-mini-value">'+num(totalLeadsReal)+' Leads</div>'+
+        '<div class="insight-mini-target">Target: '+num(totalTargetLead)+' Leads ('+pctLead.toFixed(1)+'% tercapai)</div>'+
+        '<div class="insight-progress-track"><div class="insight-progress-fill'+(pctLead>100?' over':'')+'" style="width:'+barLead+'%;"></div></div>'+
+        '<div class="insight-mini-foot"><span>Sisa menuju target</span><span class="v '+(sisaLead>0?'bad':'good')+'">'+(sisaLead>0?num(sisaLead)+' leads lagi':'Tercapai')+'</span></div>'+
+      '</div>'+
+      '<div class="insight-mini-card">'+
+        '<div class="insight-mini-head"><span class="insight-mini-title">📐 Rata-rata CPL</span>'+
+          (cplOk===null?'':'<span class="insight-mini-badge'+(cplOk?'':' bad')+'">'+(cplOk?'Sesuai Target':'Di Atas Target')+'</span>')+
+        '</div>'+
+        '<div class="insight-mini-value">'+(totalLeadsReal>0?rupiah(totalCPLReal):'Rp 0')+'</div>'+
+        '<div class="insight-mini-target">Target CPL: '+rupiah(CPL_BENCHMARK)+'</div>'+
+        '<div class="insight-mini-foot" style="margin-top:8px;"><span>Selisih dari target</span><span class="v '+(cplDiff==null?'':(cplDiff<=0?'good':'bad'))+'">'+(cplDiff==null?'-':(cplDiff<=0?'':'+')+rupiah(cplDiff)+(cplDiff<=0?' (lebih hemat)':' (lebih mahal)'))+'</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="insight-box">'+
+      '<div class="insight-box-title">🔎 Insight Otomatis</div>'+
+      '<div class="insight-box-msg"><span class="ic">i</span><span>'+insightMsg+'</span></div>'+
+    '</div>'+
+    '<div class="crosscheck-box">'+
+      '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan (sisa '+sisaHari+' hari dari 28 hari)</div>'+
+      '<div class="crosscheck-grid">'+
+        '<div class="crosscheck-item"><div class="k">Kebutuhan Spending / hari agar capai target</div><div class="v">'+rupiah(kebutuhanSpendingHari)+'</div></div>'+
+        '<div class="crosscheck-item"><div class="k">Kebutuhan Leads / hari agar capai target</div><div class="v">'+num(kebutuhanLeadsHari)+'</div></div>'+
+        '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / 28 hari</div></div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // ---- Tren Performa Harian: gabungan spending & lead semua advertiser per hari ----
+  const trendEl = document.getElementById('laporanTrendChart');
+  if(trendEl && typeof Chart!=='undefined'){
+    const labels = trendLabels(range);
+    const nD = labels.length;
+    const dailySpendTotal = Array.from({length:nD},(_,i)=> advRows.reduce((s,r)=>s+(r.dailyBudget[i]||0),0));
+    const dailyLeadTotal = Array.from({length:nD},(_,i)=> advRows.reduce((s,r)=>s+(r.dailyLeadReal[i]||0),0));
+    if(chartReg['laporanTrendChart']){ chartReg['laporanTrendChart'].destroy(); delete chartReg['laporanTrendChart']; }
+    chartReg['laporanTrendChart'] = new Chart(trendEl, {
+      type:'line',
+      data:{ labels, datasets:[
+        { label:'Spending Aktual', data:dailySpendTotal, borderColor:cssVar('--blue')||'#4C8DFF', backgroundColor:(cssVar('--blue')||'#4C8DFF')+'22',
+          fill:true, tension:.35, pointRadius:0, borderWidth:2, yAxisID:'y' },
+        { label:'Leads Aktual', data:dailyLeadTotal, borderColor:cssVar('--green')||'#2FBE82', backgroundColor:'transparent',
+          fill:false, tension:.35, pointRadius:0, borderWidth:2, yAxisID:'y1' }
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+        plugins:{ legend:{display:true, position:'bottom', labels:{color:cssVar('--text'),boxWidth:14,font:{size:11}}},
+          tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text')} },
+        scales:{
+          x:{ grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:9} },
+          y:{ position:'left', grid:{color:cssVar('--chart-grid')}, ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:v=>rupiahShort(v)} },
+          y1:{ position:'right', grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:10},precision:0}, beginAtZero:true }
+        }
+      }
+    });
+  }
+
+  // ---- Analisis Performa Advertiser: tabel + bar horizontal spending per advertiser ----
+  const analisisTbl = document.getElementById('laporanAnalisisTable');
+  if(analisisTbl){
+    analisisTbl.innerHTML = advRows.length ? advRows.map(r=>
+      '<tr>'+
+        '<td><span class="dot" style="background:'+ADV_COLOR[r.adv]+';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;"></span>'+r.adv+'</td>'+
+        '<td>'+rupiah(r.budget)+'</td>'+
+        '<td>'+num(r.real)+'</td>'+
+        '<td>'+(r.real>0?rupiah(r.cplReal):'-')+'</td>'+
+      '</tr>'
+    ).join('') : '<tr><td colspan="4" class="muted-note">Tidak ada data pada periode ini</td></tr>';
+  }
+  const barEl = document.getElementById('laporanAdvBarChart');
+  if(barEl && typeof Chart!=='undefined'){
+    if(chartReg['laporanAdvBarChart']){ chartReg['laporanAdvBarChart'].destroy(); delete chartReg['laporanAdvBarChart']; }
+    chartReg['laporanAdvBarChart'] = new Chart(barEl, {
+      type:'bar',
+      data:{ labels: advRows.map(r=>r.adv), datasets:[
+        { label:'Spending', data: advRows.map(r=>r.budget), backgroundColor: advRows.map(r=>ADV_COLOR[r.adv]||'#4C8DFF'), borderRadius:5, maxBarThickness:26 }
+      ]},
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text'),
+            callbacks:{ label:(ctx)=> rupiah(ctx.parsed.x) } } },
+        scales:{
+          x:{ grid:{color:cssVar('--chart-grid')}, ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:v=>rupiahShort(v)} },
+          y:{ grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:11}} }
+        }
+      }
+    });
   }
 
   const tblEl = document.getElementById('laporanTable');
@@ -3214,6 +3378,7 @@ async function pullFromSheet(){
   const msg = document.getElementById('sheetSyncMsg');
   if(!url){ msg.textContent='Isi URL Web App Apps Script terlebih dahulu.'; msg.style.color='var(--red)'; return; }
   msg.textContent='Menarik data dari spreadsheet...'; msg.style.color='var(--muted)';
+  await flushDirtyTargets();
   try{
     const res = await fetch(url+'?action=read', {cache:'no-store'});
     const json = await res.json();
@@ -3450,6 +3615,22 @@ async function pushTargetMonthlyDelete(adv, year, month){
 }
 async function pushTargetMode(mode){
   return pushOneToSheet({type:'target', advertiser:'__MODE__', tipe:mode, tahun:'', bulan:'', nilai:''});
+}
+/* Coba simpan ulang semua Target Harian yang masih ditandai "belum tersimpan" (DIRTY_TARGETS)
+   SEBELUM menarik data dari sheet — supaya edit lokal yang sempat gagal/belum sempat terkirim
+   (mis. tab keburu di-refresh) tidak balik ketiban nilai lama dari spreadsheet saat pull. */
+async function flushDirtyTargets(){
+  const keys = Object.keys(DIRTY_TARGETS);
+  if(keys.length===0) return;
+  for(const key of keys){
+    const parts = key.split('|');
+    const adv = parts[0], year = parseInt(parts[1]), month = parseInt(parts[2]);
+    if(!adv || !year || !month) { delete DIRTY_TARGETS[key]; continue; }
+    const val = getMonthlyTarget(adv, month, year);
+    const status = await pushTargetMonthly(adv, year, month, val);
+    if(status==='ok') delete DIRTY_TARGETS[key];
+  }
+  saveLocalState();
 }
 async function pushAllTargetsToSheet(){
   await pushTargetMode(targetMode);
@@ -4728,6 +4909,7 @@ function saveLocalState(){
       advColor: ADV_COLOR,
       targets: TARGETS,
       targetsMonthly: TARGETS_MONTHLY,
+      dirtyTargets: DIRTY_TARGETS,
       defaultTargetMigrated: defaultTargetMigrated,
       targetMode: targetMode,
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
@@ -4757,6 +4939,7 @@ function loadLocalState(){
     ADV_COLOR = state.advColor || ADV_COLOR;
     TARGETS = state.targets || TARGETS;
     if(state.targetsMonthly) TARGETS_MONTHLY = state.targetsMonthly;
+    DIRTY_TARGETS = state.dirtyTargets || {};
     defaultTargetMigrated = !!state.defaultTargetMigrated;
     if(state.targetMode) targetMode = state.targetMode;
     accCounter = state.accCounter || accCounter;
@@ -5334,6 +5517,7 @@ async function autoPullOnLoad(){
     msg.style.color = 'var(--muted)';
   }
   setSidebarStatus('', 'Menghubungkan…');
+  await flushDirtyTargets();
   // Tampilkan overlay loading ringan di area konten
   const loadBanner = document.createElement('div');
   loadBanner.id = 'autoPullBanner';
