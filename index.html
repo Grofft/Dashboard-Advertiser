@@ -457,11 +457,35 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
 .global-notes-marquee:empty{ display:none; }
   @media(max-width:860px){
     .app{flex-direction:column;}
-    .sidebar{width:100%;flex-direction:row;overflow-x:auto;overflow-y:visible;padding:12px;height:auto;top:0;z-index:15;}
+    .sidebar{width:100%;flex-direction:row;overflow-x:auto;overflow-y:visible;padding:8px 10px;height:auto;top:0;z-index:15;gap:6px;-webkit-overflow-scrolling:touch;}
+    .sidebar::-webkit-scrollbar{height:0;}
     .brand{display:none;}
     .sidebar-foot{display:none;}
     .grid-2{grid-template-columns:1fr;}
-    .main{padding:18px;}
+    .main{padding:16px;}
+
+    /* Nav jadi chip horizontal yang ringkas, tidak wrap 2 baris */
+    .navbtn{flex-shrink:0;white-space:nowrap;padding:8px 12px;font-size:12.5px;gap:6px;border-radius:20px;}
+    .navbtn .ic{width:auto;font-size:12.5px;}
+
+    .global-filterbar{padding:10px 12px;gap:10px;}
+    .daterange-trigger{padding:7px 10px 7px 12px;font-size:12.5px;}
+    .theme-toggle-btn{width:26px;height:24px;font-size:12.5px;}
+  }
+  @media(max-width:480px){
+    body{font-size:13.5px;}
+    .main{padding:12px;}
+    .section-header{margin:16px 0 8px;gap:4px;}
+    .section-header h1{font-size:16px;}
+    .section-header h2{font-size:15px;}
+    .muted-note{font-size:11.5px;}
+    .card{padding:12px;}
+    .navbtn{padding:7px 10px;font-size:12px;}
+    .kpi .label{font-size:10.5px;}
+    .kpi .value{font-size:18px;}
+    .daterange-trigger{font-size:12px;padding:6px 8px 6px 10px;}
+    .daterange-trigger span:not(.drt-ic):not(.drt-chev){white-space:normal;}
+    .btn{padding:8px 12px;font-size:12.5px;}
   }
 @media print{
   .sidebar, .global-filterbar, .global-filterbar-wrap, .navbtn{ display:none !important; }
@@ -1155,6 +1179,22 @@ try{
       </table>
     </div>
 
+    <div class="section-header"><h2>📊 Laporan Gabungan — Advertiser &amp; Hasil CS</h2></div>
+    <div class="muted-note" style="margin:-6px 0 12px 0;">Spending + PPN diambil dari data Akun/Advertiser, Omzet &amp; Closing diambil dari input Hasil CS — digabung per advertiser untuk periode yang sama.</div>
+    <div class="grid grid-3" style="margin-bottom:16px;">
+      <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="gabOmzet">Rp 0</div></div>
+      <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Closing Rate Gabungan</div><div class="value" id="gabRate">0%</div></div>
+      <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Gabungan</div><div class="value" id="gabRoas">0.00x</div></div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Advertiser</th><th>Spending + PPN</th><th>Omzet</th><th>Lead Real</th><th>Closing</th><th>CPP</th><th>Closing Rate</th><th>ROAS</th>
+        </tr></thead>
+        <tbody id="laporanGabunganTable"></tbody>
+      </table>
+    </div>
+
   </div>
 </div><!-- /page-laporan -->
 
@@ -1290,26 +1330,8 @@ const ADV_COLOR_PALETTE = ['#F2C12E','#5FD0C7','#FF9F6B','#06D6A0','#EF476F','#1
 let advColorCursor = 0;
 function nextAdvColor(){ const c=ADV_COLOR_PALETTE[advColorCursor % ADV_COLOR_PALETTE.length]; advColorCursor++; return c; }
 
-const ACCOUNTS_RAW = [
-  {name:'DGT-07',        advertiser:'FIKI',   budget:447613,  spendPPN:461041},
-  {name:'Maldy 04',      advertiser:'MALDY',  budget:2831228, spendPPN:2944477},
-  {name:'Maldy 05',      advertiser:'MALDY',  budget:3625561, spendPPN:3770583},
-  {name:'DGT-05',        advertiser:'MALDY',  budget:1734799, spendPPN:1786843},
-  {name:'Maldy-Eka',     advertiser:'RIFAN',  budget:2842512, spendPPN:2956212},
-  {name:'Aziz-01',       advertiser:'RIFAN',  budget:776136,  spendPPN:807181},
-  {name:'DGT-02',        advertiser:'RIFAN',  budget:652522,  spendPPN:672098},
-  {name:'Nextugo-03',    advertiser:'ALADIN', budget:1561235, spendPPN:1623684},
-  {name:'DGT-Nextug03',  advertiser:'ALADIN', budget:1009754, spendPPN:1040047},
-  {name:'DGT-Nextug06',  advertiser:'ALADIN', budget:263,     spendPPN:271},
-];
 let accCounter = 0;
-const ACCOUNTS = ACCOUNTS_RAW.map((r)=>{
-  const budgetSeries = zeroSeries(); setAt(budgetSeries, ANCHOR_DATE, r.budget);
-  const spendSeries = zeroSeries(); setAt(spendSeries, ANCHOR_DATE, r.spendPPN);
-  accCounter++;
-  return {id:'acc'+accCounter, name:r.name, advertiser:r.advertiser, ppn:3, budgetSeries, spendSeries, status:'aktif',
-    ownerHistory:[{advertiser:r.advertiser, fromIdx:0}]};
-});
+const ACCOUNTS = [];
 function makeNewAccount(name, advertiser, ppn){
   accCounter++;
   return {id:'acc'+accCounter, name, advertiser, ppn:(parseFloat(ppn)||0), budgetSeries: zeroSeries(), spendSeries: zeroSeries(), status:'aktif',
@@ -1320,19 +1342,9 @@ function findAccountByName(name){
   return ACCOUNTS.find(a=> a.name.trim().toLowerCase()===n);
 }
 
-/* Lead per advertiser (sesuai referensi gambar, sisanya diisi manual/spreadsheet) */
-const ADV_LEAD_RAW = {
-  MALDY:{real:80, oo:151},
-  FIKI:{real:1, oo:2},
-  RIFAN:{real:40, oo:68},
-  ALADIN:{real:26, oo:53}
-};
 const ADV_LEADS = {};
 ADVERTISERS.forEach(adv=>{
-  const r = ADV_LEAD_RAW[adv];
-  const real = zeroSeries(); setAt(real, ANCHOR_DATE, r.real);
-  const oo = zeroSeries(); setAt(oo, ANCHOR_DATE, r.oo);
-  ADV_LEADS[adv] = {real, oo};
+  ADV_LEADS[adv] = {real: zeroSeries(), oo: zeroSeries()};
 });
 function makeNewAdvertiser(name){
   ADVERTISERS.push(name);
@@ -2468,6 +2480,8 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
     }).join('') : '<tr><td colspan="8" class="muted-note">Tidak ada data pada periode ini</td></tr>';
   }
 
+  renderLaporanGabungan(advRows, range);
+
   const notes = [];
   advRows.forEach(r=>{
     const target = r.budget - r.kekurangan;
@@ -2478,6 +2492,68 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   renderNotesMarquee(document.getElementById('laporanNotes'), notes);
   renderNotesMarquee(document.getElementById('globalNotesMarquee'), notes);
 }
+
+/* ============== LAPORAN GABUNGAN (Advertiser + Hasil CS) ==============
+   Spending+PPN diambil dari advRows (data Akun/Advertiser — sudah dihitung
+   sesuai pemilik akun per tanggal). Omzet, Hasil Closing & Lead Real diambil
+   dari CS_DATA (input Hasil CS), dijumlah per advertiser untuk periode yang
+   sama, lalu digabung jadi satu baris berisi CPP, Closing Rate & ROAS. */
+function renderLaporanGabungan(advRows, range){
+  const tbody = document.getElementById('laporanGabunganTable');
+  if(!tbody) return;
+
+  const rows = advRows.map(r=>{
+    const csRows = CS_DATA.filter(c=> c.advertiser===r.adv && csRowInRange(c.tanggal, range));
+    let omzet=0, closing=0, csLeadReal=0;
+    csRows.forEach(c=>{ omzet+=(c.omzet||0); closing+=(c.hasilClosing||0); csLeadReal+=(c.leadReal||0); });
+    // Lead Real dipakai untuk closing rate: pakai punya CS kalau sudah ada input, fallback ke Lead Real advertiser (ADV_LEADS) kalau belum ada data CS sama sekali.
+    const leadReal = csRows.length>0 ? csLeadReal : r.real;
+    const cpp = closing>0 ? r.spendPPN/closing : null;
+    const closingRate = leadReal>0 ? (closing/leadReal*100) : null;
+    const roas = r.spendPPN>0 ? (omzet/r.spendPPN) : null;
+    return { adv:r.adv, spendPPN:r.spendPPN, omzet, leadReal, closing, cpp, closingRate, roas };
+  });
+
+  const grand = rows.reduce((s,r)=>({
+    spendPPN: s.spendPPN + r.spendPPN,
+    omzet: s.omzet + r.omzet,
+    leadReal: s.leadReal + r.leadReal,
+    closing: s.closing + r.closing
+  }), { spendPPN:0, omzet:0, leadReal:0, closing:0 });
+  const grandRate = grand.leadReal>0 ? (grand.closing/grand.leadReal*100) : 0;
+  const grandRoas = grand.spendPPN>0 ? (grand.omzet/grand.spendPPN) : 0;
+  const gabOmzetEl = document.getElementById('gabOmzet'); if(gabOmzetEl) gabOmzetEl.textContent = rupiah(grand.omzet);
+  const gabRateEl = document.getElementById('gabRate'); if(gabRateEl) gabRateEl.textContent = pctFmt(grandRate);
+  const gabRoasEl = document.getElementById('gabRoas'); if(gabRoasEl) gabRoasEl.textContent = grandRoas.toFixed(2)+'x';
+
+  if(rows.length===0){
+    tbody.innerHTML = '<tr><td colspan="8" class="muted-note">Tidak ada data pada periode ini</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r=>
+    '<tr>'+
+      '<td><span class="dot" style="background:'+ADV_COLOR[r.adv]+';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;"></span>'+r.adv+'</td>'+
+      '<td>'+rupiah(r.spendPPN)+'</td>'+
+      '<td>'+rupiah(r.omzet)+'</td>'+
+      '<td>'+num(r.leadReal)+'</td>'+
+      '<td>'+num(r.closing)+'</td>'+
+      '<td>'+(r.cpp==null?'-':rupiah(r.cpp))+'</td>'+
+      '<td style="font-weight:600;">'+pctFmt(r.closingRate)+'</td>'+
+      '<td style="font-weight:600;color:'+(r.roas==null?'var(--muted)':(r.roas>=1?'var(--green)':'var(--red)'))+';">'+(r.roas==null?'-':r.roas.toFixed(2)+'x')+'</td>'+
+    '</tr>'
+  ).join('') +
+  '<tr style="font-weight:700;border-top:1px solid var(--line);">'+
+    '<td>TOTAL</td>'+
+    '<td>'+rupiah(grand.spendPPN)+'</td>'+
+    '<td>'+rupiah(grand.omzet)+'</td>'+
+    '<td>'+num(grand.leadReal)+'</td>'+
+    '<td>'+num(grand.closing)+'</td>'+
+    '<td>'+(grand.closing>0?rupiah(grand.spendPPN/grand.closing):'-')+'</td>'+
+    '<td>'+pctFmt(grand.leadReal>0?grandRate:null)+'</td>'+
+    '<td style="color:'+(grand.spendPPN>0?(grandRoas>=1?'var(--green)':'var(--red)'):'var(--muted)')+';">'+(grand.spendPPN>0?grandRoas.toFixed(2)+'x':'-')+'</td>'+
+  '</tr>';
+}
+
 function renderNotesMarquee(notesEl, notes){
   if(!notesEl) return;
   if(notes.length){
@@ -5005,7 +5081,7 @@ document.getElementById('btnResetAllData').onclick = resetAllData;
 
 // State report
 let reportState = {
-  reportMode: 'advertiser',  // 'advertiser' | 'cs'
+  reportMode: 'advertiser',  // 'advertiser' | 'cs' | 'gabungan'
   useCustomDate: false,      // true = pakai tanggal khusus report, bukan filter periode global
   dateStart: '',
   dateEnd: '',
@@ -5021,7 +5097,14 @@ let reportState = {
   showCsLeadReal: true,
   showCsLeadOO: true,
   showCsRate: true,
-  showCsPerAdv: false,       // rincian per advertiser di dalam laporan CS
+  // Kolom untuk mode 'gabungan' (Hasil Ads per advertiser — gabungan Advertiser & Hasil CS)
+  showGabSpend: true,
+  showGabOmzet: true,
+  showGabLeadReal: true,
+  showGabClosing: true,
+  showGabCpp: true,
+  showGabRate: true,
+  showGabRoas: true,
   phoneNumber: '',
   customHeader: '',
   customFooter: ''
@@ -5036,7 +5119,9 @@ function csRowInRange(tanggal, range){
 }
 
 function buildReportText(){
-  return reportState.reportMode === 'cs' ? buildCsReportText() : buildAdvertiserReportText();
+  if(reportState.reportMode === 'cs') return buildCsReportText();
+  if(reportState.reportMode === 'gabungan') return buildGabunganReportText();
+  return buildAdvertiserReportText();
 }
 
 function buildAdvertiserReportText(){
@@ -5175,24 +5260,6 @@ function buildCsReportText(){
     if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
     if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
 
-    if(reportState.showCsPerAdv && rows.length>0){
-      const byAdv = {};
-      rows.forEach(r=>{
-        const a = r.advertiser || '(tanpa advertiser)';
-        if(!byAdv[a]) byAdv[a] = {omzet:0, closing:0, leadReal:0, leadOO:0};
-        byAdv[a].omzet    += (r.omzet||0);
-        byAdv[a].closing  += (r.hasilClosing||0);
-        byAdv[a].leadReal += (r.leadReal||0);
-        byAdv[a].leadOO   += (r.leadOO||0);
-      });
-      lines.push('   Rincian per Advertiser:');
-      Object.keys(byAdv).sort().forEach(a=>{
-        const d = byAdv[a];
-        const r = d.leadReal>0 ? (d.closing/d.leadReal*100) : null;
-        lines.push('      - ' + a + ' -> Omzet ' + rupiah(d.omzet) + ' | Closing ' + num(d.closing) + ' | Lead OO ' + num(d.leadOO) + ' | Rate ' + pctFmt(r));
-      });
-    }
-
     if(idx < csList.length-1) lines.push('');
   });
 
@@ -5222,6 +5289,92 @@ function buildCsReportText(){
   return lines.join('\n');
 }
 
+/* ============== REPORT GABUNGAN (format "Hasil Ads <Advertiser>") ==============
+   Spending+PPN dihitung dari ACCOUNTS (sama seperti mode Report Advertiser).
+   Omzet, Closing & Lead Real diambil dari CS_DATA (input Hasil CS) per advertiser,
+   lalu digabung jadi CPP, Closing Rate & ROAS — sama seperti tabel "Laporan Gabungan". */
+function buildGabunganReportText(){
+  const range = getReportRange();
+  const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
+    ? fmtDateID(range[0])
+    : fmtDateID(range[0]) + ' s/d ' + fmtDateID(range[1]);
+
+  const lines = [];
+  lines.push('*REPORT GABUNGAN — ADVERTISER & HASIL CS*');
+  lines.push('Periode: ' + dateLabel);
+  if(reportState.customHeader.trim()){
+    lines.push(reportState.customHeader.trim());
+  }
+  lines.push('');
+
+  const advList = ADVERTISERS.filter(adv => reportState.selectedAdvs.has(adv));
+  if(advList.length === 0) return null;
+
+  let grandSpend=0, grandOmzet=0, grandLeadReal=0, grandClosing=0;
+  let anyRow = false;
+
+  advList.forEach((adv, idx) => {
+    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && a.status!=='nonaktif' && selectedAccounts.has(a.id));
+    const spendPPN = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,range),0);
+
+    const csRows = CS_DATA.filter(c=> c.advertiser===adv && csRowInRange(c.tanggal, range));
+    let omzet=0, closing=0, csLeadReal=0;
+    csRows.forEach(c=>{ omzet+=(c.omzet||0); closing+=(c.hasilClosing||0); csLeadReal+=(c.leadReal||0); });
+    const advReal = sumIn(ADV_LEADS[adv].real, range);
+    const leadReal = csRows.length>0 ? csLeadReal : advReal;
+
+    const cpp = closing>0 ? spendPPN/closing : null;
+    const closingRate = leadReal>0 ? (closing/leadReal*100) : null;
+    const roas = spendPPN>0 ? (omzet/spendPPN) : null;
+
+    if(advAccs.length>0 || csRows.length>0) anyRow = true;
+
+    grandSpend    += spendPPN;
+    grandOmzet    += omzet;
+    grandLeadReal += leadReal;
+    grandClosing  += closing;
+
+    lines.push((idx+1) + '. *Hasil Ads ' + adv + '*');
+    if(reportState.showGabSpend)    lines.push('   Total Spend   : ' + rupiah(spendPPN));
+    if(reportState.showGabOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
+    if(reportState.showGabLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
+    if(reportState.showGabClosing)  lines.push('   Closing       : ' + num(closing));
+    if(reportState.showGabCpp)      lines.push('   CPP           : ' + (cpp==null?'-':rupiah(cpp)));
+    if(reportState.showGabRate)     lines.push('   Closing Rate  : ' + pctFmt(closingRate));
+    if(reportState.showGabRoas)     lines.push('   ROAS          : ' + (roas==null?'-':roas.toFixed(2)+'x'));
+
+    if(idx < advList.length-1) lines.push('');
+  });
+
+  if(!anyRow) return null;
+
+  if(advList.length > 1){
+    lines.push('');
+    lines.push('──────────────────────');
+    lines.push('*TOTAL KESELURUHAN*');
+    const grandRate = grandLeadReal>0 ? (grandClosing/grandLeadReal*100) : null;
+    const grandRoas = grandSpend>0 ? (grandOmzet/grandSpend) : null;
+    if(reportState.showGabSpend)    lines.push('   Total Spend   : ' + rupiah(grandSpend));
+    if(reportState.showGabOmzet)    lines.push('   Omzet         : ' + rupiah(grandOmzet));
+    if(reportState.showGabLeadReal) lines.push('   Lead Real     : ' + num(grandLeadReal));
+    if(reportState.showGabClosing)  lines.push('   Closing       : ' + num(grandClosing));
+    if(reportState.showGabCpp)      lines.push('   CPP           : ' + (grandClosing>0?rupiah(grandSpend/grandClosing):'-'));
+    if(reportState.showGabRate)     lines.push('   Closing Rate  : ' + pctFmt(grandRate));
+    if(reportState.showGabRoas)     lines.push('   ROAS          : ' + (grandRoas==null?'-':grandRoas.toFixed(2)+'x'));
+    lines.push('──────────────────────');
+  }
+
+  if(reportState.customFooter.trim()){
+    lines.push('');
+    lines.push(reportState.customFooter.trim());
+  }
+
+  lines.push('');
+  lines.push('_Generated: ' + new Date().toLocaleString('id-ID') + '_');
+
+  return lines.join('\n');
+}
+
 function refreshReportPreview(){
   const txt = buildReportText();
   const el = document.getElementById('reportPreviewBox');
@@ -5229,7 +5382,7 @@ function refreshReportPreview(){
   if(!txt){
     el.textContent = reportState.reportMode === 'cs'
       ? '⚠ Pilih minimal satu CS yang punya data pada periode ini.'
-      : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard.';
+      : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard / punya data Hasil CS.';
     el.style.color = 'var(--red)';
   } else {
     el.textContent = txt;
@@ -5267,6 +5420,7 @@ function openReportModal(){
       <div class="period-btns" id="reportModeTabs" style="margin-bottom:18px;">
         <div class="period-btn ${reportState.reportMode==='advertiser'?'active':''}" data-mode="advertiser">📢 Report Advertiser</div>
         <div class="period-btn ${reportState.reportMode==='cs'?'active':''}" data-mode="cs">📞 Report CS</div>
+        <div class="period-btn ${reportState.reportMode==='gabungan'?'active':''}" data-mode="gabungan">📊 Report Gabungan</div>
       </div>
 
       <!-- Tanggal Report (independen dari filter periode global) -->
@@ -5303,6 +5457,27 @@ function openReportModal(){
         </div>
       </div>
 
+      <!-- ============ SECTION: REPORT GABUNGAN (Hasil Ads per advertiser) ============ -->
+      <div id="reportSectionGabungan" style="display:${reportState.reportMode==='gabungan'?'':'none'};">
+        <div class="report-section">
+          <div class="report-section-title">Pilih Advertiser</div>
+          <div class="adv-chips" id="reportGabunganAdvChips"></div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">Kolom Report</div>
+          <div class="toggle-group">
+            <div class="toggle-chip ${reportState.showGabSpend?'on':''}" data-key="showGabSpend">💸 Total Spend</div>
+            <div class="toggle-chip ${reportState.showGabOmzet?'on':''}" data-key="showGabOmzet">💰 Omzet</div>
+            <div class="toggle-chip ${reportState.showGabLeadReal?'on':''}" data-key="showGabLeadReal">📥 Lead Real</div>
+            <div class="toggle-chip ${reportState.showGabClosing?'on':''}" data-key="showGabClosing">✅ Closing</div>
+            <div class="toggle-chip ${reportState.showGabCpp?'on':''}" data-key="showGabCpp">🎯 CPP</div>
+            <div class="toggle-chip ${reportState.showGabRate?'on':''}" data-key="showGabRate">📈 Closing Rate</div>
+            <div class="toggle-chip ${reportState.showGabRoas?'on':''}" data-key="showGabRoas">📊 ROAS</div>
+          </div>
+        </div>
+      </div>
+
       <!-- ============ SECTION: REPORT CS ============ -->
       <div id="reportSectionCs" style="display:${reportState.reportMode==='cs'?'':'none'};">
         <div class="report-section">
@@ -5321,12 +5496,6 @@ function openReportModal(){
           </div>
         </div>
 
-        <div class="report-section">
-          <div class="report-section-title">Opsi Tambahan</div>
-          <div class="toggle-group">
-            <div class="toggle-chip ${reportState.showCsPerAdv?'on':''}" data-key="showCsPerAdv">🧩 Rincian per Advertiser</div>
-          </div>
-        </div>
       </div>
 
       <!-- Pesan tambahan -->
@@ -5368,20 +5537,33 @@ function openReportModal(){
 
   document.body.appendChild(overlay);
 
-  // Render adv chips
-  const chipsWrap = document.getElementById('reportAdvChips');
-  ADVERTISERS.forEach(adv=>{
-    const chip = document.createElement('label');
-    chip.className = 'adv-chip' + (reportState.selectedAdvs.has(adv)?' selected':'');
-    chip.style.color = ADV_COLOR[adv] || '#fff';
-    chip.innerHTML = `<input type="checkbox" ${reportState.selectedAdvs.has(adv)?'checked':''}><span>${adv}</span>`;
-    chip.querySelector('input').addEventListener('change', e=>{
-      if(e.target.checked){ reportState.selectedAdvs.add(adv); chip.classList.add('selected'); }
-      else { reportState.selectedAdvs.delete(adv); chip.classList.remove('selected'); }
-      refreshReportPreview();
+  // Render adv chips (dipakai bareng oleh mode 'advertiser' & 'gabungan' — sama-sama pilih dari reportState.selectedAdvs)
+  function renderAdvChipsInto(wrap){
+    if(!wrap) return;
+    ADVERTISERS.forEach(adv=>{
+      const chip = document.createElement('label');
+      chip.className = 'adv-chip' + (reportState.selectedAdvs.has(adv)?' selected':'');
+      chip.style.color = ADV_COLOR[adv] || '#fff';
+      chip.innerHTML = `<input type="checkbox" ${reportState.selectedAdvs.has(adv)?'checked':''}><span>${adv}</span>`;
+      chip.querySelector('input').addEventListener('change', e=>{
+        if(e.target.checked){ reportState.selectedAdvs.add(adv); }
+        else { reportState.selectedAdvs.delete(adv); }
+        // sinkronkan tampilan chip advertiser yang sama di kedua tab (Report Advertiser & Report Gabungan)
+        overlay.querySelectorAll('#reportAdvChips .adv-chip, #reportGabunganAdvChips .adv-chip').forEach(c=>{
+          const span = c.querySelector('span');
+          const cb = c.querySelector('input');
+          if(span && cb && span.textContent===adv){
+            cb.checked = reportState.selectedAdvs.has(adv);
+            c.classList.toggle('selected', reportState.selectedAdvs.has(adv));
+          }
+        });
+        refreshReportPreview();
+      });
+      wrap.appendChild(chip);
     });
-    chipsWrap.appendChild(chip);
-  });
+  }
+  renderAdvChipsInto(document.getElementById('reportAdvChips'));
+  renderAdvChipsInto(document.getElementById('reportGabunganAdvChips'));
 
   // Render CS chips
   const csChipsWrap = document.getElementById('reportCsChips');
@@ -5409,6 +5591,7 @@ function openReportModal(){
       overlay.querySelectorAll('#reportModeTabs .period-btn').forEach(t=> t.classList.toggle('active', t===tab));
       document.getElementById('reportSectionAdvertiser').style.display = reportState.reportMode==='advertiser' ? '' : 'none';
       document.getElementById('reportSectionCs').style.display = reportState.reportMode==='cs' ? '' : 'none';
+      document.getElementById('reportSectionGabungan').style.display = reportState.reportMode==='gabungan' ? '' : 'none';
       refreshReportPreview();
     });
   });
