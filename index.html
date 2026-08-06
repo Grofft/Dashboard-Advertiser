@@ -1392,6 +1392,14 @@ let TARGETS_MONTHLY = {};
    Dipakai supaya tombol Refresh/pull dari sheet tidak menimpa balik angka yang baru diketik user
    kalau proses simpan ke sheet belum selesai (mis. koneksi lambat / halaman keburu di-refresh). */
 let DIRTY_TARGETS = {};
+/* Draft ketikan nominal Top Up yang BELUM diklik "Simpan" — dipertahankan di sini supaya
+   tidak hilang tiap kali daftar input di-render ulang (ganti filter agensi, sync spreadsheet,
+   hapus riwayat top up, dll). Dibersihkan setelah data benar-benar berhasil disimpan. */
+let TU_INPUT_DRAFT = {};
+/* Sama seperti TU_INPUT_DRAFT tapi untuk form Data Input (budget per akun) — supaya ketikan yang
+   belum "Simpan" juga tidak hilang saat renderAccBudgetRows() ke-trigger ulang (sync spreadsheet,
+   perubahan roster akun, dll), bukan cuma pas ganti dropdown advertiser (yang memang sengaja reset). */
+let IN_BUDGET_DRAFT = {};
 function dirtyTargetKey(adv, year, month){ return adv+'|'+year+'|'+month; }
 function initMonthlyTargets(adv){
   if(!TARGETS_MONTHLY[adv]) TARGETS_MONTHLY[adv] = {};
@@ -2922,16 +2930,26 @@ function renderAccBudgetRows(){
   if(!accs.length){ listEl.innerHTML='<div class="muted-note" style="margin-bottom:8px;">Belum ada akun aktif untuk advertiser ini.</div>'; return; }
   listEl.innerHTML = accs.map(a=>{
     const ppn = a.ppn!=null ? a.ppn : 3;
+    const draftVal = IN_BUDGET_DRAFT[a.id] || '';
     return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
       '<label>'+a.name+'</label>'+
-      '<input type="text" class="accBudgetInput" data-acc="'+a.id+'" data-ppn="'+ppn+'" placeholder="Contoh: 2500000" inputmode="decimal">'+
+      '<input type="text" class="accBudgetInput" data-acc="'+a.id+'" data-ppn="'+ppn+'" placeholder="Contoh: 2500000" inputmode="decimal" value="'+draftVal+'">'+
       '<div class="acc-budget-preview" data-preview-for="'+a.id+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Spend + PPN ('+ppn+'%): <b>Rp 0</b></div>'+
     '</div>';
   }).join('');
   listEl.querySelectorAll('.accBudgetInput').forEach(inp=>{
-    inp.addEventListener('input', e=>{ updateAccBudgetPreview(e); renderInsightPanel(); });
+    if(inp.value) updateAccBudgetPreview({target:inp});
+    inp.addEventListener('input', e=>{
+      // Simpan ketikan ke draft sebelum kemungkinan ada render ulang (sync spreadsheet dll)
+      IN_BUDGET_DRAFT[e.target.dataset.acc] = e.target.value;
+      updateAccBudgetPreview(e); renderInsightPanel();
+    });
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllInput(); } });
-    inp.addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); if(v!=null) e.target.value=v; });
+    inp.addEventListener('blur', e=>{
+      const v=parseIndoNumber(e.target.value);
+      if(v!=null) e.target.value=v;
+      IN_BUDGET_DRAFT[e.target.dataset.acc] = e.target.value;
+    });
   });
   renderInsightPanel();
 }
@@ -2981,7 +2999,7 @@ async function saveAllInput(){
   render();
 
   // Bersihkan form & kasih konfirmasi lokal LANGSUNG, gak perlu nunggu jaringan
-  budgetInputs.forEach(inp=>{ inp.value=''; });
+  budgetInputs.forEach(inp=>{ inp.value=''; delete IN_BUDGET_DRAFT[inp.dataset.acc]; });
   document.querySelectorAll('.acc-budget-preview').forEach(p=>{ const ppn=p.textContent.match(/\((\d+(\.\d+)?)%\)/); p.innerHTML = ppn ? 'Spend + PPN ('+ppn[1]+'%): <b>Rp 0</b>' : p.innerHTML; });
   document.getElementById('inLeadReal').value=''; document.getElementById('inLeadOO').value='';
   renderInsightPanel();
@@ -4702,17 +4720,29 @@ function renderTopupAccList(){
   const rows = accs.map(a=>{
     const existing = TOPUPS.filter(t=>t.tanggal===dateVal && t.akun===a.name);
     const total = existing.reduce((s,t)=>s+(parseFloat(t.nominal)||0),0);
+    const draftVal = TU_INPUT_DRAFT[a.name] || '';
     return '<div class="target-row" style="grid-template-columns:1fr;margin-bottom:9px;">'+
       '<label>'+escapeHtml(a.name)+'</label>'+
-      '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500.000" inputmode="decimal">'+
+      '<input type="text" class="tuAccInput" data-acc-name="'+escapeHtml(a.name)+'" placeholder="Contoh: 500.000" inputmode="decimal" value="'+escapeHtml(draftVal)+'">'+
       '<div class="tu-acc-preview" data-preview-for="'+escapeHtml(a.name)+'" data-base="'+total+'" data-count="'+existing.length+'" style="font-size:11px;color:var(--muted);margin-top:2px;">Total top up '+fmtTanggalID(dateVal)+': <b>'+rupiah(total)+'</b>'+(existing.length? ' ('+existing.length+'x)':'')+'</div>'+
     '</div>';
   }).join('');
   listEl.innerHTML = rows;
   listEl.querySelectorAll('.tuAccInput').forEach(inp=>{
-    inp.addEventListener('input', updateTuAccPreview);
+    // Kalau ada draft ketikan yang belum disimpan, langsung tampilkan preview totalnya juga
+    if(inp.value) updateTuAccPreview({target:inp});
+    inp.addEventListener('input', e=>{
+      // Simpan ketikan ke draft SEBELUM ada render ulang apa pun (ganti filter agensi,
+      // sync dari spreadsheet, hapus riwayat, dll) yang bisa mengosongkan ulang daftar input ini.
+      TU_INPUT_DRAFT[e.target.dataset.accName] = e.target.value;
+      updateTuAccPreview(e);
+    });
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveAllTopup(); } });
-    inp.addEventListener('blur', e=>{ const v=parseIndoNumber(e.target.value); e.target.value = (v!=null) ? v.toLocaleString('id-ID') : ''; });
+    inp.addEventListener('blur', e=>{
+      const v=parseIndoNumber(e.target.value);
+      e.target.value = (v!=null) ? v.toLocaleString('id-ID') : '';
+      TU_INPUT_DRAFT[e.target.dataset.accName] = e.target.value;
+    });
   });
 }
 /* Format angka otomatis pakai titik ribuan SAAT USER NGETIK (500000 -> 500.000),
@@ -5043,6 +5073,7 @@ async function doSaveAllTopup(saved, dateVal){
 
   // Bersihkan form & kasih konfirmasi lokal LANGSUNG, gak perlu nunggu jaringan
   document.querySelectorAll('.tuAccInput').forEach(inp=>{ inp.value=''; });
+  saved.forEach(t=> delete TU_INPUT_DRAFT[t.akun]);
   document.getElementById('tuSharedCatatan').value='';
   renderTopupAccList();
   renderTopupSummaryForDate();
