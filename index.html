@@ -1,6 +1,20 @@
 <!--
   CHANGELOG
   =========
+  v3 — 8 Agustus 2026
+  - Tambah field "Status Konten" per-konten (Tayang / Ditakedown / Banned / Lainnya),
+    diisi/diubah lewat form "Update Performa Konten". Perilakunya:
+      • Tetap dihitung di "Total Konten Diproduksi", chart "Produksi Konten Harian",
+        dan "Kontribusi per Tim/Orang" — karena kontennya tetap sudah dikerjakan tim.
+      • DIKECUALIKAN dari Total Views/Engagement/Avg ER, kartu "Performa per Platform",
+        Hook Rate & Konversi Rate begitu statusnya Ditakedown/Banned — supaya laporan
+        performa tidak bias oleh konten yang sudah tidak tayang.
+    Perubahan teknis: kolom baru "statusKonten" di paling kanan sheet Produksi (kolom S/19),
+    default "Tayang" untuk data lama yang belum punya kolom ini. Kalau sheet Produksi kamu
+    dibuat sebelum update ini, tambahkan kolom "statusKonten" manual di sheet (lihat catatan
+    di tab Integrasi) — data lama tidak perlu diisi manual, otomatis dianggap "Tayang".
+    Badge status ditampilkan di tabel "Daftar Konten".
+
   v2 — 8 Agustus 2026
   - Tambah "Meta Ads" ke daftar PLATFORMS (muncul otomatis di semua dropdown:
     Request Konten, Tambah Konten Baru, filter, Tambah Akun, dll) + warna aksen
@@ -11,7 +25,8 @@
     jadi baris konten baru berulang kali (field `converted` sempat tidak
     ikut ke-copy saat sync). Fix logikanya sudah ada di kode (baris ~3496-3507),
     tapi data duplikat yang sudah kadung tersimpan di sheet Produksi & 
-    RequestKonten masih perlu dihapus manual.
+    RequestKonten masih perlu dihapus manual (bisa pakai tombol "Cek Dulu (Preview)"
+    / "Hapus Duplikat Sekarang" di tab Integrasi — fitur ini sudah ada bawaan).
 -->
 <!DOCTYPE html>
 <html lang="id">
@@ -679,6 +694,7 @@ footer.note{padding:36px 20px 44px;font-size:11.5px;}
           <div class="perf-metrics-row">
             <div class="field"><label>Tanggal Posting <span style="color:var(--cyan);font-weight:600;" title="Tanggal konten ini tayang/diposting — dipakai untuk filter & hitung performa per platform. Terisi otomatis hari ini saat pertama kali disimpan, tidak berubah lagi walau kamu update angka performa berulang kali.">ⓘ</span></label><input type="date" id="inPerfTanggalPosting"></div>
             <div class="field"><label>Tanggal Update</label><input type="date" id="inPerfTanggal"></div>
+            <div class="field"><label>Status Konten <span style="color:var(--cyan);font-weight:600;" title="Kalau konten kena Ditakedown/Banned, angka performanya (views/likes/dst) otomatis dikecualikan dari total & grafik performa — tapi tetap dihitung di Total Konten Diproduksi.">ⓘ</span></label><select id="inPerfStatusKonten"></select></div>
             <div class="field"><label>Views</label><input type="number" id="inPerfViews" placeholder="0" min="0"></div>
             <div class="field"><label>Likes</label><input type="number" id="inPerfLikes" placeholder="0" min="0"></div>
             <div class="field"><label>Komentar</label><input type="number" id="inPerfComments" placeholder="0" min="0"></div>
@@ -716,9 +732,9 @@ footer.note{padding:36px 20px 44px;font-size:11.5px;}
       </div>
       <div class="table-scroll">
         <table class="mobile-cards">
-          <thead><tr><th>Tanggal</th><th>Judul</th><th>Kreator/Editor</th><th>Tipe</th><th>Produk</th><th>Platform</th><th>Akun Posting</th><th>Tanggal Posting</th><th>Views</th><th>Likes</th><th>Komentar</th><th>Share</th><th>Save</th><th>Repost</th><th>Engagement Rate</th><th>Hook/Konversi Rate</th><th>Terakhir Update</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Judul</th><th>Kreator/Editor</th><th>Tipe</th><th>Produk</th><th>Platform</th><th>Status</th><th>Akun Posting</th><th>Tanggal Posting</th><th>Views</th><th>Likes</th><th>Komentar</th><th>Share</th><th>Save</th><th>Repost</th><th>Engagement Rate</th><th>Hook/Konversi Rate</th><th>Terakhir Update</th><th>Aksi</th></tr></thead>
           <tbody id="tblVideos"></tbody>
-          <tfoot><tr><td colspan="8" data-label="">Total (semua data terfilter)</td><td data-label="Views" id="ftViews">0</td><td data-label="Likes" id="ftLikes">0</td><td data-label="Komentar" id="ftComments">0</td><td data-label="Share" id="ftShares">0</td><td data-label="Save" id="ftSaves">0</td><td data-label="Repost" id="ftReposts">0</td><td data-label="">-</td><td data-label="">-</td><td data-label="">-</td><td data-label="">-</td></tr></tfoot>
+          <tfoot><tr><td colspan="9" data-label="">Total (semua data terfilter)</td><td data-label="Views" id="ftViews">0</td><td data-label="Likes" id="ftLikes">0</td><td data-label="Komentar" id="ftComments">0</td><td data-label="Share" id="ftShares">0</td><td data-label="Save" id="ftSaves">0</td><td data-label="Repost" id="ftReposts">0</td><td data-label="">-</td><td data-label="">-</td><td data-label="">-</td><td data-label="">-</td></tr></tfoot>
         </table>
       </div>
     </div>
@@ -819,7 +835,7 @@ footer.note{padding:36px 20px 44px;font-size:11.5px;}
         <button class="btn" id="btnResetLocal" style="background:var(--red,#ef4444);color:#fff;">🗑️ Reset Data Lokal</button>
       </div>
       <div class="muted-note" id="sheetSyncMsg" style="margin-bottom:10px;color:var(--cyan);">Belum disinkronkan.</div>
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode di bawah → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL hasil deploy ke kolom di atas. Buat 2 sheet bernama <code class="inline">Produksi</code> (kolom urut: tanggal, judul, nama, tipe, produk, platform, views, likes, comments, shares, lastUpdated, akunPosting, saves, reposts, tanggalPosting, hookRate, kunjunganLP, konversiLP) dan <code class="inline">Akun</code> (kolom: tanggal, nama, platform, status, followers, note, salesUnit, salesOmzet). Kalau sheet <code class="inline">Produksi</code> sudah ada sebelumnya, cukup tambahkan kolom baru <code class="inline">saves</code>, <code class="inline">reposts</code>, <code class="inline">tanggalPosting</code>, <code class="inline">hookRate</code>, <code class="inline">kunjunganLP</code> dan <code class="inline">konversiLP</code> di paling kanan (kolom M sampai R) — jangan disisipkan di tengah, supaya data lama tidak bergeser. Kolom <code class="inline">hookRate</code> diisi langsung sebagai persentase Hook Rate konten Tipe=Video (diambil dari Insight native platform, misal TikTok/Instagram). Kolom <code class="inline">kunjunganLP</code> &amp; <code class="inline">konversiLP</code> dipakai untuk hitung <b>Konversi Rate</b> konten Tipe=Landing Page (Konversi ÷ Kunjungan). Kolom <code class="inline">tanggalPosting</code> adalah tanggal konten itu benar-benar tayang/diposting (beda dari <code class="inline">tanggal</code> yang merupakan tanggal produksi) — dipakai dashboard untuk hitung "Performa per Platform" &amp; total views/engagement berdasarkan kapan konten posting, bukan kapan dibuat. Kolom <code class="inline">akunPosting</code> mendukung lebih dari satu akun sekaligus untuk konten yang sama — nilainya disimpan sebagai teks dipisah koma, contoh: <code class="inline">josvitnextugo, jossvit.id</code>. Sheet <code class="inline">RequestKonten</code> (kolom: tanggal, judul, requester, pic, produk, platform, deadline, prioritas, status, brief, link, tipe, ts, qty) akan dibuat otomatis saat request konten pertama dikirim. Kolom <code class="inline">qty</code> adalah jumlah konten yang diminta dalam satu request (mis. 1 request untuk 5 video) — dipakai untuk menghitung QTY konten yang benar-benar diproduksi begitu status request menjadi "Selesai". Kalau sheet <code class="inline">RequestKonten</code> sudah ada sebelumnya, cukup tambahkan kolom <code class="inline">qty</code> di paling kanan (kolom N). Kolom <code class="inline">converted</code> (kolom O) dibuat &amp; diisi <b>otomatis</b> oleh script begitu sebuah request pertama kali dikonversi jadi konten — jangan diisi manual — ini yang membuat penanda "sudah dikonversi" tersimpan permanen di spreadsheet (bukan cuma di browser), supaya tidak ada lagi konten yang terduplikat kalau dashboard dibuka dari beberapa device.</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode di bawah → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL hasil deploy ke kolom di atas. Buat 2 sheet bernama <code class="inline">Produksi</code> (kolom urut: tanggal, judul, nama, tipe, produk, platform, views, likes, comments, shares, lastUpdated, akunPosting, saves, reposts, tanggalPosting, hookRate, kunjunganLP, konversiLP, statusKonten) dan <code class="inline">Akun</code> (kolom: tanggal, nama, platform, status, followers, note, salesUnit, salesOmzet). Kalau sheet <code class="inline">Produksi</code> sudah ada sebelumnya, cukup tambahkan kolom baru <code class="inline">saves</code>, <code class="inline">reposts</code>, <code class="inline">tanggalPosting</code>, <code class="inline">hookRate</code>, <code class="inline">kunjunganLP</code>, <code class="inline">konversiLP</code> dan <code class="inline">statusKonten</code> di paling kanan (kolom M sampai S) — jangan disisipkan di tengah, supaya data lama tidak bergeser. Kolom <code class="inline">statusKonten</code> diisi otomatis <code class="inline">Tayang</code> untuk konten baru, dan bisa diubah jadi <code class="inline">Ditakedown</code>/<code class="inline">Banned</code>/<code class="inline">Lainnya</code> lewat form Update Performa kalau kontennya bermasalah — otomatis dikecualikan dari total Views/Engagement & grafik performa per platform, tapi tetap dihitung di Total Konten Diproduksi. Kolom <code class="inline">hookRate</code> diisi langsung sebagai persentase Hook Rate konten Tipe=Video (diambil dari Insight native platform, misal TikTok/Instagram). Kolom <code class="inline">kunjunganLP</code> &amp; <code class="inline">konversiLP</code> dipakai untuk hitung <b>Konversi Rate</b> konten Tipe=Landing Page (Konversi ÷ Kunjungan). Kolom <code class="inline">tanggalPosting</code> adalah tanggal konten itu benar-benar tayang/diposting (beda dari <code class="inline">tanggal</code> yang merupakan tanggal produksi) — dipakai dashboard untuk hitung "Performa per Platform" &amp; total views/engagement berdasarkan kapan konten posting, bukan kapan dibuat. Kolom <code class="inline">akunPosting</code> mendukung lebih dari satu akun sekaligus untuk konten yang sama — nilainya disimpan sebagai teks dipisah koma, contoh: <code class="inline">josvitnextugo, jossvit.id</code>. Sheet <code class="inline">RequestKonten</code> (kolom: tanggal, judul, requester, pic, produk, platform, deadline, prioritas, status, brief, link, tipe, ts, qty) akan dibuat otomatis saat request konten pertama dikirim. Kolom <code class="inline">qty</code> adalah jumlah konten yang diminta dalam satu request (mis. 1 request untuk 5 video) — dipakai untuk menghitung QTY konten yang benar-benar diproduksi begitu status request menjadi "Selesai". Kalau sheet <code class="inline">RequestKonten</code> sudah ada sebelumnya, cukup tambahkan kolom <code class="inline">qty</code> di paling kanan (kolom N). Kolom <code class="inline">converted</code> (kolom O) dibuat &amp; diisi <b>otomatis</b> oleh script begitu sebuah request pertama kali dikonversi jadi konten — jangan diisi manual — ini yang membuat penanda "sudah dikonversi" tersimpan permanen di spreadsheet (bukan cuma di browser), supaya tidak ada lagi konten yang terduplikat kalau dashboard dibuka dari beberapa device.</div>
 
       <div class="card" style="background:var(--panel-2);border-color:var(--yellow);margin-bottom:16px;">
         <div class="panel-title" style="color:var(--yellow);">🧹 Bersihkan Duplikat (Sheet Produksi)</div>
@@ -903,7 +919,7 @@ function dedupeNameLists(){
   return changed;
 }
 
-let VIDEOS = []; // {tanggal, judul, nama, tipe, platform, views, likes, comments, shares, saves, reposts, hookRate, kunjunganLP, konversiLP}
+let VIDEOS = []; // {tanggal, judul, nama, tipe, platform, views, likes, comments, shares, saves, reposts, hookRate, kunjunganLP, konversiLP, statusKonten}
 let AKUN_LOG = []; // {tanggal, nama, platform, status, followers, note}
 let REQUESTS = []; // {tanggal, judul, requester, pic, produk, tipe, platform, qty, deadline, prioritas, status, brief, ts}
 const REQ_PAGE_SIZE = 50;
@@ -977,6 +993,16 @@ function inRange(dateObj, range){ const d = startOfDay(dateObj); return d>=range
 // tanggalPosting belum diisi (data lama / konten yang belum diupdate lewat form performa),
 // supaya data historis tidak hilang dari dashboard sebelum sempat diisi ulang.
 function postDate(v){ return parseDate(v.tanggalPosting) || parseDate(v.tanggal); }
+
+// Status konten individual (beda dari status Akun). Default = 'Tayang' kalau kosong
+// (data lama sebelum fitur ini ada dianggap Tayang seperti biasa).
+const STATUS_KONTEN_OPTS = ['Tayang','Ditakedown','Banned','Lainnya'];
+const STATUS_KONTEN_COLOR = {Tayang:'var(--cyan)', Ditakedown:'var(--yellow)', Banned:'var(--red)', Lainnya:'var(--muted)'};
+function statusKontenOf(v){ return v.statusKonten || 'Tayang'; }
+// Konten dengan status ini dikecualikan dari angka PERFORMA (views/likes/dst) & chart
+// performa per platform — tapi TETAP dihitung di "Total Konten Diproduksi" & Kontribusi
+// per Tim, karena kontennya tetap sudah dikerjakan oleh tim.
+function isStatusExcludedFromPerforma(v){ const s = statusKontenOf(v); return s==='Ditakedown' || s==='Banned'; }
 
 /* ============== RANGE PICKER (dropdown, dual calendar) ============== */
 const RANGE_PRESETS = [
@@ -1326,6 +1352,7 @@ function refreshSelectors(){
   fillSelect(document.getElementById('inVidNama'), TEAM, false);
   fillSelect(document.getElementById('inVidTipe'), TIPE_KONTEN, false);
   fillSelect(document.getElementById('inVidPlatform'), PLATFORMS, false);
+  fillSelect(document.getElementById('inPerfStatusKonten'), STATUS_KONTEN_OPTS, false);
   fillSelect(document.getElementById('inVidProduk'), PRODUCTS, false);
   fillSelect(document.getElementById('newAccPlatform'), PLATFORMS, false);
   fillSelect(document.getElementById('filterNama'), TEAM, true);
@@ -1424,7 +1451,7 @@ document.getElementById('btnSaveVideo').onclick = async ()=>{
   if(!tanggal || !judul){ msg.textContent='Isi tanggal & judul terlebih dahulu.'; msg.style.color='var(--red)'; return; }
   btn.disabled = true;
   try{
-    const rec = {tanggal, judul, nama, tipe, produk, platform, views:0, likes:0, comments:0, shares:0, saves:0, reposts:0, lastUpdated:'', akunPosting:'', tanggalPosting:'', hookRate:0, kunjunganLP:0, konversiLP:0};
+    const rec = {tanggal, judul, nama, tipe, produk, platform, views:0, likes:0, comments:0, shares:0, saves:0, reposts:0, lastUpdated:'', akunPosting:'', tanggalPosting:'', hookRate:0, kunjunganLP:0, konversiLP:0, statusKonten:'Tayang'};
     VIDEOS.push(rec);
     saveLocalState(); render(); refreshPerfSelect();
     msg.textContent = 'Tersimpan: '+judul+' — mengirim ke spreadsheet...'; msg.style.color='var(--muted)';
@@ -1453,7 +1480,7 @@ function convertRequestToVideo(idx){
       tipe: r.tipe || TIPE_KONTEN[0],
       produk: r.produk || '',
       platform: r.platform || (PLATFORMS[0]||''),
-      views:0, likes:0, comments:0, shares:0, saves:0, reposts:0, lastUpdated:'', akunPosting:'', tanggalPosting:''
+      views:0, likes:0, comments:0, shares:0, saves:0, reposts:0, lastUpdated:'', akunPosting:'', tanggalPosting:'', statusKonten:'Tayang'
     };
     VIDEOS.push(rec);
     pushOneToSheet({sheetType:'video', ...rec});
@@ -1793,6 +1820,7 @@ document.getElementById('inPerfKonten').addEventListener('change', function(){
   document.getElementById('inPerfKunjunganLP').value = v.kunjunganLP||0;
   document.getElementById('inPerfKonversiLP').value  = v.konversiLP||0;
   document.getElementById('inPerfTanggalPosting').value = v.tanggalPosting || '';
+  document.getElementById('inPerfStatusKonten').value = statusKontenOf(v);
   togglePerfMetricFields(v.tipe);
   // auto-select akun if already saved on this video
   setPerfAkunFromString(v.akunPosting);
@@ -1806,7 +1834,7 @@ document.getElementById('btnDuplikatKonten').onclick = ()=>{
   const clone = {
     tanggal: src.tanggal, judul: src.judul, nama: src.nama, tipe: src.tipe, produk: src.produk, platform: src.platform,
     views:0, likes:0, comments:0, shares:0, saves:0, reposts:0, lastUpdated:'', akunPosting:'', tanggalPosting:'',
-    hookRate:0, kunjunganLP:0, konversiLP:0
+    hookRate:0, kunjunganLP:0, konversiLP:0, statusKonten:'Tayang'
   };
   VIDEOS.push(clone);
   saveLocalState(); refreshPerfSelect();
@@ -1815,6 +1843,7 @@ document.getElementById('btnDuplikatKonten').onclick = ()=>{
   // kosongkan tanggal posting supaya diisi sesuai kapan akun ini benar-benar posting,
   // bukan ikut-ikutan tanggal posting akun sebelumnya
   document.getElementById('inPerfTanggalPosting').value = '';
+  document.getElementById('inPerfStatusKonten').value = 'Tayang';
   msg.textContent = '📄 Entry baru dibuat untuk "'+src.judul+'" — pilih akunnya lalu isi angka performanya, baru klik Update Performa.';
   msg.style.color = 'var(--cyan)';
   document.getElementById('inPerfKonten').closest('.card').scrollIntoView({behavior:'smooth', block:'center'});
@@ -1850,6 +1879,7 @@ document.getElementById('btnSavePerf').onclick = async ()=>{
   VIDEOS[idx].lastUpdated = tanggalUpdate;
   VIDEOS[idx].akunPosting = akunPosting;
   VIDEOS[idx].tanggalPosting = tanggalPosting;
+  VIDEOS[idx].statusKonten = document.getElementById('inPerfStatusKonten').value || 'Tayang';
   // Ikutkan Platform sesuai akun posting yang dipilih, supaya kolom Platform
   // tidak "nyangkut" di nilai lama saat konten yang sama diposting ke platform lain.
   const firstAkunNama = Array.from(selectedPerfAkun)[0];
@@ -1866,6 +1896,7 @@ document.getElementById('btnSavePerf').onclick = async ()=>{
   document.getElementById('inPerfKonten').value='';
   selectedPerfAkun = new Set(); refreshPerfAkunSelect();
   document.getElementById('inPerfTanggalPosting').value='';
+  document.getElementById('inPerfStatusKonten').value='Tayang';
   document.getElementById('inPerfViews').value='';
   document.getElementById('inPerfLikes').value='';
   document.getElementById('inPerfComments').value='';
@@ -1892,6 +1923,7 @@ function fillPerfForm(idx){
   document.getElementById('inPerfKonversiLP').value  = v.konversiLP||0;
   document.getElementById('inPerfTanggal').value  = fmtISO(new Date());
   document.getElementById('inPerfTanggalPosting').value = v.tanggalPosting || '';
+  document.getElementById('inPerfStatusKonten').value = statusKontenOf(v);
   togglePerfMetricFields(v.tipe);
   setPerfAkunFromString(v.akunPosting);
   document.getElementById('inPerfKonten').closest('.card').scrollIntoView({behavior:'smooth', block:'center'});
@@ -2089,6 +2121,8 @@ function renderSummary(range){
 
   // current period videos — berdasarkan TANGGAL PRODUKSI, dipakai khusus untuk
   // KPI "Total Konten Diproduksi", chart "Produksi Konten Harian" & "Kontribusi per Tim".
+  // CATATAN: konten berstatus "Ditakedown"/"Banned" TETAP ikut terhitung di sini —
+  // tim tetap sudah mengerjakannya, jadi tetap dianggap produksi yang valid.
   let vids = VIDEOS.filter(v=>{ const d=parseDate(v.tanggal); return d && inRange(d, range); });
   if(f.platform) vids = vids.filter(v=>v.platform===f.platform);
   if(f.kreator)  vids = vids.filter(v=>v.nama===f.kreator);
@@ -2098,7 +2132,9 @@ function renderSummary(range){
   // current period videos — berdasarkan TANGGAL POSTING, dipakai untuk Total Views/Engagement/
   // Avg ER, kartu "Performa per Platform", & leaderboard, supaya cuma konten yang benar-benar
   // sudah tayang di periode ini yang dihitung (bukan sekadar tanggal dibuatnya).
-  let vidsPosted = VIDEOS.filter(v=>{ const d=postDate(v); return d && inRange(d, range); });
+  // Konten berstatus "Ditakedown"/"Banned" DIKECUALIKAN di sini — angka performa tidak lagi
+  // relevan/valid begitu kontennya sudah tidak tayang, supaya laporan performa tidak bias.
+  let vidsPosted = VIDEOS.filter(v=>{ const d=postDate(v); return d && inRange(d, range) && !isStatusExcludedFromPerforma(v); });
   if(f.platform) vidsPosted = vidsPosted.filter(v=>v.platform===f.platform);
   if(f.kreator)  vidsPosted = vidsPosted.filter(v=>v.nama===f.kreator);
   if(f.produk)   vidsPosted = vidsPosted.filter(v=>v.produk===f.produk);
@@ -2113,7 +2149,7 @@ function renderSummary(range){
   if(f.produk)   prevVids = prevVids.filter(v=>v.produk===f.produk);
   if(f.akun)     prevVids = prevVids.filter(v=>String(v.akunPosting||'').split(',').map(s=>s.trim()).includes(f.akun));
 
-  let prevVidsPosted = VIDEOS.filter(v=>{ const d=postDate(v); return d && inRange(d, prevRange); });
+  let prevVidsPosted = VIDEOS.filter(v=>{ const d=postDate(v); return d && inRange(d, prevRange) && !isStatusExcludedFromPerforma(v); });
   if(f.platform) prevVidsPosted = prevVidsPosted.filter(v=>v.platform===f.platform);
   if(f.kreator)  prevVidsPosted = prevVidsPosted.filter(v=>v.nama===f.kreator);
   if(f.produk)   prevVidsPosted = prevVidsPosted.filter(v=>v.produk===f.produk);
@@ -2582,6 +2618,7 @@ function renderVideoTable(range, resetPage){
       <td data-label="Tipe"><span class="tag ${tipeTagClass(v.tipe)}">${v.tipe||'-'}</span></td>
       <td data-label="Produk"><span class="tag purple">${escapeHtml(v.produk||'-')}</span></td>
       <td data-label="Platform">${platformPillEditable(v, globalIdx)}</td>
+      <td data-label="Status"><span class="tag" style="background:transparent;border:1px solid ${STATUS_KONTEN_COLOR[statusKontenOf(v)]};color:${STATUS_KONTEN_COLOR[statusKontenOf(v)]};font-size:11px;">${statusKontenOf(v)}</span>${isStatusExcludedFromPerforma(v) ? `<div style="font-size:9px;color:var(--muted);margin-top:2px;">Dikecualikan dari performa</div>` : ''}</td>
       <td data-label="Akun Posting">${akunBadge}</td>
       <td data-label="Tanggal Posting">${v.tanggalPosting ? `<span style="color:var(--cyan);font-size:11px;">✓ ${fmtDateID(parseDate(v.tanggalPosting))}</span>` : `<span style="color:var(--muted);font-size:11px;">Belum posting</span>`}</td>
       <td data-label="Views">${numFmt(v.views)}</td><td data-label="Likes">${numFmt(v.likes)}</td><td data-label="Komentar">${numFmt(v.comments)}</td><td data-label="Share">${numFmt(v.shares)}</td><td data-label="Save">${numFmt(v.saves)}</td><td data-label="Repost">${numFmt(v.reposts)}</td>
@@ -2590,7 +2627,7 @@ function renderVideoTable(range, resetPage){
       <td data-label="Terakhir Update">${lastUpd}</td>
       <td data-label=""><button class="btn" style="padding:4px 10px;font-size:11px;" onclick="fillPerfForm(${globalIdx})">✏️ Update</button></td>
     </tr>`;
-  }).join('') || '<tr><td colspan="14" data-label="" class="muted-note" style="padding:16px;">Tidak ada konten yang cocok dengan filter.</td></tr>';
+  }).join('') || '<tr><td colspan="15" data-label="" class="muted-note" style="padding:16px;">Tidak ada konten yang cocok dengan filter.</td></tr>';
 
   // Footer totals (all filtered, not just page)
   document.getElementById('ftViews').textContent    = numFmt(vids.reduce((s,v)=>s+(v.views||0),0));
@@ -3098,7 +3135,8 @@ function handleWrite(data) {
       data.comments || 0, data.shares || 0,
       data.lastUpdated || '', data.akunPosting || '',
       data.saves || 0, data.reposts || 0, data.tanggalPosting || '',
-      data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0
+      data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0,
+      data.statusKonten || 'Tayang'
     ]);
 
   } else if (data.sheetType === 'video_update') {
@@ -3106,7 +3144,7 @@ function handleWrite(data) {
     if (!sh) return { status: 'error', message: 'Sheet Produksi tidak ditemukan' };
     var lastRow = sh.getLastRow();
     var found = false;
-    var rows = lastRow > 0 ? sh.getRange(1, 1, lastRow, 18).getValues() : [];
+    var rows = lastRow > 0 ? sh.getRange(1, 1, lastRow, 19).getValues() : [];
     var newAkun = String(data.akunPosting || '').trim();
 
     // TAHAP 1: cocokkan judul + tanggal + akunPosting PERSIS SAMA, supaya konten
@@ -3116,14 +3154,15 @@ function handleWrite(data) {
       if (String(rows[i][1]).trim() === String(data.judul).trim() &&
           normalizeTanggal(rows[i][0]) === normalizeTanggal(data.tanggal) &&
           String(rows[i][11] || '').trim() === newAkun) {
-        sh.getRange(i + 1, 1, 1, 18).setValues([[
+        sh.getRange(i + 1, 1, 1, 19).setValues([[
           data.tanggal, data.judul, data.nama, data.tipe, data.produk || '',
           data.platform, data.views || 0, data.likes || 0,
           data.comments || 0, data.shares || 0,
           data.lastUpdated || '', data.akunPosting || '',
           data.saves || 0, data.reposts || 0,
           data.tanggalPosting || normalizeTanggal(rows[i][14]) || '',
-          data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0
+          data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0,
+          data.statusKonten || 'Tayang'
         ]]);
         found = true;
         break;
@@ -3140,14 +3179,15 @@ function handleWrite(data) {
         if (String(rows[j][1]).trim() === String(data.judul).trim() &&
             normalizeTanggal(rows[j][0]) === normalizeTanggal(data.tanggal) &&
             String(rows[j][11] || '').trim() === '') {
-          sh.getRange(j + 1, 1, 1, 18).setValues([[
+          sh.getRange(j + 1, 1, 1, 19).setValues([[
             data.tanggal, data.judul, data.nama, data.tipe, data.produk || '',
             data.platform, data.views || 0, data.likes || 0,
             data.comments || 0, data.shares || 0,
             data.lastUpdated || '', data.akunPosting || '',
             data.saves || 0, data.reposts || 0,
             data.tanggalPosting || normalizeTanggal(rows[j][14]) || '',
-            data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0
+            data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0,
+            data.statusKonten || 'Tayang'
           ]]);
           found = true;
           break;
@@ -3162,7 +3202,8 @@ function handleWrite(data) {
         data.comments || 0, data.shares || 0,
         data.lastUpdated || '', data.akunPosting || '',
         data.saves || 0, data.reposts || 0, data.tanggalPosting || '',
-        data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0
+        data.hookRate || 0, data.kunjunganLP || 0, data.konversiLP || 0,
+        data.statusKonten || 'Tayang'
       ]);
     }
 
@@ -3391,7 +3432,7 @@ function jsonOutput(obj) {
 
 // ============================================================
 // STRUKTUR SHEET:
-// "Produksi" : tanggal | judul | nama | tipe | produk | platform | views | likes | comments | shares | lastUpdated | akunPosting | saves | reposts | tanggalPosting | hookRate | kunjunganLP | konversiLP
+// "Produksi" : tanggal | judul | nama | tipe | produk | platform | views | likes | comments | shares | lastUpdated | akunPosting | saves | reposts | tanggalPosting | hookRate | kunjunganLP | konversiLP | statusKonten
 // "Akun"     : tanggal | nama  | platform | status | followers | note | salesUnit | salesOmzet
 // "Kreator"  : nama
 // "Produk"   : nama
@@ -3450,7 +3491,8 @@ async function pullFromSheet(silent, isBackgroundAutoSync){
         saves: parseFloat(r.saves)||0, reposts: parseFloat(r.reposts)||0, lastUpdated: r.lastupdated||'', akunPosting: r.akunposting||'',
         tanggalPosting: dPost ? fmtISO(dPost) : '',
         hookRate: parseFloat(r.hookrate)||0,
-        kunjunganLP: parseFloat(r.kunjunganlp)||0, konversiLP: parseFloat(r.konversilp)||0 });
+        kunjunganLP: parseFloat(r.kunjunganlp)||0, konversiLP: parseFloat(r.konversilp)||0,
+        statusKonten: STATUS_KONTEN_OPTS.includes(r.statuskonten) ? r.statuskonten : 'Tayang' });
       if(r.nama && !includesName(TEAM, r.nama)) TEAM.push(r.nama);
       countVideo++;
     });
