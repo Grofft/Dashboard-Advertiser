@@ -199,7 +199,7 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .acc-name-pill{display:inline-flex;align-items:center;gap:6px;font-weight:600;}
 .acc-name-pill .dot{width:7px;height:7px;border-radius:50%;}
 
-.account-picker{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+.account-picker{background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 260%);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 1px 2px rgba(0,0,0,.04), 0 12px 28px -18px rgba(0,0,0,.18);}
 
 /* ===== Kartu hasil per advertiser (Data Hasil Advertiser) ===== */
 .adv-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,360px));gap:14px;}
@@ -218,6 +218,21 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .adv-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;}
 .adv-card-chart-title{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--line);}
 .adv-card-chart-wrap{position:relative;height:100px;flex:1;min-width:0;}
+
+/* ---- Detail per Akun WL: kartu akun ---- */
+#tblAccounts.adv-cards-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));}
+#tblAccounts .adv-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;overflow:hidden;box-shadow:0 6px 16px -14px rgba(0,0,0,.4);transition:box-shadow .15s ease,transform .15s ease;}
+#tblAccounts .adv-card:hover{box-shadow:0 10px 24px -14px rgba(0,0,0,.5);transform:translateY(-1px);}
+#tblAccounts .adv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg, var(--acc-color, var(--green)), color-mix(in srgb, var(--acc-color, var(--green)) 40%, transparent));}
+#tblAccounts .adv-card-head{border-bottom:none;margin-bottom:12px;padding-bottom:0;}
+#tblAccounts .adv-card-head .avatar{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg, var(--acc-color, var(--green)), color-mix(in srgb, var(--acc-color, var(--green)) 55%, #000));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;flex-shrink:0;box-shadow:0 3px 8px -2px color-mix(in srgb, var(--acc-color, var(--green)) 70%, transparent);}
+#tblAccounts .adv-card-name{font-size:14.5px;}
+#tblAccounts .adv-card-adv-pill{font-size:10px;font-weight:700;color:var(--acc-color, var(--green));background:color-mix(in srgb, var(--acc-color, var(--green)) 14%, var(--panel));border:1px solid color-mix(in srgb, var(--acc-color, var(--green)) 30%, var(--line));border-radius:20px;padding:2px 9px;margin-left:auto;flex-shrink:0;}
+#tblAccounts .adv-card-row{padding:5px 0;font-size:12.5px;}
+#tblAccounts .adv-card-row .k{color:var(--muted);}
+#tblAccounts .adv-card-spend{margin-top:10px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb, var(--acc-color, var(--green)) 9%, var(--panel-2));display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#tblAccounts .adv-card-spend .k{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+#tblAccounts .adv-card-spend .v{font-family:'Roboto',sans-serif;font-weight:800;font-size:16px;color:var(--acc-color, var(--green));}
 #tblAdvertiser{display:flex;flex-direction:column;gap:12px;}
 #tblAdvertiser .adv-card{padding:14px 16px;}
 #tblAdvertiser .adv-card-head{margin-bottom:6px;padding-bottom:6px;}
@@ -278,24 +293,47 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .compact-form .target-row label{font-size:11.5px;color:var(--muted);margin-bottom:1px;}
 .compact-form .target-row input, .compact-form .target-row select{padding:7px 9px;font-size:12.5px;}
 .compact-form .btn{padding:8px 12px;font-size:12px;}
-.acc-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
-.acc-toolbar .btn{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:600;}
-.acc-toolbar .btn:hover{border-color:var(--green);}
-.acc-group{margin-bottom:10px;}
-.acc-group-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:10px 0 6px;display:flex;align-items:center;gap:6px;}
-.acc-list{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-@media(max-width:1000px){.acc-list{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){.acc-list{grid-template-columns:1fr;}}
-.acc-item{display:flex;align-items:center;gap:8px;padding:7px 8px 7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font-size:13.5px;}
+.acc-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.acc-toolbar .btn{border-radius:8px;padding:7px 14px;font-size:12.5px;cursor:pointer;font-weight:700;transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease;}
+.acc-toolbar .btn:active{transform:translateY(1px);}
+.acc-toolbar #btnSelectAll{background:linear-gradient(135deg, var(--green), var(--greendark));color:#06150E;border:none;box-shadow:0 6px 14px -6px rgba(34,197,94,.55);}
+.acc-toolbar #btnSelectAll:hover{box-shadow:0 8px 18px -6px rgba(34,197,94,.7);}
+.acc-toolbar #btnClearAll{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);}
+.acc-toolbar #btnClearAll:hover{color:var(--text);border-color:var(--red);}
+#accGroups{column-count:2;column-gap:14px;}
+@media(max-width:900px){#accGroups{column-count:1;}}
+.acc-group{break-inside:avoid;-webkit-column-break-inside:avoid;display:inline-block;width:100%;vertical-align:top;margin:0 0 14px;padding:0 0 12px;border:1px solid color-mix(in srgb, var(--adv-color, var(--green)) 22%, var(--line));border-radius:14px;background:var(--panel);overflow:hidden;box-shadow:0 6px 18px -14px rgba(0,0,0,.4);transition:box-shadow .15s ease,transform .15s ease;}
+.acc-group:hover{box-shadow:0 10px 26px -14px rgba(0,0,0,.5);}
+.acc-group-label{font-size:13px;color:var(--text);font-weight:700;margin:0;padding:10px 12px;display:flex;align-items:center;gap:9px;background:linear-gradient(135deg, color-mix(in srgb, var(--adv-color, var(--green)) 20%, var(--panel)), color-mix(in srgb, var(--adv-color, var(--green)) 6%, var(--panel)));border-bottom:1px solid color-mix(in srgb, var(--adv-color, var(--green)) 20%, var(--line));}
+.acc-group-label .avatar{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg, var(--adv-color, var(--green)), color-mix(in srgb, var(--adv-color, var(--green)) 60%, #000));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;box-shadow:0 3px 8px -2px color-mix(in srgb, var(--adv-color, var(--green)) 70%, transparent);}
+.acc-group-label .icon-btn{margin-left:auto;}
+.acc-group-count{font-size:10px;color:var(--text);font-weight:700;text-transform:none;letter-spacing:0;background:color-mix(in srgb, var(--adv-color, var(--green)) 16%, var(--panel));border:1px solid color-mix(in srgb, var(--adv-color, var(--green)) 30%, var(--line));border-radius:20px;padding:2px 9px;}
+.acc-list{display:flex;flex-direction:column;gap:7px;padding:11px 12px 0;}
+.acc-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);font-size:13.5px;transition:border-color .15s ease,background .15s ease,transform .1s ease;}
+.acc-item:hover{border-color:var(--adv-color, var(--green));transform:translateX(1px);}
+.acc-item.checked{border-color:color-mix(in srgb, var(--adv-color, var(--green)) 55%, var(--line));background:color-mix(in srgb, var(--adv-color, var(--green)) 9%, var(--panel-2));}
 .acc-item.inactive{opacity:.5;border-style:dashed;}
-.acc-item label.acc-check{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0;}
-.acc-item label.acc-check span.nm{overflow:hidden;text-overflow:ellipsis;}
-.acc-item input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;flex-shrink:0;}
-.acc-item .icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 4px;border-radius:5px;flex-shrink:0;line-height:1;}
-.acc-item .icon-btn:hover{color:var(--text);background:var(--soft-white);}
+.acc-item label.acc-check{display:flex;align-items:center;gap:9px;cursor:pointer;flex:1;min-width:0;}
+.acc-item label.acc-check span.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
+.acc-item input[type=checkbox]{accent-color:var(--adv-color, var(--green));width:16px;height:16px;flex-shrink:0;cursor:pointer;}
+.acc-item .acc-actions{display:flex;align-items:center;gap:1px;flex-shrink:0;padding-left:7px;margin-left:1px;border-left:1px solid var(--line);}
+.acc-ppn-badge{font-size:9.5px;font-weight:700;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:2px 7px;flex-shrink:0;white-space:nowrap;}
+.acc-item .icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:6px;flex-shrink:0;line-height:1;transition:color .12s ease,background .12s ease;}
+.acc-item .icon-btn:hover{color:var(--adv-color, var(--green));background:color-mix(in srgb, var(--adv-color, var(--green)) 14%, transparent);}
 .acc-tag-inactive{font-size:9.5px;font-weight:700;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:1px 5px;flex-shrink:0;}
-.acc-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-size:12.5px;font-weight:600;}
-.acc-add-btn:hover{color:var(--green);border-color:var(--green);}
+.acc-tag-archived{font-size:9.5px;font-weight:700;color:var(--muted);border:1px solid var(--muted);border-radius:4px;padding:1px 5px;flex-shrink:0;text-transform:none;}
+.acc-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border:1.5px dashed color-mix(in srgb, var(--adv-color, var(--green)) 35%, var(--line));border-radius:9px;background:color-mix(in srgb, var(--adv-color, var(--green)) 4%, transparent);color:var(--muted);cursor:pointer;font-size:12.5px;font-weight:700;transition:color .15s ease,border-color .15s ease,background .15s ease;margin:9px 12px 2px;}
+.acc-add-btn:hover{color:var(--adv-color, var(--green));border-color:var(--adv-color, var(--green));background:color-mix(in srgb, var(--adv-color, var(--green)) 10%, transparent);}
+#accArchivedWrap{margin-top:14px;}
+.acc-archived-toggle{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px dashed var(--line);border-radius:10px;background:var(--panel-2);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;user-select:none;transition:border-color .15s ease,color .15s ease;}
+.acc-archived-toggle:hover{border-color:var(--muted);color:var(--text);}
+.acc-archived-toggle .chev{margin-left:auto;transition:transform .15s ease;font-size:10px;}
+.acc-archived-toggle.open .chev{transform:rotate(180deg);}
+.acc-archived-body{margin-top:10px;column-count:2;column-gap:14px;}
+@media(max-width:900px){.acc-archived-body{column-count:1;}}
+.acc-group.archived{opacity:.72;filter:grayscale(.35);}
+.acc-group.archived .acc-item{cursor:default;}
+.acc-group.archived .acc-item:hover{transform:none;}
 
 .edit-modal-overlay{position:fixed;inset:0;background:var(--overlay-bg);display:flex;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(2px);}
 .edit-modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;width:380px;max-width:92vw;}
@@ -784,8 +822,9 @@ try{
         <div class="btn" id="btnClearAll">Kosongkan</div>
       </div>
     </div>
-    <div id="accGroups"><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#2FBE82;display:inline-block;"></span>MALDY<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc2" checked=""><span class="nm">Maldy 04</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc3" checked=""><span class="nm">Maldy 05</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc4" checked=""><span class="nm">DGT-05</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun MALDY</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#F0566C;display:inline-block;"></span>FIKI<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc1" checked=""><span class="nm">DGT-07</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun FIKI</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#4C8DFF;display:inline-block;"></span>RIFAN<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc5" checked=""><span class="nm">Maldy-Eka</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc6" checked=""><span class="nm">Aziz-01</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc7" checked=""><span class="nm">DGT-02</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun RIFAN</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#9C7BFF;display:inline-block;"></span>ALADIN<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc8" checked=""><span class="nm">Nextugo-03</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc9" checked=""><span class="nm">DGT-Nextug03</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc10" checked=""><span class="nm">DGT-Nextug06</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun ALADIN</div></div></div><div class="acc-group"><div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:#F2C12E;display:inline-block;"></span>YASIN<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">🗑</button></div><div class="acc-list"><div class="acc-item"><label class="acc-check"><input type="checkbox" data-id="acc11" checked=""><span class="nm">DGT-07 XUEFANG</span></label><button class="icon-btn" data-act="edit" title="Edit akun">✎</button><button class="icon-btn" data-act="toggle" title="Tandai mati / nonaktif">❚❚</button><button class="icon-btn" data-act="delete" title="Hapus akun">🗑</button></div><div class="acc-add-btn">+ Tambah Akun YASIN</div></div></div></div>
-    <div class="acc-add-btn" id="btnAddAdvertiser" style="margin-top:6px;">+ Tambah Advertiser Baru</div>
+    <div id="accGroups"></div>
+    <div id="accArchivedWrap"></div>
+    <div class="acc-add-btn" id="btnAddAdvertiser" style="margin-top:6px;padding:10px;font-size:13px;">+ Tambah Advertiser Baru</div>
   </div>
 
   <div class="section-header"><h2>Detail per Akun WL</h2></div>
@@ -1353,6 +1392,7 @@ function switchedInRange(acc, range){
 /* ============== DATA: AKUN WL (sesuai referensi gambar) ============== */
 let ADVERTISERS = ['MALDY','FIKI','RIFAN','ALADIN'];
 let ADV_COLOR = {MALDY:'#2FBE82', FIKI:'#F0566C', RIFAN:'#4C8DFF', ALADIN:'#9C7BFF'};
+let ADV_ARCHIVED = new Set(); // advertiser (staff) yang sudah resign — datanya tetap disimpan, tidak dihapus
 const ADV_COLOR_PALETTE = ['#F2C12E','#5FD0C7','#FF9F6B','#06D6A0','#EF476F','#118AB2','#FFD166','#B388FF','#4ADE80','#60A5FA'];
 let advColorCursor = 0;
 function nextAdvColor(){ const c=ADV_COLOR_PALETTE[advColorCursor % ADV_COLOR_PALETTE.length]; advColorCursor++; return c; }
@@ -1993,41 +2033,65 @@ document.addEventListener('click', ()=>{ if(drpOpen) closeDrp(); });
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && drpOpen) closeDrp(); });
 
 /* ============== UI: ACCOUNT PICKER (grouped by advertiser) ============== */
-function renderAccountGroups(){
-  if(document.getElementById('inAdvSelect')) renderInputSelectors();
-  const wrap=document.getElementById('accGroups'); wrap.innerHTML='';
-  ADVERTISERS.forEach(adv=>{
-    const accs = ACCOUNTS.filter(a=>a.advertiser===adv);
-    const groupEl=document.createElement('div'); groupEl.className='acc-group';
-    groupEl.innerHTML = '<div class="acc-group-label"><span style="width:8px;height:8px;border-radius:50%;background:'+ADV_COLOR[adv]+';display:inline-block;"></span>'+adv+
-      '<button class="icon-btn" data-act="delAdv" title="Hapus advertiser" style="margin-left:4px;">&#128465;</button></div>';
+function buildAccGroupEl(adv, archived){
+  const accs = ACCOUNTS.filter(a=>a.advertiser===adv);
+  const groupEl=document.createElement('div'); groupEl.className='acc-group'+(archived?' archived':'');
+  groupEl.style.setProperty('--adv-color', archived ? 'var(--muted)' : ADV_COLOR[adv]);
+  groupEl.innerHTML = '<div class="acc-group-label"><span class="avatar">'+adv.trim().charAt(0).toUpperCase()+'</span>'+adv+
+    (archived?'<span class="acc-tag-archived">ARSIP</span>':'')+
+    '<span class="acc-group-count">'+accs.length+' akun</span>'+
+    (archived
+      ? '<button class="icon-btn" data-act="restoreAdv" title="Aktifkan kembali advertiser ini">&#8635;</button>'
+      : '<button class="icon-btn" data-act="delAdv" title="Arsipkan / hapus advertiser">&#128465;</button>')+
+    '</div>';
+  if(archived){
+    groupEl.querySelector('[data-act=restoreAdv]').onclick=()=>{
+      if(!confirm('Aktifkan kembali advertiser "'+adv+'"? Akun-akunnya akan berstatus nonaktif dan bisa diaktifkan satu per satu.')) return;
+      ADV_ARCHIVED.delete(adv);
+      saveLocalState(); renderAccountGroups(); renderTargetRows(); render();
+    };
+  } else {
     groupEl.querySelector('[data-act=delAdv]').onclick=()=>{
       const hasAccounts = ACCOUNTS.some(a=>a.advertiser===adv);
-      if(hasAccounts){ alert('Tidak bisa menghapus "'+adv+'" karena masih punya akun. Hapus atau pindahkan akunnya terlebih dahulu.'); return; }
-      if(confirm('Hapus advertiser "'+adv+'"?')){
-        ADVERTISERS = ADVERTISERS.filter(a=>a!==adv);
-        delete ADV_COLOR[adv]; delete ADV_LEADS[adv]; delete TARGETS[adv];
-        saveLocalState(); renderAccountGroups(); renderTargetRows(); render();
+      if(!hasAccounts){
+        if(confirm('Hapus advertiser "'+adv+'"? Advertiser ini belum punya akun sama sekali.')){
+          ADVERTISERS = ADVERTISERS.filter(a=>a!==adv);
+          ADV_ARCHIVED.delete(adv);
+          delete ADV_COLOR[adv]; delete ADV_LEADS[adv]; delete TARGETS[adv];
+          saveLocalState(); renderAccountGroups(); renderTargetRows(); render();
+        }
+        return;
+      }
+      if(confirm('Advertiser "'+adv+'" resign / keluar?\n\nSemua akunnya akan diarsipkan (ditandai nonaktif) — datanya TETAP tersimpan untuk laporan historis, tidak dihapus. Bisa dipulihkan kapan saja lewat bagian "Advertiser Arsip".')){
+        ACCOUNTS.filter(a=>a.advertiser===adv).forEach(a=>{ a.status='nonaktif'; selectedAccounts.delete(a.id); });
+        ADV_ARCHIVED.add(adv);
+        saveLocalState(); renderAccountGroups(); renderTargetRows(); render(); syncAccountRoster();
       }
     };
-    const listEl=document.createElement('div'); listEl.className='acc-list';
-    accs.forEach(acc=>{
-      const inactive = acc.status==='nonaktif';
-      const el=document.createElement('div'); el.className='acc-item'+(inactive?' inactive':'');
-      el.innerHTML =
-        '<label class="acc-check">'+
-          '<input type="checkbox" data-id="'+acc.id+'" '+(selectedAccounts.has(acc.id)?'checked':'')+(inactive?' disabled':'')+'>'+
-          '<span class="nm">'+acc.name+'</span>'+
-        '</label>'+
-        '<span style="font-size:10px;color:var(--muted);font-family:\'Roboto\',sans-serif;flex-shrink:0;">PPN '+(acc.ppn!=null?acc.ppn:3)+'%</span>'+
-        (inactive?'<span class="acc-tag-inactive">MATI</span>':'')+
+  }
+  const listEl=document.createElement('div'); listEl.className='acc-list';
+  accs.forEach(acc=>{
+    const inactive = acc.status==='nonaktif';
+    const el=document.createElement('div'); el.className='acc-item'+(inactive?' inactive':'')+(selectedAccounts.has(acc.id)?' checked':'');
+    el.innerHTML =
+      '<label class="acc-check">'+
+        '<input type="checkbox" data-id="'+acc.id+'" '+(selectedAccounts.has(acc.id)?'checked':'')+((inactive||archived)?' disabled':'')+'>'+
+        '<span class="nm">'+acc.name+'</span>'+
+      '</label>'+
+      '<span class="acc-ppn-badge">PPN '+(acc.ppn!=null?acc.ppn:3)+'%</span>'+
+      (inactive?'<span class="acc-tag-inactive">MATI</span>':'')+
+      '<span class="acc-actions">'+
+        (archived ? '' :
         '<button class="icon-btn" data-act="edit" title="Edit akun">&#9998;</button>'+
         '<button class="icon-btn" data-act="toggle" title="'+(inactive?'Aktifkan kembali':'Tandai mati / nonaktif')+'">'+(inactive?'&#9654;':'&#10074;&#10074;')+'</button>'+
-        '<button class="icon-btn" data-act="delete" title="Hapus akun">&#128465;</button>';
-      el.querySelector('input').onchange=(e)=>{
-        if(e.target.checked) selectedAccounts.add(acc.id); else selectedAccounts.delete(acc.id);
-        render();
-      };
+        '<button class="icon-btn" data-act="delete" title="Hapus akun">&#128465;</button>')+
+      '</span>';
+    el.querySelector('input').onchange=(e)=>{
+      if(e.target.checked) selectedAccounts.add(acc.id); else selectedAccounts.delete(acc.id);
+      el.classList.toggle('checked', e.target.checked);
+      render();
+    };
+    if(!archived){
       el.querySelector('[data-act=edit]').onclick=()=> openEditModal(acc.id);
       el.querySelector('[data-act=toggle]').onclick=()=>{
         acc.status = inactive ? 'aktif' : 'nonaktif';
@@ -2042,17 +2106,45 @@ function renderAccountGroups(){
           saveLocalState(); renderAccountGroups(); render();
         }
       };
-      listEl.appendChild(el);
-    });
+    }
+    listEl.appendChild(el);
+  });
+  if(!archived){
     const addBtn=document.createElement('div'); addBtn.className='acc-add-btn';
     addBtn.innerHTML='+ Tambah Akun '+adv;
     addBtn.onclick=()=> openAddModal(adv);
     listEl.appendChild(addBtn);
-    groupEl.appendChild(listEl);
-    wrap.appendChild(groupEl);
-  });
+  } else if(accs.length===0){
+    const emptyNote=document.createElement('div'); emptyNote.className='muted-note'; emptyNote.style.cssText='padding:10px 12px 12px;font-size:11.5px;';
+    emptyNote.textContent='Tidak ada akun tersisa di advertiser ini.';
+    listEl.appendChild(emptyNote);
+  }
+  groupEl.appendChild(listEl);
+  return groupEl;
+}
+function renderAccountGroups(){
+  if(document.getElementById('inAdvSelect')) renderInputSelectors();
+  const activeAdvs = ADVERTISERS.filter(a=>!ADV_ARCHIVED.has(a));
+  const archivedAdvs = ADVERTISERS.filter(a=>ADV_ARCHIVED.has(a));
+  const wrap=document.getElementById('accGroups'); wrap.innerHTML='';
+  activeAdvs.forEach(adv=> wrap.appendChild(buildAccGroupEl(adv, false)));
+  const archWrap=document.getElementById('accArchivedWrap');
+  if(archivedAdvs.length===0){ archWrap.innerHTML=''; }
+  else {
+    archWrap.innerHTML = '<div class="acc-archived-toggle" id="accArchivedToggle">'+
+      '<span>&#128451; Advertiser Arsip / Resign</span><span class="acc-group-count">'+archivedAdvs.length+'</span>'+
+      '<span class="chev">&#9660;</span></div><div class="acc-archived-body" id="accArchivedBody" style="display:none;"></div>';
+    const body = document.getElementById('accArchivedBody');
+    archivedAdvs.forEach(adv=> body.appendChild(buildAccGroupEl(adv, true)));
+    document.getElementById('accArchivedToggle').onclick=()=>{
+      const open = body.style.display!=='none';
+      body.style.display = open ? 'none' : '';
+      document.getElementById('accArchivedToggle').classList.toggle('open', !open);
+    };
+  }
   document.getElementById('accSummary').textContent = selectedAccounts.size+' dari '+ACCOUNTS.filter(a=>a.status!=='nonaktif').length+' akun aktif dipilih';
 }
+
 
 /* ============== MODAL: EDIT / TAMBAH AKUN ============== */
 function closeModal(){
@@ -2084,7 +2176,7 @@ function openEditModal(accId){
       <h3>Edit Akun Iklan</h3>
       <div class="field"><label>Nama Akun</label><input type="text" id="mNama" value="${acc.name}"></div>
       <div class="field"><label>Advertiser Pemilik (saat ini)</label>
-        <select id="mAdv">${ADVERTISERS.map(a=>'<option value="'+a+'" '+(a===acc.advertiser?'selected':'')+'>'+a+'</option>').join('')}</select>
+        <select id="mAdv">${ADVERTISERS.filter(a=>!ADV_ARCHIVED.has(a) || a===acc.advertiser).map(a=>'<option value="'+a+'" '+(a===acc.advertiser?'selected':'')+'>'+a+(ADV_ARCHIVED.has(a)?' (arsip)':'')+'</option>').join('')}</select>
       </div>
       <div class="field" id="mEffectiveWrap" style="display:none;">
         <label>Tanggal Efektif Pindah</label>
@@ -2143,7 +2235,7 @@ function openAddModal(defaultAdv){
       <h3>Tambah Akun Iklan Baru</h3>
       <div class="field"><label>Nama Akun</label><input type="text" id="mNama" placeholder="Contoh: Maldy 06"></div>
       <div class="field"><label>Advertiser Pemilik</label>
-        <select id="mAdv">${ADVERTISERS.map(a=>'<option value="'+a+'" '+(a===defaultAdv?'selected':'')+'>'+a+'</option>').join('')}</select>
+        <select id="mAdv">${ADVERTISERS.filter(a=>!ADV_ARCHIVED.has(a)).map(a=>'<option value="'+a+'" '+(a===defaultAdv?'selected':'')+'>'+a+'</option>').join('')}</select>
       </div>
       <div class="field"><label>PPN Akun Ini (%)</label><input type="number" id="mPPN" value="3" step="0.5" min="0"></div>
       <div class="muted-note" style="margin-bottom:6px;">PPN ini akan otomatis dipakai setiap kali input budget harian akun ini di menu "Data Input" — tidak perlu diubah manual lagi. Data budget &amp; spend akun ini diisi lewat panel "Input Data Harian" atau ditarik dari spreadsheet.</div>
@@ -2241,14 +2333,14 @@ function render(){
     return {a, bud, sp, avg: bud/nDays};
   });
   document.getElementById('tblAccounts').innerHTML = rowsAcc.length ? rowsAcc.map(r=>
-    '<div class="adv-card">'+
-      '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.a.advertiser]+'"></span><span class="adv-card-name">'+r.a.name+'</span>'+
-      (switchedInRange(r.a,range)?'<span class="tag blue" style="margin-left:auto;font-size:10px;" title="Akun ini pindah advertiser di dalam periode terpilih">🔀 PINDAH</span>':'')+
+    '<div class="adv-card" style="--acc-color:'+ADV_COLOR[r.a.advertiser]+';">'+
+      '<div class="adv-card-head"><span class="avatar">'+r.a.name.trim().charAt(0).toUpperCase()+'</span><span class="adv-card-name">'+r.a.name+'</span>'+
+      '<span class="adv-card-adv-pill">'+r.a.advertiser+'</span>'+
+      (switchedInRange(r.a,range)?'<span class="tag blue" style="font-size:10px;" title="Akun ini pindah advertiser di dalam periode terpilih">🔀</span>':'')+
       '</div>'+
-      '<div class="adv-card-row"><span class="k">Advertiser (saat ini)</span><span class="v">'+r.a.advertiser+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Budget 24 Jam (avg/hari)</span><span class="v">'+rupiah(r.avg)+'</span></div>'+
       '<div class="adv-card-row"><span class="k">Total Budget</span><span class="v">'+rupiah(r.bud)+'</span></div>'+
-      '<div class="adv-card-row"><span class="k">Spend + PPN</span><span class="tag green">'+rupiah(r.sp)+'</span></div>'+
+      '<div class="adv-card-spend"><span class="k">Spend + PPN</span><span class="v">'+rupiah(r.sp)+'</span></div>'+
     '</div>'
   ).join('') : '<div class="muted-note">Tidak ada akun terpilih</div>';
   document.getElementById('tblAccTotalBudget').textContent = rupiah(totalBudget);
@@ -2912,10 +3004,11 @@ function renderInsightPanel(){
 function renderInputSelectors(){
   const advSel = document.getElementById('inAdvSelect');
   const prevAdv = advSel.value;
-  advSel.innerHTML = ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
-  if(prevAdv && ADVERTISERS.includes(prevAdv)) advSel.value = prevAdv;
+  const activeAdvs = ADVERTISERS.filter(a=>!ADV_ARCHIVED.has(a));
+  advSel.innerHTML = activeAdvs.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  if(prevAdv && activeAdvs.includes(prevAdv)) advSel.value = prevAdv;
   const csAdvSel = document.getElementById('csAdvertiser');
-  if(csAdvSel) csAdvSel.innerHTML = ADVERTISERS.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  if(csAdvSel) csAdvSel.innerHTML = activeAdvs.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
   if(typeof renderCsAdvertiserFilter==='function') renderCsAdvertiserFilter();
   if(typeof renderTopupFilterAkunSelect==='function') renderTopupFilterAkunSelect();
   if(typeof renderTopupAccList==='function' && document.getElementById('tuAccTopupList')) renderTopupAccList();
@@ -5123,6 +5216,7 @@ function saveLocalState(){
     const state = {
       advertisers: ADVERTISERS,
       advColor: ADV_COLOR,
+      advArchived: Array.from(ADV_ARCHIVED),
       targets: TARGETS,
       targetsMonthly: TARGETS_MONTHLY,
       dirtyTargets: DIRTY_TARGETS,
@@ -5153,6 +5247,7 @@ function loadLocalState(){
     const state = JSON.parse(raw);
     ADVERTISERS = state.advertisers || ADVERTISERS;
     ADV_COLOR = state.advColor || ADV_COLOR;
+    ADV_ARCHIVED = new Set(Array.isArray(state.advArchived) ? state.advArchived : []);
     TARGETS = state.targets || TARGETS;
     if(state.targetsMonthly) TARGETS_MONTHLY = state.targetsMonthly;
     DIRTY_TARGETS = state.dirtyTargets || {};
@@ -5194,6 +5289,7 @@ function resetAllData(){
   ACCOUNTS.length = 0;
   ADVERTISERS = [];
   ADV_COLOR = {};
+  ADV_ARCHIVED = new Set();
   Object.keys(ADV_LEADS).forEach(k=> delete ADV_LEADS[k]);
   TARGETS = {};
   TARGETS_MONTHLY = {};
