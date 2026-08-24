@@ -3803,7 +3803,12 @@ async function pushOneToSheet(payload){
   if(!url) return 'no-url';
   try{
     const controller = new AbortController();
-    const timer = setTimeout(()=>controller.abort(), 15000);
+    // Timeout client sengaja dibuat LEBIH LAMA dari waktu tunggu lock maksimal di server (30 detik) +
+    // buffer eksekusi. Sebelumnya cuma 15 detik — kalau request lagi antre lock di server (mis. lagi
+    // ada beberapa dari 6 user lain yang nyimpan bersamaan), browser bisa nyerah duluan (dianggap
+    // "gagal") padahal request-nya tetap lanjut jalan & berhasil ditulis di server. Jadi kalau timeout
+    // client < waktu tunggu server, itu bisa nampilin pesan gagal palsu walau data sebenarnya kekirim.
+    const timer = setTimeout(()=>controller.abort(), 40000);
     const res = await fetch(url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload), signal: controller.signal});
     clearTimeout(timer);
     // Apps Script Web App hampir selalu balikin HTTP 200 walaupun terjadi error logis
@@ -3843,14 +3848,16 @@ async function pushTargetMode(mode){
 async function flushDirtyTargets(){
   const keys = Object.keys(DIRTY_TARGETS);
   if(keys.length===0) return;
-  for(const key of keys){
+  // Kirim SEMUA target yang belum tersinkron secara PARALEL (bukan satu-satu berurutan),
+  // supaya waktu tunggu jaringan ke Apps Script overlap, tidak numpuk jadi n x round-trip.
+  await Promise.all(keys.map(async (key)=>{
     const parts = key.split('|');
     const adv = parts[0], year = parseInt(parts[1]), month = parseInt(parts[2]);
-    if(!adv || !year || !month) { delete DIRTY_TARGETS[key]; continue; }
+    if(!adv || !year || !month) { delete DIRTY_TARGETS[key]; return; }
     const val = getMonthlyTarget(adv, month, year);
     const status = await pushTargetMonthly(adv, year, month, val);
     if(status==='ok') delete DIRTY_TARGETS[key];
-  }
+  }));
   saveLocalState();
 }
 async function pushAllTargetsToSheet(){
