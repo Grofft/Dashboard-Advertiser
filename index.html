@@ -2063,7 +2063,9 @@ function buildAccGroupEl(adv, archived){
         return;
       }
       if(confirm('Advertiser "'+adv+'" resign / keluar?\n\nSemua akunnya akan diarsipkan (ditandai nonaktif) — datanya TETAP tersimpan untuk laporan historis, tidak dihapus. Bisa dipulihkan kapan saja lewat bagian "Advertiser Arsip".')){
-        ACCOUNTS.filter(a=>a.advertiser===adv).forEach(a=>{ a.status='nonaktif'; selectedAccounts.delete(a.id); });
+        // Sengaja TIDAK menghapus dari selectedAccounts: biar histori spend akun-akun advertiser
+        // ini (sebelum resign) tetap ikut kehitung di laporan periode lalu, sesuai pesan di atas.
+        ACCOUNTS.filter(a=>a.advertiser===adv).forEach(a=>{ a.status='nonaktif'; });
         ADV_ARCHIVED.add(adv);
         saveLocalState(); renderAccountGroups(); renderTargetRows(); render(); syncAccountRoster();
       }
@@ -2095,7 +2097,8 @@ function buildAccGroupEl(adv, archived){
       el.querySelector('[data-act=edit]').onclick=()=> openEditModal(acc.id);
       el.querySelector('[data-act=toggle]').onclick=()=>{
         acc.status = inactive ? 'aktif' : 'nonaktif';
-        if(acc.status==='nonaktif') selectedAccounts.delete(acc.id);
+        // Sengaja TIDAK menghapus dari selectedAccounts: histori spend akun ini sebelum
+        // ditandai mati harus tetap ikut terhitung di laporan/total periode lalu.
         saveLocalState(); renderAccountGroups(); render(); syncAccountRoster();
       };
       el.querySelector('[data-act=delete]').onclick=()=>{
@@ -2142,7 +2145,7 @@ function renderAccountGroups(){
       document.getElementById('accArchivedToggle').classList.toggle('open', !open);
     };
   }
-  document.getElementById('accSummary').textContent = selectedAccounts.size+' dari '+ACCOUNTS.filter(a=>a.status!=='nonaktif').length+' akun aktif dipilih';
+  document.getElementById('accSummary').textContent = selectedAccounts.size+' dari '+ACCOUNTS.length+' akun ditampilkan di laporan (termasuk yang sudah mati, untuk histori)';
 }
 
 
@@ -2215,7 +2218,8 @@ function openEditModal(accId){
     }
     acc.ppn = parseFloat(document.getElementById('mPPN').value)||0;
     const newStatus = document.getElementById('mStatus').value;
-    if(newStatus==='nonaktif' && acc.status!=='nonaktif') selectedAccounts.delete(acc.id);
+    // Sengaja TIDAK menghapus dari selectedAccounts saat status jadi nonaktif: histori
+    // spend akun ini sebelum ditandai mati harus tetap ikut terhitung di laporan periode lalu.
     acc.status = newStatus;
     saveLocalState(); closeModal(); renderAccountGroups(); render(); syncAccountRoster();
   };
@@ -2258,7 +2262,7 @@ function openAddModal(defaultAdv){
     saveLocalState(); closeModal(); renderAccountGroups(); render(); renderInputSelectors(); syncAccountRoster();
   };
 }
-document.getElementById('btnSelectAll').onclick=()=>{ selectedAccounts=new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id)); renderAccountGroups(); render(); };
+document.getElementById('btnSelectAll').onclick=()=>{ selectedAccounts=new Set(ACCOUNTS.map(a=>a.id)); renderAccountGroups(); render(); };
 document.getElementById('btnClearAll').onclick=()=>{ selectedAccounts=new Set(); renderAccountGroups(); render(); };
 
 function openAddAdvertiserModal(){
@@ -2322,7 +2326,9 @@ function render(){
   document.getElementById('dateRangeLabel').textContent = fmtDateID(range[0])+' - '+fmtDateID(range[1]);
   const nDays = daysIn(range);
 
-  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+  // Tidak difilter status: akun yang sudah ditandai mati tetap ikut dihitung untuk
+  // periode-periode saat dia masih aktif (histori tidak hilang, hanya tidak bisa dientri lagi).
+  const accs = ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
 
   // ---- tabel akun ----
   let totalBudget=0, totalSpend=0;
@@ -2735,7 +2741,7 @@ document.querySelectorAll('#metricDropdownMenu input[type=checkbox]').forEach(cb
   cb.addEventListener('change', ()=>{
     updateMetricLabel();
     const range = getRange();
-    const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+    const accs = ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
     renderAdvMetricChart(accs, range);
   });
 });
@@ -2744,14 +2750,14 @@ document.getElementById('metricSelectAll').addEventListener('click', (e)=>{
   e.stopPropagation();
   document.querySelectorAll('#metricDropdownMenu input[type=checkbox]').forEach(cb=>cb.checked=true);
   updateMetricLabel();
-  const range=getRange(); const accs=ACCOUNTS.filter(a=>a.status!=='nonaktif'&&selectedAccounts.has(a.id));
+  const range=getRange(); const accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
   renderAdvMetricChart(accs, range);
 });
 document.getElementById('metricClearAll').addEventListener('click', (e)=>{
   e.stopPropagation();
   document.querySelectorAll('#metricDropdownMenu input[type=checkbox]').forEach(cb=>cb.checked=false);
   updateMetricLabel();
-  const range=getRange(); const accs=ACCOUNTS.filter(a=>a.status!=='nonaktif'&&selectedAccounts.has(a.id));
+  const range=getRange(); const accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
   renderAdvMetricChart(accs, range);
 });
 
@@ -2927,7 +2933,7 @@ function toggleLegendItem(item, dsIndex){
 // Legacy listener untuk select (dipertahankan agar tidak error)
 document.getElementById('advMetricSelect').addEventListener('change', ()=>{
   const range = getRange();
-  const accs = ACCOUNTS.filter(a=>a.status!=='nonaktif' && selectedAccounts.has(a.id));
+  const accs = ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
   renderAdvMetricChart(accs, range);
 });
 
@@ -3545,7 +3551,8 @@ function applyAkunWLRow(r){
     if(!isNaN(ppnVal)) acc.ppn = ppnVal;
   }
   acc.status = isActive ? 'aktif' : 'nonaktif';
-  if(!isActive) selectedAccounts.delete(acc.id);
+  // Sengaja TIDAK menghapus dari selectedAccounts saat sync menandai akun nonaktif: histori
+  // spend akun ini sebelum mati harus tetap ikut terhitung di laporan periode lalu.
   return true;
 }
 // Rekonstruksi ownerHistory tiap akun dari baris sheet "AkunHistori".
@@ -5224,6 +5231,7 @@ function saveLocalState(){
       targetMode: targetMode,
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
       accCounter: accCounter,
+      selectedAccounts: Array.from(selectedAccounts),
       advLeads: Object.fromEntries(Object.entries(ADV_LEADS).map(([k,v])=>[k,{real:v.real, oo:v.oo}])),
       testCampaigns: TEST_CAMPAIGNS,
       csList: CS_LIST,
@@ -5273,7 +5281,15 @@ function loadLocalState(){
     AGENSI_LIST = Array.isArray(state.agensiList) ? state.agensiList : [];
     ACC_AGENSI = (state.accAgensi && typeof state.accAgensi==='object') ? state.accAgensi : {};
     SALDO_MASUK = Array.isArray(state.saldoMasuk) ? state.saldoMasuk : [];
-    selectedAccounts = new Set(ACCOUNTS.filter(a=>a.status!=='nonaktif').map(a=>a.id));
+    if(Array.isArray(state.selectedAccounts)){
+      // Data lama tidak punya field ini — kalau ada, pakai apa adanya (termasuk akun yang
+      // sudah ditandai mati, supaya histori spend-nya tetap ikut di laporan).
+      selectedAccounts = new Set(state.selectedAccounts.filter(id=>ACCOUNTS.some(a=>a.id===id)));
+    } else {
+      // Fallback untuk data lama sebelum selectedAccounts disimpan: pilih semua akun,
+      // termasuk yang mati, supaya histori spend-nya tidak hilang.
+      selectedAccounts = new Set(ACCOUNTS.map(a=>a.id));
+    }
     if(state.appsScriptUrl) document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
     return true;
   }catch(e){ console.warn('Gagal memuat localStorage:', e); return false; }
@@ -5384,7 +5400,7 @@ function buildAdvertiserReportText(){
   let grandBudget=0, grandSpend=0, grandReal=0, grandOO=0;
 
   advList.forEach((adv, idx) => {
-    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && a.status!=='nonaktif' && selectedAccounts.has(a.id));
+    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && selectedAccounts.has(a.id));
     if(advAccs.length === 0) return;
 
     const budget   = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,range),0);
@@ -5550,7 +5566,7 @@ function buildGabunganReportText(){
   let anyRow = false;
 
   advList.forEach((adv, idx) => {
-    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && a.status!=='nonaktif' && selectedAccounts.has(a.id));
+    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && selectedAccounts.has(a.id));
     const spendPPN = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,range),0);
 
     const csRows = CS_DATA.filter(c=> c.advertiser===adv && csRowInRange(c.tanggal, range));
