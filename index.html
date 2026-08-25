@@ -168,6 +168,89 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .chart-wrap{position:relative;height:300px;}
 .two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
 @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+/* ===== OKR ===== */
+.okr-period-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.okr-period-pill{padding:7px 14px;border-radius:20px;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);cursor:pointer;white-space:nowrap;}
+.okr-period-pill:hover{color:var(--text);border-color:var(--green);}
+.okr-period-pill.active{background:var(--accent-dim);color:var(--green);border-color:var(--green);font-weight:700;}
+.okr-add-period{padding:7px 12px;border-radius:20px;font-size:12.5px;font-weight:700;color:var(--green);background:transparent;border:1px dashed var(--green);cursor:pointer;white-space:nowrap;}
+.okr-add-period:hover{background:var(--good-bg);}
+
+.okr-obj-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+.okr-obj-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.okr-obj-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:15.5px;line-height:1.4;}
+.okr-obj-owner{font-size:12px;color:var(--muted);margin-top:4px;}
+.okr-obj-owner b{color:var(--text);font-weight:600;}
+.okr-obj-actions{display:flex;gap:6px;flex-shrink:0;}
+.okr-icon-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.okr-icon-btn:hover{color:var(--text);border-color:var(--green);}
+.okr-icon-btn.danger:hover{color:var(--red);border-color:var(--red);}
+
+.okr-score-chip{flex-shrink:0;min-width:64px;text-align:center;border-radius:10px;padding:7px 12px;font-family:'Roboto',sans-serif;font-weight:700;font-size:16px;}
+.okr-score-chip .sub{display:block;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:1px;opacity:.85;}
+.okr-score-chip.good{background:var(--good-bg);color:var(--green);}
+.okr-score-chip.warn{background:var(--warn-bg);color:var(--yellow);}
+.okr-score-chip.bad{background:var(--bad-bg);color:var(--red);}
+
+.okr-kr-row{padding:10px 0;border-top:1px solid var(--line);}
+.okr-kr-row:first-of-type{border-top:none;padding-top:0;}
+.okr-kr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;}
+.okr-kr-text{font-size:13px;font-weight:500;line-height:1.45;}
+.okr-kr-nums{font-size:11.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.okr-kr-nums b{color:var(--text);}
+.okr-kr-actions{display:flex;gap:4px;flex-shrink:0;}
+.okr-kr-mini-btn{width:22px;height:22px;border-radius:5px;border:none;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.okr-kr-mini-btn:hover{background:var(--panel-2);color:var(--text);}
+.okr-kr-track{height:7px;border-radius:6px;background:var(--panel-2);overflow:hidden;}
+.okr-kr-fill{height:100%;border-radius:6px;transition:width .3s ease;}
+.okr-kr-fill.good{background:var(--green);}
+.okr-kr-fill.warn{background:var(--yellow);}
+.okr-kr-fill.bad{background:var(--red);}
+.okr-kr-pct{font-size:11px;font-weight:700;flex-shrink:0;width:38px;text-align:right;}
+
+.okr-add-kr-btn{margin-top:12px;background:transparent;border:1px dashed var(--line);color:var(--muted);border-radius:9px;padding:8px 12px;font-size:12px;font-weight:600;width:100%;cursor:pointer;}
+.okr-add-kr-btn:hover{border-color:var(--green);color:var(--green);}
+.okr-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;border:1.5px dashed var(--line);border-radius:14px;}
+.okr-empty b{display:block;color:var(--text);font-size:14.5px;margin-bottom:5px;font-family:'Roboto',sans-serif;}
+
+.okr-init-wrap{margin-top:9px;padding-left:2px;}
+.okr-init-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;}
+.okr-init-check{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--panel-2);font-size:10px;color:transparent;}
+.okr-init-check.done{background:var(--green);border-color:var(--green);color:#06150E;}
+.okr-init-text{flex:1;font-size:12px;color:var(--text);line-height:1.5;}
+.okr-init-text.done{color:var(--muted);text-decoration:line-through;}
+.okr-init-actions{display:flex;gap:2px;flex-shrink:0;}
+.okr-add-init-btn{margin-top:4px;background:transparent;border:none;color:var(--muted);font-size:11.5px;font-weight:600;cursor:pointer;padding:4px 0;}
+.okr-add-init-btn:hover{color:var(--green);}
+
+.okr-refl-btn{padding:6px 12px;border-radius:7px;font-size:11.5px;font-weight:700;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
+.okr-refl-btn:hover{color:var(--text);border-color:var(--blue);}
+.okr-refl-btn.filled{color:var(--blue);border-color:var(--blue);}
+.okr-refl-block{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
+.okr-refl-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.okr-refl-item{display:flex;gap:10px;margin-bottom:10px;}
+.okr-refl-item:last-child{margin-bottom:0;}
+.okr-refl-tag{flex-shrink:0;width:78px;font-size:10.5px;font-weight:800;letter-spacing:.03em;padding:3px 0;color:#fff;border-radius:6px;text-align:center;height:20px;line-height:14px;}
+.okr-refl-tag.what{background:var(--blue);}
+.okr-refl-tag.sowhat{background:var(--purple);}
+.okr-refl-tag.nowwhat{background:var(--green);color:#06150E;}
+.okr-refl-text{flex:1;font-size:12.5px;line-height:1.55;color:var(--text);padding-top:2px;}
+.okr-refl-text.muted-note{color:var(--muted);font-style:italic;}
+.okr-refl-modal textarea{width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px 11px;font-size:13px;font-family:'Roboto',sans-serif;resize:vertical;min-height:64px;}
+.okr-refl-what-box{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+
+.okr-kr-dir-badge{font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:2px 7px;border-radius:5px;background:var(--panel-2);color:var(--muted);border:1px solid var(--line);flex-shrink:0;white-space:nowrap;}
+.okr-init-row{flex-wrap:wrap;}
+
+.okr-dir-tag{display:inline-block;margin-left:7px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--panel-2);color:var(--blue);white-space:nowrap;}
+.okr-init-deadline{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-left:6px;}
+.okr-init-deadline.normal{background:var(--panel-2);color:var(--muted);}
+.okr-init-deadline.soon{background:var(--warn-bg);color:var(--yellow);}
+.okr-init-deadline.overdue{background:var(--bad-bg);color:var(--red);}
+.okr-init-deadline.done{background:var(--good-bg);color:var(--green);}
+.okr-deadline-banner{display:none;align-items:center;gap:10px;background:var(--bad-bg);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:var(--red);line-height:1.5;}
+.okr-deadline-banner b{font-weight:800;}
 .cs-stack{display:flex;flex-direction:column;gap:18px;}
 .cs-input-panel{padding:20px 22px !important;}
 .cs-input-panel h3{font-size:15px !important;margin-bottom:14px !important;}
@@ -653,6 +736,7 @@ try{
     <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
     <div class="navbtn" data-page="cs"><span class="ic">📞</span> Hasil CS</div>
     <div class="navbtn" data-page="laporan"><span class="ic">🗒️</span> Laporan</div>
+    <div class="navbtn" data-page="okr"><span class="ic">🎯</span> OKR Divisi</div>
 
     <div class="sidebar-foot">
       <div class="status" id="apiStatus"><div class="sdot"></div><span id="apiStatusText">Menghubungkan…</span></div>
@@ -1073,7 +1157,7 @@ try{
     </div>
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--green);">Berhasil menarik 231 baris akun &amp; 109 baris lead dari spreadsheet.</div>
     <div id="scriptBox" style="display:none;">
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 10 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TopUp</code> (kolom: id, tanggal, jam, akun, nominal, catatan — LOG tiap kali top up budget dicatat per akun WL, bisa beberapa baris per akun per hari untuk top up bertahap, otomatis terisi/update/hapus dari menu Top Up Budget), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunAgensi</code> (kolom: akun, agensi — pemetaan 1 akun WL ke 1 nama agensi penyedia, BEDA dari advertiser/brand, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">SaldoAgensi</code> (kolom: id, tanggal, agensi, nominal, catatan — LOG tiap kali ada transfer/saldo titipan masuk ke sebuah agensi, bisa beberapa baris per agensi, otomatis terisi/update/hapus dari menu Top Up Budget → Saldo Titipan Agensi; sisa saldo per agensi dihitung otomatis di dashboard sebagai total saldo masuk dikurangi total top up ke akun-akun agensi tsb, TIDAK disimpan sebagai kolom terpisah).</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 11 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TopUp</code> (kolom: id, tanggal, jam, akun, nominal, catatan — LOG tiap kali top up budget dicatat per akun WL, bisa beberapa baris per akun per hari untuk top up bertahap, otomatis terisi/update/hapus dari menu Top Up Budget), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunAgensi</code> (kolom: akun, agensi — pemetaan 1 akun WL ke 1 nama agensi penyedia, BEDA dari advertiser/brand, otomatis terisi/update/hapus dari menu Top Up Budget → Kelola Agensi Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">SaldoAgensi</code> (kolom: id, tanggal, agensi, nominal, catatan — LOG tiap kali ada transfer/saldo titipan masuk ke sebuah agensi, bisa beberapa baris per agensi, otomatis terisi/update/hapus dari menu Top Up Budget → Saldo Titipan Agensi; sisa saldo per agensi dihitung otomatis di dashboard sebagai total saldo masuk dikurangi total top up ke akun-akun agensi tsb, TIDAK disimpan sebagai kolom terpisah), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">OKR</code> (kolom: periode, obj_id, objective, pic, so_what, now_what, kr_id, key_result, arah, target, capaian, satuan, initiative_id, initiative, deadline, selesai — 1 baris per Initiative, dengan kolom Objective &amp; Key Result diulang di tiap baris supaya sheet-nya langsung terbaca tanpa buka dashboard; KR tanpa Initiative atau Objective tanpa KR tetap dapat 1 baris dengan kolom yang tidak relevan dikosongkan; otomatis terisi/update — seluruh baris 1 periode diganti sekaligus — dari menu OKR Divisi setiap kali ada perubahan).</div>
       <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
@@ -1264,10 +1348,130 @@ try{
   </div>
 </div><!-- /page-laporan -->
 
+<div class="page" id="page-okr">
+  <div class="section-header" style="margin-top:0;">
+    <h1>OKR Divisi</h1>
+    <div class="muted-note">Objectives &amp; Key Results — evaluasi target &amp; pencapaian tim per periode</div>
+  </div>
+
+  <div class="okr-period-bar" id="okrPeriodBar"></div>
+
+  <div class="grid grid-4" style="margin-bottom:18px;">
+    <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Skor Rata-rata Divisi</div><div class="value" id="okrKpiScore">0%</div></div>
+    <div class="card"><div class="bar-accent" style="background:var(--blue)"></div><div class="label" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Jumlah Objective</div><div class="value" id="okrKpiObj" style="font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;">0</div></div>
+    <div class="card"><div class="bar-accent" style="background:var(--green)"></div><div class="label" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Key Result Tercapai</div><div class="value" id="okrKpiDone" style="font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;color:var(--green);">0</div></div>
+    <div class="card"><div class="bar-accent" style="background:var(--red)"></div><div class="label" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Key Result Berisiko</div><div class="value" id="okrKpiRisk" style="font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;color:var(--red);">0</div></div>
+  </div>
+
+  <div class="okr-deadline-banner" id="okrDeadlineBanner"></div>
+
+  <div class="section-header">
+    <h2>Daftar Objective</h2>
+    <button class="btn" id="btnAddObjective">+ Objective Baru</button>
+  </div>
+
+  <div id="okrObjList"></div>
+</div><!-- /page-okr -->
+
 
 
   </div><!-- /main -->
 </div><!-- /app -->
+
+<!-- OKR: Modal Objective -->
+<div class="edit-modal-overlay" id="okrObjModalOverlay" style="display:none;">
+  <div class="edit-modal">
+    <h3 id="okrObjModalTitle">Objective Baru</h3>
+    <div class="field">
+      <label>Objective</label>
+      <input type="text" id="okrObjTitleInput" placeholder="Contoh: Meningkatkan efisiensi biaya iklan divisi">
+    </div>
+    <div class="field">
+      <label>PIC / Owner</label>
+      <input type="text" id="okrObjOwnerInput" placeholder="Contoh: Tim Media Buyer">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrObjCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrObjSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- OKR: Modal Key Result -->
+<div class="edit-modal-overlay" id="okrKrModalOverlay" style="display:none;">
+  <div class="edit-modal">
+    <h3 id="okrKrModalTitle">Key Result Baru</h3>
+    <div class="field">
+      <label>Deskripsi Key Result</label>
+      <input type="text" id="okrKrTextInput" placeholder="Contoh: Menurunkan CPL rata-rata ke Rp 15.000">
+    </div>
+    <div class="field">
+      <label>Arah Target</label>
+      <select id="okrKrDirectionInput">
+        <option value="higher">Semakin tinggi semakin baik (leads, CTR, closing, dll)</option>
+        <option value="lower">Semakin rendah semakin baik (CPL, CPA, biaya, dll)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Target</label>
+      <input type="number" id="okrKrTargetInput" placeholder="Contoh: 100">
+    </div>
+    <div class="field">
+      <label>Capaian Saat Ini</label>
+      <input type="number" id="okrKrCurrentInput" placeholder="Contoh: 65">
+    </div>
+    <div class="field">
+      <label>Satuan (opsional)</label>
+      <input type="text" id="okrKrUnitInput" placeholder="Contoh: %, leads, Rp, akun">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrKrCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrKrSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- OKR: Modal Initiative -->
+<div class="edit-modal-overlay" id="okrInitModalOverlay" style="display:none;">
+  <div class="edit-modal">
+    <h3 id="okrInitModalTitle">Initiative Baru</h3>
+    <div class="field">
+      <label>Kegiatan / Aktivitas</label>
+      <input type="text" id="okrInitTextInput" placeholder="Contoh: Ujicoba LP baru">
+    </div>
+    <div class="field">
+      <label>Deadline (opsional)</label>
+      <input type="date" id="okrInitDeadlineInput">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrInitCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrInitSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- OKR: Modal Refleksi (What / So What / Now What) -->
+<div class="edit-modal-overlay" id="okrReflModalOverlay" style="display:none;">
+  <div class="edit-modal okr-refl-modal" style="width:440px;">
+    <h3>Refleksi Akhir Periode</h3>
+    <div class="field">
+      <label>What — Apa yang terjadi (otomatis dari skor)</label>
+      <div class="okr-refl-what-box" id="okrReflWhatBox">—</div>
+    </div>
+    <div class="field">
+      <label>So What — Kenapa itu penting / apa maknanya</label>
+      <textarea id="okrReflSoWhatInput" placeholder="Contoh: Efisiensi biaya iklan masih di bawah target, kemungkinan karena creative kurang relevan dengan audiens baru."></textarea>
+    </div>
+    <div class="field">
+      <label>Now What — Langkah selanjutnya</label>
+      <textarea id="okrReflNowWhatInput" placeholder="Contoh: Kuartal depan fokus uji creative baru & sempitkan targeting audiens."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrReflCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrReflSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
 
 <!-- FLOATING REPORT BUTTON -->
 <button class="btn-report-float" id="btnOpenReport">
@@ -3143,6 +3347,7 @@ function doGet(e){
   var topupSheet = ss.getSheetByName('TopUp');
   var agensiSheet = ss.getSheetByName('AkunAgensi');
   var saldoAgensiSheet = ss.getSheetByName('SaldoAgensi');
+  var okrSheet = ss.getSheetByName('OKR');
   var akun = sheetToObjects(akunSheet);
   var leads = sheetToObjects(leadSheet);
   var akunwl = sheetToObjects(akunWlSheet);
@@ -3154,7 +3359,8 @@ function doGet(e){
   var topup = sheetToObjects(topupSheet);
   var akunagensi = sheetToObjects(agensiSheet);
   var saldoagensi = sheetToObjects(saldoAgensiSheet);
-  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, topup: topup, akunagensi: akunagensi, saldoagensi: saldoagensi});
+  var okr = sheetToObjects(okrSheet);
+  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, topup: topup, akunagensi: akunagensi, saldoagensi: saldoagensi, okr: okr});
 }
 
 function doPost(e){
@@ -3193,6 +3399,8 @@ function doPost(e){
       upsertAkunAgensi(ss, data);
     } else if(data.type === 'saldoagensi'){
       upsertSaldoAgensi(ss, data);
+    } else if(data.type === 'okr'){
+      replaceOkrRows(ss, data);
     }
   } finally {
     lock.releaseLock();
@@ -3439,6 +3647,33 @@ function upsertSaldoAgensi(ss, data){
   sh.appendRow([id, data.tanggal, data.agensi, data.nominal, data.catatan]);
 }
 
+// Sheet "OKR" = data OKR Divisi, 1 baris per Initiative (level paling detail), dengan kolom
+// Objective & Key Result DIULANG di tiap baris supaya sheet-nya flat & langsung terbaca —
+// tidak perlu buka dashboard untuk tahu isi OKR-nya. Kalau sebuah Key Result belum punya
+// Initiative, tetap 1 baris (kolom initiative_* kosong). Kalau sebuah Objective belum punya
+// Key Result, tetap 1 baris (kolom kr_*/initiative_* kosong).
+// Cara sync: dashboard mengirim SEMUA baris untuk 1 periode sekaligus tiap kali ada perubahan
+// (bukan upsert per baris) — jadi baris lama utk periode itu dihapus semua dulu, baru ditulis
+// ulang dari data terbaru. Ini paling aman untuk kasus tambah/edit/HAPUS Objective/KR/Initiative
+// sekaligus, tanpa risiko baris lama yang sudah dihapus di dashboard tetap nyangkut di sheet.
+function replaceOkrRows(ss, data){
+  var sh = ss.getSheetByName('OKR');
+  if(!sh) return;
+  var values = sh.getDataRange().getValues();
+  var periode = String(data.periode).trim();
+  for(var i=values.length-1;i>=1;i--){
+    if(String(values[i][0]).trim() === periode) sh.deleteRow(i+1);
+  }
+  var rows = data.rows || [];
+  rows.forEach(function(r){
+    sh.appendRow([
+      periode, r.obj_id||'', r.objective||'', r.pic||'', r.so_what||'', r.now_what||'',
+      r.kr_id||'', r.key_result||'', r.arah||'', (r.target==null?'':r.target), (r.capaian==null?'':r.capaian), r.satuan||'',
+      r.initiative_id||'', r.initiative||'', r.deadline||'', r.selesai||''
+    ]);
+  });
+}
+
 function sheetToObjects(sheet){
   if(!sheet) return [];
   var rows = sheet.getDataRange().getValues();
@@ -3506,6 +3741,15 @@ function jsonOutput(obj){
 //                  saldo TIDAK disimpan sebagai kolom terpisah — dihitung otomatis di
 //                  dashboard sebagai total di sini dikurangi total top up di sheet "TopUp"
 //                  untuk akun-akun yang di-assign ke agensi tsb)
+// Sheet "OKR" → kolom: periode | obj_id | objective | pic | so_what | now_what | kr_id |
+//                  key_result | arah | target | capaian | satuan | initiative_id |
+//                  initiative | deadline | selesai
+//                  (1 baris per Initiative — kolom objective/key_result DIULANG di tiap
+//                  baris supaya sheet-nya flat & langsung terbaca; kalau KR belum punya
+//                  Initiative atau Objective belum punya KR, tetap 1 baris dgn kolom
+//                  terkait dikosongkan. Sinkron dengan cara "ganti semua baris 1 periode
+//                  sekaligus" tiap kali ada perubahan di menu OKR Divisi — bukan upsert
+//                  per baris — supaya penghapusan Objective/KR/Initiative ikut terbawa.)
 // ============================================================`;
 
 function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
@@ -3781,15 +4025,54 @@ async function pullFromSheet(){
       saveLocalState();
       if(typeof renderTopupPage==='function') renderTopupPage();
     }
+    // ==== OKR DIVISI: sheet "OKR" adalah sumber kebenaran per periode ====
+    // Sheet-nya flat (1 baris per Initiative, kolom Objective/KR diulang) — di sini disusun
+    // ulang jadi struktur Objective > Key Result > Initiative per periode. Periode yang ada
+    // di sheet menimpa data lokal periode tsb (supaya perubahan dari device/browser lain ikut
+    // masuk). Periode lokal yang tidak ada barisnya di sheet (mis. baru dibuat & masih kosong)
+    // tetap dipertahankan, tidak dihapus oleh pull ini.
+    let countOkr=0;
+    if(Array.isArray(json.okr)){
+      const rebuiltPeriods = {};
+      json.okr.forEach(r=>{
+        const periode = String(r.periode||'').trim();
+        if(!periode) return;
+        if(!rebuiltPeriods[periode]) rebuiltPeriods[periode] = { objectives: [] };
+        const objId = String(r.obj_id||'').trim();
+        if(!objId) return; // baris kosong/tanpa objective, tidak ada yang direkonstruksi
+        let obj = rebuiltPeriods[periode].objectives.find(o=> o.id===objId);
+        if(!obj){
+          obj = { id: objId, title: r.objective||'', owner: r.pic||'', krs: [], reflection: { soWhat: r.so_what||'', nowWhat: r.now_what||'' } };
+          rebuiltPeriods[periode].objectives.push(obj);
+        }
+        const krId = String(r.kr_id||'').trim();
+        if(!krId) return;
+        let kr = obj.krs.find(k=> k.id===krId);
+        if(!kr){
+          kr = { id: krId, text: r.key_result||'', target: parseFloat(r.target)||0, current: parseFloat(r.capaian)||0, unit: r.satuan||'', direction: r.arah==='lower'?'lower':'higher', initiatives: [] };
+          obj.krs.push(kr);
+        }
+        const initId = String(r.initiative_id||'').trim();
+        if(!initId) return;
+        if(!kr.initiatives.some(i=> i.id===initId)){
+          kr.initiatives.push({ id: initId, text: r.initiative||'', done: String(r.selesai||'').toLowerCase()==='ya', deadline: r.deadline||'' });
+        }
+      });
+      Object.keys(rebuiltPeriods).forEach(p=>{ OKR_STATE.periods[p] = rebuiltPeriods[p]; countOkr++; });
+      if(!OKR_STATE.periods[OKR_STATE.activePeriod]) OKR_STATE.activePeriod = okrCurrentQuarterLabel();
+      okrEnsurePeriod(OKR_STATE.activePeriod);
+      okrSaveLocalOnly();
+      if(typeof okrRenderAll==='function') okrRenderAll();
+    }
     const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countTu+' top up budget, '+countSaldo+' saldo masuk agensi.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countTu+' top up budget, '+countSaldo+' saldo masuk agensi, '+countOkr+' periode OKR.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countTu+' top up budget, dan '+countSaldo+' saldo masuk agensi dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countTu+' top up budget, '+countSaldo+' saldo masuk agensi, dan '+countOkr+' periode OKR dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
@@ -3934,7 +4217,10 @@ async function pushAllToSheet(){
   for(const s of SALDO_MASUK){
     await pushSaldoMasukRow(s); sent++;
   }
-  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, daftar nama CS, data CS, Top Up Budget, Agensi Akun, dan Saldo Titipan Agensi) ke spreadsheet.';
+  for(const period of Object.keys(OKR_STATE.periods)){
+    await pushOkrPeriodToSheet(period); sent++;
+  }
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, daftar nama CS, data CS, Top Up Budget, Agensi Akun, Saldo Titipan Agensi, dan seluruh periode OKR Divisi) ke spreadsheet.';
   msg.style.color='var(--green)';
 }
 document.getElementById('btnPullSheet').onclick = pullFromSheet;
@@ -6209,7 +6495,7 @@ applyTheme(getSavedTheme());
 })();
 
 /* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
-const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing','topup'];
+const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing','topup','okr'];
 function syncGlobalFilterbarVisibility(pageId){
   const bar = document.querySelector('.global-filterbar');
   if(!bar) return;
@@ -6246,5 +6532,529 @@ document.getElementById('btnGotoIntegrasi').addEventListener('click', () => {
 
 // Set kondisi awal saat halaman pertama kali dimuat (halaman aktif default: overview)
 syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.page || 'overview');
+
+/* ==================================================================
+   OKR DIVISI — Objectives & Key Results
+   Disimpan di localStorage untuk akses instan, DAN disinkronkan ke sheet
+   "OKR" di spreadsheet (kalau URL Apps Script sudah diisi) supaya data
+   OKR ikut aman & konsisten di semua device/browser seperti modul lain.
+   Seluruh isi 1 periode (semua Objective/KR/Initiative/Refleksi-nya)
+   dikirim sebagai satu blok JSON per periode — bukan dipecah per baris —
+   karena strukturnya berlapis.
+   ================================================================== */
+const OKR_KEY = 'dashboardOkrState_v1';
+
+function okrCurrentQuarterLabel(){
+  const d = new Date();
+  const q = Math.floor(d.getMonth()/3)+1;
+  return d.getFullYear()+'-Q'+q;
+}
+
+function okrLoad(){
+  let state = null;
+  try{ state = JSON.parse(localStorage.getItem(OKR_KEY) || 'null'); }catch(e){ state = null; }
+  if(!state || typeof state !== 'object'){
+    state = { activePeriod: okrCurrentQuarterLabel(), periods: {} };
+  }
+  if(!state.periods) state.periods = {};
+  if(!state.activePeriod) state.activePeriod = okrCurrentQuarterLabel();
+  if(!state.periods[state.activePeriod]) state.periods[state.activePeriod] = { objectives: [] };
+  return state;
+}
+function okrSaveLocalOnly(){
+  try{ localStorage.setItem(OKR_KEY, JSON.stringify(OKR_STATE)); }catch(e){ console.warn('Gagal menyimpan data OKR:', e); }
+}
+function okrSave(){
+  okrSaveLocalOnly();
+  // Kirim juga ke spreadsheet (fire-and-forget, tidak menunggu/blokir UI) supaya OKR
+  // ikut tersinkron seperti modul lain. Kalau URL Apps Script belum diisi atau koneksi
+  // gagal, pushOneToSheet cukup diam-diam gagal — data tetap aman di localStorage dan
+  // akan tersinkron lagi otomatis begitu perubahan berikutnya disimpan.
+  pushOkrPeriodToSheet(OKR_STATE.activePeriod);
+}
+/* Ratakan 1 periode OKR jadi daftar baris flat (1 baris per Initiative), dengan kolom
+   Objective & Key Result diulang di tiap baris — supaya sheet-nya langsung terbaca
+   tanpa perlu buka dashboard. KR tanpa Initiative dan Objective tanpa KR tetap dapat
+   1 baris (kolom yang tidak relevan dikosongkan), supaya datanya tidak hilang saat
+   di-sync ke spreadsheet. */
+function okrFlattenPeriod(period){
+  const data = OKR_STATE.periods[period] || { objectives: [] };
+  const objs = data.objectives || [];
+  const rows = [];
+  const blankRow = ()=>({ obj_id:'', objective:'', pic:'', so_what:'', now_what:'', kr_id:'', key_result:'', arah:'', target:'', capaian:'', satuan:'', initiative_id:'', initiative:'', deadline:'', selesai:'' });
+  objs.forEach(obj=>{
+    const refl = obj.reflection || {};
+    const objBase = { obj_id: obj.id, objective: obj.title||'', pic: obj.owner||'', so_what: refl.soWhat||'', now_what: refl.nowWhat||'' };
+    const krs = obj.krs || [];
+    if(!krs.length){ rows.push(Object.assign(blankRow(), objBase)); return; }
+    krs.forEach(kr=>{
+      const krBase = Object.assign({}, objBase, { kr_id: kr.id, key_result: kr.text||'', arah: kr.direction==='lower'?'lower':'higher', target: kr.target, capaian: kr.current, satuan: kr.unit||'' });
+      const inits = kr.initiatives || [];
+      if(!inits.length){ rows.push(Object.assign(blankRow(), krBase)); return; }
+      inits.forEach(ini=>{
+        rows.push(Object.assign(blankRow(), krBase, { initiative_id: ini.id, initiative: ini.text||'', deadline: ini.deadline||'', selesai: ini.done?'ya':'tidak' }));
+      });
+    });
+  });
+  return rows;
+}
+function pushOkrPeriodToSheet(period){
+  if(!period || !OKR_STATE.periods[period]) return;
+  return pushOneToSheet({ type:'okr', periode: period, rows: okrFlattenPeriod(period) });
+}
+let OKR_STATE = okrLoad();
+
+function okrGenId(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function okrEnsurePeriod(p){
+  if(!OKR_STATE.periods[p]) OKR_STATE.periods[p] = { objectives: [] };
+  return OKR_STATE.periods[p];
+}
+function okrActivePeriodData(){ return okrEnsurePeriod(OKR_STATE.activePeriod); }
+
+/* Skor 1 Key Result: dibatasi 0–1.5 (biar stretch goal tetap kelihatan >100%),
+   tapi bar visual dibatasi maksimal 100% supaya tidak meluber.
+   Mendukung 2 arah:
+   - 'higher' (default): semakin besar capaian, semakin bagus (leads, CTR, closing, dll)
+   - 'lower': semakin kecil capaian, semakin bagus (CPL, CPA, biaya, dll) — rumus dibalik */
+function okrKrScore(kr){
+  const target = Number(kr.target);
+  const current = Number(kr.current);
+  if(!isFinite(target) || target === 0) return 0;
+  if(kr.direction === 'lower'){
+    if(!isFinite(current)) return 0;
+    if(current <= 0) return 1.5; // biaya 0 = capaian terbaik
+    const raw = target / current;
+    return Math.max(0, Math.min(raw, 1.5));
+  }
+  const raw = current / target;
+  return Math.max(0, Math.min(raw, 1.5));
+}
+function okrObjScore(obj){
+  if(!obj.krs || !obj.krs.length) return 0;
+  const scores = obj.krs.map(okrKrScore);
+  const capped = scores.map(s=> Math.min(s,1)); // rata-rata objective dihitung dari capaian aktual, cap di 100% per KR
+  return capped.reduce((a,b)=>a+b,0) / capped.length;
+}
+function okrScoreClass(pct){ // pct 0-100
+  if(pct >= 70) return 'good';
+  if(pct >= 40) return 'warn';
+  return 'bad';
+}
+
+/* ---------- Render: pill periode ---------- */
+function okrRenderPeriodBar(){
+  const wrap = document.getElementById('okrPeriodBar');
+  if(!wrap) return;
+  const periods = Object.keys(OKR_STATE.periods).sort();
+  wrap.innerHTML = periods.map(p=>
+    '<div class="okr-period-pill'+(p===OKR_STATE.activePeriod?' active':'')+'" data-period="'+p+'">'+p+'</div>'
+  ).join('') + '<div class="okr-add-period" id="okrAddPeriodBtn">+ Periode Baru</div>';
+
+  wrap.querySelectorAll('.okr-period-pill').forEach(pill=>{
+    pill.addEventListener('click', ()=>{
+      OKR_STATE.activePeriod = pill.dataset.period;
+      okrSave();
+      okrRenderAll();
+    });
+  });
+  const addBtn = document.getElementById('okrAddPeriodBtn');
+  if(addBtn) addBtn.addEventListener('click', ()=>{
+    const val = prompt('Nama periode baru (format bebas, contoh: 2026-Q4 atau "Tahunan 2027"):', okrCurrentQuarterLabel());
+    if(!val) return;
+    const clean = val.trim();
+    if(!clean) return;
+    okrEnsurePeriod(clean);
+    OKR_STATE.activePeriod = clean;
+    okrSave();
+    okrRenderAll();
+  });
+}
+
+/* ---------- Render: KPI ringkasan ---------- */
+function okrRenderKpi(){
+  const data = okrActivePeriodData();
+  const objs = data.objectives || [];
+  let allKrScores = [];
+  objs.forEach(o=> (o.krs||[]).forEach(kr=> allKrScores.push(okrKrScore(kr))));
+
+  const avgObjScore = objs.length ? (objs.reduce((a,o)=> a+okrObjScore(o), 0) / objs.length) : 0;
+  const done = allKrScores.filter(s=> s>=1).length;
+  const risk = allKrScores.filter(s=> s<0.4).length;
+
+  document.getElementById('okrKpiScore').textContent = Math.round(avgObjScore*100) + '%';
+  document.getElementById('okrKpiObj').textContent = objs.length;
+  document.getElementById('okrKpiDone').textContent = done;
+  document.getElementById('okrKpiRisk').textContent = risk;
+}
+
+/* ---------- Render: daftar objective + key results ---------- */
+function okrRenderObjectives(){
+  const list = document.getElementById('okrObjList');
+  if(!list) return;
+  const data = okrActivePeriodData();
+  const objs = data.objectives || [];
+
+  if(!objs.length){
+    list.innerHTML = '<div class="okr-empty"><b>Belum ada Objective di periode ini</b>Klik "+ Objective Baru" untuk mulai menyusun target divisi.</div>';
+    return;
+  }
+
+  list.innerHTML = objs.map(obj=>{
+    const score = okrObjScore(obj);
+    const pct = Math.round(score*100);
+    const cls = okrScoreClass(pct);
+    const krsHtml = (obj.krs||[]).length ? (obj.krs||[]).map(kr=>{
+      const krScoreRaw = okrKrScore(kr);
+      const krPctDisplay = Math.round(krScoreRaw*100); // bisa >100 utk stretch
+      const krPctBar = Math.min(krPctDisplay, 100);
+      const krCls = okrScoreClass(Math.min(krPctDisplay,100));
+      const unit = kr.unit ? (' '+kr.unit) : '';
+      const dirTag = kr.direction==='lower' ? '<span class="okr-dir-tag">↓ makin kecil makin baik</span>' : '';
+      const inits = kr.initiatives || [];
+      const initsHtml = inits.map(ini=>
+        '<div class="okr-init-row">'+
+          '<div class="okr-init-check'+(ini.done?' done':'')+'" data-act="toggle-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'" data-init="'+ini.id+'">✓</div>'+
+          '<div class="okr-init-text'+(ini.done?' done':'')+'">'+escapeHtmlOkr(ini.text)+'</div>'+
+          okrInitDeadlineBadge(ini)+
+          '<div class="okr-init-actions">'+
+            '<button class="okr-kr-mini-btn" data-act="edit-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'" data-init="'+ini.id+'" title="Edit">✎</button>'+
+            '<button class="okr-kr-mini-btn" data-act="del-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'" data-init="'+ini.id+'" title="Hapus">🗑</button>'+
+          '</div>'+
+        '</div>'
+      ).join('');
+      return '<div class="okr-kr-row">'+
+        '<div class="okr-kr-top">'+
+          '<div class="okr-kr-text">'+escapeHtmlOkr(kr.text)+'</div>'+
+          '<div class="okr-kr-actions">'+
+            '<button class="okr-kr-mini-btn" data-act="edit-kr" data-obj="'+obj.id+'" data-kr="'+kr.id+'" title="Edit">✎</button>'+
+            '<button class="okr-kr-mini-btn" data-act="del-kr" data-obj="'+obj.id+'" data-kr="'+kr.id+'" title="Hapus">🗑</button>'+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:10px;">'+
+          '<div class="okr-kr-track" style="flex:1;"><div class="okr-kr-fill '+krCls+'" style="width:'+krPctBar+'%;"></div></div>'+
+          '<div class="okr-kr-pct" style="color:var(--'+(krCls==='good'?'green':krCls==='warn'?'yellow':'red')+');">'+krPctDisplay+'%</div>'+
+        '</div>'+
+        '<div class="okr-kr-nums">Capaian: <b>'+fmtOkrNum(kr.current)+unit+'</b> dari target <b>'+fmtOkrNum(kr.target)+unit+'</b>'+dirTag+'</div>'+
+        '<div class="okr-init-wrap">'+
+          initsHtml+
+          '<button class="okr-add-init-btn" data-act="add-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'">+ Tambah Initiative</button>'+
+        '</div>'+
+      '</div>';
+    }).join('') : '<div class="muted-note" style="padding:6px 0 2px;">Belum ada Key Result. Tambahkan minimal 1 untuk mulai mengukur objective ini.</div>';
+
+    const refl = obj.reflection || {};
+    const hasRefl = !!(refl.soWhat || refl.nowWhat);
+    const reflBlock = hasRefl ?
+      '<div class="okr-refl-block">'+
+        '<div class="okr-refl-title">🔄 Refleksi Akhir Periode</div>'+
+        '<div class="okr-refl-item"><div class="okr-refl-tag what">WHAT</div><div class="okr-refl-text">'+escapeHtmlOkr(okrWhatText(obj))+'</div></div>'+
+        '<div class="okr-refl-item"><div class="okr-refl-tag sowhat">SO WHAT</div><div class="okr-refl-text'+(refl.soWhat?'':' muted-note')+'">'+escapeHtmlOkr(refl.soWhat||'Belum diisi')+'</div></div>'+
+        '<div class="okr-refl-item"><div class="okr-refl-tag nowwhat">NOW WHAT</div><div class="okr-refl-text'+(refl.nowWhat?'':' muted-note')+'">'+escapeHtmlOkr(refl.nowWhat||'Belum diisi')+'</div></div>'+
+      '</div>' : '';
+
+    return '<div class="okr-obj-card">'+
+      '<div class="okr-obj-head">'+
+        '<div style="flex:1;min-width:180px;">'+
+          '<div class="okr-obj-title">'+escapeHtmlOkr(obj.title)+'</div>'+
+          (obj.owner ? '<div class="okr-obj-owner">PIC: <b>'+escapeHtmlOkr(obj.owner)+'</b></div>' : '')+
+        '</div>'+
+        '<div class="okr-score-chip '+cls+'">'+pct+'%<span class="sub">skor</span></div>'+
+        '<div class="okr-obj-actions">'+
+          '<button class="okr-refl-btn'+(hasRefl?' filled':'')+'" data-act="reflect-obj" data-obj="'+obj.id+'">🔄 Refleksi</button>'+
+          '<button class="okr-icon-btn" data-act="edit-obj" data-obj="'+obj.id+'" title="Edit Objective">✎</button>'+
+          '<button class="okr-icon-btn danger" data-act="del-obj" data-obj="'+obj.id+'" title="Hapus Objective">🗑</button>'+
+        '</div>'+
+      '</div>'+
+      krsHtml+
+      '<button class="okr-add-kr-btn" data-act="add-kr" data-obj="'+obj.id+'">+ Tambah Key Result</button>'+
+      reflBlock+
+    '</div>';
+  }).join('');
+
+  // Bind aksi
+  list.querySelectorAll('[data-act="edit-obj"]').forEach(b=> b.addEventListener('click', ()=> okrOpenObjModal('edit', b.dataset.obj)));
+  list.querySelectorAll('[data-act="del-obj"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteObjective(b.dataset.obj)));
+  list.querySelectorAll('[data-act="add-kr"]').forEach(b=> b.addEventListener('click', ()=> okrOpenKrModal('add', b.dataset.obj, null)));
+  list.querySelectorAll('[data-act="edit-kr"]').forEach(b=> b.addEventListener('click', ()=> okrOpenKrModal('edit', b.dataset.obj, b.dataset.kr)));
+  list.querySelectorAll('[data-act="del-kr"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteKr(b.dataset.obj, b.dataset.kr)));
+  list.querySelectorAll('[data-act="add-init"]').forEach(b=> b.addEventListener('click', ()=> okrOpenInitModal('add', b.dataset.obj, b.dataset.kr, null)));
+  list.querySelectorAll('[data-act="edit-init"]').forEach(b=> b.addEventListener('click', ()=> okrOpenInitModal('edit', b.dataset.obj, b.dataset.kr, b.dataset.init)));
+  list.querySelectorAll('[data-act="del-init"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteInit(b.dataset.obj, b.dataset.kr, b.dataset.init)));
+  list.querySelectorAll('[data-act="toggle-init"]').forEach(b=> b.addEventListener('click', ()=> okrToggleInit(b.dataset.obj, b.dataset.kr, b.dataset.init)));
+  list.querySelectorAll('[data-act="reflect-obj"]').forEach(b=> b.addEventListener('click', ()=> okrOpenReflModal(b.dataset.obj)));
+}
+
+/* Ringkasan "What" otomatis dari skor & Key Result — bukan diketik manual,
+   supaya bagian What selalu konsisten dengan data (fakta), bukan opini. */
+function okrWhatText(obj){
+  const krs = obj.krs || [];
+  if(!krs.length) return 'Belum ada Key Result yang diukur pada Objective ini.';
+  const pct = Math.round(okrObjScore(obj)*100);
+  const done = krs.filter(kr=> okrKrScore(kr) >= 1).length;
+  const risk = krs.filter(kr=> okrKrScore(kr) < 0.4).length;
+  let parts = ['Skor akhir objective ini '+pct+'% dari '+krs.length+' Key Result ('+done+' tercapai penuh'+(risk?', '+risk+' jauh dari target':'')+').'];
+  return parts.join(' ');
+}
+
+/* ---------- Modal: Refleksi (What / So What / Now What) ---------- */
+let okrReflObjId = null;
+function okrOpenReflModal(objId){
+  okrReflObjId = objId;
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+  if(!obj) return;
+  const refl = obj.reflection || {};
+  document.getElementById('okrReflWhatBox').textContent = okrWhatText(obj);
+  document.getElementById('okrReflSoWhatInput').value = refl.soWhat || '';
+  document.getElementById('okrReflNowWhatInput').value = refl.nowWhat || '';
+  document.getElementById('okrReflModalOverlay').style.display = 'flex';
+  document.getElementById('okrReflSoWhatInput').focus();
+}
+function okrCloseReflModal(){ document.getElementById('okrReflModalOverlay').style.display = 'none'; }
+function okrSaveReflFromModal(){
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===okrReflObjId);
+  if(!obj) return;
+  obj.reflection = {
+    soWhat: document.getElementById('okrReflSoWhatInput').value.trim(),
+    nowWhat: document.getElementById('okrReflNowWhatInput').value.trim()
+  };
+  okrSave();
+  okrCloseReflModal();
+  okrRenderAll();
+}
+
+function fmtOkrNum(n){
+  n = Number(n);
+  if(!isFinite(n)) return '0';
+  return n.toLocaleString('id-ID', {maximumFractionDigits:2});
+}
+function escapeHtmlOkr(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function okrTodayMidnight(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function okrInitDeadlineBadge(ini){
+  if(!ini.deadline) return '';
+  const d = new Date(ini.deadline+'T00:00:00');
+  if(isNaN(d.getTime())) return '';
+  const label = d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'});
+  let cls = 'normal';
+  if(ini.done){
+    cls = 'done';
+  } else {
+    const diffDays = Math.round((d - okrTodayMidnight()) / 86400000);
+    if(diffDays < 0) cls = 'overdue';
+    else if(diffDays <= 3) cls = 'soon';
+  }
+  return '<span class="okr-init-deadline '+cls+'">📅 '+label+'</span>';
+}
+
+/* Banner peringatan initiative yang sudah lewat deadline & belum selesai,
+   supaya kelihatan tanpa harus buka satu-satu Objective. */
+function okrRenderDeadlineBanner(){
+  const el = document.getElementById('okrDeadlineBanner');
+  if(!el) return;
+  const data = okrActivePeriodData();
+  const today = okrTodayMidnight();
+  const overdue = [];
+  (data.objectives||[]).forEach(obj=> (obj.krs||[]).forEach(kr=> (kr.initiatives||[]).forEach(ini=>{
+    if(ini.done || !ini.deadline) return;
+    const d = new Date(ini.deadline+'T00:00:00');
+    if(!isNaN(d.getTime()) && d < today) overdue.push(ini.text);
+  })));
+  if(!overdue.length){ el.style.display = 'none'; el.innerHTML=''; return; }
+  el.style.display = 'flex';
+  const preview = overdue.slice(0,3).map(t=> escapeHtmlOkr(t)).join(' · ');
+  el.innerHTML = '⏰ <div><b>'+overdue.length+' Initiative</b> sudah lewat deadline dan belum selesai: '+preview+(overdue.length>3?' …':'')+'</div>';
+}
+
+function okrRenderAll(){
+  okrRenderPeriodBar();
+  okrRenderKpi();
+  okrRenderDeadlineBanner();
+  okrRenderObjectives();
+}
+
+/* ---------- Modal: Objective ---------- */
+let okrObjModalMode = 'add';
+let okrObjModalEditId = null;
+function okrOpenObjModal(mode, id){
+  okrObjModalMode = mode;
+  okrObjModalEditId = id || null;
+  document.getElementById('okrObjModalTitle').textContent = mode==='edit' ? 'Edit Objective' : 'Objective Baru';
+  let title = '', owner = '';
+  if(mode==='edit'){
+    const obj = okrActivePeriodData().objectives.find(o=> o.id===id);
+    if(obj){ title = obj.title; owner = obj.owner||''; }
+  }
+  document.getElementById('okrObjTitleInput').value = title;
+  document.getElementById('okrObjOwnerInput').value = owner;
+  document.getElementById('okrObjModalOverlay').style.display = 'flex';
+  document.getElementById('okrObjTitleInput').focus();
+}
+function okrCloseObjModal(){ document.getElementById('okrObjModalOverlay').style.display = 'none'; }
+
+function okrSaveObjectiveFromModal(){
+  const title = document.getElementById('okrObjTitleInput').value.trim();
+  const owner = document.getElementById('okrObjOwnerInput').value.trim();
+  if(!title){ alert('Objective tidak boleh kosong.'); return; }
+  const data = okrActivePeriodData();
+  if(okrObjModalMode==='edit' && okrObjModalEditId){
+    const obj = data.objectives.find(o=> o.id===okrObjModalEditId);
+    if(obj){ obj.title = title; obj.owner = owner; }
+  } else {
+    data.objectives.push({ id: okrGenId('obj'), title, owner, krs: [] });
+  }
+  okrSave();
+  okrCloseObjModal();
+  okrRenderAll();
+}
+function okrDeleteObjective(id){
+  const data = okrActivePeriodData();
+  const obj = data.objectives.find(o=> o.id===id);
+  if(!obj) return;
+  if(!confirm('Hapus Objective "'+obj.title+'" beserta semua Key Result-nya?\n\nTindakan ini tidak bisa dibatalkan.')) return;
+  data.objectives = data.objectives.filter(o=> o.id!==id);
+  okrSave();
+  okrRenderAll();
+}
+
+/* ---------- Modal: Key Result ---------- */
+let okrKrModalMode = 'add';
+let okrKrModalObjId = null;
+let okrKrModalEditId = null;
+function okrOpenKrModal(mode, objId, krId){
+  okrKrModalMode = mode;
+  okrKrModalObjId = objId;
+  okrKrModalEditId = krId || null;
+  document.getElementById('okrKrModalTitle').textContent = mode==='edit' ? 'Edit Key Result' : 'Key Result Baru';
+  let text='', target='', current='', unit='', direction='higher';
+  if(mode==='edit'){
+    const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+    const kr = obj && obj.krs.find(k=> k.id===krId);
+    if(kr){ text=kr.text; target=kr.target; current=kr.current; unit=kr.unit||''; direction=kr.direction||'higher'; }
+  }
+  document.getElementById('okrKrTextInput').value = text;
+  document.getElementById('okrKrDirectionInput').value = direction;
+  document.getElementById('okrKrTargetInput').value = target;
+  document.getElementById('okrKrCurrentInput').value = current;
+  document.getElementById('okrKrUnitInput').value = unit;
+  document.getElementById('okrKrModalOverlay').style.display = 'flex';
+  document.getElementById('okrKrTextInput').focus();
+}
+function okrCloseKrModal(){ document.getElementById('okrKrModalOverlay').style.display = 'none'; }
+
+function okrSaveKrFromModal(){
+  const text = document.getElementById('okrKrTextInput').value.trim();
+  const direction = document.getElementById('okrKrDirectionInput').value === 'lower' ? 'lower' : 'higher';
+  const target = parseIndoNumber(document.getElementById('okrKrTargetInput').value);
+  const current = parseIndoNumber(document.getElementById('okrKrCurrentInput').value);
+  const unit = document.getElementById('okrKrUnitInput').value.trim();
+  if(!text){ alert('Deskripsi Key Result tidak boleh kosong.'); return; }
+  if(target===null || target===0){ alert('Target harus diisi dengan angka lebih dari 0.'); return; }
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===okrKrModalObjId);
+  if(!obj) return;
+  if(okrKrModalMode==='edit' && okrKrModalEditId){
+    const kr = obj.krs.find(k=> k.id===okrKrModalEditId);
+    if(kr){ kr.text=text; kr.target=target; kr.current=current||0; kr.unit=unit; kr.direction=direction; }
+  } else {
+    obj.krs.push({ id: okrGenId('kr'), text, target, current: current||0, unit, direction });
+  }
+  okrSave();
+  okrCloseKrModal();
+  okrRenderAll();
+}
+function okrDeleteKr(objId, krId){
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+  if(!obj) return;
+  const kr = obj.krs.find(k=> k.id===krId);
+  if(!kr) return;
+  if(!confirm('Hapus Key Result "'+kr.text+'"?')) return;
+  obj.krs = obj.krs.filter(k=> k.id!==krId);
+  okrSave();
+  okrRenderAll();
+}
+
+/* ---------- Modal: Initiative ---------- */
+let okrInitModalMode = 'add';
+let okrInitModalObjId = null;
+let okrInitModalKrId = null;
+let okrInitModalEditId = null;
+function okrFindKr(objId, krId){
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+  if(!obj) return null;
+  return obj.krs.find(k=> k.id===krId) || null;
+}
+function okrOpenInitModal(mode, objId, krId, initId){
+  okrInitModalMode = mode;
+  okrInitModalObjId = objId;
+  okrInitModalKrId = krId;
+  okrInitModalEditId = initId || null;
+  document.getElementById('okrInitModalTitle').textContent = mode==='edit' ? 'Edit Initiative' : 'Initiative Baru';
+  let text = '', deadline = '';
+  if(mode==='edit'){
+    const kr = okrFindKr(objId, krId);
+    const ini = kr && (kr.initiatives||[]).find(i=> i.id===initId);
+    if(ini){ text = ini.text; deadline = ini.deadline || ''; }
+  }
+  document.getElementById('okrInitTextInput').value = text;
+  document.getElementById('okrInitDeadlineInput').value = deadline;
+  document.getElementById('okrInitModalOverlay').style.display = 'flex';
+  document.getElementById('okrInitTextInput').focus();
+}
+function okrCloseInitModal(){ document.getElementById('okrInitModalOverlay').style.display = 'none'; }
+
+function okrSaveInitFromModal(){
+  const text = document.getElementById('okrInitTextInput').value.trim();
+  const deadline = document.getElementById('okrInitDeadlineInput').value || '';
+  if(!text){ alert('Kegiatan/Initiative tidak boleh kosong.'); return; }
+  const kr = okrFindKr(okrInitModalObjId, okrInitModalKrId);
+  if(!kr) return;
+  if(!kr.initiatives) kr.initiatives = [];
+  if(okrInitModalMode==='edit' && okrInitModalEditId){
+    const ini = kr.initiatives.find(i=> i.id===okrInitModalEditId);
+    if(ini){ ini.text = text; ini.deadline = deadline; }
+  } else {
+    kr.initiatives.push({ id: okrGenId('init'), text, done: false, deadline });
+  }
+  okrSave();
+  okrCloseInitModal();
+  okrRenderAll();
+}
+function okrDeleteInit(objId, krId, initId){
+  const kr = okrFindKr(objId, krId);
+  if(!kr) return;
+  const ini = (kr.initiatives||[]).find(i=> i.id===initId);
+  if(!ini) return;
+  if(!confirm('Hapus initiative "'+ini.text+'"?')) return;
+  kr.initiatives = kr.initiatives.filter(i=> i.id!==initId);
+  okrSave();
+  okrRenderAll();
+}
+function okrToggleInit(objId, krId, initId){
+  const kr = okrFindKr(objId, krId);
+  if(!kr) return;
+  const ini = (kr.initiatives||[]).find(i=> i.id===initId);
+  if(!ini) return;
+  ini.done = !ini.done;
+  okrSave();
+  okrRenderAll();
+}
+
+/* ---------- Bind tombol statis & init ---------- */
+document.getElementById('btnAddObjective').addEventListener('click', ()=> okrOpenObjModal('add', null));
+document.getElementById('okrObjCancelBtn').addEventListener('click', okrCloseObjModal);
+document.getElementById('okrObjSaveBtn').addEventListener('click', okrSaveObjectiveFromModal);
+document.getElementById('okrKrCancelBtn').addEventListener('click', okrCloseKrModal);
+document.getElementById('okrKrSaveBtn').addEventListener('click', okrSaveKrFromModal);
+document.getElementById('okrObjModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrObjModalOverlay') okrCloseObjModal(); });
+document.getElementById('okrKrModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrKrModalOverlay') okrCloseKrModal(); });
+document.getElementById('okrInitCancelBtn').addEventListener('click', okrCloseInitModal);
+document.getElementById('okrInitSaveBtn').addEventListener('click', okrSaveInitFromModal);
+document.getElementById('okrInitModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrInitModalOverlay') okrCloseInitModal(); });
+document.getElementById('okrReflCancelBtn').addEventListener('click', okrCloseReflModal);
+document.getElementById('okrReflSaveBtn').addEventListener('click', okrSaveReflFromModal);
+document.getElementById('okrReflModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrReflModalOverlay') okrCloseReflModal(); });
+
+okrRenderAll();
 </script>
 </body></html>
