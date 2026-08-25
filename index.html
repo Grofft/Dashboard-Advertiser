@@ -244,6 +244,20 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .okr-init-row{flex-wrap:wrap;}
 
 .okr-dir-tag{display:inline-block;margin-left:7px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--panel-2);color:var(--blue);white-space:nowrap;}
+
+/* Collapse/expand Objective card + filter toolbar (biar tetap enak dilihat pas OKR-nya banyak) */
+.okr-filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.okr-filter-select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Roboto',sans-serif;cursor:pointer;}
+.okr-expand-btn{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Roboto',sans-serif;}
+.okr-expand-btn:hover{color:var(--text);border-color:var(--green);}
+.okr-obj-toggle{width:18px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:center;padding-top:3px;color:var(--muted);font-size:10.5px;cursor:pointer;user-select:none;}
+.okr-obj-summary{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:11px;color:var(--muted);flex-wrap:wrap;}
+.okr-obj-mini-track{height:5px;width:110px;border-radius:4px;background:var(--panel-2);overflow:hidden;flex-shrink:0;}
+.okr-obj-mini-fill{height:100%;border-radius:4px;}
+.okr-obj-mini-fill.good{background:var(--green);}
+.okr-obj-mini-fill.warn{background:var(--yellow);}
+.okr-obj-mini-fill.bad{background:var(--red);}
+.okr-obj-body{margin-top:14px;}
 .okr-init-deadline{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-left:6px;}
 .okr-init-deadline.normal{background:var(--panel-2);color:var(--muted);}
 .okr-init-deadline.soon{background:var(--warn-bg);color:var(--yellow);}
@@ -1368,6 +1382,19 @@ try{
   <div class="section-header">
     <h2>Daftar Objective</h2>
     <button class="btn" id="btnAddObjective">+ Objective Baru</button>
+  </div>
+
+  <div class="okr-filter-bar">
+    <select id="okrFilterPicSelect" class="okr-filter-select"><option value="">Semua PIC</option></select>
+    <select id="okrFilterStatusSelect" class="okr-filter-select">
+      <option value="all">Semua Status</option>
+      <option value="good">🟢 On Track</option>
+      <option value="warn">🟡 Perlu Perhatian</option>
+      <option value="bad">🔴 Berisiko</option>
+    </select>
+    <div style="flex:1;"></div>
+    <button class="okr-expand-btn" id="btnOkrExpandAll" type="button">⤢ Buka Semua</button>
+    <button class="okr-expand-btn" id="btnOkrCollapseAll" type="button">⤡ Tutup Semua</button>
   </div>
 
   <div id="okrObjList"></div>
@@ -6544,6 +6571,12 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
    ================================================================== */
 const OKR_KEY = 'dashboardOkrState_v1';
 
+/* Status buka/tutup card Objective (UI-only, tidak ikut disimpan/disinkron) & filter tampilan.
+   null = belum diinisialisasi utk periode aktif saat ini (diisi otomatis saat render pertama). */
+let OKR_UI_COLLAPSED = null;
+let okrFilterPic = '';
+let okrFilterStatus = 'all';
+
 function okrCurrentQuarterLabel(){
   const d = new Date();
   const q = Math.floor(d.getMonth()/3)+1;
@@ -6654,6 +6687,7 @@ function okrRenderPeriodBar(){
   wrap.querySelectorAll('.okr-period-pill').forEach(pill=>{
     pill.addEventListener('click', ()=>{
       OKR_STATE.activePeriod = pill.dataset.period;
+      OKR_UI_COLLAPSED = null; okrFilterPic=''; okrFilterStatus='all';
       okrSave();
       okrRenderAll();
     });
@@ -6666,6 +6700,7 @@ function okrRenderPeriodBar(){
     if(!clean) return;
     okrEnsurePeriod(clean);
     OKR_STATE.activePeriod = clean;
+    OKR_UI_COLLAPSED = null; okrFilterPic=''; okrFilterStatus='all';
     okrSave();
     okrRenderAll();
   });
@@ -6688,15 +6723,60 @@ function okrRenderKpi(){
   document.getElementById('okrKpiRisk').textContent = risk;
 }
 
+/* Ringkasan cepat 1 Objective (dipakai di header card, biar kelihatan tanpa harus dibuka) */
+function okrObjSummary(obj){
+  const krs = obj.krs || [];
+  const done = krs.filter(kr=> okrKrScore(kr) >= 1).length;
+  const risk = krs.filter(kr=> okrKrScore(kr) < 0.4).length;
+  return { total: krs.length, done: done, risk: risk };
+}
+
+/* Isi ulang dropdown filter PIC berdasarkan daftar Objective di periode aktif saat ini.
+   Kalau PIC yang lagi difilter ternyata sudah tidak ada Objective-nya lagi di periode ini
+   (mis. abis ganti periode), filter di-reset ke "Semua PIC" biar tidak nampilin kosong. */
+function okrPopulatePicFilter(objs){
+  const sel = document.getElementById('okrFilterPicSelect');
+  if(!sel) return;
+  const owners = Array.from(new Set(objs.map(o=> (o.owner||'').trim()).filter(Boolean))).sort();
+  if(okrFilterPic && !owners.includes(okrFilterPic)) okrFilterPic = '';
+  sel.innerHTML = '<option value="">Semua PIC</option>' + owners.map(o=>
+    '<option value="'+escapeHtmlOkr(o)+'"'+(o===okrFilterPic?' selected':'')+'>'+escapeHtmlOkr(o)+'</option>'
+  ).join('');
+}
+
 /* ---------- Render: daftar objective + key results ---------- */
 function okrRenderObjectives(){
   const list = document.getElementById('okrObjList');
   if(!list) return;
   const data = okrActivePeriodData();
-  const objs = data.objectives || [];
+  const allObjs = data.objectives || [];
+
+  if(!allObjs.length){
+    okrPopulatePicFilter(allObjs);
+    list.innerHTML = '<div class="okr-empty"><b>Belum ada Objective di periode ini</b>Klik "+ Objective Baru" untuk mulai menyusun target divisi.</div>';
+    return;
+  }
+
+  // Status buka/tutup diinisialisasi sekali per periode: kalau Objective-nya banyak (>2),
+  // defaultnya semua ditutup dulu biar halaman tidak jadi scroll panjang — Objective yang
+  // baru ditambahkan setelahnya otomatis kebuka duluan supaya langsung bisa diisi.
+  if(OKR_UI_COLLAPSED === null){
+    OKR_UI_COLLAPSED = allObjs.length > 2 ? new Set(allObjs.map(o=> o.id)) : new Set();
+  }
+
+  okrPopulatePicFilter(allObjs);
+
+  const objs = allObjs.filter(obj=>{
+    if(okrFilterPic && (obj.owner||'').trim() !== okrFilterPic) return false;
+    if(okrFilterStatus !== 'all'){
+      const pctF = Math.round(okrObjScore(obj)*100);
+      if(okrScoreClass(pctF) !== okrFilterStatus) return false;
+    }
+    return true;
+  });
 
   if(!objs.length){
-    list.innerHTML = '<div class="okr-empty"><b>Belum ada Objective di periode ini</b>Klik "+ Objective Baru" untuk mulai menyusun target divisi.</div>';
+    list.innerHTML = '<div class="okr-empty"><b>Tidak ada Objective yang cocok dengan filter</b>Coba ubah atau reset filter PIC/status di atas.</div>';
     return;
   }
 
@@ -6704,6 +6784,8 @@ function okrRenderObjectives(){
     const score = okrObjScore(obj);
     const pct = Math.round(score*100);
     const cls = okrScoreClass(pct);
+    const summary = okrObjSummary(obj);
+    const collapsed = OKR_UI_COLLAPSED.has(obj.id);
     const krsHtml = (obj.krs||[]).length ? (obj.krs||[]).map(kr=>{
       const krScoreRaw = okrKrScore(kr);
       const krPctDisplay = Math.round(krScoreRaw*100); // bisa >100 utk stretch
@@ -6753,11 +6835,20 @@ function okrRenderObjectives(){
         '<div class="okr-refl-item"><div class="okr-refl-tag nowwhat">NOW WHAT</div><div class="okr-refl-text'+(refl.nowWhat?'':' muted-note')+'">'+escapeHtmlOkr(refl.nowWhat||'Belum diisi')+'</div></div>'+
       '</div>' : '';
 
+    const summaryLine = summary.total ?
+      ('<div class="okr-obj-summary">'+
+        '<div class="okr-obj-mini-track"><div class="okr-obj-mini-fill '+cls+'" style="width:'+Math.min(pct,100)+'%;"></div></div>'+
+        '<span>'+summary.total+' KR'+(summary.done?' · '+summary.done+' tercapai':'')+(summary.risk?' · '+summary.risk+' berisiko':'')+'</span>'+
+      '</div>') :
+      '<div class="okr-obj-summary" style="font-style:italic;">Belum ada Key Result</div>';
+
     return '<div class="okr-obj-card">'+
       '<div class="okr-obj-head">'+
-        '<div style="flex:1;min-width:180px;">'+
+        '<div class="okr-obj-toggle" data-act="toggle-collapse" data-obj="'+obj.id+'" title="'+(collapsed?'Buka':'Tutup')+'">'+(collapsed?'▸':'▾')+'</div>'+
+        '<div style="flex:1;min-width:180px;cursor:pointer;" data-act="toggle-collapse" data-obj="'+obj.id+'">'+
           '<div class="okr-obj-title">'+escapeHtmlOkr(obj.title)+'</div>'+
           (obj.owner ? '<div class="okr-obj-owner">PIC: <b>'+escapeHtmlOkr(obj.owner)+'</b></div>' : '')+
+          summaryLine+
         '</div>'+
         '<div class="okr-score-chip '+cls+'">'+pct+'%<span class="sub">skor</span></div>'+
         '<div class="okr-obj-actions">'+
@@ -6766,13 +6857,16 @@ function okrRenderObjectives(){
           '<button class="okr-icon-btn danger" data-act="del-obj" data-obj="'+obj.id+'" title="Hapus Objective">🗑</button>'+
         '</div>'+
       '</div>'+
-      krsHtml+
-      '<button class="okr-add-kr-btn" data-act="add-kr" data-obj="'+obj.id+'">+ Tambah Key Result</button>'+
-      reflBlock+
+      '<div class="okr-obj-body" id="okrObjBody-'+obj.id+'" style="display:'+(collapsed?'none':'block')+';">'+
+        krsHtml+
+        '<button class="okr-add-kr-btn" data-act="add-kr" data-obj="'+obj.id+'">+ Tambah Key Result</button>'+
+        reflBlock+
+      '</div>'+
     '</div>';
   }).join('');
 
   // Bind aksi
+  list.querySelectorAll('[data-act="toggle-collapse"]').forEach(b=> b.addEventListener('click', ()=> okrToggleCollapse(b.dataset.obj)));
   list.querySelectorAll('[data-act="edit-obj"]').forEach(b=> b.addEventListener('click', ()=> okrOpenObjModal('edit', b.dataset.obj)));
   list.querySelectorAll('[data-act="del-obj"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteObjective(b.dataset.obj)));
   list.querySelectorAll('[data-act="add-kr"]').forEach(b=> b.addEventListener('click', ()=> okrOpenKrModal('add', b.dataset.obj, null)));
@@ -6871,6 +6965,28 @@ function okrRenderAll(){
   okrRenderPeriodBar();
   okrRenderKpi();
   okrRenderDeadlineBanner();
+  okrRenderObjectives();
+}
+
+/* Toggle satu card Objective tanpa render ulang seluruh daftar (biar cepat & tidak
+   kehilangan posisi scroll saat OKR-nya banyak). */
+function okrToggleCollapse(id){
+  if(OKR_UI_COLLAPSED === null) OKR_UI_COLLAPSED = new Set();
+  const body = document.getElementById('okrObjBody-'+id);
+  if(!body) return;
+  const wasCollapsed = OKR_UI_COLLAPSED.has(id);
+  if(wasCollapsed){ OKR_UI_COLLAPSED.delete(id); body.style.display = 'block'; }
+  else { OKR_UI_COLLAPSED.add(id); body.style.display = 'none'; }
+  const chevron = document.querySelector('.okr-obj-toggle[data-obj="'+id+'"]');
+  if(chevron){ chevron.textContent = wasCollapsed ? '▾' : '▸'; chevron.title = wasCollapsed ? 'Tutup' : 'Buka'; }
+}
+function okrExpandAllObjectives(){
+  OKR_UI_COLLAPSED = new Set();
+  okrRenderObjectives();
+}
+function okrCollapseAllObjectives(){
+  const data = okrActivePeriodData();
+  OKR_UI_COLLAPSED = new Set((data.objectives||[]).map(o=> o.id));
   okrRenderObjectives();
 }
 
@@ -7042,6 +7158,10 @@ function okrToggleInit(objId, krId, initId){
 
 /* ---------- Bind tombol statis & init ---------- */
 document.getElementById('btnAddObjective').addEventListener('click', ()=> okrOpenObjModal('add', null));
+document.getElementById('btnOkrExpandAll').addEventListener('click', okrExpandAllObjectives);
+document.getElementById('btnOkrCollapseAll').addEventListener('click', okrCollapseAllObjectives);
+document.getElementById('okrFilterPicSelect').addEventListener('change', (e)=>{ okrFilterPic = e.target.value; okrRenderObjectives(); });
+document.getElementById('okrFilterStatusSelect').addEventListener('change', (e)=>{ okrFilterStatus = e.target.value; okrRenderObjectives(); });
 document.getElementById('okrObjCancelBtn').addEventListener('click', okrCloseObjModal);
 document.getElementById('okrObjSaveBtn').addEventListener('click', okrSaveObjectiveFromModal);
 document.getElementById('okrKrCancelBtn').addEventListener('click', okrCloseKrModal);
