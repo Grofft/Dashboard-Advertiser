@@ -1622,6 +1622,14 @@ function switchedInRange(acc, range){
   const [s,e] = indicesForRange(range);
   return ensureOwnerHistory(acc).some(h=> h.fromIdx>s && h.fromIdx<=e);
 }
+// Apakah advertiser tsb adalah pemilik akun ini di SETIDAKNYA satu hari dalam range tanggal
+// tertentu (dipakai buat filter report per-advertiser, supaya akun yang sudah pindah tangan
+// sebelum/sesudah periode ini tidak ikut nyangkut di report advertiser yang sudah bukan pemiliknya).
+function ownedByAdvInRange(acc, adv, range){
+  const [s,e] = indicesForRange(range);
+  for(let i=s;i<=e;i++){ if(ownerAtIndex(acc,i)===adv) return true; }
+  return false;
+}
 
 /* ============== DATA: AKUN WL (sesuai referensi gambar) ============== */
 let ADVERTISERS = ['MALDY','FIKI','RIFAN','ALADIN'];
@@ -5723,7 +5731,23 @@ function buildAdvertiserReportText(){
   let grandBudget=0, grandSpend=0, grandReal=0, grandOO=0;
 
   advList.forEach((adv, idx) => {
-    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && selectedAccounts.has(a.id));
+    // Akun hanya ikut ditampilkan di report advertiser ini kalau memang dia PEMILIKNYA
+    // di sebagian/seluruh periode yang dipilih (ownedByAdvInRange, cek per-hari lewat
+    // ownerHistory) — bukan cuma "pernah dimiliki kapan saja". Jadi kalau akun sudah
+    // dipindah ke advertiser lain sebelum periode ini, dia tidak lagi nyangkut di report
+    // advertiser lama. Untuk akun yang statusnya Nonaktif, tambahan: hanya ditampilkan
+    // kalau masih ada budget/spend milik advertiser ini (bukan milik pemilik baru) di
+    // periode tsb — biar histori periode lama tetap utuh, tapi tidak nyangkut kosongan.
+    const advAccs = ACCOUNTS.filter(a=>{
+      if(!selectedAccounts.has(a.id)) return false;
+      if(!ownedByAdvInRange(a, adv, range)) return false;
+      if(a.status==='nonaktif'){
+        const aBud = sumInForAdv(a,a.budgetSeries,adv,range);
+        const aSp  = sumInForAdv(a,a.spendSeries,adv,range);
+        if(aBud===0 && aSp===0) return false;
+      }
+      return true;
+    });
     if(advAccs.length === 0) return;
 
     const budget   = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,range),0);
@@ -5761,8 +5785,11 @@ function buildAdvertiserReportText(){
     if(advAccs.length > 0){
       lines.push('   Akun         :');
       advAccs.forEach(a=>{
-        const aBud = sumIn(a.budgetSeries, range);
-        const aSp  = sumIn(a.spendSeries, range);
+        // Pakai sumInForAdv (bukan sumIn total) supaya kalau akun ini sempat pindah
+        // tangan di tengah periode, angka yang ditampilkan cuma porsi hari-hari saat
+        // akun masih dimiliki advertiser ini — bukan ikut kebawa punya pemilik baru.
+        const aBud = sumInForAdv(a, a.budgetSeries, adv, range);
+        const aSp  = sumInForAdv(a, a.spendSeries, adv, range);
         lines.push('      - ' + a.name + ' -> ' + rupiah(aBud) + ' / ' + rupiah(aSp));
       });
     }
@@ -5889,7 +5916,7 @@ function buildGabunganReportText(){
   let anyRow = false;
 
   advList.forEach((adv, idx) => {
-    const advAccs = ACCOUNTS.filter(a=> everOwnedBy(a,adv) && selectedAccounts.has(a.id));
+    const advAccs = ACCOUNTS.filter(a=> selectedAccounts.has(a.id) && ownedByAdvInRange(a,adv,range));
     const spendPPN = advAccs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,range),0);
 
     const csRows = CS_DATA.filter(c=> c.advertiser===adv && csRowInRange(c.tanggal, range));
