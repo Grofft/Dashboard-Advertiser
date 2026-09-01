@@ -1674,6 +1674,10 @@ let TARGETS_MONTHLY = {};
    Dipakai supaya tombol Refresh/pull dari sheet tidak menimpa balik angka yang baru diketik user
    kalau proses simpan ke sheet belum selesai (mis. koneksi lambat / halaman keburu di-refresh). */
 let DIRTY_TARGETS = {};
+// Akun yang barusan dipindah advertiser-nya lokal tapi belum tentu sudah kekirim ke sheet
+// (fire-and-forget push bisa belum selesai). Sama pola dengan DIRTY_TARGETS: di-flush
+// (push ulang) SEBELUM pull manapun, supaya perpindahan tidak balik ketiban data lama dari sheet.
+let DIRTY_ACCOUNTS = {};
 /* Draft ketikan nominal Top Up yang BELUM diklik "Simpan" — dipertahankan di sini supaya
    tidak hilang tiap kali daftar input di-render ulang (ganti filter agensi, sync spreadsheet,
    hapus riwayat top up, dll). Dibersihkan setelah data benar-benar berhasil disimpan. */
@@ -2456,6 +2460,7 @@ function openEditModal(accId){
     if(newAdv !== acc.advertiser){
       const effDateStr = document.getElementById('mEffectiveDate').value || fmtISO(TODAY_REF);
       const entry = recordOwnerChange(acc, newAdv, new Date(effDateStr));
+      DIRTY_ACCOUNTS[acc.id] = true; // ditandai belum tentu tersinkron sampai flushDirtyAccounts() sukses
       pushOwnerHistoryEntry(acc, entry);
     }
     acc.ppn = parseFloat(document.getElementById('mPPN').value)||0;
@@ -2501,6 +2506,7 @@ function openAddModal(defaultAdv){
     const newAcc = makeNewAccount(name, advertiser, ppn);
     ACCOUNTS.push(newAcc);
     selectedAccounts.add(newAcc.id);
+    DIRTY_ACCOUNTS[newAcc.id] = true; // ditandai belum tentu tersinkron sampai flushDirtyAccounts() sukses
     saveLocalState(); closeModal(); renderAccountGroups(); render(); renderInputSelectors(); syncAccountRoster();
   };
 }
@@ -3882,6 +3888,7 @@ async function pullFromSheet(){
   if(!url){ msg.textContent='Isi URL Web App Apps Script terlebih dahulu.'; msg.style.color='var(--red)'; return; }
   msg.textContent='Menarik data dari spreadsheet...'; msg.style.color='var(--muted)';
   await flushDirtyTargets();
+  await flushDirtyAccounts();
   try{
     const res = await fetch(url+'?action=read', {cache:'no-store'});
     const json = await res.json();
@@ -3894,8 +3901,14 @@ async function pullFromSheet(){
     if(Array.isArray(json.akunwl) && json.akunwl.length>0){
       const namesInSheet = new Set(json.akunwl.map(r=> String(r.nama||'').trim().toLowerCase()).filter(Boolean));
       (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster++; });
+      // Kalau akun DIRTY ternyata sudah muncul di sheet (mis. push-nya barusan berhasil di
+      // background sebelum sempat di-flush), lepas tanda dirty-nya di sini juga.
+      ACCOUNTS.forEach(acc=>{ if(DIRTY_ACCOUNTS[acc.id] && namesInSheet.has(acc.name.trim().toLowerCase())) delete DIRTY_ACCOUNTS[acc.id]; });
       for(let i=ACCOUNTS.length-1;i>=0;i--){
-        if(!namesInSheet.has(ACCOUNTS[i].name.trim().toLowerCase())){
+        // Jangan hapus akun yang masih DIRTY_ACCOUNTS (baru ditambah/dipindah lokal tapi push
+        // ke sheet belum sukses terkonfirmasi) — kalau tetap dihapus di sini, akun yang baru
+        // saja ditambah bisa hilang lagi sebelum sempat benar-benar tersimpan di spreadsheet.
+        if(!namesInSheet.has(ACCOUNTS[i].name.trim().toLowerCase()) && !DIRTY_ACCOUNTS[ACCOUNTS[i].id]){
           selectedAccounts.delete(ACCOUNTS[i].id);
           ACCOUNTS.splice(i,1);
           countRemoved++;
@@ -4178,6 +4191,23 @@ async function flushDirtyTargets(){
     const val = getMonthlyTarget(adv, month, year);
     const status = await pushTargetMonthly(adv, year, month, val);
     if(status==='ok') delete DIRTY_TARGETS[key];
+  }));
+  saveLocalState();
+}
+/* Sama polanya dengan flushDirtyTargets(): akun yang barusan dipindah advertiser-nya lokal
+   (DIRTY_ACCOUNTS) di-push ULANG ke sheet (baris AkunWL + seluruh ownerHistory-nya) SEBELUM
+   pull manapun dijalankan — supaya kalau push tadi belum sempat selesai (fire-and-forget) saat
+   pull terjadi, perpindahan yang baru diklik tidak balik ketiban data lama dari sheet. */
+async function flushDirtyAccounts(){
+  const ids = Object.keys(DIRTY_ACCOUNTS);
+  if(ids.length===0) return;
+  await Promise.all(ids.map(async (id)=>{
+    const acc = ACCOUNTS.find(a=>a.id===id);
+    if(!acc){ delete DIRTY_ACCOUNTS[id]; return; }
+    const s1 = await pushOneToSheet({type:'akunwl', nama:acc.name, advertiser:acc.advertiser, ppn:(acc.ppn!=null?acc.ppn:3), aktif:(acc.status!=='nonaktif')?'ya':'tidak'});
+    let s2 = 'ok';
+    for(const h of ensureOwnerHistory(acc)){ const st = await pushOwnerHistoryEntry(acc, h); if(st!=='ok') s2 = st; }
+    if(s1==='ok' && s2==='ok') delete DIRTY_ACCOUNTS[id];
   }));
   saveLocalState();
 }
@@ -5558,6 +5588,7 @@ function saveLocalState(){
       targets: TARGETS,
       targetsMonthly: TARGETS_MONTHLY,
       dirtyTargets: DIRTY_TARGETS,
+      dirtyAccounts: DIRTY_ACCOUNTS,
       defaultTargetMigrated: defaultTargetMigrated,
       targetMode: targetMode,
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
@@ -5590,6 +5621,7 @@ function loadLocalState(){
     TARGETS = state.targets || TARGETS;
     if(state.targetsMonthly) TARGETS_MONTHLY = state.targetsMonthly;
     DIRTY_TARGETS = state.dirtyTargets || {};
+    DIRTY_ACCOUNTS = state.dirtyAccounts || {};
     defaultTargetMigrated = !!state.defaultTargetMigrated;
     if(state.targetMode) targetMode = state.targetMode;
     accCounter = state.accCounter || accCounter;
@@ -6303,6 +6335,7 @@ async function autoPullOnLoad(){
   }
   setSidebarStatus('', 'Menghubungkan…');
   await flushDirtyTargets();
+  await flushDirtyAccounts();
   // Tampilkan overlay loading ringan di area konten
   const loadBanner = document.createElement('div');
   loadBanner.id = 'autoPullBanner';
@@ -6322,8 +6355,9 @@ async function autoPullOnLoad(){
     if(Array.isArray(json.akunwl) && json.akunwl.length>0){
       const namesInSheet2 = new Set(json.akunwl.map(r=> String(r.nama||'').trim().toLowerCase()).filter(Boolean));
       (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster2++; });
+      ACCOUNTS.forEach(acc=>{ if(DIRTY_ACCOUNTS[acc.id] && namesInSheet2.has(acc.name.trim().toLowerCase())) delete DIRTY_ACCOUNTS[acc.id]; });
       for(let i=ACCOUNTS.length-1;i>=0;i--){
-        if(!namesInSheet2.has(ACCOUNTS[i].name.trim().toLowerCase())){
+        if(!namesInSheet2.has(ACCOUNTS[i].name.trim().toLowerCase()) && !DIRTY_ACCOUNTS[ACCOUNTS[i].id]){
           selectedAccounts.delete(ACCOUNTS[i].id);
           ACCOUNTS.splice(i,1);
           countRemoved2++;
