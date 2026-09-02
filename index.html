@@ -301,6 +301,36 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 
 .account-picker{background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 260%);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 1px 2px rgba(0,0,0,.04), 0 12px 28px -18px rgba(0,0,0,.18);}
 
+/* ===== Kelola CS / Kategori — accordion ringkas ===== */
+.kelola-group{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+.kelola-item{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden;transition:border-color .15s;}
+.kelola-item[open]{border-color:color-mix(in srgb, var(--green) 35%, var(--line));}
+.kelola-item summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;font-family:'Roboto',sans-serif;font-weight:700;font-size:14px;user-select:none;}
+.kelola-item summary::-webkit-details-marker{display:none;}
+.kelola-item summary .k-ic{width:26px;height:26px;border-radius:8px;background:var(--panel-2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.kelola-item summary .k-title{flex:1;min-width:0;}
+.kelola-item summary .k-sub{display:block;font-weight:400;font-size:11.5px;color:var(--muted);margin-top:1px;}
+.kelola-item summary .k-count{font-weight:700;font-size:11px;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:3px 10px;flex-shrink:0;}
+.kelola-item summary .k-chev{color:var(--muted);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.kelola-item[open] summary .k-chev{transform:rotate(180deg);}
+.kelola-item[open] summary{border-bottom:1px solid var(--line);}
+.kelola-body{padding:14px 16px 16px;}
+.kelola-body .muted-note{margin:0 0 12px;}
+.kelola-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+.kelola-chip{display:inline-flex;align-items:center;gap:5px;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:5px 5px 5px 12px;font-size:12.5px;font-weight:600;}
+.kelola-chip button{width:18px;height:18px;border-radius:50%;border:none;background:transparent;color:var(--muted);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.kelola-chip button:hover{background:var(--bad-bg);color:var(--red);}
+.kelola-add-row{display:flex;gap:8px;}
+.kelola-add-row input{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;}
+.kelola-add-row input:focus{outline:none;border-color:var(--green);}
+.kelola-add-row .btn{flex-shrink:0;}
+@media (max-width:640px){
+  .kelola-item summary{padding:12px 14px;}
+  .kelola-body{padding:12px 14px 14px;}
+  .kelola-add-row{flex-direction:column;}
+  .kelola-add-row .btn{width:100%;}
+}
+
 /* ===== Kartu hasil per advertiser (Data Hasil Advertiser) ===== */
 .adv-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,360px));gap:14px;}
 .adv-card{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
@@ -1048,43 +1078,60 @@ try{
 <div class="page" id="page-cs">
   <div class="section-header" style="margin-top:0;"><h1>Hasil CS</h1><div class="muted-note">Omzet, hasil closing, dan closing rate harian tiap CS — per advertiser</div></div>
 
-  <div class="section-header" style="margin-top:0;"><h2>Kelola CS</h2></div>
-  <div class="account-picker" style="margin-bottom:16px;padding:14px 16px;">
-    <div class="acc-toolbar">
-      <div class="muted-note">Nama CS/Sales yang datanya ingin dicatat. Klik nama di bawah untuk pindah tampilan.</div>
-    </div>
-    <div id="csChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <input type="text" id="csNewName" placeholder="cth: Rani" style="flex:1;min-width:160px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
-      <button class="btn" id="btnAddCs">+ Tambah CS</button>
-    </div>
-    <div class="muted-note" id="csRosterMsg" style="margin-top:8px;"></div>
-  </div>
+  <div class="kelola-group">
+    <details class="kelola-item" id="kelolaCsItem" open>
+      <summary>
+        <span class="k-ic">👥</span>
+        <span class="k-title">Kelola CS<span class="k-sub">Nama CS/Sales yang datanya dicatat</span></span>
+        <span class="k-count" id="csCountBadge">0</span>
+        <span class="k-chev">▾</span>
+      </summary>
+      <div class="kelola-body">
+        <div class="muted-note">Klik nama di bawah untuk pindah tampilan input harian.</div>
+        <div id="csChips" class="kelola-chips"></div>
+        <div class="kelola-add-row">
+          <input type="text" id="csNewName" placeholder="cth: Rani">
+          <button class="btn" id="btnAddCs">+ Tambah CS</button>
+        </div>
+        <div class="muted-note" id="csRosterMsg" style="margin-top:8px;"></div>
+      </div>
+    </details>
 
-  <div class="section-header" style="margin-top:0;"><h2>Kelola Kategori "Tidak Real"</h2></div>
-  <div class="account-picker" style="margin-bottom:16px;padding:14px 16px;">
-    <div class="acc-toolbar">
-      <div class="muted-note">Kategori alasan kenapa sebagian Lead OO ternyata tidak real (cth: nomor tidak aktif, tidak respon, duplikat, di luar jangkauan, hanya tanya-tanya, kompetitor/spam). Bebas dikustom sesuai kebutuhan tim.</div>
-    </div>
-    <div id="csNotRealKatChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <input type="text" id="csNotRealKatNew" placeholder="cth: Nomor tidak aktif" style="flex:1;min-width:160px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
-      <button class="btn" id="btnAddCsNotRealKat">+ Tambah Kategori</button>
-    </div>
-    <div class="muted-note" id="csNotRealKatMsg" style="margin-top:8px;"></div>
-  </div>
+    <details class="kelola-item" id="kelolaNotRealItem">
+      <summary>
+        <span class="k-ic">🚫</span>
+        <span class="k-title">Kategori "Tidak Real"<span class="k-sub">Alasan Lead OO ternyata tidak real</span></span>
+        <span class="k-count" id="notRealCountBadge">0</span>
+        <span class="k-chev">▾</span>
+      </summary>
+      <div class="kelola-body">
+        <div class="muted-note">Cth: nomor tidak aktif, tidak respon, duplikat, di luar jangkauan, hanya tanya-tanya, kompetitor/spam. Bebas dikustom sesuai kebutuhan tim.</div>
+        <div id="csNotRealKatChips" class="kelola-chips"></div>
+        <div class="kelola-add-row">
+          <input type="text" id="csNotRealKatNew" placeholder="cth: Nomor tidak aktif">
+          <button class="btn" id="btnAddCsNotRealKat">+ Tambah Kategori</button>
+        </div>
+        <div class="muted-note" id="csNotRealKatMsg" style="margin-top:8px;"></div>
+      </div>
+    </details>
 
-  <div class="section-header" style="margin-top:0;"><h2>Kelola Kategori "Tidak Closing"</h2></div>
-  <div class="account-picker" style="margin-bottom:16px;padding:14px 16px;">
-    <div class="acc-toolbar">
-      <div class="muted-note">Kategori alasan kenapa Lead Real yang sudah difollow-up ternyata tidak closing (cth: harga kemahalan, masih pertimbangkan, kalah kompetitor, budget belum ada, followup gagal/hilang). Bebas dikustom sesuai kebutuhan tim.</div>
-    </div>
-    <div id="csNotClosingKatChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <input type="text" id="csNotClosingKatNew" placeholder="cth: Harga kemahalan" style="flex:1;min-width:160px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px;">
-      <button class="btn" id="btnAddCsNotClosingKat">+ Tambah Kategori</button>
-    </div>
-    <div class="muted-note" id="csNotClosingKatMsg" style="margin-top:8px;"></div>
+    <details class="kelola-item" id="kelolaNotClosingItem">
+      <summary>
+        <span class="k-ic">❌</span>
+        <span class="k-title">Kategori "Tidak Closing"<span class="k-sub">Alasan Lead Real tidak jadi closing</span></span>
+        <span class="k-count" id="notClosingCountBadge">0</span>
+        <span class="k-chev">▾</span>
+      </summary>
+      <div class="kelola-body">
+        <div class="muted-note">Cth: harga kemahalan, masih pertimbangkan, kalah kompetitor, budget belum ada, followup gagal/hilang. Bebas dikustom sesuai kebutuhan tim.</div>
+        <div id="csNotClosingKatChips" class="kelola-chips"></div>
+        <div class="kelola-add-row">
+          <input type="text" id="csNotClosingKatNew" placeholder="cth: Harga kemahalan">
+          <button class="btn" id="btnAddCsNotClosingKat">+ Tambah Kategori</button>
+        </div>
+        <div class="muted-note" id="csNotClosingKatMsg" style="margin-top:8px;"></div>
+      </div>
+    </details>
   </div>
 
   <div class="period-btns" id="csTabs" style="margin-bottom:22px;"></div>
@@ -4464,11 +4511,13 @@ function renderCsInsight(){
 
 function renderCsChips(){
   const wrap = document.getElementById('csChips');
+  const badge = document.getElementById('csCountBadge');
+  if(badge) badge.textContent = CS_LIST.length;
   if(!wrap) return;
   if(CS_LIST.length===0){ wrap.innerHTML = '<span class="muted-note">Belum ada CS. Tambahkan lewat form di bawah.</span>'; return; }
   wrap.innerHTML = CS_LIST.map(cs=>
-    '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:5px 6px 5px 12px;font-size:12.5px;font-weight:600;">'+escapeHtml(cs)+
-    '<button class="icon-btn" data-del-cs="'+escapeHtml(cs)+'" title="Hapus CS" style="width:20px;height:20px;font-size:11px;">🗑</button></span>'
+    '<span class="kelola-chip">'+escapeHtml(cs)+
+    '<button data-del-cs="'+escapeHtml(cs)+'" title="Hapus CS">✕</button></span>'
   ).join('');
   wrap.querySelectorAll('[data-del-cs]').forEach(btn=>{
     btn.onclick = async ()=>{
@@ -4512,15 +4561,18 @@ document.getElementById('btnAddCs').addEventListener('click', async ()=>{
   else if(status==='no-url') setCsRosterMsg('CS tersimpan di dashboard ini saja. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).', 'var(--yellow)');
   else setCsRosterMsg('CS tersimpan di dashboard ini saja, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
 });
+document.getElementById('csNewName').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('btnAddCs').click(); } });
 
 /* ============== KELOLA KATEGORI "TIDAK REAL" ============== */
 function renderCsNotRealKatChips(){
   const wrap = document.getElementById('csNotRealKatChips');
+  const badge = document.getElementById('notRealCountBadge');
+  if(badge) badge.textContent = CS_NOTREAL_KATEGORI.length;
   if(!wrap) return;
   if(CS_NOTREAL_KATEGORI.length===0){ wrap.innerHTML = '<span class="muted-note">Belum ada kategori. Tambahkan lewat form di bawah — misalnya nomor tidak aktif, tidak respon, duplikat, dll.</span>'; return; }
   wrap.innerHTML = CS_NOTREAL_KATEGORI.map(k=>
-    '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:5px 6px 5px 12px;font-size:12.5px;font-weight:600;">'+escapeHtml(k)+
-    '<button class="icon-btn" data-del-notrealkat="'+escapeHtml(k)+'" title="Hapus kategori" style="width:20px;height:20px;font-size:11px;">🗑</button></span>'
+    '<span class="kelola-chip">'+escapeHtml(k)+
+    '<button data-del-notrealkat="'+escapeHtml(k)+'" title="Hapus kategori">✕</button></span>'
   ).join('');
   wrap.querySelectorAll('[data-del-notrealkat]').forEach(btn=>{
     btn.onclick = async ()=>{
@@ -4621,11 +4673,13 @@ function updateCsNotRealSumNote(){
 /* ============== KELOLA KATEGORI "TIDAK CLOSING" ============== */
 function renderCsNotClosingKatChips(){
   const wrap = document.getElementById('csNotClosingKatChips');
+  const badge = document.getElementById('notClosingCountBadge');
+  if(badge) badge.textContent = CS_NOTCLOSING_KATEGORI.length;
   if(!wrap) return;
   if(CS_NOTCLOSING_KATEGORI.length===0){ wrap.innerHTML = '<span class="muted-note">Belum ada kategori. Tambahkan lewat form di bawah — misalnya harga kemahalan, masih pertimbangkan, kalah kompetitor, dll.</span>'; return; }
   wrap.innerHTML = CS_NOTCLOSING_KATEGORI.map(k=>
-    '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:5px 6px 5px 12px;font-size:12.5px;font-weight:600;">'+escapeHtml(k)+
-    '<button class="icon-btn" data-del-notclosingkat="'+escapeHtml(k)+'" title="Hapus kategori" style="width:20px;height:20px;font-size:11px;">🗑</button></span>'
+    '<span class="kelola-chip">'+escapeHtml(k)+
+    '<button data-del-notclosingkat="'+escapeHtml(k)+'" title="Hapus kategori">✕</button></span>'
   ).join('');
   wrap.querySelectorAll('[data-del-notclosingkat]').forEach(btn=>{
     btn.onclick = async ()=>{
