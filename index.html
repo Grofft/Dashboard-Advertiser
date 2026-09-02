@@ -6039,6 +6039,22 @@ applyTheme(getSavedTheme());
   document.getElementById('inSharedDate').addEventListener('change', updateSharedDateDisplay);
   document.getElementById('inSharedDate').addEventListener('input', updateSharedDateDisplay);
   const restored = loadLocalState();
+  // Render ulang komponen yang datanya baru saja dimuat dari localStorage (kategori CS,
+  // roster CS, data CS harian) — sebelum ini chip-chip tersebut sudah sempat digambar SEBELUM
+  // loadLocalState() jalan (saat variabelnya masih kosong), jadi kalau tidak di-render ulang di
+  // sini, layar akan tetap menampilkan "Belum ada kategori" sampai autoPullOnLoad() selesai atau
+  // sampai user menambah kategori baru (yang otomatis memicu render). Ini penyebab kategori
+  // "kadang kosong, refresh kosong lagi, tambah baru langsung muncul".
+  if(restored){
+    if(typeof renderCsChips==='function') renderCsChips();
+    if(typeof renderCsTabs==='function') renderCsTabs();
+    if(typeof renderCsNotRealKatChips==='function') renderCsNotRealKatChips();
+    if(typeof renderCsNotRealInputs==='function') renderCsNotRealInputs();
+    if(typeof renderCsNotClosingKatChips==='function') renderCsNotClosingKatChips();
+    if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
+    if(typeof renderCsData==='function') renderCsData();
+    if(typeof renderCsInsight==='function') renderCsInsight();
+  }
   if(!defaultTargetMigrated){
     migrateDefaultTargetsToMonthly();
     defaultTargetMigrated = true;
