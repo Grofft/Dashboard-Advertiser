@@ -3957,20 +3957,23 @@ async function pullFromSheet(){
     // (dibaca SEBELUM rincian harian, sama polanya dengan ROSTER CS di atas)
     let countCsNotRealKat=0;
     if(Array.isArray(json.csnotrealkategori) && json.csnotrealkategori.length>0){
+      const activeSet=[], hiddenSet=[];
       json.csnotrealkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        if(isActive){
-          if(!CS_NOTREAL_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI.push(kategori);
-          CS_NOTREAL_KATEGORI_HIDDEN = CS_NOTREAL_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-        } else {
-          CS_NOTREAL_KATEGORI = CS_NOTREAL_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-          if(!CS_NOTREAL_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI_HIDDEN.push(kategori);
-        }
+        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
+        rmFrom(activeSet); rmFrom(hiddenSet);
+        (isActive ? activeSet : hiddenSet).push(kategori);
         countCsNotRealKat++;
       });
+      // Sheet BENAR-BENAR jadi sumber kebenaran di sini: daftar lokal DIGANTI TOTAL, bukan
+      // cuma ditambah-tambahin. Sebelumnya kategori yang nyangkut di localStorage satu
+      // tab/device (misal belum sempat ke-hapus di sana) akan terus muncul selamanya walau
+      // sudah tidak ada/beda di sheet — makanya 2 tab bisa nunjukin daftar kategori yang beda.
+      CS_NOTREAL_KATEGORI = activeSet;
+      CS_NOTREAL_KATEGORI_HIDDEN = hiddenSet;
       saveLocalState();
       if(typeof renderCsNotRealKatChips==='function') renderCsNotRealKatChips();
       if(typeof renderCsNotRealInputs==='function') renderCsNotRealInputs();
@@ -3992,20 +3995,19 @@ async function pullFromSheet(){
     // ==== ROSTER KATEGORI "TIDAK CLOSING": sheet "CSKategoriTidakClosing" adalah sumber kebenaran ====
     let countCsNotClosingKat=0;
     if(Array.isArray(json.csnotclosingkategori) && json.csnotclosingkategori.length>0){
+      const activeSet=[], hiddenSet=[];
       json.csnotclosingkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        if(isActive){
-          if(!CS_NOTCLOSING_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI.push(kategori);
-          CS_NOTCLOSING_KATEGORI_HIDDEN = CS_NOTCLOSING_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-        } else {
-          CS_NOTCLOSING_KATEGORI = CS_NOTCLOSING_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-          if(!CS_NOTCLOSING_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI_HIDDEN.push(kategori);
-        }
+        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
+        rmFrom(activeSet); rmFrom(hiddenSet);
+        (isActive ? activeSet : hiddenSet).push(kategori);
         countCsNotClosingKat++;
       });
+      CS_NOTCLOSING_KATEGORI = activeSet;
+      CS_NOTCLOSING_KATEGORI_HIDDEN = hiddenSet;
       saveLocalState();
       if(typeof renderCsNotClosingKatChips==='function') renderCsNotClosingKatChips();
       if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
@@ -4098,7 +4100,8 @@ async function pullFromSheet(){
     msg.style.color='var(--red)';
   }
 }
-async function pushOneToSheet(payload){
+async function pushOneToSheet(payload, _attempt){
+  const attempt = _attempt || 0;
   const url = getAppsScriptUrl();
   if(!url) return 'no-url';
   try{
@@ -4115,9 +4118,23 @@ async function pushOneToSheet(payload){
     // (mis. lock timeout pas ada request lain yang bentrok) — jadi statusnya harus
     // dicek dari BODY JSON-nya, bukan cuma asumsi "fetch gak error = berhasil".
     const body = await res.json().catch(()=>null);
-    if(body && body.status === 'error') return 'error';
-    return 'ok';
-  }catch(err){ return 'error'; }
+    // PENTING: backend SELALU balas JSON eksplisit {status:'ok'} kalau request benar-benar
+    // berhasil diproses & ditulis ke sheet. Sebelumnya kode ini menganggap "ok" kalau body-nya
+    // TIDAK bilang 'error' — termasuk saat body null/gagal di-parse (mis. respons ternyata
+    // halaman HTML/redirect, bukan JSON, yang sering kejadian di jaringan HP yang kurang stabil
+    // atau ada masalah sesi/izin akses Apps Script). Akibatnya muncul pesan sukses palsu di
+    // dashboard padahal datanya tidak pernah benar-benar masuk ke spreadsheet. Sekarang harus
+    // eksplisit body.status === 'ok' baru dianggap berhasil.
+    if(body && body.status === 'ok') return 'ok';
+    // Kalau belum sukses & belum 2x nyoba ulang, coba lagi dengan jeda singkat — kegagalan
+    // pertama sering cuma sementara (cold start Apps Script, lock server lagi dipakai request
+    // lain, jaringan seluler putus sedetik) dan biasanya berhasil kalau dicoba lagi.
+    if(attempt < 2){ await new Promise(r=>setTimeout(r, 1200*(attempt+1))); return pushOneToSheet(payload, attempt+1); }
+    return 'error';
+  }catch(err){
+    if(attempt < 2){ await new Promise(r=>setTimeout(r, 1200*(attempt+1))); return pushOneToSheet(payload, attempt+1); }
+    return 'error';
+  }
 }
 
 /* ============== SYNC HISTORI KEPEMILIKAN AKUN KE SHEET "AkunHistori" ============== */
@@ -5935,20 +5952,21 @@ async function autoPullOnLoad(){
     // ==== KATEGORI & RINCIAN LEAD OO TIDAK REAL: sheet "CSKategoriTidakReal" & "CSTidakReal" ====
     let countCsNotRealKat2=0, countCsNotReal2=0;
     if(Array.isArray(json.csnotrealkategori) && json.csnotrealkategori.length>0){
+      const activeSet2=[], hiddenSet2=[];
       json.csnotrealkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        if(isActive){
-          if(!CS_NOTREAL_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI.push(kategori);
-          CS_NOTREAL_KATEGORI_HIDDEN = CS_NOTREAL_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-        } else {
-          CS_NOTREAL_KATEGORI = CS_NOTREAL_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-          if(!CS_NOTREAL_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI_HIDDEN.push(kategori);
-        }
+        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
+        rmFrom(activeSet2); rmFrom(hiddenSet2);
+        (isActive ? activeSet2 : hiddenSet2).push(kategori);
         countCsNotRealKat2++;
       });
+      // Sheet jadi sumber kebenaran: GANTI TOTAL, jangan cuma ditambah (lihat penjelasan sama
+      // di pullFromSheet di atas — ini penyebab tab/device berbeda bisa nunjukin kategori beda).
+      CS_NOTREAL_KATEGORI = activeSet2;
+      CS_NOTREAL_KATEGORI_HIDDEN = hiddenSet2;
       if(typeof renderCsNotRealKatChips==='function') renderCsNotRealKatChips();
       if(typeof renderCsNotRealInputs==='function') renderCsNotRealInputs();
     }
@@ -5966,20 +5984,19 @@ async function autoPullOnLoad(){
     // ==== KATEGORI & RINCIAN LEAD REAL TIDAK CLOSING: sheet "CSKategoriTidakClosing" & "CSTidakClosing" ====
     let countCsNotClosingKat2=0, countCsNotClosing2=0;
     if(Array.isArray(json.csnotclosingkategori) && json.csnotclosingkategori.length>0){
+      const activeSet3=[], hiddenSet3=[];
       json.csnotclosingkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        if(isActive){
-          if(!CS_NOTCLOSING_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI.push(kategori);
-          CS_NOTCLOSING_KATEGORI_HIDDEN = CS_NOTCLOSING_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-        } else {
-          CS_NOTCLOSING_KATEGORI = CS_NOTCLOSING_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
-          if(!CS_NOTCLOSING_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI_HIDDEN.push(kategori);
-        }
+        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
+        rmFrom(activeSet3); rmFrom(hiddenSet3);
+        (isActive ? activeSet3 : hiddenSet3).push(kategori);
         countCsNotClosingKat2++;
       });
+      CS_NOTCLOSING_KATEGORI = activeSet3;
+      CS_NOTCLOSING_KATEGORI_HIDDEN = hiddenSet3;
       if(typeof renderCsNotClosingKatChips==='function') renderCsNotClosingKatChips();
       if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
     }
