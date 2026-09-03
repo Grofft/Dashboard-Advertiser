@@ -282,6 +282,36 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .cs-insight-card .adv-card-row .v{font-size:14.5px;}
 .cs-input-panel .btn{padding:11px 18px !important;font-size:13.5px !important;}
 
+/* ---- Input Data Harian: seksi & rincian kategori (dibuat lebih jelas untuk diisi) ---- */
+.cs-input-panel .cs-panel-intro{margin:-8px 0 18px;}
+.cs-input-section{margin-bottom:20px;}
+.cs-input-section-head{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+.cs-input-section-head .cs-sec-ic{width:22px;height:22px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11.5px;flex-shrink:0;}
+.cs-input-section-head .cs-sec-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:12.5px;color:var(--muted);letter-spacing:.01em;}
+.cs-input-grid-2{grid-template-columns:repeat(2,1fr);}
+.cs-date-row{display:flex;gap:8px;}
+.cs-date-row input{flex:1;min-width:0;}
+.cs-today-btn{flex-shrink:0;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:0 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Roboto',sans-serif;white-space:nowrap;transition:border-color .15s,color .15s;}
+.cs-today-btn:hover{border-color:var(--green);color:var(--green);}
+
+.cs-rincian-box{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-bottom:14px;}
+.cs-rincian-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;}
+.cs-rincian-head .cs-sec-ic{width:28px;height:28px;border-radius:8px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.cs-rincian-head .cs-sec-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:13px;color:var(--text);}
+.cs-rincian-head .cs-sec-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.cs-rincian-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+.cs-rincian-grid label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;}
+.cs-rincian-grid input{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 10px;font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums;transition:border-color .15s;}
+.cs-rincian-grid input::placeholder{color:var(--muted);opacity:.45;font-weight:400;}
+.cs-rincian-grid input:focus{outline:none;border-color:var(--green);}
+
+.cs-save-btn{width:100%;padding:13px 18px !important;font-size:14.5px !important;margin-top:6px;box-shadow:0 10px 22px -12px color-mix(in srgb, var(--green) 60%, transparent);}
+#csInputMsg{text-align:center;min-height:14px;}
+@media(max-width:560px){
+  .cs-input-grid-2{grid-template-columns:1fr;}
+  .cs-rincian-box{padding:13px 14px;}
+}
+
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;}
 th{text-align:left;color:var(--th-text);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;padding:11px 12px;background:linear-gradient(180deg,var(--green),var(--greendark));white-space:nowrap;}
@@ -1138,32 +1168,54 @@ try{
 
   <div class="cs-stack">
     <div class="account-picker compact-form cs-input-panel">
-      <h3 style="font-family:'Roboto',sans-serif;margin-bottom:8px;">📝 Input Data Harian</h3>
-      <div class="cs-input-grid">
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label><input type="date" id="csTanggal"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
+      <h3 style="font-family:'Roboto',sans-serif;margin-bottom:6px;">📝 Input Data Harian</h3>
+      <div class="muted-note cs-panel-intro">Isi cepat per CS — pilih tanggal &amp; advertiser, masukkan angkanya, sisanya otomatis dihitung.</div>
+
+      <div class="cs-input-section">
+        <div class="cs-input-section-head"><span class="cs-sec-ic">📅</span><span class="cs-sec-title">TANGGAL &amp; ADVERTISER</span></div>
+        <div class="cs-input-grid cs-input-grid-2">
+          <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label>
+            <div class="cs-date-row"><input type="date" id="csTanggal"><button type="button" class="cs-today-btn" id="btnCsToday">Hari ini</button></div>
+          </div>
+          <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
+        </div>
       </div>
-      <div style="margin-top:12px;">
-        <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;">Rincian Lead OO Tidak Real <span class="muted-note" style="font-weight:400;">(opsional, per kategori)</span></label>
-        <div id="csNotRealInputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;"></div>
-        <div class="muted-note" id="csNotRealSumNote" style="margin-top:6px;font-size:11.5px;"></div>
+
+      <div class="cs-input-section">
+        <div class="cs-input-section-head"><span class="cs-sec-ic">📊</span><span class="cs-sec-title">LEAD &amp; HASIL</span></div>
+        <div class="cs-input-grid cs-input-grid-2">
+          <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
+          <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
+          <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
+          <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
+        </div>
       </div>
-      <div style="margin-top:12px;">
-        <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;">Rincian Lead Real Tidak Closing <span class="muted-note" style="font-weight:400;">(opsional, per kategori)</span></label>
-        <div id="csNotClosingInputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;"></div>
-        <div class="muted-note" id="csNotClosingSumNote" style="margin-top:6px;font-size:11.5px;"></div>
+
+      <div class="cs-rincian-box">
+        <div class="cs-rincian-head">
+          <span class="cs-sec-ic">🚫</span>
+          <div><div class="cs-sec-title">Rincian Lead OO Tidak Real</div><div class="cs-sec-sub">Opsional, per kategori — isi kalau mau dicatat detail</div></div>
+        </div>
+        <div id="csNotRealInputs" class="cs-rincian-grid"></div>
+        <div class="muted-note" id="csNotRealSumNote" style="margin-top:8px;font-size:11.5px;"></div>
       </div>
+
+      <div class="cs-rincian-box">
+        <div class="cs-rincian-head">
+          <span class="cs-sec-ic">❌</span>
+          <div><div class="cs-sec-title">Rincian Lead Real Tidak Closing</div><div class="cs-sec-sub">Opsional, per kategori — isi kalau mau dicatat detail</div></div>
+        </div>
+        <div id="csNotClosingInputs" class="cs-rincian-grid"></div>
+        <div class="muted-note" id="csNotClosingSumNote" style="margin-top:8px;font-size:11.5px;"></div>
+      </div>
+
       <div class="cs-insight-card">
         <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Insight Otomatis</h3>
         <div class="muted-note" style="margin-bottom:10px;">Terhitung langsung dari angka yang sedang diisi — closing rate &amp; status vs standar KPI CS</div>
         <div id="csInsightPanel"></div>
       </div>
-      <button class="btn" id="btnSaveCsInput" style="margin-top:3px;">💾 Simpan Data CS</button>
-      <div class="muted-note" id="csInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+      <button class="btn cs-save-btn" id="btnSaveCsInput">💾 Simpan Data CS</button>
+      <div class="muted-note" id="csInputMsg" style="margin-top:8px;"></div>
     </div>
 
     <div>
@@ -4624,8 +4676,8 @@ function renderCsNotRealInputs(){
     return;
   }
   wrap.innerHTML = CS_NOTREAL_KATEGORI.map(k=>
-    '<div><label style="display:block;font-size:11px;color:var(--muted);margin-bottom:3px;">'+escapeHtml(k)+'</label>'+
-    '<input type="number" class="cs-notreal-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12.5px;"></div>'
+    '<div><label>'+escapeHtml(k)+'</label>'+
+    '<input type="number" class="cs-notreal-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric"></div>'
   ).join('');
   wrap.querySelectorAll('.cs-notreal-input').forEach(el=> el.addEventListener('input', updateCsNotRealSumNote));
 }
@@ -4731,8 +4783,8 @@ function renderCsNotClosingInputs(){
     return;
   }
   wrap.innerHTML = CS_NOTCLOSING_KATEGORI.map(k=>
-    '<div><label style="display:block;font-size:11px;color:var(--muted);margin-bottom:3px;">'+escapeHtml(k)+'</label>'+
-    '<input type="number" class="cs-notclosing-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12.5px;"></div>'
+    '<div><label>'+escapeHtml(k)+'</label>'+
+    '<input type="number" class="cs-notclosing-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric"></div>'
   ).join('');
   wrap.querySelectorAll('.cs-notclosing-input').forEach(el=> el.addEventListener('input', updateCsNotClosingSumNote));
 }
@@ -4875,6 +4927,8 @@ async function saveCsInput(){
   else setCsMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
 }
 document.getElementById('btnSaveCsInput').addEventListener('click', saveCsInput);
+const btnCsToday = document.getElementById('btnCsToday');
+if(btnCsToday) btnCsToday.addEventListener('click', ()=>{ document.getElementById('csTanggal').value = fmtISO(new Date()); });
 
 function renderCsData(){
   const tbody = document.getElementById('tblCsData');
