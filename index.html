@@ -5256,6 +5256,8 @@ let reportState = {
   showCsLeadReal: true,
   showCsLeadOO: true,
   showCsRate: true,
+  showCsNotReal: true,
+  showCsNotClosing: true,
   // Kolom untuk mode 'gabungan' (Hasil Ads per advertiser — gabungan Advertiser & Hasil CS)
   showGabSpend: true,
   showGabOmzet: true,
@@ -5416,7 +5418,19 @@ function buildCsReportText(){
   if(csList.length === 0) return null;
 
   let grandOmzet=0, grandClosing=0, grandLeadReal=0, grandLeadOO=0;
+  const grandNotReal = {};     // kategori -> total jumlah, digabung semua CS terpilih
+  const grandNotClosing = {};  // kategori -> total jumlah, digabung semua CS terpilih
   let anyRow = false;
+
+  const addKategoriTotals = (target, sourceArr, cs, range)=>{
+    sourceArr.filter(n=> n.cs===cs && csRowInRange(n.tanggal, range)).forEach(n=>{
+      const k = n.kategori || '(tanpa kategori)';
+      target[k] = (target[k]||0) + (n.jumlah||0);
+    });
+  };
+  const kategoriLines = (obj)=>{
+    return Object.keys(obj).filter(k=>obj[k]>0).map(k=> '     - ' + k + ': ' + num(obj[k]));
+  };
 
   csList.forEach((cs, idx) => {
     const rows = CS_DATA.filter(c=> c.cs===cs && csRowInRange(c.tanggal, range));
@@ -5431,12 +5445,27 @@ function buildCsReportText(){
     grandLeadReal+= leadReal;
     grandLeadOO  += leadOO;
 
+    const csNotReal = {};
+    const csNotClosing = {};
+    addKategoriTotals(csNotReal, CS_NOTREAL, cs, range);
+    addKategoriTotals(csNotClosing, CS_NOTCLOSING, cs, range);
+    Object.keys(csNotReal).forEach(k=> grandNotReal[k] = (grandNotReal[k]||0) + csNotReal[k]);
+    Object.keys(csNotClosing).forEach(k=> grandNotClosing[k] = (grandNotClosing[k]||0) + csNotClosing[k]);
+
     lines.push((idx+1) + '. *' + cs + '*');
     if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
     if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
     if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
     if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
     if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
+    if(reportState.showCsNotReal){
+      const kl = kategoriLines(csNotReal);
+      if(kl.length>0){ lines.push('   Rincian Lead OO Tidak Real:'); lines.push(...kl); }
+    }
+    if(reportState.showCsNotClosing){
+      const kl = kategoriLines(csNotClosing);
+      if(kl.length>0){ lines.push('   Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
+    }
 
     if(idx < csList.length-1) lines.push('');
   });
@@ -5453,6 +5482,14 @@ function buildCsReportText(){
     if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(grandLeadReal));
     if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(grandLeadOO));
     if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(grandRate));
+    if(reportState.showCsNotReal){
+      const kl = kategoriLines(grandNotReal);
+      if(kl.length>0){ lines.push('   Rincian Lead OO Tidak Real:'); lines.push(...kl); }
+    }
+    if(reportState.showCsNotClosing){
+      const kl = kategoriLines(grandNotClosing);
+      if(kl.length>0){ lines.push('   Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
+    }
     lines.push('──────────────────────');
   }
 
@@ -5671,6 +5708,8 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showCsLeadReal?'on':''}" data-key="showCsLeadReal">📥 Lead Real</div>
             <div class="toggle-chip ${reportState.showCsLeadOO?'on':''}" data-key="showCsLeadOO">📥 Lead OO</div>
             <div class="toggle-chip ${reportState.showCsRate?'on':''}" data-key="showCsRate">📈 Closing Rate</div>
+            <div class="toggle-chip ${reportState.showCsNotReal?'on':''}" data-key="showCsNotReal">🚫 Rincian Lead OO Tidak Real</div>
+            <div class="toggle-chip ${reportState.showCsNotClosing?'on':''}" data-key="showCsNotClosing">❌ Rincian Lead Real Tidak Closing</div>
           </div>
         </div>
 
