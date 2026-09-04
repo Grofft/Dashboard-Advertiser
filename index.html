@@ -5251,6 +5251,7 @@ let reportState = {
   showCPL: true,
   showKekurangan: true,
   selectedCsList: new Set(), // CS yang dipilih (untuk mode 'cs')
+  selectedCsAdvertisers: new Set(), // filter advertiser opsional utk mode 'cs' — kosong = semua advertiser (tidak dipisah)
   showCsOmzet: true,
   showCsClosing: true,
   showCsLeadReal: true,
@@ -5409,6 +5410,9 @@ function buildCsReportText(){
 
   lines.push('*REPORT HASIL CS*');
   lines.push('Periode: ' + dateLabel);
+  if(reportState.selectedCsAdvertisers.size > 0){
+    lines.push('Advertiser: ' + [...reportState.selectedCsAdvertisers].join(', '));
+  }
   if(reportState.customHeader.trim()){
     lines.push(reportState.customHeader.trim());
   }
@@ -5418,54 +5422,90 @@ function buildCsReportText(){
   if(csList.length === 0) return null;
 
   let grandOmzet=0, grandClosing=0, grandLeadReal=0, grandLeadOO=0;
-  const grandNotReal = {};     // kategori -> total jumlah, digabung semua CS terpilih
-  const grandNotClosing = {};  // kategori -> total jumlah, digabung semua CS terpilih
+  const grandNotReal = {};     // kategori -> total jumlah, digabung semua CS & advertiser yang tampil
+  const grandNotClosing = {};  // kategori -> total jumlah, digabung semua CS & advertiser yang tampil
   let anyRow = false;
 
-  const addKategoriTotals = (target, sourceArr, cs, range)=>{
-    sourceArr.filter(n=> n.cs===cs && csRowInRange(n.tanggal, range)).forEach(n=>{
+  const advFilterOn = reportState.selectedCsAdvertisers.size > 0;
+
+  const filterKategori = (sourceArr, cs, adv, range)=>{
+    const out = {};
+    sourceArr.filter(n=> n.cs===cs && n.advertiser===adv && csRowInRange(n.tanggal, range)).forEach(n=>{
       const k = n.kategori || '(tanpa kategori)';
-      target[k] = (target[k]||0) + (n.jumlah||0);
+      out[k] = (out[k]||0) + (n.jumlah||0);
     });
+    return out;
   };
   const kategoriLines = (obj)=>{
     return Object.keys(obj).filter(k=>obj[k]>0).map(k=> '     - ' + k + ': ' + num(obj[k]));
   };
-
-  csList.forEach((cs, idx) => {
-    const rows = CS_DATA.filter(c=> c.cs===cs && csRowInRange(c.tanggal, range));
-
-    let omzet=0, closing=0, leadReal=0, leadOO=0;
-    rows.forEach(r=>{ omzet+=(r.omzet||0); closing+=(r.hasilClosing||0); leadReal+=(r.leadReal||0); leadOO+=(r.leadOO||0); });
+  const hasAnyData = (cs, adv, range)=>{
+    if(CS_DATA.some(c=> c.cs===cs && c.advertiser===adv && csRowInRange(c.tanggal, range))) return true;
+    if(CS_NOTREAL.some(n=> n.cs===cs && n.advertiser===adv && csRowInRange(n.tanggal, range))) return true;
+    if(CS_NOTCLOSING.some(n=> n.cs===cs && n.advertiser===adv && csRowInRange(n.tanggal, range))) return true;
+    return false;
+  };
+  const pushStatsLines = (indent, omzet, closing, leadReal, leadOO, notReal, notClosing)=>{
     const rate = leadReal>0 ? (closing/leadReal*100) : null;
-
-    if(rows.length>0) anyRow = true;
-    grandOmzet   += omzet;
-    grandClosing += closing;
-    grandLeadReal+= leadReal;
-    grandLeadOO  += leadOO;
-
-    const csNotReal = {};
-    const csNotClosing = {};
-    addKategoriTotals(csNotReal, CS_NOTREAL, cs, range);
-    addKategoriTotals(csNotClosing, CS_NOTCLOSING, cs, range);
-    Object.keys(csNotReal).forEach(k=> grandNotReal[k] = (grandNotReal[k]||0) + csNotReal[k]);
-    Object.keys(csNotClosing).forEach(k=> grandNotClosing[k] = (grandNotClosing[k]||0) + csNotClosing[k]);
-
-    lines.push((idx+1) + '. *' + cs + '*');
-    if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
-    if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
-    if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
-    if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
-    if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
+    if(reportState.showCsOmzet)    lines.push(indent+'Omzet         : ' + rupiah(omzet));
+    if(reportState.showCsClosing)  lines.push(indent+'Hasil Closing : ' + num(closing));
+    if(reportState.showCsLeadReal) lines.push(indent+'Lead Real     : ' + num(leadReal));
+    if(reportState.showCsLeadOO)   lines.push(indent+'Lead OO       : ' + num(leadOO));
+    if(reportState.showCsRate)     lines.push(indent+'Closing Rate  : ' + pctFmt(rate));
     if(reportState.showCsNotReal){
-      const kl = kategoriLines(csNotReal);
-      if(kl.length>0){ lines.push('   Rincian Lead OO Tidak Real:'); lines.push(...kl); }
+      const kl = kategoriLines(notReal);
+      if(kl.length>0){ lines.push(indent+'Rincian Lead OO Tidak Real:'); lines.push(...kl); }
     }
     if(reportState.showCsNotClosing){
-      const kl = kategoriLines(csNotClosing);
-      if(kl.length>0){ lines.push('   Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
+      const kl = kategoriLines(notClosing);
+      if(kl.length>0){ lines.push(indent+'Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
     }
+  };
+  const mergeDict = (target, src)=>{ Object.keys(src).forEach(k=> target[k]=(target[k]||0)+src[k]); };
+
+  csList.forEach((cs, idx) => {
+    // Advertiser mana saja yang ditampilkan utk CS ini: kalau ada filter, pakai itu persis;
+    // kalau tidak, deteksi otomatis advertiser mana saja yg punya data utk CS ini di periode ini.
+    const advsForCs = advFilterOn
+      ? ADVERTISERS.filter(a=> reportState.selectedCsAdvertisers.has(a))
+      : ADVERTISERS.filter(a=> hasAnyData(cs, a, range));
+
+    if(advsForCs.length===0) return; // CS ini tidak punya data relevan, skip
+
+    let csOmzet=0, csClosing=0, csLeadReal=0, csLeadOO=0;
+    const csNotReal = {}, csNotClosing = {};
+    let csHasRow = false;
+
+    lines.push((idx+1) + '. *' + cs + '*');
+
+    advsForCs.forEach(adv=>{
+      const rows = CS_DATA.filter(c=> c.cs===cs && c.advertiser===adv && csRowInRange(c.tanggal, range));
+      let omzet=0, closing=0, leadReal=0, leadOO=0;
+      rows.forEach(r=>{ omzet+=(r.omzet||0); closing+=(r.hasilClosing||0); leadReal+=(r.leadReal||0); leadOO+=(r.leadOO||0); });
+      const notReal = filterKategori(CS_NOTREAL, cs, adv, range);
+      const notClosing = filterKategori(CS_NOTCLOSING, cs, adv, range);
+      const hasKategoriData = Object.values(notReal).some(v=>v>0) || Object.values(notClosing).some(v=>v>0);
+
+      if(rows.length===0 && !hasKategoriData && !advFilterOn) return; // auto mode: skip advertiser kosong total
+
+      csHasRow = true;
+      csOmzet+=omzet; csClosing+=closing; csLeadReal+=leadReal; csLeadOO+=leadOO;
+      mergeDict(csNotReal, notReal); mergeDict(csNotClosing, notClosing);
+
+      lines.push('   ▸ ' + adv);
+      pushStatsLines('     ', omzet, closing, leadReal, leadOO, notReal, notClosing);
+    });
+
+    if(!csHasRow){ lines.pop(); return; } // batalkan heading CS kalau ternyata semua advertiser kosong
+
+    if(advsForCs.length>1){
+      lines.push('   ── Subtotal ' + cs + ' (semua advertiser) ──');
+      pushStatsLines('   ', csOmzet, csClosing, csLeadReal, csLeadOO, csNotReal, csNotClosing);
+    }
+
+    anyRow = true;
+    grandOmzet+=csOmzet; grandClosing+=csClosing; grandLeadReal+=csLeadReal; grandLeadOO+=csLeadOO;
+    mergeDict(grandNotReal, csNotReal); mergeDict(grandNotClosing, csNotClosing);
 
     if(idx < csList.length-1) lines.push('');
   });
@@ -5476,20 +5516,7 @@ function buildCsReportText(){
     lines.push('');
     lines.push('──────────────────────');
     lines.push('*TOTAL KESELURUHAN*');
-    const grandRate = grandLeadReal>0 ? (grandClosing/grandLeadReal*100) : null;
-    if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(grandOmzet));
-    if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(grandClosing));
-    if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(grandLeadReal));
-    if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(grandLeadOO));
-    if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(grandRate));
-    if(reportState.showCsNotReal){
-      const kl = kategoriLines(grandNotReal);
-      if(kl.length>0){ lines.push('   Rincian Lead OO Tidak Real:'); lines.push(...kl); }
-    }
-    if(reportState.showCsNotClosing){
-      const kl = kategoriLines(grandNotClosing);
-      if(kl.length>0){ lines.push('   Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
-    }
+    pushStatsLines('   ', grandOmzet, grandClosing, grandLeadReal, grandLeadOO, grandNotReal, grandNotClosing);
     lines.push('──────────────────────');
   }
 
@@ -5701,6 +5728,11 @@ function openReportModal(){
         </div>
 
         <div class="report-section">
+          <div class="report-section-title">Filter Advertiser <span style="font-weight:400;color:var(--muted);">(opsional — kosongkan untuk gabung semua advertiser)</span></div>
+          <div class="adv-chips" id="reportCsAdvFilterChips"></div>
+        </div>
+
+        <div class="report-section">
           <div class="report-section-title">Kolom Report</div>
           <div class="toggle-group">
             <div class="toggle-chip ${reportState.showCsOmzet?'on':''}" data-key="showCsOmzet">💰 Omzet</div>
@@ -5798,6 +5830,25 @@ function openReportModal(){
         refreshReportPreview();
       });
       csChipsWrap.appendChild(chip);
+    });
+  }
+
+  // Render filter Advertiser utk mode CS — kosong = semua advertiser digabung (perilaku lama)
+  const csAdvFilterWrap = document.getElementById('reportCsAdvFilterChips');
+  if(ADVERTISERS.length===0){
+    csAdvFilterWrap.innerHTML = '<span class="muted-note">Belum ada advertiser.</span>';
+  } else {
+    ADVERTISERS.forEach(adv=>{
+      const chip = document.createElement('label');
+      chip.className = 'adv-chip' + (reportState.selectedCsAdvertisers.has(adv)?' selected':'');
+      chip.style.color = ADV_COLOR[adv] || '#fff';
+      chip.innerHTML = `<input type="checkbox" ${reportState.selectedCsAdvertisers.has(adv)?'checked':''}><span>${adv}</span>`;
+      chip.querySelector('input').addEventListener('change', e=>{
+        if(e.target.checked){ reportState.selectedCsAdvertisers.add(adv); chip.classList.add('selected'); }
+        else { reportState.selectedCsAdvertisers.delete(adv); chip.classList.remove('selected'); }
+        refreshReportPreview();
+      });
+      csAdvFilterWrap.appendChild(chip);
     });
   }
 
