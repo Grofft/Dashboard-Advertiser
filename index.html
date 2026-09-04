@@ -5197,6 +5197,8 @@ let reportState = {
   showTidakReal: true,
   showTidakClosing: true,
   selectedCsList: new Set(), // CS yang dipilih (untuk mode 'cs')
+  selectedCsAdvs: new Set(), // Advertiser yang dipilih untuk filter hasil di mode 'cs'
+  showCsPerAdv: true, // pisahkan hasil tiap CS per-advertiser (sub-baris) di report CS
   showCsOmzet: true,
   showCsClosing: true,
   showCsLeadReal: true,
@@ -5359,8 +5361,17 @@ function buildCsReportText(){
 
   const lines = [];
 
+  // Filter hasil berdasarkan advertiser yang dipilih. Kalau semua advertiser
+  // dipilih (default), tidak ada filter yang diterapkan — termasuk data lama
+  // yang belum punya field advertiser.
+  const csAdvFilterActive = reportState.selectedCsAdvs.size > 0 && reportState.selectedCsAdvs.size < ADVERTISERS.length;
+  const csAdvMatch = c => !csAdvFilterActive || reportState.selectedCsAdvs.has(c.advertiser);
+
   lines.push('*REPORT HASIL CS*');
   lines.push('Periode: ' + dateLabel);
+  if(csAdvFilterActive){
+    lines.push('Advertiser: ' + Array.from(reportState.selectedCsAdvs).join(', '));
+  }
   if(reportState.customHeader.trim()){
     lines.push(reportState.customHeader.trim());
   }
@@ -5373,7 +5384,7 @@ function buildCsReportText(){
   let anyRow = false;
 
   csList.forEach((cs, idx) => {
-    const rows = CS_DATA.filter(c=> c.cs===cs && csRowInRange(c.tanggal, range));
+    const rows = CS_DATA.filter(c=> c.cs===cs && csRowInRange(c.tanggal, range) && csAdvMatch(c));
 
     let omzet=0, closing=0, leadReal=0, leadOO=0;
     rows.forEach(r=>{ omzet+=(r.omzet||0); closing+=(r.hasilClosing||0); leadReal+=(r.leadReal||0); leadOO+=(r.leadOO||0); });
@@ -5385,12 +5396,40 @@ function buildCsReportText(){
     grandLeadReal+= leadReal;
     grandLeadOO  += leadOO;
 
+    // Advertiser yang benar-benar punya baris data untuk CS ini pada periode ini,
+    // diurutkan mengikuti urutan ADVERTISERS.
+    const advsWithData = ADVERTISERS.filter(adv=> rows.some(r=> r.advertiser===adv));
+    const splitPerAdv = reportState.showCsPerAdv && advsWithData.length > 1;
+
     lines.push((idx+1) + '. *' + cs + '*');
-    if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
-    if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
-    if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
-    if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
-    if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
+
+    if(splitPerAdv){
+      advsWithData.forEach(adv=>{
+        const advRows = rows.filter(r=> r.advertiser===adv);
+        let aOmzet=0, aClosing=0, aLeadReal=0, aLeadOO=0;
+        advRows.forEach(r=>{ aOmzet+=(r.omzet||0); aClosing+=(r.hasilClosing||0); aLeadReal+=(r.leadReal||0); aLeadOO+=(r.leadOO||0); });
+        const aRate = aLeadReal>0 ? (aClosing/aLeadReal*100) : null;
+
+        lines.push('   ▸ _' + adv + '_');
+        if(reportState.showCsOmzet)    lines.push('      Omzet         : ' + rupiah(aOmzet));
+        if(reportState.showCsClosing)  lines.push('      Hasil Closing : ' + num(aClosing));
+        if(reportState.showCsLeadReal) lines.push('      Lead Real     : ' + num(aLeadReal));
+        if(reportState.showCsLeadOO)   lines.push('      Lead OO       : ' + num(aLeadOO));
+        if(reportState.showCsRate)     lines.push('      Closing Rate  : ' + pctFmt(aRate));
+      });
+      lines.push('   — Subtotal ' + cs + ' —');
+      if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
+      if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
+      if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
+      if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
+      if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
+    } else {
+      if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
+      if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
+      if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
+      if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
+      if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
+    }
 
     if(idx < csList.length-1) lines.push('');
   });
@@ -5513,7 +5552,7 @@ function refreshReportPreview(){
   if(!el) return;
   if(!txt){
     el.textContent = reportState.reportMode === 'cs'
-      ? '⚠ Pilih minimal satu CS yang punya data pada periode ini.'
+      ? '⚠ Pilih minimal satu CS & satu advertiser yang punya data pada periode ini.'
       : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard / punya data Hasil CS.';
     el.style.color = 'var(--red)';
   } else {
@@ -5531,6 +5570,9 @@ function openReportModal(){
   }
   if(reportState.selectedCsList.size === 0){
     CS_LIST.forEach(cs=> reportState.selectedCsList.add(cs));
+  }
+  if(reportState.selectedCsAdvs.size === 0){
+    ADVERTISERS.forEach(a=> reportState.selectedCsAdvs.add(a));
   }
   // Prefill tanggal khusus report dengan periode dashboard aktif saat ini, kalau belum pernah diisi
   if(!reportState.dateStart || !reportState.dateEnd){
@@ -5615,6 +5657,12 @@ function openReportModal(){
       <!-- ============ SECTION: REPORT CS ============ -->
       <div id="reportSectionCs" style="display:${reportState.reportMode==='cs'?'':'none'};">
         <div class="report-section">
+          <div class="report-section-title">Pilih Advertiser</div>
+          <div class="adv-chips" id="reportCsAdvChips"></div>
+          <div class="muted-note" style="margin-top:6px;">Hasil CS akan dihitung hanya dari lead/omzet yang berasal dari advertiser yang dipilih di sini.</div>
+        </div>
+
+        <div class="report-section">
           <div class="report-section-title">Pilih CS</div>
           <div class="adv-chips" id="reportCsChips"></div>
         </div>
@@ -5627,6 +5675,9 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showCsLeadReal?'on':''}" data-key="showCsLeadReal">📥 Lead Real</div>
             <div class="toggle-chip ${reportState.showCsLeadOO?'on':''}" data-key="showCsLeadOO">📥 Lead OO</div>
             <div class="toggle-chip ${reportState.showCsRate?'on':''}" data-key="showCsRate">📈 Closing Rate</div>
+          </div>
+          <div class="toggle-group" style="margin-top:8px;">
+            <div class="toggle-chip ${reportState.showCsPerAdv?'on':''}" data-key="showCsPerAdv">🔀 Pisah per Advertiser</div>
           </div>
         </div>
 
@@ -5715,6 +5766,25 @@ function openReportModal(){
         refreshReportPreview();
       });
       csChipsWrap.appendChild(chip);
+    });
+  }
+
+  // Render CS advertiser filter chips
+  const csAdvChipsWrap = document.getElementById('reportCsAdvChips');
+  if(ADVERTISERS.length===0){
+    csAdvChipsWrap.innerHTML = '<span class="muted-note">Belum ada advertiser.</span>';
+  } else {
+    ADVERTISERS.forEach(adv=>{
+      const chip = document.createElement('label');
+      chip.className = 'adv-chip' + (reportState.selectedCsAdvs.has(adv)?' selected':'');
+      chip.style.color = ADV_COLOR[adv] || '#fff';
+      chip.innerHTML = `<input type="checkbox" ${reportState.selectedCsAdvs.has(adv)?'checked':''}><span>${adv}</span>`;
+      chip.querySelector('input').addEventListener('change', e=>{
+        if(e.target.checked){ reportState.selectedCsAdvs.add(adv); chip.classList.add('selected'); }
+        else { reportState.selectedCsAdvs.delete(adv); chip.classList.remove('selected'); }
+        refreshReportPreview();
+      });
+      csAdvChipsWrap.appendChild(chip);
     });
   }
 
