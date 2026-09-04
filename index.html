@@ -282,36 +282,6 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .cs-insight-card .adv-card-row .v{font-size:14.5px;}
 .cs-input-panel .btn{padding:11px 18px !important;font-size:13.5px !important;}
 
-/* ---- Input Data Harian: seksi & rincian kategori (dibuat lebih jelas untuk diisi) ---- */
-.cs-input-panel .cs-panel-intro{margin:-8px 0 18px;}
-.cs-input-section{margin-bottom:20px;}
-.cs-input-section-head{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
-.cs-input-section-head .cs-sec-ic{width:22px;height:22px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11.5px;flex-shrink:0;}
-.cs-input-section-head .cs-sec-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:12.5px;color:var(--muted);letter-spacing:.01em;}
-.cs-input-grid-2{grid-template-columns:repeat(2,1fr);}
-.cs-date-row{display:flex;gap:8px;}
-.cs-date-row input{flex:1;min-width:0;}
-.cs-today-btn{flex-shrink:0;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:0 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Roboto',sans-serif;white-space:nowrap;transition:border-color .15s,color .15s;}
-.cs-today-btn:hover{border-color:var(--green);color:var(--green);}
-
-.cs-rincian-box{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-bottom:14px;}
-.cs-rincian-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;}
-.cs-rincian-head .cs-sec-ic{width:28px;height:28px;border-radius:8px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.cs-rincian-head .cs-sec-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:13px;color:var(--text);}
-.cs-rincian-head .cs-sec-sub{font-size:11px;color:var(--muted);margin-top:1px;}
-.cs-rincian-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
-.cs-rincian-grid label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;}
-.cs-rincian-grid input{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 10px;font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums;transition:border-color .15s;}
-.cs-rincian-grid input::placeholder{color:var(--muted);opacity:.45;font-weight:400;}
-.cs-rincian-grid input:focus{outline:none;border-color:var(--green);}
-
-.cs-save-btn{width:100%;padding:13px 18px !important;font-size:14.5px !important;margin-top:6px;box-shadow:0 10px 22px -12px color-mix(in srgb, var(--green) 60%, transparent);}
-#csInputMsg{text-align:center;min-height:14px;}
-@media(max-width:560px){
-  .cs-input-grid-2{grid-template-columns:1fr;}
-  .cs-rincian-box{padding:13px 14px;}
-}
-
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;}
 th{text-align:left;color:var(--th-text);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;padding:11px 12px;background:linear-gradient(180deg,var(--green),var(--greendark));white-space:nowrap;}
@@ -1168,54 +1138,32 @@ try{
 
   <div class="cs-stack">
     <div class="account-picker compact-form cs-input-panel">
-      <h3 style="font-family:'Roboto',sans-serif;margin-bottom:6px;">📝 Input Data Harian</h3>
-      <div class="muted-note cs-panel-intro">Isi cepat per CS — pilih tanggal &amp; advertiser, masukkan angkanya, sisanya otomatis dihitung.</div>
-
-      <div class="cs-input-section">
-        <div class="cs-input-section-head"><span class="cs-sec-ic">📅</span><span class="cs-sec-title">TANGGAL &amp; ADVERTISER</span></div>
-        <div class="cs-input-grid cs-input-grid-2">
-          <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label>
-            <div class="cs-date-row"><input type="date" id="csTanggal"><button type="button" class="cs-today-btn" id="btnCsToday">Hari ini</button></div>
-          </div>
-          <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
-        </div>
+      <h3 style="font-family:'Roboto',sans-serif;margin-bottom:8px;">📝 Input Data Harian</h3>
+      <div class="cs-input-grid">
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label><input type="date" id="csTanggal"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Advertiser</label><select id="csAdvertiser"></select></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
       </div>
-
-      <div class="cs-input-section">
-        <div class="cs-input-section-head"><span class="cs-sec-ic">📊</span><span class="cs-sec-title">LEAD &amp; HASIL</span></div>
-        <div class="cs-input-grid cs-input-grid-2">
-          <div class="target-row" style="grid-template-columns:1fr;"><label>Lead OO</label><input type="number" id="csLeadOO" placeholder="Contoh: 68" step="1" inputmode="numeric"></div>
-          <div class="target-row" style="grid-template-columns:1fr;"><label>Lead Real</label><input type="number" id="csLeadReal" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
-          <div class="target-row" style="grid-template-columns:1fr;"><label>Hasil Closing</label><input type="number" id="csHasilClosing" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
-          <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="csOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
-        </div>
+      <div style="margin-top:12px;">
+        <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;">Rincian Lead OO Tidak Real <span class="muted-note" style="font-weight:400;">(opsional, per kategori)</span></label>
+        <div id="csNotRealInputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;"></div>
+        <div class="muted-note" id="csNotRealSumNote" style="margin-top:6px;font-size:11.5px;"></div>
       </div>
-
-      <div class="cs-rincian-box">
-        <div class="cs-rincian-head">
-          <span class="cs-sec-ic">🚫</span>
-          <div><div class="cs-sec-title">Rincian Lead OO Tidak Real</div><div class="cs-sec-sub">Opsional, per kategori — isi kalau mau dicatat detail</div></div>
-        </div>
-        <div id="csNotRealInputs" class="cs-rincian-grid"></div>
-        <div class="muted-note" id="csNotRealSumNote" style="margin-top:8px;font-size:11.5px;"></div>
+      <div style="margin-top:12px;">
+        <label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;">Rincian Lead Real Tidak Closing <span class="muted-note" style="font-weight:400;">(opsional, per kategori)</span></label>
+        <div id="csNotClosingInputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;"></div>
+        <div class="muted-note" id="csNotClosingSumNote" style="margin-top:6px;font-size:11.5px;"></div>
       </div>
-
-      <div class="cs-rincian-box">
-        <div class="cs-rincian-head">
-          <span class="cs-sec-ic">❌</span>
-          <div><div class="cs-sec-title">Rincian Lead Real Tidak Closing</div><div class="cs-sec-sub">Opsional, per kategori — isi kalau mau dicatat detail</div></div>
-        </div>
-        <div id="csNotClosingInputs" class="cs-rincian-grid"></div>
-        <div class="muted-note" id="csNotClosingSumNote" style="margin-top:8px;font-size:11.5px;"></div>
-      </div>
-
       <div class="cs-insight-card">
         <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Insight Otomatis</h3>
         <div class="muted-note" style="margin-bottom:10px;">Terhitung langsung dari angka yang sedang diisi — closing rate &amp; status vs standar KPI CS</div>
         <div id="csInsightPanel"></div>
       </div>
-      <button class="btn cs-save-btn" id="btnSaveCsInput">💾 Simpan Data CS</button>
-      <div class="muted-note" id="csInputMsg" style="margin-top:8px;"></div>
+      <button class="btn" id="btnSaveCsInput" style="margin-top:3px;">💾 Simpan Data CS</button>
+      <div class="muted-note" id="csInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
     </div>
 
     <div>
@@ -1607,6 +1555,7 @@ function makeNewAdvertiser(name){
    variabel ini ditinggal hanya untuk migrasi satu kali nilai lama ke Target Bulanan) */
 let TARGETS = {MALDY:7800000, FIKI:2000000, RIFAN:7650000, ALADIN:7600000};
 let defaultTargetMigrated = false;
+let historiBackfillMigrated = false; // migrasi sekali-jalan: tandai semua ownerHistory yang sudah ada sebagai dirty, biar histori lama yang gagal terkirim ikut ke-push ke sheet "AkunHistori"
 
 /* Target bulanan: TARGETS_MONTHLY[adv]["tahun-bulan"] = nilai harian */
 let TARGETS_MONTHLY = {};
@@ -3823,18 +3772,6 @@ function applyHistoriAkunRows(historiRows){
   });
   return countHistori;
 }
-// ==== SAFETY GUARD: cegah akun hilang gara-gara race-condition antar device / fetch gagal sebagian ====
-// Kalau akun yang "hilang" dari sheet AkunWL jumlahnya mencurigakan (banyak sekaligus, bukan
-// cuma 1-2 akun yang memang sengaja dihapus user), JANGAN dihapus otomatis dari dashboard.
-// Ini paling sering kejadian kalau device lain lagi di tengah proses "Kirim Semua Data ke
-// Spreadsheet" (ngirim satu-satu, ada jeda) pas device ini kebetulan lagi Tarik Data / auto-sync,
-// sehingga sheet AkunWL kebaca belum lengkap dan dikira banyak akun sudah dihapus padahal belum.
-function getUnsafeAccountRemovals(candidates, totalAccounts){
-  if(candidates.length===0) return [];
-  const ratio = candidates.length / Math.max(totalAccounts,1);
-  const suspicious = candidates.length > 2 && ratio > 0.2;
-  return suspicious ? candidates : [];
-}
 async function syncAccountRoster(){
   const url = getAppsScriptUrl();
   if(!url) return;
@@ -3849,6 +3786,7 @@ async function pullFromSheet(){
   if(!url){ msg.textContent='Isi URL Web App Apps Script terlebih dahulu.'; msg.style.color='var(--red)'; return; }
   msg.textContent='Menarik data dari spreadsheet...'; msg.style.color='var(--muted)';
   await flushDirtyTargets();
+  await flushDirtyHistori();
   try{
     const res = await fetch(url+'?action=read', {cache:'no-store'});
     const json = await res.json();
@@ -3857,21 +3795,15 @@ async function pullFromSheet(){
     const skippedLeadAdv = new Set();
 
     // ==== ROSTER AKUN DULU (tambah/perbarui/HAPUS) supaya daftar akun persis sama dgn sheet "AkunWL" ====
-    let countRoster=0, countRemoved=0, blockedRemovalNames=[];
+    let countRoster=0, countRemoved=0;
     if(Array.isArray(json.akunwl) && json.akunwl.length>0){
       const namesInSheet = new Set(json.akunwl.map(r=> String(r.nama||'').trim().toLowerCase()).filter(Boolean));
       (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster++; });
-      const removalCandidates = ACCOUNTS.filter(a=>!namesInSheet.has(a.name.trim().toLowerCase()));
-      const unsafe = getUnsafeAccountRemovals(removalCandidates, ACCOUNTS.length);
-      if(unsafe.length>0){
-        blockedRemovalNames = unsafe.map(a=>a.name);
-      } else {
-        for(let i=ACCOUNTS.length-1;i>=0;i--){
-          if(!namesInSheet.has(ACCOUNTS[i].name.trim().toLowerCase())){
-            selectedAccounts.delete(ACCOUNTS[i].id);
-            ACCOUNTS.splice(i,1);
-            countRemoved++;
-          }
+      for(let i=ACCOUNTS.length-1;i>=0;i--){
+        if(!namesInSheet.has(ACCOUNTS[i].name.trim().toLowerCase())){
+          selectedAccounts.delete(ACCOUNTS[i].id);
+          ACCOUNTS.splice(i,1);
+          countRemoved++;
         }
       }
     }
@@ -3975,23 +3907,20 @@ async function pullFromSheet(){
     // (dibaca SEBELUM rincian harian, sama polanya dengan ROSTER CS di atas)
     let countCsNotRealKat=0;
     if(Array.isArray(json.csnotrealkategori) && json.csnotrealkategori.length>0){
-      const activeSet=[], hiddenSet=[];
       json.csnotrealkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
-        rmFrom(activeSet); rmFrom(hiddenSet);
-        (isActive ? activeSet : hiddenSet).push(kategori);
+        if(isActive){
+          if(!CS_NOTREAL_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI.push(kategori);
+          CS_NOTREAL_KATEGORI_HIDDEN = CS_NOTREAL_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+        } else {
+          CS_NOTREAL_KATEGORI = CS_NOTREAL_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+          if(!CS_NOTREAL_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI_HIDDEN.push(kategori);
+        }
         countCsNotRealKat++;
       });
-      // Sheet BENAR-BENAR jadi sumber kebenaran di sini: daftar lokal DIGANTI TOTAL, bukan
-      // cuma ditambah-tambahin. Sebelumnya kategori yang nyangkut di localStorage satu
-      // tab/device (misal belum sempat ke-hapus di sana) akan terus muncul selamanya walau
-      // sudah tidak ada/beda di sheet — makanya 2 tab bisa nunjukin daftar kategori yang beda.
-      CS_NOTREAL_KATEGORI = activeSet;
-      CS_NOTREAL_KATEGORI_HIDDEN = hiddenSet;
       saveLocalState();
       if(typeof renderCsNotRealKatChips==='function') renderCsNotRealKatChips();
       if(typeof renderCsNotRealInputs==='function') renderCsNotRealInputs();
@@ -4013,19 +3942,20 @@ async function pullFromSheet(){
     // ==== ROSTER KATEGORI "TIDAK CLOSING": sheet "CSKategoriTidakClosing" adalah sumber kebenaran ====
     let countCsNotClosingKat=0;
     if(Array.isArray(json.csnotclosingkategori) && json.csnotclosingkategori.length>0){
-      const activeSet=[], hiddenSet=[];
       json.csnotclosingkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
-        rmFrom(activeSet); rmFrom(hiddenSet);
-        (isActive ? activeSet : hiddenSet).push(kategori);
+        if(isActive){
+          if(!CS_NOTCLOSING_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI.push(kategori);
+          CS_NOTCLOSING_KATEGORI_HIDDEN = CS_NOTCLOSING_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+        } else {
+          CS_NOTCLOSING_KATEGORI = CS_NOTCLOSING_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+          if(!CS_NOTCLOSING_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI_HIDDEN.push(kategori);
+        }
         countCsNotClosingKat++;
       });
-      CS_NOTCLOSING_KATEGORI = activeSet;
-      CS_NOTCLOSING_KATEGORI_HIDDEN = hiddenSet;
       saveLocalState();
       if(typeof renderCsNotClosingKatChips==='function') renderCsNotClosingKatChips();
       if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
@@ -4102,13 +4032,11 @@ async function pullFromSheet(){
       if(typeof okrRenderAll==='function') okrRenderAll();
     }
     const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
-    const blockedNote = blockedRemovalNames.length>0 ? (' ⚠️ '+blockedRemovalNames.length+' akun ('+blockedRemovalNames.join(', ')+') terlihat hilang dari sheet AkunWL, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
-    if(skippedAkunNames.size>0 || skippedLeadAdv.size>0 || blockedRemovalNames.length>0){
+    if(skippedAkunNames.size>0 || skippedLeadAdv.size>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
-      const extraWarn = warnParts.length>0 ? (' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.') : '';
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, '+countOkr+' periode OKR.'+removedNote+blockedNote+extraWarn;
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, '+countOkr+' periode OKR.'+removedNote+' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.';
       msg.style.color='var(--red)';
     } else {
       msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, dan '+countOkr+' periode OKR dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
@@ -4120,8 +4048,7 @@ async function pullFromSheet(){
     msg.style.color='var(--red)';
   }
 }
-async function pushOneToSheet(payload, _attempt){
-  const attempt = _attempt || 0;
+async function pushOneToSheet(payload){
   const url = getAppsScriptUrl();
   if(!url) return 'no-url';
   try{
@@ -4138,32 +4065,47 @@ async function pushOneToSheet(payload, _attempt){
     // (mis. lock timeout pas ada request lain yang bentrok) — jadi statusnya harus
     // dicek dari BODY JSON-nya, bukan cuma asumsi "fetch gak error = berhasil".
     const body = await res.json().catch(()=>null);
-    // PENTING: backend SELALU balas JSON eksplisit {status:'ok'} kalau request benar-benar
-    // berhasil diproses & ditulis ke sheet. Sebelumnya kode ini menganggap "ok" kalau body-nya
-    // TIDAK bilang 'error' — termasuk saat body null/gagal di-parse (mis. respons ternyata
-    // halaman HTML/redirect, bukan JSON, yang sering kejadian di jaringan HP yang kurang stabil
-    // atau ada masalah sesi/izin akses Apps Script). Akibatnya muncul pesan sukses palsu di
-    // dashboard padahal datanya tidak pernah benar-benar masuk ke spreadsheet. Sekarang harus
-    // eksplisit body.status === 'ok' baru dianggap berhasil.
-    if(body && body.status === 'ok') return 'ok';
-    // Kalau belum sukses & belum 2x nyoba ulang, coba lagi dengan jeda singkat — kegagalan
-    // pertama sering cuma sementara (cold start Apps Script, lock server lagi dipakai request
-    // lain, jaringan seluler putus sedetik) dan biasanya berhasil kalau dicoba lagi.
-    if(attempt < 2){ await new Promise(r=>setTimeout(r, 1200*(attempt+1))); return pushOneToSheet(payload, attempt+1); }
-    return 'error';
-  }catch(err){
-    if(attempt < 2){ await new Promise(r=>setTimeout(r, 1200*(attempt+1))); return pushOneToSheet(payload, attempt+1); }
-    return 'error';
-  }
+    if(body && body.status === 'error') return 'error';
+    return 'ok';
+  }catch(err){ return 'error'; }
 }
 
 /* ============== SYNC HISTORI KEPEMILIKAN AKUN KE SHEET "AkunHistori" ============== */
 function ownerHistoryEntryDate(entry){ const d=new Date(DATA_START); d.setDate(d.getDate()+entry.fromIdx); return d; }
+// DIRTY_HISTORI menandai entri ownerHistory yang BELUM terkonfirmasi masuk ke sheet "AkunHistori".
+// Sama seperti DIRTY_TARGETS: push ke sheet ini fire-and-forget dan bisa gagal diam-diam kalau
+// request timeout / kena lock bentrok (server bisa nunggu sampai 30 detik saat dipakai 6 orang
+// bersamaan, sementara client timeout di 15 detik). Tanpa tracker ini, perpindahan advertiser akun
+// bisa gagal terkirim ke sheet tanpa ada tanda apa pun, jadi baris di "AkunHistori" tetap kosong.
+let DIRTY_HISTORI = {}; // key: accId+'|'+fromIdx -> true
 async function pushOwnerHistoryEntry(acc, entry){
-  return pushOneToSheet({type:'akunhistori', nama:acc.name, advertiser:entry.advertiser, tanggal_mulai: fmtISO(ownerHistoryEntryDate(entry))});
+  const key = acc.id+'|'+entry.fromIdx;
+  DIRTY_HISTORI[key] = true;
+  const status = await pushOneToSheet({type:'akunhistori', nama:acc.name, advertiser:entry.advertiser, tanggal_mulai: fmtISO(ownerHistoryEntryDate(entry))});
+  if(status==='ok') delete DIRTY_HISTORI[key];
+  saveLocalState();
+  return status;
 }
 async function pushOwnerHistoryAll(acc){
   for(const h of ensureOwnerHistory(acc)){ await pushOwnerHistoryEntry(acc, h); }
+}
+// Coba kirim ulang semua entri ownerHistory yang masih ditandai "belum tersimpan" (DIRTY_HISTORI)
+// SEBELUM menarik data dari sheet — sama seperti flushDirtyTargets — supaya perpindahan advertiser
+// yang sempat gagal terkirim tidak hilang begitu saja dan akhirnya benar-benar masuk ke "AkunHistori".
+async function flushDirtyHistori(){
+  const keys = Object.keys(DIRTY_HISTORI);
+  if(keys.length===0) return;
+  await Promise.all(keys.map(async (key)=>{
+    const sep = key.lastIndexOf('|');
+    const accId = key.slice(0, sep), fromIdx = parseInt(key.slice(sep+1));
+    const acc = ACCOUNTS.find(a=>a.id===accId);
+    if(!acc){ delete DIRTY_HISTORI[key]; return; }
+    const entry = ensureOwnerHistory(acc).find(h=>h.fromIdx===fromIdx);
+    if(!entry){ delete DIRTY_HISTORI[key]; return; }
+    const status = await pushOneToSheet({type:'akunhistori', nama:acc.name, advertiser:entry.advertiser, tanggal_mulai: fmtISO(ownerHistoryEntryDate(entry))});
+    if(status==='ok') delete DIRTY_HISTORI[key];
+  }));
+  saveLocalState();
 }
 
 /* ============== SYNC TARGET KE SHEET "Target" ============== */
@@ -4713,8 +4655,8 @@ function renderCsNotRealInputs(){
     return;
   }
   wrap.innerHTML = CS_NOTREAL_KATEGORI.map(k=>
-    '<div><label>'+escapeHtml(k)+'</label>'+
-    '<input type="number" class="cs-notreal-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric"></div>'
+    '<div><label style="display:block;font-size:11px;color:var(--muted);margin-bottom:3px;">'+escapeHtml(k)+'</label>'+
+    '<input type="number" class="cs-notreal-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12.5px;"></div>'
   ).join('');
   wrap.querySelectorAll('.cs-notreal-input').forEach(el=> el.addEventListener('input', updateCsNotRealSumNote));
 }
@@ -4820,8 +4762,8 @@ function renderCsNotClosingInputs(){
     return;
   }
   wrap.innerHTML = CS_NOTCLOSING_KATEGORI.map(k=>
-    '<div><label>'+escapeHtml(k)+'</label>'+
-    '<input type="number" class="cs-notclosing-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric"></div>'
+    '<div><label style="display:block;font-size:11px;color:var(--muted);margin-bottom:3px;">'+escapeHtml(k)+'</label>'+
+    '<input type="number" class="cs-notclosing-input" data-kategori="'+escapeHtml(k)+'" placeholder="0" step="1" min="0" inputmode="numeric" style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12.5px;"></div>'
   ).join('');
   wrap.querySelectorAll('.cs-notclosing-input').forEach(el=> el.addEventListener('input', updateCsNotClosingSumNote));
 }
@@ -4964,8 +4906,6 @@ async function saveCsInput(){
   else setCsMsg('Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script & koneksi internet.', 'var(--red)');
 }
 document.getElementById('btnSaveCsInput').addEventListener('click', saveCsInput);
-const btnCsToday = document.getElementById('btnCsToday');
-if(btnCsToday) btnCsToday.addEventListener('click', ()=>{ document.getElementById('csTanggal').value = fmtISO(new Date()); });
 
 function renderCsData(){
   const tbody = document.getElementById('tblCsData');
@@ -5135,6 +5075,8 @@ function saveLocalState(){
       targets: TARGETS,
       targetsMonthly: TARGETS_MONTHLY,
       dirtyTargets: DIRTY_TARGETS,
+      dirtyHistori: DIRTY_HISTORI,
+      historiBackfillMigrated: historiBackfillMigrated,
       defaultTargetMigrated: defaultTargetMigrated,
       targetMode: targetMode,
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
@@ -5169,6 +5111,8 @@ function loadLocalState(){
     TARGETS = state.targets || TARGETS;
     if(state.targetsMonthly) TARGETS_MONTHLY = state.targetsMonthly;
     DIRTY_TARGETS = state.dirtyTargets || {};
+    DIRTY_HISTORI = state.dirtyHistori || {};
+    historiBackfillMigrated = !!state.historiBackfillMigrated;
     defaultTargetMigrated = !!state.defaultTargetMigrated;
     if(state.targetMode) targetMode = state.targetMode;
     accCounter = state.accCounter || accCounter;
@@ -5250,14 +5194,14 @@ let reportState = {
   showLead: true,
   showCPL: true,
   showKekurangan: true,
+  showTidakReal: true,
+  showTidakClosing: true,
   selectedCsList: new Set(), // CS yang dipilih (untuk mode 'cs')
   showCsOmzet: true,
   showCsClosing: true,
   showCsLeadReal: true,
   showCsLeadOO: true,
   showCsRate: true,
-  showCsNotReal: true,
-  showCsNotClosing: true,
   // Kolom untuk mode 'gabungan' (Hasil Ads per advertiser — gabungan Advertiser & Hasil CS)
   showGabSpend: true,
   showGabOmzet: true,
@@ -5306,7 +5250,7 @@ function buildAdvertiserReportText(){
   const advList = ADVERTISERS.filter(adv => reportState.selectedAdvs.has(adv));
   if(advList.length === 0) return null;
 
-  let grandBudget=0, grandSpend=0, grandReal=0, grandOO=0;
+  let grandBudget=0, grandSpend=0, grandReal=0, grandOO=0, grandNotReal=0, grandNotClosing=0;
 
   advList.forEach((adv, idx) => {
     // Akun hanya ikut ditampilkan di report advertiser ini kalau memang dia PEMILIKNYA
@@ -5337,11 +5281,15 @@ function buildAdvertiserReportText(){
     const cplReal = real>0 ? budget/real : 0;
     const cplOO   = oo>0  ? budget/oo  : 0;
     const pctLead = oo>0 ? (real/oo*100).toFixed(1) : '0.0';
+    const notRealTotal = CS_NOTREAL.filter(n=> n.advertiser===adv && csRowInRange(n.tanggal, range)).reduce((s,n)=>s+(n.jumlah||0),0);
+    const notClosingTotal = CS_NOTCLOSING.filter(n=> n.advertiser===adv && csRowInRange(n.tanggal, range)).reduce((s,n)=>s+(n.jumlah||0),0);
 
     grandBudget += budget;
     grandSpend  += spendPPN;
     grandReal   += real;
     grandOO     += oo;
+    grandNotReal     += notRealTotal;
+    grandNotClosing  += notClosingTotal;
 
     lines.push((idx+1) + '. *' + adv + '*');
 
@@ -5358,6 +5306,8 @@ function buildAdvertiserReportText(){
       lines.push('   CPL Real     : ' + rupiah(cplReal));
       if(oo>0) lines.push('   CPL OO       : ' + rupiah(cplOO));
     }
+    if(reportState.showTidakReal)    lines.push('   Lead Tidak Real    : ' + num(notRealTotal));
+    if(reportState.showTidakClosing) lines.push('   Lead Tidak Closing : ' + num(notClosingTotal));
 
     // daftar akun
     if(advAccs.length > 0){
@@ -5385,6 +5335,8 @@ function buildAdvertiserReportText(){
     if(reportState.showLead){
       lines.push('   Lead Real    : ' + num(grandReal) + '  |  OO: ' + num(grandOO));
     }
+    if(reportState.showTidakReal)    lines.push('   Lead Tidak Real    : ' + num(grandNotReal));
+    if(reportState.showTidakClosing) lines.push('   Lead Tidak Closing : ' + num(grandNotClosing));
     lines.push('──────────────────────');
   }
 
@@ -5418,19 +5370,7 @@ function buildCsReportText(){
   if(csList.length === 0) return null;
 
   let grandOmzet=0, grandClosing=0, grandLeadReal=0, grandLeadOO=0;
-  const grandNotReal = {};     // kategori -> total jumlah, digabung semua CS terpilih
-  const grandNotClosing = {};  // kategori -> total jumlah, digabung semua CS terpilih
   let anyRow = false;
-
-  const addKategoriTotals = (target, sourceArr, cs, range)=>{
-    sourceArr.filter(n=> n.cs===cs && csRowInRange(n.tanggal, range)).forEach(n=>{
-      const k = n.kategori || '(tanpa kategori)';
-      target[k] = (target[k]||0) + (n.jumlah||0);
-    });
-  };
-  const kategoriLines = (obj)=>{
-    return Object.keys(obj).filter(k=>obj[k]>0).map(k=> '     - ' + k + ': ' + num(obj[k]));
-  };
 
   csList.forEach((cs, idx) => {
     const rows = CS_DATA.filter(c=> c.cs===cs && csRowInRange(c.tanggal, range));
@@ -5445,27 +5385,12 @@ function buildCsReportText(){
     grandLeadReal+= leadReal;
     grandLeadOO  += leadOO;
 
-    const csNotReal = {};
-    const csNotClosing = {};
-    addKategoriTotals(csNotReal, CS_NOTREAL, cs, range);
-    addKategoriTotals(csNotClosing, CS_NOTCLOSING, cs, range);
-    Object.keys(csNotReal).forEach(k=> grandNotReal[k] = (grandNotReal[k]||0) + csNotReal[k]);
-    Object.keys(csNotClosing).forEach(k=> grandNotClosing[k] = (grandNotClosing[k]||0) + csNotClosing[k]);
-
     lines.push((idx+1) + '. *' + cs + '*');
     if(reportState.showCsOmzet)    lines.push('   Omzet         : ' + rupiah(omzet));
     if(reportState.showCsClosing)  lines.push('   Hasil Closing : ' + num(closing));
     if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(leadReal));
     if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(leadOO));
     if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(rate));
-    if(reportState.showCsNotReal){
-      const kl = kategoriLines(csNotReal);
-      if(kl.length>0){ lines.push('   Rincian Lead OO Tidak Real:'); lines.push(...kl); }
-    }
-    if(reportState.showCsNotClosing){
-      const kl = kategoriLines(csNotClosing);
-      if(kl.length>0){ lines.push('   Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
-    }
 
     if(idx < csList.length-1) lines.push('');
   });
@@ -5482,14 +5407,6 @@ function buildCsReportText(){
     if(reportState.showCsLeadReal) lines.push('   Lead Real     : ' + num(grandLeadReal));
     if(reportState.showCsLeadOO)   lines.push('   Lead OO       : ' + num(grandLeadOO));
     if(reportState.showCsRate)     lines.push('   Closing Rate  : ' + pctFmt(grandRate));
-    if(reportState.showCsNotReal){
-      const kl = kategoriLines(grandNotReal);
-      if(kl.length>0){ lines.push('   Rincian Lead OO Tidak Real:'); lines.push(...kl); }
-    }
-    if(reportState.showCsNotClosing){
-      const kl = kategoriLines(grandNotClosing);
-      if(kl.length>0){ lines.push('   Rincian Lead Real Tidak Closing:'); lines.push(...kl); }
-    }
     lines.push('──────────────────────');
   }
 
@@ -5668,6 +5585,8 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showLead?'on':''}" data-key="showLead">📥 Lead</div>
             <div class="toggle-chip ${reportState.showCPL?'on':''}" data-key="showCPL">🎯 CPL</div>
             <div class="toggle-chip ${reportState.showKekurangan?'on':''}" data-key="showKekurangan">⚠️ Kekurangan</div>
+            <div class="toggle-chip ${reportState.showTidakReal?'on':''}" data-key="showTidakReal">🚫 Lead Tidak Real</div>
+            <div class="toggle-chip ${reportState.showTidakClosing?'on':''}" data-key="showTidakClosing">❌ Lead Tidak Closing</div>
           </div>
         </div>
       </div>
@@ -5708,8 +5627,6 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showCsLeadReal?'on':''}" data-key="showCsLeadReal">📥 Lead Real</div>
             <div class="toggle-chip ${reportState.showCsLeadOO?'on':''}" data-key="showCsLeadOO">📥 Lead OO</div>
             <div class="toggle-chip ${reportState.showCsRate?'on':''}" data-key="showCsRate">📈 Closing Rate</div>
-            <div class="toggle-chip ${reportState.showCsNotReal?'on':''}" data-key="showCsNotReal">🚫 Rincian Lead OO Tidak Real</div>
-            <div class="toggle-chip ${reportState.showCsNotClosing?'on':''}" data-key="showCsNotClosing">❌ Rincian Lead Real Tidak Closing</div>
           </div>
         </div>
 
@@ -5918,6 +5835,7 @@ async function autoPullOnLoad(){
   }
   setSidebarStatus('', 'Menghubungkan…');
   await flushDirtyTargets();
+  await flushDirtyHistori();
   // Tampilkan overlay loading ringan di area konten
   const loadBanner = document.createElement('div');
   loadBanner.id = 'autoPullBanner';
@@ -5933,21 +5851,15 @@ async function autoPullOnLoad(){
     const skippedLeadAdv2 = new Set();
 
     // ==== ROSTER AKUN DULU (tambah/perbarui/HAPUS) supaya daftar akun persis sama dgn sheet "AkunWL" ====
-    let countRoster2=0, countRemoved2=0, blockedRemovalNames2=[];
+    let countRoster2=0, countRemoved2=0;
     if(Array.isArray(json.akunwl) && json.akunwl.length>0){
       const namesInSheet2 = new Set(json.akunwl.map(r=> String(r.nama||'').trim().toLowerCase()).filter(Boolean));
       (json.akunwl||[]).forEach(r=>{ if(applyAkunWLRow(r)) countRoster2++; });
-      const removalCandidates2 = ACCOUNTS.filter(a=>!namesInSheet2.has(a.name.trim().toLowerCase()));
-      const unsafe2 = getUnsafeAccountRemovals(removalCandidates2, ACCOUNTS.length);
-      if(unsafe2.length>0){
-        blockedRemovalNames2 = unsafe2.map(a=>a.name);
-      } else {
-        for(let i=ACCOUNTS.length-1;i>=0;i--){
-          if(!namesInSheet2.has(ACCOUNTS[i].name.trim().toLowerCase())){
-            selectedAccounts.delete(ACCOUNTS[i].id);
-            ACCOUNTS.splice(i,1);
-            countRemoved2++;
-          }
+      for(let i=ACCOUNTS.length-1;i>=0;i--){
+        if(!namesInSheet2.has(ACCOUNTS[i].name.trim().toLowerCase())){
+          selectedAccounts.delete(ACCOUNTS[i].id);
+          ACCOUNTS.splice(i,1);
+          countRemoved2++;
         }
       }
     }
@@ -6017,21 +5929,20 @@ async function autoPullOnLoad(){
     // ==== KATEGORI & RINCIAN LEAD OO TIDAK REAL: sheet "CSKategoriTidakReal" & "CSTidakReal" ====
     let countCsNotRealKat2=0, countCsNotReal2=0;
     if(Array.isArray(json.csnotrealkategori) && json.csnotrealkategori.length>0){
-      const activeSet2=[], hiddenSet2=[];
       json.csnotrealkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
-        rmFrom(activeSet2); rmFrom(hiddenSet2);
-        (isActive ? activeSet2 : hiddenSet2).push(kategori);
+        if(isActive){
+          if(!CS_NOTREAL_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI.push(kategori);
+          CS_NOTREAL_KATEGORI_HIDDEN = CS_NOTREAL_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+        } else {
+          CS_NOTREAL_KATEGORI = CS_NOTREAL_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+          if(!CS_NOTREAL_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTREAL_KATEGORI_HIDDEN.push(kategori);
+        }
         countCsNotRealKat2++;
       });
-      // Sheet jadi sumber kebenaran: GANTI TOTAL, jangan cuma ditambah (lihat penjelasan sama
-      // di pullFromSheet di atas — ini penyebab tab/device berbeda bisa nunjukin kategori beda).
-      CS_NOTREAL_KATEGORI = activeSet2;
-      CS_NOTREAL_KATEGORI_HIDDEN = hiddenSet2;
       if(typeof renderCsNotRealKatChips==='function') renderCsNotRealKatChips();
       if(typeof renderCsNotRealInputs==='function') renderCsNotRealInputs();
     }
@@ -6049,19 +5960,20 @@ async function autoPullOnLoad(){
     // ==== KATEGORI & RINCIAN LEAD REAL TIDAK CLOSING: sheet "CSKategoriTidakClosing" & "CSTidakClosing" ====
     let countCsNotClosingKat2=0, countCsNotClosing2=0;
     if(Array.isArray(json.csnotclosingkategori) && json.csnotclosingkategori.length>0){
-      const activeSet3=[], hiddenSet3=[];
       json.csnotclosingkategori.forEach(r=>{
         const kategori = String(r.kategori||'').trim();
         if(!kategori) return;
         const aktifStr = String(r.aktif==null?'':r.aktif).toLowerCase().trim();
         const isActive = !['tidak','no','nonaktif','false','0','mati'].includes(aktifStr);
-        const rmFrom = arr=>{ const i=arr.findIndex(x=>x.toLowerCase()===kategori.toLowerCase()); if(i>-1) arr.splice(i,1); };
-        rmFrom(activeSet3); rmFrom(hiddenSet3);
-        (isActive ? activeSet3 : hiddenSet3).push(kategori);
+        if(isActive){
+          if(!CS_NOTCLOSING_KATEGORI.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI.push(kategori);
+          CS_NOTCLOSING_KATEGORI_HIDDEN = CS_NOTCLOSING_KATEGORI_HIDDEN.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+        } else {
+          CS_NOTCLOSING_KATEGORI = CS_NOTCLOSING_KATEGORI.filter(x=>x.toLowerCase()!==kategori.toLowerCase());
+          if(!CS_NOTCLOSING_KATEGORI_HIDDEN.some(x=>x.toLowerCase()===kategori.toLowerCase())) CS_NOTCLOSING_KATEGORI_HIDDEN.push(kategori);
+        }
         countCsNotClosingKat2++;
       });
-      CS_NOTCLOSING_KATEGORI = activeSet3;
-      CS_NOTCLOSING_KATEGORI_HIDDEN = hiddenSet3;
       if(typeof renderCsNotClosingKatChips==='function') renderCsNotClosingKatChips();
       if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
     }
@@ -6078,17 +5990,15 @@ async function autoPullOnLoad(){
     }
     saveLocalState();
     render();
-    const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0 || blockedRemovalNames2.length>0);
+    const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0);
     const removedNote2 = countRemoved2>0 ? (' '+countRemoved2+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
-    const blockedNote2 = blockedRemovalNames2.length>0 ? (' ⚠️ '+blockedRemovalNames2.length+' akun ('+blockedRemovalNames2.join(', ')+') terlihat hilang dari sheet AkunWL, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
     if(msg){
       const now = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
       if(hasSkipped2){
         let warnParts2=[];
         if(skippedAkunNames2.size>0) warnParts2.push('Akun tidak dikenal: '+[...skippedAkunNames2].join(', '));
         if(skippedLeadAdv2.size>0) warnParts2.push('Advertiser tidak dikenal: '+[...skippedLeadAdv2].join(', '));
-        const extraWarn2 = warnParts2.length>0 ? (' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ')) : '';
-        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS, '+countCsNotRealKat2+' kategori tidak real, '+countCsNotReal2+' rincian tidak real, '+countCsNotClosingKat2+' kategori tidak closing, '+countCsNotClosing2+' rincian tidak closing.'+removedNote2+blockedNote2+extraWarn2;
+        msg.innerHTML = '⚠️ Sinkron selesai ('+now+') — '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster2+' akun WL, '+countTc2+' campaign testing, '+countCs2+' data CS, '+countCsNotRealKat2+' kategori tidak real, '+countCsNotReal2+' rincian tidak real, '+countCsNotClosingKat2+' kategori tidak closing, '+countCsNotClosing2+' rincian tidak closing.'+removedNote2+' <b>Ada baris dilewati & TIDAK masuk total budget:</b> '+warnParts2.join(' | ');
         msg.style.color = 'var(--red)';
         setSidebarStatus('err', 'Sinkron sebagian (ada baris dilewati)');
       } else {
@@ -6200,6 +6110,17 @@ applyTheme(getSavedTheme());
     // Kirim hasil migrasi ke sheet (best-effort) supaya device lain juga dapat angka yang sama,
     // bukan ke-reset 0 gara-gara Target Default sudah dihapus.
     pushAllTargetsToSheet();
+  }
+  if(!historiBackfillMigrated){
+    // Tandai SEMUA entri ownerHistory yang sudah ada (termasuk perpindahan advertiser lama yang
+    // mungkin gagal terkirim dulu karena push-nya fire-and-forget tanpa retry) sebagai dirty,
+    // supaya flushDirtyHistori() di autoPullOnLoad/pullFromSheet ikut mengirim ulang semuanya
+    // ke sheet "AkunHistori" — bukan cuma perpindahan yang terjadi setelah fix ini.
+    ACCOUNTS.forEach(acc=>{
+      ensureOwnerHistory(acc).forEach(h=>{ DIRTY_HISTORI[acc.id+'|'+h.fromIdx] = true; });
+    });
+    historiBackfillMigrated = true;
+    saveLocalState();
   }
   renderAccountGroups();
   renderTargetRows();
