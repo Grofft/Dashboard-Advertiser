@@ -2245,7 +2245,7 @@ function buildAccGroupEl(adv, archived){
         // ini (sebelum resign) tetap ikut kehitung di laporan periode lalu, sesuai pesan di atas.
         ACCOUNTS.filter(a=>a.advertiser===adv).forEach(a=>{ a.status='nonaktif'; });
         ADV_ARCHIVED.add(adv);
-        saveLocalState(); renderAccountGroups(); renderTargetRows(); render(); syncAccountRoster();
+        saveLocalState(); renderAccountGroups(); renderTargetRows(); render(); syncAccountRoster(ACCOUNTS.filter(a=>a.advertiser===adv));
       }
     };
   }
@@ -2277,7 +2277,7 @@ function buildAccGroupEl(adv, archived){
         acc.status = inactive ? 'aktif' : 'nonaktif';
         // Sengaja TIDAK menghapus dari selectedAccounts: histori spend akun ini sebelum
         // ditandai mati harus tetap ikut terhitung di laporan/total periode lalu.
-        saveLocalState(); renderAccountGroups(); render(); syncAccountRoster();
+        saveLocalState(); renderAccountGroups(); render(); syncAccountRoster([acc]);
       };
       el.querySelector('[data-act=delete]').onclick=()=>{
         if(confirm('Hapus akun "'+acc.name+'" dari dashboard? Tindakan ini tidak bisa dibatalkan.')){
@@ -2399,7 +2399,7 @@ function openEditModal(accId){
     // Sengaja TIDAK menghapus dari selectedAccounts saat status jadi nonaktif: histori
     // spend akun ini sebelum ditandai mati harus tetap ikut terhitung di laporan periode lalu.
     acc.status = newStatus;
-    saveLocalState(); closeModal(); renderAccountGroups(); render(); syncAccountRoster();
+    saveLocalState(); closeModal(); renderAccountGroups(); render(); syncAccountRoster([acc]);
   };
   document.getElementById('mDelete').onclick = ()=>{
     if(confirm('Hapus akun "'+acc.name+'" dari dashboard?')){
@@ -2437,7 +2437,7 @@ function openAddModal(defaultAdv){
     const newAcc = makeNewAccount(name, advertiser, ppn);
     ACCOUNTS.push(newAcc);
     selectedAccounts.add(newAcc.id);
-    saveLocalState(); closeModal(); renderAccountGroups(); render(); renderInputSelectors(); syncAccountRoster();
+    saveLocalState(); closeModal(); renderAccountGroups(); render(); renderInputSelectors(); syncAccountRoster([newAcc]);
   };
 }
 document.getElementById('btnSelectAll').onclick=()=>{ selectedAccounts=new Set(ACCOUNTS.map(a=>a.id)); renderAccountGroups(); render(); };
@@ -3339,6 +3339,22 @@ function doGet(e){
 function doPost(e){
   var data = JSON.parse(e.postData.contents);
   var ss = SpreadsheetApp.getActiveSpreadsheet();
+  // PENTING: dulu doPost SELALU balas {status:'ok'} di akhir, apapun yang terjadi di dalam —
+  // termasuk kalau sheet tujuannya (mis. "AkunHistori") ternyata belum dibuat / salah nama.
+  // Fungsi upsert-nya cuma diam-diam "return" kalau sheet tidak ketemu (getSheetByName null),
+  // jadi dashboard kelihatan "berhasil terkirim" padahal sebenarnya TIDAK ADA yang tertulis
+  // sama sekali. Cek di bawah ini memastikan sheet tujuan memang ada SEBELUM mulai menulis,
+  // supaya kalau memang belum ada, client dapat pesan error yang jelas — bukan sukses palsu.
+  var REQUIRED_SHEET_NAME = {
+    akun:'Akun', lead:'Leads', akunwl:'AkunWL', akunhistori:'AkunHistori', target:'Target',
+    testcampaign:'TestCampaign', cs:'CS', csroster:'CSRoster',
+    csnotrealkategori:'CSKategoriTidakReal', csnotreal:'CSTidakReal',
+    csnotclosingkategori:'CSKategoriTidakClosing', csnotclosing:'CSTidakClosing', okr:'OKR'
+  };
+  var neededSheetName = REQUIRED_SHEET_NAME[data.type];
+  if(neededSheetName && !ss.getSheetByName(neededSheetName)){
+    return jsonOutput({status:'error', message:'Sheet "'+neededSheetName+'" tidak ditemukan di spreadsheet ini. Buat sheet baru dengan nama PERSIS "'+neededSheetName+'" (huruf besar/kecil harus sama), lalu coba lagi.'});
+  }
   // PENTING: dashboard sering ngirim beberapa request SEKALIGUS/paralel (misal simpan
   // beberapa baris data testing campaign bersamaan). Tanpa lock, 2 appendRow() yang jalan nyaris
   // barengan bisa nulis ke baris yang sama dan salah satunya HILANG/ketimpa. Lock ini
@@ -3835,12 +3851,29 @@ function getUnsafeAccountRemovals(candidates, totalAccounts){
   const suspicious = candidates.length > 2 && ratio > 0.2;
   return suspicious ? candidates : [];
 }
-async function syncAccountRoster(){
+// accountsToSync (opsional): array akun spesifik yang mau dikirim (mis. cuma akun yang baru
+// ditambah/diedit). Kalau tidak diisi, default-nya SEMUA akun (dipakai kalau memang perlu
+// resync total). Dulu fungsi ini SELALU loop semua akun setiap kali 1 akun ditambah/diedit —
+// jadi kalau akunnya sudah banyak, akun baru harus antre di belakang dan baru sampai ke
+// spreadsheet setelah semua akun lain selesai dikirim satu-satu (delay lama & tidak terlihat).
+async function syncAccountRoster(accountsToSync){
+  const list = accountsToSync || ACCOUNTS;
   const url = getAppsScriptUrl();
-  if(!url) return;
-  for(const acc of ACCOUNTS){
-    await pushOneToSheet({type:'akunwl', nama:acc.name, advertiser:acc.advertiser, ppn:(acc.ppn!=null?acc.ppn:3), aktif:(acc.status!=='nonaktif')?'ya':'tidak'});
+  const msg = document.getElementById('sheetSyncMsg');
+  if(!url){
+    if(msg){ msg.textContent = 'Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).'; msg.style.color = 'var(--yellow)'; }
+    return;
+  }
+  if(msg){ msg.textContent = 'Menyimpan '+list.length+' akun ke spreadsheet...'; msg.style.color = 'var(--muted)'; }
+  let allOk = true;
+  for(const acc of list){
+    const status = await pushOneToSheet({type:'akunwl', nama:acc.name, advertiser:acc.advertiser, ppn:(acc.ppn!=null?acc.ppn:3), aktif:(acc.status!=='nonaktif')?'ya':'tidak'});
+    if(status !== 'ok') allOk = false;
     await pushOwnerHistoryAll(acc);
+  }
+  if(msg){
+    if(allOk){ msg.textContent = '✅ '+list.length+' akun tersimpan & terkirim ke spreadsheet ('+fmtDateID(new Date())+').'; msg.style.color = 'var(--green)'; }
+    else { msg.textContent = '⚠️ Akun tersimpan di dashboard, tapi gagal terkirim ke spreadsheet. Cek koneksi internet & URL Apps Script, lalu coba tombol "Kirim Semua Data ke Spreadsheet".'; msg.style.color = 'var(--red)'; }
   }
 }
 async function pullFromSheet(){
