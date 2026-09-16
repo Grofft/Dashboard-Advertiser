@@ -786,7 +786,8 @@ try{
     <div class="navbtn" data-page="akun"><span class="ic">▥</span> Data Akun</div>
     <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
     <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
-    <div class="navbtn" data-page="cs"><span class="ic">📞</span> Hasil CS</div>
+    <div class="navbtn" data-page="cs"><span class="ic">📞</span> Input CS</div>
+    <div class="navbtn" data-page="cs-ringkasan"><span class="ic">📊</span> Ringkasan CS</div>
     <div class="navbtn" data-page="laporan"><span class="ic">🗒️</span> Laporan</div>
     <div class="navbtn" data-page="okr"><span class="ic">🎯</span> OKR Divisi</div>
 
@@ -1106,7 +1107,7 @@ try{
 </div><!-- /page-testing -->
 
 <div class="page" id="page-cs">
-  <div class="section-header" style="margin-top:0;"><h1>Hasil CS</h1><div class="muted-note">Omzet, hasil closing, dan closing rate harian tiap CS — per advertiser</div></div>
+  <div class="section-header" style="margin-top:0;"><h1>Input CS</h1><div class="muted-note">Input data harian tiap CS — ringkasan &amp; riwayatnya ada di tab "Ringkasan CS"</div></div>
 
   <div class="kelola-group">
     <details class="kelola-item" id="kelolaCsItem" open>
@@ -1217,35 +1218,57 @@ try{
       <button class="btn cs-save-btn" id="btnSaveCsInput">💾 Simpan Data CS</button>
       <div class="muted-note" id="csInputMsg" style="margin-top:8px;"></div>
     </div>
-
-    <div>
-      <div class="section-header" style="margin-top:0;"><h2>Ringkasan</h2><div class="muted-note" id="csCount">0 data tercatat</div></div>
-      <div class="grid grid-3" style="margin-bottom:18px;">
-        <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="csKpiOmzet">Rp 0</div></div>
-        <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Hasil Closing</div><div class="value" id="csKpiClosing">0</div></div>
-        <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">Closing Rate</div><div class="value" id="csKpiRate">0%</div></div>
-      </div>
-
-      <div class="chart-card" style="padding-bottom:14px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-          <div class="panel-title" style="margin-bottom:0;">Riwayat Harian</div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <label class="muted-note" style="margin:0;white-space:nowrap;">Filter Advertiser</label>
-            <select id="csFilterAdvertiser" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12.5px;"></select>
-          </div>
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead><tr>
-              <th>Tanggal</th><th>Advertiser</th><th>Omzet</th><th>Hasil Closing</th><th>Lead Real</th><th>Lead OO</th><th>Tidak Real</th><th>Tidak Closing</th><th>Closing Rate</th><th>Aksi</th>
-            </tr></thead>
-            <tbody id="tblCsData"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
 </div><!-- /page-cs -->
+
+<div class="page" id="page-cs-ringkasan">
+  <div class="section-header" style="margin-top:0;"><h1>Ringkasan CS</h1><div class="muted-note">Omzet, hasil closing, dan closing rate harian tiap CS — per advertiser</div></div>
+
+  <div class="period-btns" id="csTabsRingkasan" style="margin-bottom:22px;"></div>
+
+  <div class="section-header" style="margin-top:0;"><h2>Ringkasan</h2><div class="muted-note" id="csCount">0 data tercatat</div></div>
+  <div class="grid grid-3" style="margin-bottom:14px;">
+    <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="csKpiOmzet">Rp 0</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Hasil Closing</div><div class="value" id="csKpiClosing">0</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">Closing Rate</div><div class="value" id="csKpiRate">0%</div></div>
+  </div>
+
+  <div class="grid grid-4" style="margin-bottom:18px;">
+    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Lead Real</div><div class="value" id="csKpiLeadReal">0</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">Total Lead OO</div><div class="value" id="csKpiLeadOO">0</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--red)"></div><div class="label">Lead Tidak Real</div><div class="value" id="csKpiNotReal">0</div><div class="muted-note" id="csKpiNotRealPct" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--red)"></div><div class="label">Lead Tidak Closing</div><div class="value" id="csKpiNotClosing">0</div><div class="muted-note" id="csKpiNotClosingPct" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:18px;gap:14px;grid-template-columns:1fr 1fr;">
+    <div class="chart-card">
+      <div class="panel-title" style="margin-bottom:10px;">🔎 Kategori Lead Tidak Real</div>
+      <div id="csNotRealBreakdown"></div>
+    </div>
+    <div class="chart-card">
+      <div class="panel-title" style="margin-bottom:10px;">🔎 Kategori Lead Tidak Closing</div>
+      <div id="csNotClosingBreakdown"></div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="padding-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+      <div class="panel-title" style="margin-bottom:0;">Riwayat Harian</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label class="muted-note" style="margin:0;white-space:nowrap;">Filter Advertiser</label>
+        <select id="csFilterAdvertiser" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12.5px;"></select>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Tanggal</th><th>Advertiser</th><th>Omzet</th><th>Hasil Closing</th><th>Lead Real</th><th>Lead OO</th><th>Tidak Real</th><th>Tidak Closing</th><th>Closing Rate</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="tblCsData"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /page-cs-ringkasan -->
 
 <div class="page" id="page-laporan">
   <div class="section-header laporan-noprint" style="margin-top:0;">
@@ -1288,15 +1311,21 @@ try{
 
     <div class="section-header"><h2>📊 Laporan Gabungan — Advertiser &amp; Hasil CS</h2></div>
     <div class="muted-note" style="margin:-6px 0 12px 0;">Spending + PPN diambil dari data Akun/Advertiser, Omzet &amp; Closing diambil dari input Hasil CS — digabung per advertiser untuk periode yang sama.</div>
-    <div class="grid grid-3" style="margin-bottom:16px;">
+    <div class="grid grid-4" style="margin-bottom:14px;">
+      <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Budget</div><div class="value" id="gabBudget">Rp 0</div></div>
       <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="gabOmzet">Rp 0</div></div>
+      <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">% Lead Gabungan</div><div class="value" id="gabPctLead">0%</div></div>
       <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Closing Rate Gabungan</div><div class="value" id="gabRate">0%</div></div>
+    </div>
+    <div class="grid grid-3" style="margin-bottom:16px;">
       <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Gabungan</div><div class="value" id="gabRoas">0.00x</div></div>
+      <div class="card kpi"><div class="bar-accent" style="background:var(--red)"></div><div class="label">Total Lead Tidak Real</div><div class="value" id="gabNotReal">0</div></div>
+      <div class="card kpi"><div class="bar-accent" style="background:var(--red)"></div><div class="label">Total Lead Tidak Closing</div><div class="value" id="gabNotClosing">0</div></div>
     </div>
     <div class="table-scroll">
       <table>
         <thead><tr>
-          <th>Advertiser</th><th>Spending + PPN</th><th>Omzet</th><th>Lead Real</th><th>Closing</th><th>CPP</th><th>Closing Rate</th><th>ROAS</th>
+          <th>Advertiser</th><th>Budget</th><th>Spending + PPN</th><th>Omzet</th><th>Lead Real</th><th>Lead OO</th><th>% Lead</th><th>vs Target</th><th>Closing</th><th>CPP</th><th>Closing Rate</th><th>ROAS</th><th>Lead Tidak Real</th><th>Lead Tidak Closing</th>
         </tr></thead>
         <tbody id="laporanGabunganTable"></tbody>
       </table>
@@ -1938,6 +1967,8 @@ function getRange(){
   if(periodType==='custom'){
     const s=new Date(customRangeStart||fmtISO(DATA_START));
     const e=new Date(customRangeEnd||fmtISO(ANCHOR_DATE));
+    s.setHours(0,0,0,0);
+    e.setHours(0,0,0,0);
     return [s,e];
   }
   return [t,t];
@@ -2614,6 +2645,9 @@ function render(){
 
   // ---- kampanye testing: ikut sinkron dengan akun/advertiser yang sedang dipilih ----
   if(typeof renderTestCampaigns==='function') renderTestCampaigns();
+
+  // ---- Ringkasan Hasil CS: ikut sinkron dengan filter tanggal global ----
+  if(typeof renderCsData==='function') renderCsData();
 }
 
 /* ============== HALAMAN LAPORAN (rekap siap kirim per advertiser) ============== */
@@ -2822,46 +2856,75 @@ function renderLaporanGabungan(advRows, range){
     const cpp = closing>0 ? r.spendPPN/closing : null;
     const closingRate = leadReal>0 ? (closing/leadReal*100) : null;
     const roas = r.spendPPN>0 ? (omzet/r.spendPPN) : null;
-    return { adv:r.adv, spendPPN:r.spendPPN, omzet, leadReal, closing, cpp, closingRate, roas };
+    const notReal = CS_NOTREAL.filter(n=> n.advertiser===r.adv && csRowInRange(n.tanggal, range)).reduce((s,n)=>s+(n.jumlah||0),0);
+    const notClosing = CS_NOTCLOSING.filter(n=> n.advertiser===r.adv && csRowInRange(n.tanggal, range)).reduce((s,n)=>s+(n.jumlah||0),0);
+    const target = r.budget - r.kekurangan;
+    const pctTarget = target>0 ? (r.budget/target*100) : null;
+    return { adv:r.adv, budget:r.budget, spendPPN:r.spendPPN, omzet, real:r.real, oo:r.oo, pctLead:r.pctLead, target, pctTarget, leadReal, closing, cpp, closingRate, roas, notReal, notClosing };
   });
 
   const grand = rows.reduce((s,r)=>({
+    budget: s.budget + r.budget,
     spendPPN: s.spendPPN + r.spendPPN,
     omzet: s.omzet + r.omzet,
+    real: s.real + r.real,
+    oo: s.oo + r.oo,
+    target: s.target + (r.target>0?r.target:0),
     leadReal: s.leadReal + r.leadReal,
-    closing: s.closing + r.closing
-  }), { spendPPN:0, omzet:0, leadReal:0, closing:0 });
+    closing: s.closing + r.closing,
+    notReal: s.notReal + r.notReal,
+    notClosing: s.notClosing + r.notClosing
+  }), { budget:0, spendPPN:0, omzet:0, real:0, oo:0, target:0, leadReal:0, closing:0, notReal:0, notClosing:0 });
   const grandRate = grand.leadReal>0 ? (grand.closing/grand.leadReal*100) : 0;
   const grandRoas = grand.spendPPN>0 ? (grand.omzet/grand.spendPPN) : 0;
+  const grandPctLead = grand.oo>0 ? (grand.real/grand.oo*100) : 0;
+  const grandPctTarget = grand.target>0 ? (grand.budget/grand.target*100) : null;
+  const gabBudgetEl = document.getElementById('gabBudget'); if(gabBudgetEl) gabBudgetEl.textContent = rupiah(grand.budget);
   const gabOmzetEl = document.getElementById('gabOmzet'); if(gabOmzetEl) gabOmzetEl.textContent = rupiah(grand.omzet);
+  const gabPctLeadEl = document.getElementById('gabPctLead'); if(gabPctLeadEl) gabPctLeadEl.textContent = grand.oo>0 ? pctFmt(grandPctLead) : '0%';
   const gabRateEl = document.getElementById('gabRate'); if(gabRateEl) gabRateEl.textContent = pctFmt(grandRate);
   const gabRoasEl = document.getElementById('gabRoas'); if(gabRoasEl) gabRoasEl.textContent = grandRoas.toFixed(2)+'x';
+  const gabNotRealEl = document.getElementById('gabNotReal'); if(gabNotRealEl) gabNotRealEl.textContent = num(grand.notReal);
+  const gabNotClosingEl = document.getElementById('gabNotClosing'); if(gabNotClosingEl) gabNotClosingEl.textContent = num(grand.notClosing);
 
   if(rows.length===0){
-    tbody.innerHTML = '<tr><td colspan="8" class="muted-note">Tidak ada data pada periode ini</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" class="muted-note">Tidak ada data pada periode ini</td></tr>';
     return;
   }
-  tbody.innerHTML = rows.map(r=>
-    '<tr>'+
+  tbody.innerHTML = rows.map(r=>{
+    const targetColor = r.pctTarget==null ? 'var(--muted)' : (r.pctTarget>=100 ? 'var(--green)' : 'var(--yellow)');
+    return '<tr>'+
       '<td><span class="dot" style="background:'+ADV_COLOR[r.adv]+';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;"></span>'+r.adv+'</td>'+
+      '<td>'+rupiah(r.budget)+'</td>'+
       '<td>'+rupiah(r.spendPPN)+'</td>'+
       '<td>'+rupiah(r.omzet)+'</td>'+
-      '<td>'+num(r.leadReal)+'</td>'+
+      '<td>'+num(r.real)+'</td>'+
+      '<td>'+num(r.oo)+'</td>'+
+      '<td>'+(r.oo>0?r.pctLead.toFixed(1)+'%':'-')+'</td>'+
+      '<td style="color:'+targetColor+';">'+(r.pctTarget==null?'-':r.pctTarget.toFixed(0)+'%')+'</td>'+
       '<td>'+num(r.closing)+'</td>'+
       '<td>'+(r.cpp==null?'-':rupiah(r.cpp))+'</td>'+
       '<td style="font-weight:600;">'+pctFmt(r.closingRate)+'</td>'+
       '<td style="font-weight:600;color:'+(r.roas==null?'var(--muted)':(r.roas>=1?'var(--green)':'var(--red)'))+';">'+(r.roas==null?'-':r.roas.toFixed(2)+'x')+'</td>'+
-    '</tr>'
-  ).join('') +
+      '<td>'+(r.notReal>0?'<span style="color:var(--red);font-weight:600;">'+num(r.notReal)+'</span>':'<span class="muted-note">-</span>')+'</td>'+
+      '<td>'+(r.notClosing>0?'<span style="color:var(--red);font-weight:600;">'+num(r.notClosing)+'</span>':'<span class="muted-note">-</span>')+'</td>'+
+    '</tr>';
+  }).join('') +
   '<tr style="font-weight:700;border-top:1px solid var(--line);">'+
     '<td>TOTAL</td>'+
+    '<td>'+rupiah(grand.budget)+'</td>'+
     '<td>'+rupiah(grand.spendPPN)+'</td>'+
     '<td>'+rupiah(grand.omzet)+'</td>'+
-    '<td>'+num(grand.leadReal)+'</td>'+
+    '<td>'+num(grand.real)+'</td>'+
+    '<td>'+num(grand.oo)+'</td>'+
+    '<td>'+(grand.oo>0?grandPctLead.toFixed(1)+'%':'-')+'</td>'+
+    '<td style="color:'+(grandPctTarget==null?'var(--muted)':(grandPctTarget>=100?'var(--green)':'var(--yellow)'))+';">'+(grandPctTarget==null?'-':grandPctTarget.toFixed(0)+'%')+'</td>'+
     '<td>'+num(grand.closing)+'</td>'+
     '<td>'+(grand.closing>0?rupiah(grand.spendPPN/grand.closing):'-')+'</td>'+
     '<td>'+pctFmt(grand.leadReal>0?grandRate:null)+'</td>'+
     '<td style="color:'+(grand.spendPPN>0?(grandRoas>=1?'var(--green)':'var(--red)'):'var(--muted)')+';">'+(grand.spendPPN>0?grandRoas.toFixed(2)+'x':'-')+'</td>'+
+    '<td>'+(grand.notReal>0?'<span style="color:var(--red);">'+num(grand.notReal)+'</span>':'-')+'</td>'+
+    '<td>'+(grand.notClosing>0?'<span style="color:var(--red);">'+num(grand.notClosing)+'</span>':'-')+'</td>'+
   '</tr>';
 }
 
@@ -4892,20 +4955,26 @@ function updateCsNotClosingSumNote(){
 });
 
 function renderCsTabs(){
-  const wrap = document.getElementById('csTabs');
-  if(!wrap) return;
-  if(CS_LIST.length===0){ wrap.innerHTML=''; csActiveTab=null; return; }
+  // Selector CS ini dipakai di 2 tempat: tab "Input CS" (pilih CS yang lagi diisi datanya)
+  // dan tab "Ringkasan CS" (pilih CS yang mau dilihat ringkasannya). Keduanya sinkron ke
+  // satu variabel csActiveTab yang sama, jadi apapun yang dipilih di salah satu tab akan
+  // otomatis ikut berubah di tab lainnya juga.
+  const wraps = ['csTabs','csTabsRingkasan'].map(id=> document.getElementById(id)).filter(Boolean);
+  if(wraps.length===0) return;
+  if(CS_LIST.length===0){ wraps.forEach(w=> w.innerHTML=''); csActiveTab=null; return; }
   if(!csActiveTab || !CS_LIST.includes(csActiveTab)) csActiveTab = CS_LIST[0];
-  wrap.innerHTML = CS_LIST.map(cs=>{
-    const isActive = cs===csActiveTab;
-    return '<div class="period-btn'+(isActive?' active':'')+'" data-cs-tab="'+escapeHtml(cs)+'">'+escapeHtml(cs)+'</div>';
-  }).join('');
-  wrap.querySelectorAll('[data-cs-tab]').forEach(btn=>{
-    btn.onclick = ()=>{
-      csActiveTab = btn.getAttribute('data-cs-tab');
-      renderCsTabs();
-      renderCsData();
-    };
+  wraps.forEach(wrap=>{
+    wrap.innerHTML = CS_LIST.map(cs=>{
+      const isActive = cs===csActiveTab;
+      return '<div class="period-btn'+(isActive?' active':'')+'" data-cs-tab="'+escapeHtml(cs)+'">'+escapeHtml(cs)+'</div>';
+    }).join('');
+    wrap.querySelectorAll('[data-cs-tab]').forEach(btn=>{
+      btn.onclick = ()=>{
+        csActiveTab = btn.getAttribute('data-cs-tab');
+        renderCsTabs();
+        renderCsData();
+      };
+    });
   });
 }
 
@@ -5000,12 +5069,47 @@ document.getElementById('btnSaveCsInput').addEventListener('click', saveCsInput)
 const btnCsToday = document.getElementById('btnCsToday');
 if(btnCsToday) btnCsToday.addEventListener('click', ()=>{ document.getElementById('csTanggal').value = fmtISO(new Date()); });
 
+function renderCsBreakdown(elId, sourceArr, entries, totalLeadBase){
+  const wrap = document.getElementById(elId);
+  if(!wrap) return;
+  if(entries.length===0){
+    wrap.innerHTML = '<span class="muted-note">Belum ada data kategori untuk periode/filter ini.</span>';
+    return;
+  }
+  const byKategori = {};
+  entries.forEach(n=>{ byKategori[n.kategori] = (byKategori[n.kategori]||0) + (n.jumlah||0); });
+  const rows = Object.keys(byKategori).map(k=>({kategori:k, jumlah:byKategori[k]})).filter(r=>r.jumlah>0).sort((a,b)=>b.jumlah-a.jumlah);
+  const grandTotal = rows.reduce((s,r)=>s+r.jumlah,0);
+  if(rows.length===0){
+    wrap.innerHTML = '<span class="muted-note">Belum ada data kategori untuk periode/filter ini.</span>';
+    return;
+  }
+  wrap.innerHTML = rows.map(r=>{
+    const pctOfCat = grandTotal>0 ? (r.jumlah/grandTotal*100) : 0;
+    return '<div style="margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:4px;">'
+      +'<span>'+escapeHtml(r.kategori)+'</span>'
+      +'<span style="font-weight:700;font-variant-numeric:tabular-nums;">'+num(r.jumlah)+' <span class="muted-note" style="font-weight:400;">('+pctFmt(pctOfCat)+')</span></span>'
+      +'</div>'
+      +'<div style="height:7px;border-radius:4px;background:var(--panel-2);overflow:hidden;">'
+      +'<div style="height:100%;width:'+pctOfCat.toFixed(1)+'%;background:var(--red);border-radius:4px;"></div>'
+      +'</div>'
+      +'</div>';
+  }).join('')
+  + '<div class="adv-card-row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px;font-weight:700;"><span class="k">Total</span><span class="v">'+num(grandTotal)+'</span></div>';
+}
 function renderCsData(){
   const tbody = document.getElementById('tblCsData');
   const countEl = document.getElementById('csCount');
   const kpiOmzet = document.getElementById('csKpiOmzet');
   const kpiClosing = document.getElementById('csKpiClosing');
   const kpiRate = document.getElementById('csKpiRate');
+  const kpiLeadReal = document.getElementById('csKpiLeadReal');
+  const kpiLeadOO = document.getElementById('csKpiLeadOO');
+  const kpiNotReal = document.getElementById('csKpiNotReal');
+  const kpiNotRealPct = document.getElementById('csKpiNotRealPct');
+  const kpiNotClosing = document.getElementById('csKpiNotClosing');
+  const kpiNotClosingPct = document.getElementById('csKpiNotClosingPct');
   if(!tbody) return;
   if(!csActiveTab){
     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);">Belum ada CS terdaftar. Tambahkan dulu di atas.</td></tr>';
@@ -5013,16 +5117,41 @@ function renderCsData(){
     if(kpiOmzet) kpiOmzet.textContent = rupiah(0);
     if(kpiClosing) kpiClosing.textContent = '0';
     if(kpiRate) kpiRate.textContent = '0%';
+    if(kpiLeadReal) kpiLeadReal.textContent = '0';
+    if(kpiLeadOO) kpiLeadOO.textContent = '0';
+    if(kpiNotReal) kpiNotReal.textContent = '0';
+    if(kpiNotRealPct) kpiNotRealPct.textContent = '';
+    if(kpiNotClosing) kpiNotClosing.textContent = '0';
+    if(kpiNotClosingPct) kpiNotClosingPct.textContent = '';
+    renderCsBreakdown('csNotRealBreakdown', CS_NOTREAL, []);
+    renderCsBreakdown('csNotClosingBreakdown', CS_NOTCLOSING, []);
     return;
   }
-  const filtered = CS_DATA.filter(c=>c.cs===csActiveTab && (csFilterAdvertiser==='semua' || c.advertiser===csFilterAdvertiser));
+  const filtered = CS_DATA.filter(c=>c.cs===csActiveTab && (csFilterAdvertiser==='semua' || c.advertiser===csFilterAdvertiser) && csRowInRange(c.tanggal, getRange()));
   const filterNote = csFilterAdvertiser==='semua' ? '' : ' · advertiser: '+csFilterAdvertiser;
-  if(countEl) countEl.textContent = filtered.length + ' data tercatat untuk ' + csActiveTab + filterNote;
+  const periodRange = getRange();
+  const periodNote = ' · periode: '+fmtDateID(periodRange[0])+' - '+fmtDateID(periodRange[1]);
+  if(countEl) countEl.textContent = filtered.length + ' data tercatat untuk ' + csActiveTab + filterNote + periodNote;
   let totalOmzet=0, totalClosing=0, totalLeadReal=0, totalLeadOO=0;
   filtered.forEach(c=>{ totalOmzet+=(c.omzet||0); totalClosing+=(c.hasilClosing||0); totalLeadReal+=(c.leadReal||0); totalLeadOO+=(c.leadOO||0); });
   if(kpiOmzet) kpiOmzet.textContent = rupiah(totalOmzet);
   if(kpiClosing) kpiClosing.textContent = num(totalClosing);
   if(kpiRate) kpiRate.textContent = totalLeadReal>0 ? pctFmt((totalClosing/totalLeadReal)*100) : '0%';
+  if(kpiLeadReal) kpiLeadReal.textContent = num(totalLeadReal);
+  if(kpiLeadOO) kpiLeadOO.textContent = num(totalLeadOO);
+
+  const filteredKeySet = new Set(filtered.map(c=> c.cs+'|'+c.tanggal+'|'+(c.advertiser||'')));
+  const notRealEntries = CS_NOTREAL.filter(n=> filteredKeySet.has(n.cs+'|'+n.tanggal+'|'+(n.advertiser||'')) && (n.jumlah||0)>0);
+  const notClosingEntries = CS_NOTCLOSING.filter(n=> filteredKeySet.has(n.cs+'|'+n.tanggal+'|'+(n.advertiser||'')) && (n.jumlah||0)>0);
+  const totalNotReal = notRealEntries.reduce((s,n)=>s+(n.jumlah||0),0);
+  const totalNotClosing = notClosingEntries.reduce((s,n)=>s+(n.jumlah||0),0);
+  if(kpiNotReal) kpiNotReal.textContent = num(totalNotReal);
+  if(kpiNotRealPct) kpiNotRealPct.textContent = totalLeadOO>0 ? pctFmt(totalNotReal/totalLeadOO*100)+' dari Lead OO' : '';
+  if(kpiNotClosing) kpiNotClosing.textContent = num(totalNotClosing);
+  if(kpiNotClosingPct) kpiNotClosingPct.textContent = totalLeadReal>0 ? pctFmt(totalNotClosing/totalLeadReal*100)+' dari Lead Real' : '';
+  renderCsBreakdown('csNotRealBreakdown', CS_NOTREAL, notRealEntries);
+  renderCsBreakdown('csNotClosingBreakdown', CS_NOTCLOSING, notClosingEntries);
+
   if(filtered.length===0){
     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);">Belum ada data untuk '+escapeHtml(csActiveTab)+filterNote+'. Tambahkan lewat form di atas.</td></tr>';
     return;
