@@ -402,6 +402,11 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 #tblAdvertiser .adv-card-chart-title{margin:6px 0 4px;padding-top:6px;}
 #tblAdvertiser .adv-card-chart-wrap{height:402px;}
 #tblAdvertiser .adv-card-note{margin-top:4px;padding-top:4px;font-size:10.5px;}
+.adv-card-head-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.btn-adv-reminder{background:color-mix(in srgb, var(--yellow) 16%, var(--panel));border:1px solid color-mix(in srgb, var(--yellow) 45%, var(--line));color:var(--yellow);border-radius:20px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Roboto',sans-serif;transition:opacity .15s,transform .1s;white-space:nowrap;}
+.btn-adv-reminder:hover{opacity:.85;}
+.btn-adv-reminder:active{transform:scale(.97);}
+.btn-adv-reminder.is-copied{background:color-mix(in srgb, var(--green) 16%, var(--panel));border-color:color-mix(in srgb, var(--green) 45%, var(--line));color:var(--green);}
 .acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
 .table-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap;}
 .table-pagination .tp-info{font-size:11.5px;color:var(--muted);}
@@ -2616,7 +2621,10 @@ function render(){
   document.getElementById('tblAdvertiser').innerHTML = advRows.length ? advRows.map((r,idx)=>
     '<div class="adv-card">'+
       '<div class="adv-card-head"><span class="dot" style="background:'+ADV_COLOR[r.adv]+'"></span><span class="adv-card-name">'+r.adv+'</span>'+
-      (r.anySwitch?'<span class="tag blue" style="margin-left:auto;font-size:10px;" title="Ada akun yang pindah advertiser di periode ini — angka sudah dihitung sesuai pemilik pada tanggalnya masing-masing">🔀 ADA PERPINDAHAN AKUN</span>':'')+
+      '<div class="adv-card-head-right">'+
+        (r.anySwitch?'<span class="tag blue" style="font-size:10px;" title="Ada akun yang pindah advertiser di periode ini — angka sudah dihitung sesuai pemilik pada tanggalnya masing-masing">🔀 ADA PERPINDAHAN AKUN</span>':'')+
+        '<button type="button" class="btn-adv-reminder" data-adv="'+r.adv+'" title="Salin pesan reminder (pace spending / CPL) untuk dikirim ke advertiser ini">🔔 Reminder</button>'+
+      '</div>'+
       '</div>'+
       buildAdvInsightPanel(r, calcTargetInRange(r.adv, range), range)+
       '<div class="adv-card-chart-title">Tren Harian — Spend &amp; Lead Real</div>'+
@@ -2636,6 +2644,11 @@ function render(){
       '<div class="adv-card-note">dibandingkan periode sebelumnya (durasi sama)</div>'+
     '</div>'
   ).join('') : '<div class="muted-note">Tidak ada data</div>';
+
+  // ---- tombol reminder per kartu advertiser (pace spending sore hari / CPL kemahalan) ----
+  document.querySelectorAll('#tblAdvertiser .btn-adv-reminder').forEach(btn=>{
+    btn.onclick = ()=> handleAdvReminderClick(btn.dataset.adv, btn);
+  });
 
   // ---- mini grafik trend per kartu advertiser ----
   renderAdvCardMiniCharts(advRows, range);
@@ -3181,6 +3194,64 @@ document.getElementById('advMetricSelect').addEventListener('change', ()=>{
 /* ============== INPUT MANUAL (1 panel per advertiser) ============== */
 const CPL_BENCHMARK = 89000; // patokan CPL wajar — di atas ini dianggap mahal
 const CS_CLOSING_RATE_KPI = 85; // standar KPI closing rate CS — minimal 85%
+const REMINDER_PACE_KPI = 30; // % minimal budget hari ini terpakai dari target harian (dicek manual di sore hari)
+
+/* Data hari ini (ANCHOR_DATE) untuk satu advertiser — dipakai tombol Reminder,
+   independen dari filter periode global yang sedang aktif di dashboard. */
+function getAdvTodaySnapshot(adv){
+  const todayRange = [ANCHOR_DATE, ANCHOR_DATE];
+  const relevantAccs = ACCOUNTS.filter(a=>everOwnedBy(a,adv));
+  const budgetToday = relevantAccs.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,todayRange),0);
+  const realToday = sumIn(ADV_LEADS[adv].real, todayRange);
+  const ooToday = sumIn(ADV_LEADS[adv].oo, todayRange);
+  const targetHarian = getEffectiveTargetForDate(adv, ANCHOR_DATE);
+  const pct = targetHarian>0 ? (budgetToday/targetHarian*100) : null;
+  const cplReal = realToday>0 ? (budgetToday/realToday) : null;
+  return {adv, budgetToday, realToday, ooToday, targetHarian, pct, cplReal};
+}
+
+/* Susun pesan reminder WA untuk 1 advertiser: cek pace budget (patokan 30%) dan CPL
+   terhadap CPL_BENCHMARK. Kalau tidak ada yang menyala, tetap kasih ringkasan status aman. */
+function buildAdvReminderText(adv){
+  const s = getAdvTodaySnapshot(adv);
+  const now = new Date();
+  const jamStr = now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+' WIB';
+  const tglStr = now.toLocaleDateString('id-ID',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+  const alerts = [];
+  if(s.pct!=null && s.pct < REMINDER_PACE_KPI){
+    alerts.push('⚠️ Budget hari ini baru terpakai *'+s.pct.toFixed(0)+'%* dari target harian ('+rupiah(s.budgetToday)+' dari target '+rupiah(s.targetHarian)+'). Mohon segera dikejar spending-nya ya 🙏');
+  }
+  if(s.cplReal!=null && s.cplReal > CPL_BENCHMARK){
+    alerts.push('🔥 CPL hari ini *'+rupiah(s.cplReal)+'* — sudah di atas patokan '+rupiah(CPL_BENCHMARK)+'. Mohon dicek lagi campaign/targeting-nya.');
+  }
+
+  let msg = '🔔 *Reminder Performa Hari Ini — '+adv+'*\n';
+  msg += tglStr+', pukul '+jamStr+'\n\n';
+  msg += alerts.length ? (alerts.join('\n\n')+'\n\n') : '✅ Budget dan CPL hari ini masih dalam batas wajar, lanjutkan progress ya!\n\n';
+
+  msg += 'Ringkasan hari ini:\n';
+  msg += '- Budget: '+rupiah(s.budgetToday)+(s.targetHarian>0 ? ' ('+(s.pct!=null?s.pct.toFixed(0):'0')+'% dari target '+rupiah(s.targetHarian)+')' : ' (target harian belum diatur)')+'\n';
+  msg += '- Lead Real / OO: '+num(s.realToday)+' / '+num(s.ooToday)+'\n';
+  if(s.cplReal!=null) msg += '- CPL Real: '+rupiah(s.cplReal)+'\n';
+  msg += '\nTerima kasih 🙏';
+  return msg;
+}
+
+/* Klik tombol 🔔 Reminder di kartu advertiser: salin teks reminder ke clipboard,
+   tombol berubah jadi "Disalin!" sebentar, lalu tinggal paste & kirim ke advertiser. */
+function handleAdvReminderClick(adv, btn){
+  const txt = buildAdvReminderText(adv);
+  navigator.clipboard.writeText(txt).then(()=>{
+    const original = btn.innerHTML;
+    btn.innerHTML = '✅ Disalin!';
+    btn.classList.add('is-copied');
+    showQuickToast('Pesan reminder '+adv+' disalin — tinggal paste & kirim ke advertisernya.', 'var(--green)');
+    setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('is-copied'); }, 2000);
+  }).catch(()=>{
+    showQuickToast('Gagal menyalin ke clipboard, coba lagi.', 'var(--red)');
+  });
+}
 function renderInsightPanel(){
   const panel = document.getElementById('insightPanel');
   if(!panel) return;
