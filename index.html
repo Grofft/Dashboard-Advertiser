@@ -3884,40 +3884,94 @@ const APPS_SCRIPT_CODE = `// ===================================================
 //                                                → Who has access: Anyone
 // ============================================================
 
+// ============================================================
+// doGet() DENGAN CACHING (ditambahkan supaya tahan banyak user bersamaan).
+// Tanpa cache, tiap 1x doGet dipanggil = baca ULANG 13 sheet dari nol.
+// Dengan 10+ user + Auto-Sync (tiap buka halaman = 1x panggil doGet),
+// beberapa user yang buka dashboard berdekatan bisa memicu banyak
+// pembacaan paralel -> lambat -> kena limit Google -> Google balas
+// halaman error HTML -> dashboard gagal parse JSON.
+// Solusi: simpan hasil doGet ke cache selama CACHE_SECONDS detik;
+// user lain dalam rentang waktu itu ambil dari cache (nyaris instan),
+// bukan baca ulang spreadsheet.
+// ============================================================
 function doGet(e){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var akunSheet = ss.getSheetByName('Akun');
-  var leadSheet = ss.getSheetByName('Leads');
-  var akunWlSheet = ss.getSheetByName('AkunWL');
-  var akunHistoriSheet = ss.getSheetByName('AkunHistori');
-  var targetSheet = ss.getSheetByName('Target');
-  var tcSheet = ss.getSheetByName('TestCampaign');
-  var csSheet = ss.getSheetByName('CS');
-  var csRosterSheet = ss.getSheetByName('CSRoster');
-  var csNotRealKatSheet = ss.getSheetByName('CSKategoriTidakReal');
-  var csNotRealSheet = ss.getSheetByName('CSTidakReal');
-  var csNotClosingKatSheet = ss.getSheetByName('CSKategoriTidakClosing');
-  var csNotClosingSheet = ss.getSheetByName('CSTidakClosing');
-  var okrSheet = ss.getSheetByName('OKR');
-  var akun = sheetToObjects(akunSheet);
-  var leads = sheetToObjects(leadSheet);
-  var akunwl = sheetToObjects(akunWlSheet);
-  var historiakun = sheetToObjects(akunHistoriSheet);
-  var target = sheetToObjects(targetSheet);
-  var testcampaign = sheetToObjects(tcSheet);
-  var csdata = sheetToObjects(csSheet);
-  var csroster = sheetToObjects(csRosterSheet);
-  var csnotrealkategori = sheetToObjects(csNotRealKatSheet);
-  var csnotreal = sheetToObjects(csNotRealSheet);
-  var csnotclosingkategori = sheetToObjects(csNotClosingKatSheet);
-  var csnotclosing = sheetToObjects(csNotClosingSheet);
-  var okr = sheetToObjects(okrSheet);
-  return jsonOutput({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, okr: okr});
+  var cache = CacheService.getScriptCache();
+  var CACHE_KEY = 'dashboard_data_v1';
+  var CACHE_SECONDS = 25; // sesuaikan: makin besar = makin ringan tapi data makin "telat" sampai N detik
+
+  var cached = cache.get(CACHE_KEY);
+  if (cached) {
+    return ContentService.createTextOutput(cached)
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Cache kosong/expired -> pakai lock supaya kalau banyak request datang
+  // BARENGAN saat cache kosong, cuma 1 yang benar-benar baca spreadsheet;
+  // sisanya nunggu sebentar lalu ikut pakai hasil yang baru disimpan.
+  var lock = LockService.getScriptLock();
+  var gotLock = lock.tryLock(15000);
+
+  cached = cache.get(CACHE_KEY);
+  if (cached) {
+    if (gotLock) lock.releaseLock();
+    return ContentService.createTextOutput(cached)
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var akunSheet = ss.getSheetByName('Akun');
+    var leadSheet = ss.getSheetByName('Leads');
+    var akunWlSheet = ss.getSheetByName('AkunWL');
+    var akunHistoriSheet = ss.getSheetByName('AkunHistori');
+    var targetSheet = ss.getSheetByName('Target');
+    var tcSheet = ss.getSheetByName('TestCampaign');
+    var csSheet = ss.getSheetByName('CS');
+    var csRosterSheet = ss.getSheetByName('CSRoster');
+    var csNotRealKatSheet = ss.getSheetByName('CSKategoriTidakReal');
+    var csNotRealSheet = ss.getSheetByName('CSTidakReal');
+    var csNotClosingKatSheet = ss.getSheetByName('CSKategoriTidakClosing');
+    var csNotClosingSheet = ss.getSheetByName('CSTidakClosing');
+    var okrSheet = ss.getSheetByName('OKR');
+    var akun = sheetToObjects(akunSheet);
+    var leads = sheetToObjects(leadSheet);
+    var akunwl = sheetToObjects(akunWlSheet);
+    var historiakun = sheetToObjects(akunHistoriSheet);
+    var target = sheetToObjects(targetSheet);
+    var testcampaign = sheetToObjects(tcSheet);
+    var csdata = sheetToObjects(csSheet);
+    var csroster = sheetToObjects(csRosterSheet);
+    var csnotrealkategori = sheetToObjects(csNotRealKatSheet);
+    var csnotreal = sheetToObjects(csNotRealSheet);
+    var csnotclosingkategori = sheetToObjects(csNotClosingKatSheet);
+    var csnotclosing = sheetToObjects(csNotClosingSheet);
+    var okr = sheetToObjects(okrSheet);
+    var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, okr: okr});
+
+    // Simpan ke cache untuk request-request berikutnya. CacheService punya
+    // limit ukuran per key (~100KB) -- kalau data sudah terlalu besar dan
+    // gagal di-cache, tidak masalah, doGet tetap jalan normal tanpa cache.
+    try {
+      cache.put(CACHE_KEY, json, CACHE_SECONDS);
+    } catch (cacheErr) {
+      // data terlalu besar untuk cache -> lanjut kirim JSON asli seperti biasa
+    }
+
+    return ContentService.createTextOutput(json)
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } finally {
+    if (gotLock) lock.releaseLock();
+  }
 }
 
 function doPost(e){
   var data = JSON.parse(e.postData.contents);
   var ss = SpreadsheetApp.getActiveSpreadsheet();
+  // Hapus cache doGet setiap kali ada data baru masuk, supaya user lain
+  // langsung melihat data terbaru (tidak menunggu cache lama habis sendiri).
+  CacheService.getScriptCache().remove('dashboard_data_v1');
   // PENTING: dulu doPost SELALU balas {status:'ok'} di akhir, apapun yang terjadi di dalam —
   // termasuk kalau sheet tujuannya (mis. "AkunHistori") ternyata belum dibuat / salah nama.
   // Fungsi upsert-nya cuma diam-diam "return" kalau sheet tidak ketemu (getSheetByName null),
