@@ -4099,41 +4099,66 @@ const APPS_SCRIPT_CODE = `// ===================================================
 // ============================================================
 
 // ============================================================
-// doGet() DENGAN CACHING (ditambahkan supaya tahan banyak user bersamaan).
-// Tanpa cache, tiap 1x doGet dipanggil = baca ULANG 13 sheet dari nol.
-// Dengan 10+ user + Auto-Sync (tiap buka halaman = 1x panggil doGet),
-// beberapa user yang buka dashboard berdekatan bisa memicu banyak
-// pembacaan paralel -> lambat -> kena limit Google -> Google balas
-// halaman error HTML -> dashboard gagal parse JSON.
-// Solusi: simpan hasil doGet ke cache selama CACHE_SECONDS detik;
-// user lain dalam rentang waktu itu ambil dari cache (nyaris instan),
-// bukan baca ulang spreadsheet.
+// doGet() DENGAN CACHING BERPOTONG + PENANGANAN ERROR
+// Masalah lama: CacheService cuma mau menyimpan ~100KB per key. Begitu data
+// spreadsheet membesar (tiap hari nambah baris), hasil doGet melewati batas itu,
+// cache.put GAGAL DIAM-DIAM, dan SETIAP user/refresh baca ulang 13 sheet dari nol
+// -> lambat -> kena limit/timeout Google -> Google balas halaman error HTML ->
+// dashboard gagal parse JSON ("Unexpected token '<'").
+// Perbaikan: (1) hasil dipecah jadi potongan kecil supaya tetap bisa di-cache
+// berapa pun ukuran datanya; (2) error di dalam doGet dibalas sebagai JSON
+// {error: "..."} (bukan halaman HTML) supaya dashboard bisa menampilkan penyebab asli.
 // ============================================================
+var CACHE_KEY = 'dashboard_data_v1';
+var CACHE_SECONDS = 25;   // makin besar = makin ringan, tapi data "telat" sampai N detik
+var CACHE_CHUNK = 40000;  // jumlah karakter per potongan (aman di bawah limit 100KB/key)
+var CACHE_MAX_CHUNKS = 50;
+
+function rawJson(str){
+  return ContentService.createTextOutput(str).setMimeType(ContentService.MimeType.JSON);
+}
+function cacheGetBig(cache){
+  var n = parseInt(cache.get(CACHE_KEY + '_n') || '0', 10);
+  if(!n) return null;
+  var keys = [];
+  for(var i=0;i<n;i++) keys.push(CACHE_KEY + '_' + i);
+  var parts = cache.getAll(keys);
+  var out = '';
+  for(var j=0;j<n;j++){
+    var p = parts[CACHE_KEY + '_' + j];
+    if(p === undefined || p === null) return null; // ada potongan hilang -> anggap cache kosong
+    out += p;
+  }
+  return out;
+}
+function cachePutBig(cache, json){
+  var n = Math.ceil(json.length / CACHE_CHUNK);
+  if(n > CACHE_MAX_CHUNKS) return; // terlalu besar sekali -> lewati cache
+  var obj = {};
+  for(var i=0;i<n;i++) obj[CACHE_KEY + '_' + i] = json.substring(i*CACHE_CHUNK, (i+1)*CACHE_CHUNK);
+  obj[CACHE_KEY + '_n'] = String(n);
+  cache.putAll(obj, CACHE_SECONDS);
+}
+function clearDashboardCache(){
+  var keys = [CACHE_KEY + '_n'];
+  for(var i=0;i<CACHE_MAX_CHUNKS;i++) keys.push(CACHE_KEY + '_' + i);
+  CacheService.getScriptCache().removeAll(keys);
+}
+
 function doGet(e){
-  var cache = CacheService.getScriptCache();
-  var CACHE_KEY = 'dashboard_data_v1';
-  var CACHE_SECONDS = 25; // sesuaikan: makin besar = makin ringan tapi data makin "telat" sampai N detik
+  var lock = null, gotLock = false;
+  try{
+    var cache = CacheService.getScriptCache();
+    var cached = cacheGetBig(cache);
+    if(cached) return rawJson(cached);
 
-  var cached = cache.get(CACHE_KEY);
-  if (cached) {
-    return ContentService.createTextOutput(cached)
-      .setMimeType(ContentService.MimeType.JSON);
-  }
+    // Cache kosong/expired -> pakai lock supaya kalau banyak request datang BARENGAN,
+    // cuma 1 yang benar-benar baca spreadsheet; sisanya nunggu lalu ikut pakai hasilnya.
+    lock = LockService.getScriptLock();
+    gotLock = lock.tryLock(15000);
+    cached = cacheGetBig(cache);
+    if(cached) return rawJson(cached);
 
-  // Cache kosong/expired -> pakai lock supaya kalau banyak request datang
-  // BARENGAN saat cache kosong, cuma 1 yang benar-benar baca spreadsheet;
-  // sisanya nunggu sebentar lalu ikut pakai hasil yang baru disimpan.
-  var lock = LockService.getScriptLock();
-  var gotLock = lock.tryLock(15000);
-
-  cached = cache.get(CACHE_KEY);
-  if (cached) {
-    if (gotLock) lock.releaseLock();
-    return ContentService.createTextOutput(cached)
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var akunSheet = ss.getSheetByName('Akun');
     var leadSheet = ss.getSheetByName('Leads');
@@ -4163,20 +4188,17 @@ function doGet(e){
     var okr = sheetToObjects(okrSheet);
     var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, okr: okr});
 
-    // Simpan ke cache untuk request-request berikutnya. CacheService punya
-    // limit ukuran per key (~100KB) -- kalau data sudah terlalu besar dan
-    // gagal di-cache, tidak masalah, doGet tetap jalan normal tanpa cache.
-    try {
-      cache.put(CACHE_KEY, json, CACHE_SECONDS);
-    } catch (cacheErr) {
-      // data terlalu besar untuk cache -> lanjut kirim JSON asli seperti biasa
+    try{
+      cachePutBig(cache, json);
+    }catch(cacheErr){
+      // gagal cache -> tidak apa-apa, tetap kirim JSON asli
     }
+    return rawJson(json);
 
-    return ContentService.createTextOutput(json)
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } finally {
-    if (gotLock) lock.releaseLock();
+  }catch(err){
+    return rawJson(JSON.stringify({error: 'doGet gagal: ' + (err && err.message ? err.message : String(err))}));
+  }finally{
+    if(gotLock) lock.releaseLock();
   }
 }
 
@@ -4185,7 +4207,7 @@ function doPost(e){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   // Hapus cache doGet setiap kali ada data baru masuk, supaya user lain
   // langsung melihat data terbaru (tidak menunggu cache lama habis sendiri).
-  CacheService.getScriptCache().remove('dashboard_data_v1');
+  clearDashboardCache();
   // PENTING: dulu doPost SELALU balas {status:'ok'} di akhir, apapun yang terjadi di dalam —
   // termasuk kalau sheet tujuannya (mis. "AkunHistori") ternyata belum dibuat / salah nama.
   // Fungsi upsert-nya cuma diam-diam "return" kalau sheet tidak ketemu (getSheetByName null),
@@ -4723,6 +4745,39 @@ async function syncAccountRoster(accountsToSync){
     else { msg.textContent = '⚠️ Akun tersimpan di dashboard, tapi gagal terkirim ke spreadsheet. Cek koneksi internet & URL Apps Script, lalu coba tombol "Kirim Semua Data ke Spreadsheet".'; msg.style.color = 'var(--red)'; }
   }
 }
+/* ---- Tarik data dari Apps Script: baca sebagai teks dulu (bukan langsung .json()), supaya kalau Google
+   membalas halaman HTML (error/limit/login) dashboard bisa menjelaskan penyebabnya dan otomatis mencoba lagi ---- */
+function lapExplainHtmlReply(html){
+  const t = String(html||'');
+  const title = ((t.match(/<title>([^<]*)<\/title>/i)||[])[1]||'').trim();
+  const text = t.replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  const blob = title+' '+text;
+  if(/sign in|accounts\.google\.com|ServiceLogin|masuk/i.test(blob) && !/too many|quota|limit/i.test(blob))
+    return 'Google meminta login — cek deployment Apps Script: "Who has access" harus "Anyone"';
+  if(/too many times|quota|limit|terlalu banyak/i.test(blob)) return 'kena batas kuota/limit Google (terlalu banyak permintaan) — '+text.slice(0,120);
+  if(/timed out|maximum execution time|exceeded/i.test(blob)) return 'Apps Script timeout (data terlalu besar/lambat) — '+text.slice(0,120);
+  return 'Google membalas halaman HTML: '+(text.slice(0,140)||title||'(kosong)');
+}
+async function fetchSheetJson(url){
+  const ATTEMPTS = 3;
+  let lastErr = null;
+  for(let i=0;i<ATTEMPTS;i++){
+    try{
+      const res = await fetch(url+'?action=read', {cache:'no-store'});
+      const text = (await res.text()).trim();
+      if(text.charAt(0)==='<') throw new Error(lapExplainHtmlReply(text));
+      let json;
+      try{ json = JSON.parse(text); }catch(pe){ throw new Error('balasan server bukan JSON valid ('+text.slice(0,80)+')'); }
+      if(json && json.error) throw new Error('Apps Script error: '+json.error);
+      return json;
+    }catch(e){
+      lastErr = e;
+      console.warn('[Sinkron] percobaan '+(i+1)+'/'+ATTEMPTS+' gagal:', e.message);
+      if(i < ATTEMPTS-1) await new Promise(r=> setTimeout(r, 2000*(i+1)));
+    }
+  }
+  throw new Error(lastErr.message+' — sudah dicoba '+ATTEMPTS+'x');
+}
 async function pullFromSheet(){
   const url = getAppsScriptUrl();
   const msg = document.getElementById('sheetSyncMsg');
@@ -4730,8 +4785,7 @@ async function pullFromSheet(){
   msg.textContent='Menarik data dari spreadsheet...'; msg.style.color='var(--muted)';
   await flushDirtyTargets();
   try{
-    const res = await fetch(url+'?action=read', {cache:'no-store'});
-    const json = await res.json();
+    const json = await fetchSheetJson(url);
     let countAkun=0, countLead=0;
     const skippedAkunNames = new Set();
     const skippedLeadAdv = new Set();
@@ -6926,8 +6980,7 @@ async function autoPullOnLoad(){
   document.body.appendChild(loadBanner);
 
   try{
-    const res = await fetch(url+'?action=read', {cache:'no-store'});
-    const json = await res.json();
+    const json = await fetchSheetJson(url);
     let countAkun=0, countLead=0;
     const skippedAkunNames2 = new Set();
     const skippedLeadAdv2 = new Set();
