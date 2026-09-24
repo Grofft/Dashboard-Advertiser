@@ -1303,6 +1303,7 @@ try{
   </div>
   <div class="laporan-noprint" style="margin-bottom:14px;">
     <button class="btn" id="btnPrintLaporan">🖨️ Cetak / Simpan PDF</button>
+    <button class="btn" id="btnExportPptLaporan" style="margin-left:8px;">📑 Export PPT</button>
   </div>
   <div class="period-btns laporan-noprint" id="laporanTabs" style="margin-bottom:18px;">
     <div class="period-btn active" data-laptab="ringkasan">📌 Ringkasan</div>
@@ -3402,6 +3403,219 @@ window.addEventListener('afterprint', ()=>{
   lapResizeCharts();
 });
 
+
+/* ---- Export PPT: semua tab Laporan jadi satu deck. Library PptxGenJS baru diunduh saat tombol ditekan (lazy), jadi tidak memberatkan dashboard ---- */
+let __pptxLoading = null;
+const LAP_PPTX_URLS = [
+  'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',  // alamat resmi dari dokumentasi PptxGenJS
+  'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'           // cadangan (paket npm)
+];
+function lapLoadScript(url){
+  return new Promise((res, rej)=>{
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = ()=> window.PptxGenJS ? res() : rej(new Error('PptxGenJS tidak ditemukan setelah dimuat'));
+    s.onerror = ()=>{ s.remove(); rej(new Error('gagal memuat ' + url)); };
+    document.head.appendChild(s);
+  });
+}
+function lapLoadPptx(){
+  if(window.PptxGenJS) return Promise.resolve();
+  if(__pptxLoading) return __pptxLoading;
+  __pptxLoading = (async ()=>{
+    let lastErr = null;
+    for(const u of LAP_PPTX_URLS){
+      try{ await lapLoadScript(u); return; }catch(e){ lastErr = e; console.warn('[PPT]', e.message); }
+    }
+    __pptxLoading = null;
+    throw new Error('Library PPT gagal dimuat dari semua sumber (' + (lastErr ? lastErr.message : '') + '). Cek apakah jsDelivr (cdn.jsdelivr.net) bisa diakses / tidak diblokir.');
+  })();
+  return __pptxLoading;
+}
+function lapTxt(el){ return el ? (el.innerText||el.textContent||'').replace(/[ \t\u00a0]+/g,' ').replace(/\s*\n\s*/g,'\n').trim() : ''; }
+function lapClean(t){ return String(t||'').replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\uFE0F]/gu,'').trim(); }
+
+async function exportLaporanPPT(){
+  const btn = document.getElementById('btnExportPptLaporan');
+  const area = document.getElementById('laporanReportArea');
+  const oldLabel = btn ? btn.textContent : '';
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Menyiapkan PPT...'; }
+  try{
+    await lapLoadPptx();
+    if(area) area.classList.add('lap-print-all');   // buka semua tab sementara supaya semua tabel & grafik bisa dibaca
+    lapResizeCharts();
+    await new Promise(r=> setTimeout(r, 350));
+
+    const period = lapTxt(document.getElementById('laporanPeriodLabel2')) || lapTxt(document.getElementById('laporanPeriodLabel')) || '';
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 in
+    pptx.title = 'Laporan Performa Iklan';
+    const NAVY = '1E3A5F', INK = '0F172A', MUTED = '64748B';
+
+    const newSlide = (title)=>{
+      const s = pptx.addSlide();
+      s.background = { color:'F8FAFC' };
+      s.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.12, fill:{color:NAVY}, line:{color:NAVY} });
+      s.addText(title, { x:0.5, y:0.3, w:12.33, h:0.7, fontSize:24, bold:true, color:INK, fontFace:'Calibri' });
+      s.addText(period + ' · Laporan Performa Iklan', { x:0.5, y:7.0, w:9, h:0.3, fontSize:10, color:MUTED, fontFace:'Calibri' });
+      s.slideNumber = { x:12.3, y:7.0, fontSize:10, color:MUTED };
+      return s;
+    };
+
+    // ---- kartu KPI / sorotan ----
+    const addCards = (title, cards)=>{
+      const pages = Math.ceil(cards.length/8);
+      for(let i=0;i<cards.length;i+=8){
+        const s = newSlide(title + (pages>1 ? ' ('+(i/8+1)+'/'+pages+')' : ''));
+        const cw = 2.93, gap = 0.2, ch = 2.3;
+        cards.slice(i, i+8).forEach((c,k)=>{
+          const x = 0.5 + (k%4)*(cw+gap), y = 1.3 + Math.floor(k/4)*(ch+gap);
+          s.addShape(pptx.ShapeType.roundRect, { x, y, w:cw, h:ch, fill:{color:'FFFFFF'}, line:{color:'E2E8F0', width:1}, rectRadius:0.08 });
+          s.addText(c.label, { x:x+0.15, y:y+0.1, w:cw-0.3, h:0.5, fontSize:11, bold:true, color:MUTED, valign:'top', fontFace:'Calibri' });
+          const L = c.value.length;
+          const vs = L>34 ? 11 : L>18 ? 15 : L>12 ? 20 : 26;
+          s.addText(c.value, { x:x+0.15, y:y+0.65, w:cw-0.3, h:0.9, fontSize:vs, bold:true, color:INK, valign:'middle', fontFace:'Calibri' });
+          if(c.note) s.addText(c.note, { x:x+0.15, y:y+1.55, w:cw-0.3, h:0.65, fontSize:10, color:MUTED, valign:'top', fontFace:'Calibri' });
+        });
+      }
+    };
+    const collectCards = (pane, sel)=>{
+      const out = [];
+      pane.querySelectorAll(sel).forEach(el=>{
+        let label, value, note;
+        if(el.classList.contains('kpi')){ label = lapTxt(el.querySelector('.label')); value = lapTxt(el.querySelector('.value')); note = lapTxt(el.querySelector('.muted-note')); }
+        else if(el.classList.contains('lap-hl')){ label = lapTxt(el.querySelector('.k')); value = lapTxt(el.querySelector('.v')); note = lapTxt(el.querySelector('.s')); }
+        else { label = lapTxt(el.querySelector('.insight-mini-title')); value = lapTxt(el.querySelector('.insight-mini-value')); note = lapTxt(el.querySelector('.insight-mini-target')); }
+        if(label || value) out.push({ label:lapClean(label), value:value||'-', note:note });
+      });
+      return out;
+    };
+
+    // ---- grafik (canvas Chart.js -> gambar, dialasi warna kartu supaya teks grafik tetap terbaca) ----
+    const addChart = (title, id)=>{
+      const cv = document.getElementById(id);
+      if(!cv || !cv.width || !cv.height) return;
+      const chart = (window.Chart && Chart.getChart) ? Chart.getChart(cv) : null;
+      if(chart){ chart.resize(); chart.update('none'); }
+      const off = document.createElement('canvas'); off.width = cv.width; off.height = cv.height;
+      const g = off.getContext('2d');
+      const card = cv.closest('.chart-card') || document.body;
+      let bg = getComputedStyle(card).backgroundColor;
+      if(!bg || bg==='transparent' || bg==='rgba(0, 0, 0, 0)') bg = getComputedStyle(document.body).backgroundColor || '#ffffff';
+      g.fillStyle = bg; g.fillRect(0, 0, off.width, off.height); g.drawImage(cv, 0, 0);
+      const maxW = 12.33, maxH = 5.5;
+      let w = maxW, h = w*off.height/off.width;
+      if(h > maxH){ h = maxH; w = h*off.width/off.height; }
+      const s = newSlide(title);
+      s.addImage({ data: off.toDataURL('image/png').replace(/^data:/,''), x:0.5+(maxW-w)/2, y:1.25, w, h });
+    };
+
+    // ---- tabel (dipecah per 8 baris per slide) ----
+    const addTable = (title, table)=>{
+      if(!table) return;
+      let header = [...table.querySelectorAll('thead th')].map(th=> lapClean(lapTxt(th)));
+      let trs = [...table.querySelectorAll('tbody tr')];
+      if(!header.length && trs.length){ header = [...trs[0].children].map(c=> lapClean(lapTxt(c))); trs = trs.slice(1); }
+      const rows = trs.map(tr=> [...tr.children].map(td=>({ text:lapTxt(td), colspan:td.colSpan||1 }))).filter(r=> r.some(c=>c.text));
+      if(!rows.length || !header.length) return;
+      const n = header.length;
+      const fs = n>10 ? 9 : 10.5;
+      const first = n>1 ? (n>10 ? 1.5 : 1.9) : 12.33;
+      const other = n>1 ? (12.33-first)/(n-1) : 0;
+      const colW = header.map((_,i)=> i===0 ? first : other);
+      const per = 8, pages = Math.ceil(rows.length/per);
+      for(let p=0; p<pages; p++){
+        const s = newSlide(title + (pages>1 ? ' ('+(p+1)+'/'+pages+')' : ''));
+        const trows = [ header.map(h=>({ text:h, options:{ bold:true, color:'FFFFFF', fill:{color:NAVY}, align:'center', valign:'middle' } })) ];
+        rows.slice(p*per, p*per+per).forEach((r,ri)=>{
+          const fill = { color: ri%2 ? 'F1F5F9' : 'FFFFFF' };
+          const cells = r.map((c,ci)=>{
+            const o = { color:INK, fill, align: ci===0 ? 'left' : 'center', valign:'middle' };
+            if(c.colspan>1) o.colspan = c.colspan;
+            return { text:c.text, options:o };
+          });
+          const used = r.reduce((sum,c)=> sum+c.colspan, 0);
+          for(let k=used; k<n; k++) cells.push({ text:'', options:{ fill } });
+          trows.push(cells);
+        });
+        s.addTable(trows, { x:0.5, y:1.25, w:12.33, colW, fontSize:fs, fontFace:'Calibri', border:{ type:'solid', pt:0.5, color:'CBD5E1' } });
+      }
+    };
+
+    // ---- blok teks (alur lead & kategori) ----
+    const addTextCols = (title, blocks)=>{
+      const cols = blocks.map(b=>{
+        const el = document.getElementById(b.id);
+        if(!el) return null;
+        const kids = [...el.children].map(k=> lapTxt(k).replace(/\n/g,' · ')).filter(Boolean);
+        const text = kids.length ? kids.join('\n') : lapTxt(el).replace(/\n/g,' · ');
+        return text ? { h:b.h, text } : null;
+      }).filter(Boolean);
+      if(!cols.length) return;
+      const s = newSlide(title);
+      const cw = (12.33 - 0.3*(cols.length-1))/cols.length;
+      cols.forEach((c,i)=>{
+        const x = 0.5 + i*(cw+0.3);
+        s.addShape(pptx.ShapeType.roundRect, { x, y:1.3, w:cw, h:5.4, fill:{color:'FFFFFF'}, line:{color:'E2E8F0', width:1}, rectRadius:0.08 });
+        s.addText(c.h, { x:x+0.2, y:1.4, w:cw-0.4, h:0.5, fontSize:14, bold:true, color:NAVY, fontFace:'Calibri' });
+        s.addText(c.text, { x:x+0.2, y:1.95, w:cw-0.4, h:4.6, fontSize:11, color:INK, valign:'top', fontFace:'Calibri', paraSpaceAfter:6 });
+      });
+    };
+
+    // ================= SUSUN DECK =================
+    const cover = pptx.addSlide();
+    cover.background = { color:NAVY };
+    cover.addText('Laporan Performa Iklan', { x:0.8, y:2.4, w:11.7, h:1.0, fontSize:40, bold:true, color:'FFFFFF', fontFace:'Calibri' });
+    cover.addText(period, { x:0.8, y:3.5, w:11.7, h:0.6, fontSize:20, color:'CBD5E1', fontFace:'Calibri' });
+    cover.addText('Dibuat: ' + new Date().toLocaleString('id-ID'), { x:0.8, y:4.3, w:11.7, h:0.4, fontSize:12, color:'94A3B8', fontFace:'Calibri' });
+
+    const pane = id => document.getElementById('lapPane-'+id);
+    let p = pane('ringkasan');
+    if(p){
+      addCards('Ringkasan', collectCards(p, '.card.kpi, .insight-mini-card'));
+      addCards('Sorotan Periode Ini', collectCards(p, '.lap-hl'));
+      addChart('Tren Performa Harian', 'laporanTrendChart');
+    }
+    p = pane('advertiser');
+    if(p){
+      addChart('Spending per Advertiser', 'laporanAdvBarChart');
+      addTable('Rincian per Advertiser', document.getElementById('laporanTable') && document.getElementById('laporanTable').closest('table'));
+    }
+    p = pane('cs');
+    if(p){
+      addTable('Laporan Gabungan — Advertiser & Hasil CS', document.getElementById('laporanGabunganTable') && document.getElementById('laporanGabunganTable').closest('table'));
+      addTable('Rekap per CS', document.getElementById('laporanCsTable') && document.getElementById('laporanCsTable').closest('table'));
+    }
+    p = pane('kategori');
+    if(p){
+      const filt = lapTxt(document.getElementById('lapKatFilterNote'));
+      addCards('Lead Tidak Real & Tidak Closing' + (filt ? ' — ' + filt : ''), collectCards(p, '.card.kpi'));
+      addTextCols('Alur Lead & Kategori', [
+        { h:'Alur Lead', id:'lapKatFunnel' },
+        { h:'Kategori Lead Tidak Real', id:'lapNotRealBreakdown' },
+        { h:'Kategori Lead Tidak Closing', id:'lapNotClosingBreakdown' }
+      ]);
+      addChart('Tren Harian Lead Tidak Real & Tidak Closing', 'lapKatTrendChart');
+      [['Kategori Lead Tidak Real per Advertiser','lapNotRealMatrix'], ['Kategori Lead Tidak Closing per Advertiser','lapNotClosingMatrix']].forEach(([t,id])=>{
+        const el = document.getElementById(id);
+        if(el && el.querySelector('table')) addTable(t, el.querySelector('table'));
+      });
+      addTable('Rincian Kategori per CS', document.getElementById('lapKatCsTable') && document.getElementById('lapKatCsTable').closest('table'));
+    }
+
+    const safe = (period || 'periode').replace(/[^\w\-]+/g,'_').replace(/^_+|_+$/g,'');
+    await pptx.writeFile({ fileName: 'Laporan_Iklan_' + safe + '.pptx' });
+  }catch(e){
+    console.error(e);
+    alert('Gagal membuat PPT: ' + (e && e.message ? e.message : e));
+  }finally{
+    if(area) area.classList.remove('lap-print-all');
+    lapResizeCharts();
+    if(btn){ btn.disabled = false; btn.textContent = oldLabel; }
+  }
+}
+const btnExportPptLaporan = document.getElementById('btnExportPptLaporan');
+if(btnExportPptLaporan) btnExportPptLaporan.addEventListener('click', exportLaporanPPT);
 
 /* ===== MULTI-SELECT METRIC DROPDOWN LOGIC ===== */
 const METRIC_LABELS = {
@@ -5988,6 +6202,7 @@ let reportState = {
   showCsClosing: true,
   showCsLeadReal: true,
   showCsLeadOO: true,
+  showCsPctReal: true,
   showCsRate: true,
   showCsNotReal: true,
   showCsNotClosing: true,
@@ -6183,6 +6398,7 @@ function buildCsReportText(){
     if(reportState.showCsClosing)  lines.push(indent+'Hasil Closing : ' + num(closing));
     if(reportState.showCsLeadReal) lines.push(indent+'Lead Real     : ' + num(leadReal));
     if(reportState.showCsLeadOO)   lines.push(indent+'Lead OO       : ' + num(leadOO));
+    if(reportState.showCsPctReal)  lines.push(indent+'% Lead Real   : ' + pctFmt(leadOO>0 ? (leadReal/leadOO*100) : null));
     if(reportState.showCsRate)     lines.push(indent+'Closing Rate  : ' + pctFmt(rate));
     if(reportState.showCsNotReal){
       const kl = kategoriLines(notReal);
@@ -6471,6 +6687,7 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showCsClosing?'on':''}" data-key="showCsClosing">✅ Hasil Closing</div>
             <div class="toggle-chip ${reportState.showCsLeadReal?'on':''}" data-key="showCsLeadReal">📥 Lead Real</div>
             <div class="toggle-chip ${reportState.showCsLeadOO?'on':''}" data-key="showCsLeadOO">📥 Lead OO</div>
+            <div class="toggle-chip ${reportState.showCsPctReal?'on':''}" data-key="showCsPctReal">📊 % Lead Real</div>
             <div class="toggle-chip ${reportState.showCsRate?'on':''}" data-key="showCsRate">📈 Closing Rate</div>
             <div class="toggle-chip ${reportState.showCsNotReal?'on':''}" data-key="showCsNotReal">🚫 Rincian Lead OO Tidak Real</div>
             <div class="toggle-chip ${reportState.showCsNotClosing?'on':''}" data-key="showCsNotClosing">❌ Rincian Lead Real Tidak Closing</div>
