@@ -1935,23 +1935,24 @@ function buildTargetMessage(advList, month, year){
     const cplR = getCplTarget(adv,'real',month,year);
     const cplO = getCplTarget(adv,'oo',month,year);
     let t = '';
-    t += harian>0 ? '- Target spending: *'+rupiah(harian)+'* per hari (kalau ditotal sebulan sekitar '+rupiah(harian*hari)+')\n'
-                  : '- Target spending: belum diatur\n';
-    t += cplR>0 ? '- KPI CPL Real: maksimal *'+rupiah(cplR)+'*\n' : '- KPI CPL Real: belum diatur\n';
-    t += cplO>0 ? '- KPI CPL OO: maksimal *'+rupiah(cplO)+'*\n' : '- KPI CPL OO: belum diatur\n';
+    t += harian>0 ? '- Target spending: *'+rupiah(harian)+'* per hari (total bulanan sekitar '+rupiah(harian*hari)+')\n'
+                  : '- Target spending: belum ditetapkan\n';
+    t += cplR>0 ? '- KPI CPL Real: maksimal *'+rupiah(cplR)+'*\n' : '- KPI CPL Real: belum ditetapkan\n';
+    t += cplO>0 ? '- KPI CPL OO: maksimal *'+rupiah(cplO)+'*\n' : '- KPI CPL OO: belum ditetapkan\n';
     return t;
   };
+  const penutup = 'Target ini wajib dicapai. Spending harus berjalan setiap hari sesuai target, dan CPL Real maupun CPL OO tidak boleh melebihi KPI. Pantau performa iklan secara rutin dan segera lakukan perbaikan jika ada angka yang menyimpang. Jika ada kendala, laporkan sejak awal agar bisa segera dicarikan solusi.\n\nTerima kasih atas kerja samanya.';
   let msg = '';
   if(advList.length===1){
-    msg += 'Halo tim '+advList[0]+', gimana kabarnya? Semoga lagi semangat semua ya.\n\n';
-    msg += 'Ini target dan KPI kita buat '+bulanTxt+':\n\n';
+    msg += 'Yth. tim '+advList[0]+',\n\n';
+    msg += 'Berikut target dan KPI untuk '+bulanTxt+':\n\n';
     msg += blok(advList[0]);
-    msg += '\nAku yakin kalian bisa banget capai ini. Yang penting spending-nya dijaga jalan tiap hari, terus pantau terus CPL-nya biar nggak lewat dari KPI. Kalau ada kendala atau butuh bantuan, langsung kabarin aja ya, kita cari solusinya bareng-bareng.\n\nAyo kita kejar, semangat terus!';
+    msg += '\n'+penutup;
   } else {
-    msg += 'Halo semuanya, gimana kabarnya? Semoga lagi semangat semua ya.\n\n';
-    msg += 'Ini target dan KPI kita buat '+bulanTxt+':\n\n';
+    msg += 'Yth. seluruh tim advertiser,\n\n';
+    msg += 'Berikut target dan KPI untuk '+bulanTxt+':\n\n';
     advList.forEach(adv=>{ msg += '*'+adv+'*\n'+blok(adv)+'\n'; });
-    msg += 'Aku yakin kalian bisa banget capai ini. Yang penting spending-nya dijaga jalan tiap hari, terus pantau terus CPL-nya biar nggak lewat dari KPI. Kalau ada kendala atau butuh bantuan, langsung kabarin aja ya, kita cari solusinya bareng-bareng.\n\nAyo kita kejar, semangat terus!';
+    msg += penutup;
   }
   return msg;
 }
