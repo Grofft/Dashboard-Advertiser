@@ -4158,10 +4158,13 @@ function buildAdvShortfallText(adv){
   const periodLabel = fmtDateID(range[0])===fmtDateID(range[1]) ? fmtDateID(range[0]) : fmtDateID(range[0])+' s/d '+fmtDateID(range[1]);
   const pctBudget = target>0 ? (budget/target*100) : 0;
   const pctLead = targetLead>0 ? (real/targetLead*100) : 0;
+  const gapBudget = target - budget;
+  const gapLead = targetLead - real;
 
-  const shortBudget = target>0 && budget<target;
-  const shortLead = targetLead>0 && real<targetLead;
-  const cplOverLim = limReal>0 && real>0 && cplReal>limReal;
+  const shortBudget = target>0 && gapBudget>0;
+  const shortLead = targetLead>0 && gapLead>0;
+  const cplOver = limReal>0 && real>0 && cplReal>limReal;
+  const cplOverPct = cplOver ? (cplReal/limReal-1)*100 : 0;
 
   let msg = '📉 *Reminder Target — '+adv+'*\n';
   msg += 'Periode: '+periodLabel+'\n\n';
@@ -4171,40 +4174,64 @@ function buildAdvShortfallText(adv){
     return msg;
   }
 
+  // ---- Hasil vs target (dengan angka) ----
   msg += '*Hasil vs target*\n';
-  msg += '- Spending: '+pctBudget.toFixed(0)+'% dari target'+(shortBudget?' (masih kurang)':' ✅')+'\n';
+  msg += '- Spending: '+rupiah(budget)+' / target '+rupiah(target)+' ('+pctBudget.toFixed(0)+'%)'+(shortBudget?' → kurang '+rupiah(gapBudget):' ✅')+'\n';
   if(targetLead>0){
-    msg += '- Lead: '+pctLead.toFixed(0)+'% dari target'+(shortLead?' (masih kurang)':' ✅')+'\n';
+    msg += '- Lead: '+num(real)+' / target '+num(targetLead)+' ('+pctLead.toFixed(0)+'%)'+(shortLead?' → kurang '+num(gapLead)+' lead':' ✅')+'\n';
+  } else {
+    msg += '- Lead: '+num(real)+'\n';
   }
-  if(cplOverLim){
-    msg += '- Efisiensi biaya per lead masih di atas batas yang diharapkan\n';
+  if(real>0){
+    msg += '- CPL: '+rupiah(cplReal)+(limReal>0?' / batas '+rupiah(limReal)+(cplOver?' → lebih mahal '+cplOverPct.toFixed(0)+'%':' ✅'):'')+'\n';
   }
   msg += '\n';
 
-  if(!shortBudget && !shortLead && !cplOverLim){
-    msg += '✅ Target periode ini sudah terpenuhi. Pertahankan ritmenya ya, terima kasih 🙏';
+  if(!shortBudget && !shortLead && !cplOver){
+    msg += '✅ Target periode ini sudah terpenuhi'+(budget>target?' (spending lebih '+rupiah(budget-target)+')':'')+'. Pertahankan ritmenya ya, terima kasih 🙏';
     return msg;
   }
 
+  // ---- Akibat: dianalisa dari pola hasilnya ----
+  const berat = (shortBudget && pctBudget<70) || (shortLead && pctLead<70);
   msg += '*Akibat*\n';
-  if(shortBudget && shortLead){
-    msg += '- Hasil yang masuk belum sesuai harapan, sehingga kontribusi ke omzet divisi ikut berkurang.\n';
+  if(shortBudget && shortLead && !cplOver){
+    msg += '- CPL sudah sesuai, tapi spending baru '+pctBudget.toFixed(0)+'% sehingga lead yang masuk ikut kurang '+num(gapLead)+'. Masalahnya di volume: iklan belum ditarik cukup kencang.\n';
+  } else if(shortBudget && shortLead && cplOver){
+    msg += '- Spending baru '+pctBudget.toFixed(0)+'% dan CPL '+cplOverPct.toFixed(0)+'% di atas batas, jadi lead kurang '+num(gapLead)+' dari dua sisi: volume belum cukup dan biaya per lead terlalu mahal.\n';
+  } else if(shortBudget && !shortLead){
+    msg += '- Lead sudah sesuai target meski spending belum penuh (kurang '+rupiah(gapBudget)+'), artinya efisiensinya bagus. Tapi sisa budget yang belum jalan berarti ada potensi lead tambahan yang terlewat.\n';
+  } else if(!shortBudget && shortLead){
+    msg += '- Spending sudah terpenuhi tapi lead masih kurang '+num(gapLead)+'. Budget terpakai namun hasilnya belum sebanding'+(cplOver?', CPL '+cplOverPct.toFixed(0)+'% di atas batas':'')+', jadi ada iklan yang boros atau kurang tepat sasaran.\n';
+  } else if(cplOver){
+    msg += '- Target spending dan lead aman, namun CPL '+cplOverPct.toFixed(0)+'% di atas batas. Kalau dibiarkan, biaya naik tanpa tambahan hasil dan target berikutnya makin berat.\n';
+  }
+  msg += berat
+    ? '- Selisihnya sudah cukup besar, makin lama dibiarkan makin berat dikejar dan berpengaruh ke omzet divisi.\n'
+    : '- Selisihnya masih bisa dikejar kalau ritmenya segera dinaikkan.\n';
+  msg += '\n';
+
+  // ---- Harapan: kebutuhan harian sesuai kondisi ----
+  const ms = advMonthSnapshot(adv, range[1]);
+  const sisaHari = Math.max(29-ms.elapsed,0);
+  const needSpend = sisaHari>0 ? Math.max(ms.target-ms.budget,0)/sisaHari : 0;
+  const needLead = sisaHari>0 ? Math.ceil(Math.max(ms.targetLead-ms.real,0)/sisaHari) : 0;
+
+  msg += '*Harapan*\n';
+  if(shortBudget && sisaHari>0 && needSpend>0){
+    msg += '- Naikkan spending ke sekitar '+rupiah(needSpend)+'/hari di sisa '+sisaHari+' hari.\n';
   } else if(shortBudget){
-    msg += '- Spending yang belum maksimal membuat potensi lead dan omzet belum tergarap optimal.\n';
-  } else if(shortLead){
-    msg += '- Hasil lead yang kurang membuat peluang closing ikut berkurang.\n';
+    msg += '- Pastikan spending periode berikutnya jalan sesuai target harian sejak awal.\n';
   }
-  if(cplOverLim){
-    msg += '- Biaya iklan jadi kurang efisien untuk hasil yang didapat.\n';
+  if(shortLead && sisaHari>0 && needLead>0){
+    msg += '- Kejar sekitar '+num(needLead)+' lead/hari agar kekurangan lead terkejar.\n';
   }
-  msg += '\n*Harapan*\n';
-  if(shortBudget || shortLead){
-    msg += '- Percepat ritme di sisa periode agar kekurangan bisa terkejar.\n';
+  if(cplOver){
+    msg += '- Turunkan CPL ke bawah '+rupiah(limReal)+' dengan evaluasi creative/audience yang boros.\n';
+  } else if(shortBudget){
+    msg += '- Jaga CPL tetap di bawah batas saat spending dinaikkan.\n';
   }
-  if(cplOverLim){
-    msg += '- Evaluasi iklan yang boros agar lebih efisien.\n';
-  }
-  msg += '- Mohon update progres, dan kabari kalau ada kendala ya.\n';
+  msg += '- Mohon update progres, dan kabari lebih awal kalau ada kendala (akun limit, iklan ditolak, dll).\n';
   msg += '\nTerima kasih 🙏';
   return msg;
 }
