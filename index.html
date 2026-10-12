@@ -407,6 +407,10 @@ tfoot td{font-weight:700;border-top:1px solid var(--line);border-bottom:none;col
 .btn-adv-reminder:hover{opacity:.85;}
 .btn-adv-reminder:active{transform:scale(.97);}
 .btn-adv-reminder.is-copied{background:color-mix(in srgb, var(--green) 16%, var(--panel));border-color:color-mix(in srgb, var(--green) 45%, var(--line));color:var(--green);}
+.btn-adv-shortfall{background:color-mix(in srgb, var(--red) 12%, var(--panel));border:1px solid color-mix(in srgb, var(--red) 40%, var(--line));color:var(--red);border-radius:20px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Roboto',sans-serif;transition:opacity .15s,transform .1s;white-space:nowrap;}
+.btn-adv-shortfall:hover{opacity:.85;}
+.btn-adv-shortfall:active{transform:scale(.97);}
+.btn-adv-shortfall.is-copied{background:color-mix(in srgb, var(--green) 16%, var(--panel));border-color:color-mix(in srgb, var(--green) 45%, var(--line));color:var(--green);}
 .acc-total-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;flex-wrap:wrap;}
 .table-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap;}
 .table-pagination .tp-info{font-size:11.5px;color:var(--muted);}
@@ -2946,6 +2950,7 @@ function render(){
         (r.partialCpl?'<span class="tag" style="font-size:10px;" title="Sebagian akun advertiser ini tidak dicentang. Lead tidak bisa dipisah per akun, jadi CPL dihitung dari budget semua akun advertiser.">⚠ CPL: semua akun</span>':'')+
         (r.anySwitch?'<span class="tag blue" style="font-size:10px;" title="Ada akun yang pindah advertiser di periode ini — angka sudah dihitung sesuai pemilik pada tanggalnya masing-masing">🔀 ADA PERPINDAHAN AKUN</span>':'')+
         '<button type="button" class="btn-adv-reminder" data-adv="'+r.adv+'" title="Salin pesan reminder (pace spending / CPL) untuk dikirim ke advertiser ini">🔔 Reminder</button>'+
+        '<button type="button" class="btn-adv-shortfall" data-adv="'+r.adv+'" title="Salin pesan reminder target (hasil vs target, akibat, harapan) sesuai periode yang dipilih">📉 Reminder Target</button>'+
       '</div>'+
       '</div>'+
       buildAdvInsightPanel(r, calcTargetInRange(r.adv, range), range)+
@@ -2970,6 +2975,9 @@ function render(){
   // ---- tombol reminder per kartu advertiser (pace spending sore hari / CPL kemahalan) ----
   document.querySelectorAll('#tblAdvertiser .btn-adv-reminder').forEach(btn=>{
     btn.onclick = ()=> handleAdvReminderClick(btn.dataset.adv, btn);
+  });
+  document.querySelectorAll('#tblAdvertiser .btn-adv-shortfall').forEach(btn=>{
+    btn.onclick = ()=> handleAdvShortfallClick(btn.dataset.adv, btn);
   });
 
   // ---- mini grafik trend per kartu advertiser ----
@@ -4127,6 +4135,88 @@ function handleAdvReminderClick(adv, btn){
     btn.innerHTML = '✅ Disalin!';
     btn.classList.add('is-copied');
     showQuickToast('Pesan reminder '+adv+' disalin — tinggal paste & kirim ke advertisernya.', 'var(--green)');
+    setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('is-copied'); }, 2000);
+  }).catch(()=>{
+    showQuickToast('Gagal menyalin ke clipboard, coba lagi.', 'var(--red)');
+  });
+}
+/* Pesan reminder KEKURANGAN TARGET per advertiser (siap paste ke WA).
+   Isinya: hasil aktual vs target (budget, lead real, CPL) pada periode yang sedang dipilih,
+   akibat kalau dibiarkan, dan harapan ke depan. Kalimat akibat & harapan menyesuaikan kondisi
+   hasilnya: budget kurang, lead kurang, CPL kemahalan, kombinasinya, atau sudah aman. */
+function buildAdvShortfallText(adv){
+  const range = getRange();
+  const accsSel = ACCOUNTS.filter(a=>selectedAccounts.has(a.id) && everOwnedBy(a,adv));
+  const budget = accsSel.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,range),0);
+  const real = sumIn(ADV_LEADS[adv].real, range);
+  const target = calcTargetInRange(adv, range);
+  const limReal = cplLimit(adv,'real',range);
+  const budgetAll = advBudgetAllAccounts(adv, range);
+  const cplReal = real>0 ? budgetAll/real : 0;
+  const targetLead = (target>0 && limReal>0) ? Math.round(target/limReal) : 0;
+
+  const periodLabel = fmtDateID(range[0])===fmtDateID(range[1]) ? fmtDateID(range[0]) : fmtDateID(range[0])+' s/d '+fmtDateID(range[1]);
+  const pctBudget = target>0 ? (budget/target*100) : 0;
+  const pctLead = targetLead>0 ? (real/targetLead*100) : 0;
+
+  const shortBudget = target>0 && budget<target;
+  const shortLead = targetLead>0 && real<targetLead;
+  const cplOverLim = limReal>0 && real>0 && cplReal>limReal;
+
+  let msg = '📉 *Reminder Target — '+adv+'*\n';
+  msg += 'Periode: '+periodLabel+'\n\n';
+
+  if(!(target>0)){
+    msg += 'Target periode ini belum lengkap, mohon dicek dulu ya 🙏';
+    return msg;
+  }
+
+  msg += '*Hasil vs target*\n';
+  msg += '- Spending: '+pctBudget.toFixed(0)+'% dari target'+(shortBudget?' (masih kurang)':' ✅')+'\n';
+  if(targetLead>0){
+    msg += '- Lead: '+pctLead.toFixed(0)+'% dari target'+(shortLead?' (masih kurang)':' ✅')+'\n';
+  }
+  if(cplOverLim){
+    msg += '- Efisiensi biaya per lead masih di atas batas yang diharapkan\n';
+  }
+  msg += '\n';
+
+  if(!shortBudget && !shortLead && !cplOverLim){
+    msg += '✅ Target periode ini sudah terpenuhi. Pertahankan ritmenya ya, terima kasih 🙏';
+    return msg;
+  }
+
+  msg += '*Akibat*\n';
+  if(shortBudget && shortLead){
+    msg += '- Hasil yang masuk belum sesuai harapan, sehingga kontribusi ke omzet divisi ikut berkurang.\n';
+  } else if(shortBudget){
+    msg += '- Spending yang belum maksimal membuat potensi lead dan omzet belum tergarap optimal.\n';
+  } else if(shortLead){
+    msg += '- Hasil lead yang kurang membuat peluang closing ikut berkurang.\n';
+  }
+  if(cplOverLim){
+    msg += '- Biaya iklan jadi kurang efisien untuk hasil yang didapat.\n';
+  }
+  msg += '\n*Harapan*\n';
+  if(shortBudget || shortLead){
+    msg += '- Percepat ritme di sisa periode agar kekurangan bisa terkejar.\n';
+  }
+  if(cplOverLim){
+    msg += '- Evaluasi iklan yang boros agar lebih efisien.\n';
+  }
+  msg += '- Mohon update progres, dan kabari kalau ada kendala ya.\n';
+  msg += '\nTerima kasih 🙏';
+  return msg;
+}
+
+/* Klik 📉 Reminder Kekurangan: salin pesan ke clipboard, tinggal paste & kirim. */
+function handleAdvShortfallClick(adv, btn){
+  const txt = buildAdvShortfallText(adv);
+  navigator.clipboard.writeText(txt).then(()=>{
+    const original = btn.innerHTML;
+    btn.innerHTML = '✅ Disalin!';
+    btn.classList.add('is-copied');
+    showQuickToast('Pesan reminder target '+adv+' disalin — tinggal paste & kirim.', 'var(--green)');
     setTimeout(()=>{ btn.innerHTML = original; btn.classList.remove('is-copied'); }, 2000);
   }).catch(()=>{
     showQuickToast('Gagal menyalin ke clipboard, coba lagi.', 'var(--red)');
