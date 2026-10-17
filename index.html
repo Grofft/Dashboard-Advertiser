@@ -282,6 +282,14 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .cs-input-grid .target-row input, .cs-input-grid .target-row select{padding:10px 12px !important;font-size:14px !important;}
 @media(max-width:900px){.cs-input-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.cs-input-grid{grid-template-columns:1fr;}}
+
+/* CRM form: grid rapi */
+.crm-g2{grid-template-columns:repeat(2,1fr) !important;}
+.crm-g3{grid-template-columns:repeat(3,1fr) !important;margin-bottom:14px !important;}
+.crm-g4{grid-template-columns:repeat(4,1fr) !important;}
+.crm-hint{font-weight:400;opacity:.7;font-size:11.5px;}
+@media(max-width:700px){.crm-g3{grid-template-columns:1fr !important;}.crm-g4{grid-template-columns:repeat(2,1fr) !important;}}
+@media(max-width:480px){.crm-g2{grid-template-columns:1fr !important;}}
 .cs-insight-card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:2px 0 16px;}
 .cs-insight-card .adv-card-row{padding:7px 0;font-size:13.5px;}
 .cs-insight-card .adv-card-row .v{font-size:14.5px;}
@@ -1331,50 +1339,52 @@ try{
 
   <div class="period-btns" id="crmTabs" style="margin-bottom:22px;"></div>
 
-  <div class="account-picker compact-form cs-input-panel" style="margin-bottom:26px;">
-    <h3 style="font-family:'Roboto',sans-serif;margin-bottom:6px;">📝 Input Data CRM</h3>
-    <div class="muted-note cs-panel-intro">Pilih CRM di tab atas, isi tanggal &amp; angkanya. Data tanggal + CRM yang sama akan ditimpa.</div>
+  <div class="section-header"><h2>Input Data Harian</h2><div class="muted-note">Pilih CRM di tab atas, isi angkanya — tanggal + CRM yang sama akan ditimpa</div></div>
 
-    <div class="cs-input-section">
-      <div class="cs-input-section-head"><span class="cs-sec-ic">📅</span><span class="cs-sec-title">CRM &amp; TANGGAL</span></div>
-      <div class="cs-input-grid cs-input-grid-2">
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Nama CRM</label><input type="text" id="crmNamaView" readonly placeholder="Pilih / tambah CRM dulu"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Tanggal</label>
-          <div class="cs-date-row"><input type="date" id="crmTanggal"><button type="button" class="cs-today-btn" id="btnCrmToday">Hari ini</button></div>
-        </div>
+  <div class="daterow-banner">
+    <div class="daterow-left">
+      <span class="daterow-icon">📅</span>
+      <div>
+        <div class="daterow-label">Tanggal untuk input CRM di bawah</div>
+        <div class="daterow-readable" id="crmTanggalReadable">-</div>
       </div>
     </div>
+    <div class="daterow-right">
+      <input type="date" id="crmTanggal">
+      <button type="button" class="btn" id="btnCrmToday" style="margin-left:8px;">Hari ini</button>
+    </div>
+  </div>
 
-    <div class="cs-input-section">
-      <div class="cs-input-section-head"><span class="cs-sec-ic">📣</span><span class="cs-sec-title">JUMLAH BROADCAST</span></div>
-      <div class="cs-input-grid cs-input-grid-2">
+  <div class="grid grid-2" style="gap:14px;align-items:start;margin-bottom:26px;">
+    <div>
+      <div class="account-picker compact-form">
+        <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📋 Input Harian per CRM</h3>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>CRM</label><input type="text" id="crmNamaView" readonly placeholder="Pilih / tambah CRM dulu"></div>
+
+        <div class="muted-note" style="margin:2px 0 6px;font-weight:600;color:var(--text);">📣 Jumlah Broadcast</div>
         <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D0</label><input type="number" id="crmD0" placeholder="Contoh: 100" step="1" inputmode="numeric"></div>
         <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D1</label><input type="number" id="crmD1" placeholder="Contoh: 80" step="1" inputmode="numeric"></div>
         <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D7</label><input type="number" id="crmD7" placeholder="Contoh: 60" step="1" inputmode="numeric"></div>
         <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D14</label><input type="number" id="crmD14" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
-      </div>
-    </div>
 
-    <div class="cs-input-section">
-      <div class="cs-input-section-head"><span class="cs-sec-ic">📊</span><span class="cs-sec-title">HASIL</span></div>
-      <div class="cs-input-grid cs-input-grid-2">
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Jumlah Closing</label><input type="number" id="crmClosing" placeholder="Contoh: 5" step="1" inputmode="numeric"></div>
+        <div class="muted-note" style="margin:10px 0 6px;font-weight:600;color:var(--text);">🎯 Hasil</div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Jumlah Closing (sama dengan Repeat Order)</label><input type="number" id="crmClosing" placeholder="Contoh: 5" step="1" inputmode="numeric"></div>
         <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="crmOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
         <div class="target-row" style="grid-template-columns:1fr;"><label>Customer Potensial</label><input type="number" id="crmPotensial" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Jumlah Repeat Order</label><input type="number" id="crmRO" placeholder="Contoh: 2" step="1" inputmode="numeric"></div>
-      </div>
-      <div class="target-row" style="grid-template-columns:1fr;margin-top:10px;"><label>Catatan Kendala</label>
-        <textarea id="crmKendala" rows="3" placeholder="Cth: banyak nomor tidak aktif, template broadcast ditolak, respon rendah..." style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px;font:inherit;resize:vertical;"></textarea>
-      </div>
-    </div>
+        <div class="target-row" style="grid-template-columns:1fr;"><label>Catatan Kendala</label>
+          <textarea id="crmKendala" rows="2" placeholder="Cth: nomor tidak aktif, template ditolak, respon rendah..." style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px;font:inherit;resize:vertical;"></textarea>
+        </div>
 
-    <div class="cs-insight-card">
+        <button class="btn" id="btnSaveCrm" style="margin-top:6px;width:100%;">💾 Simpan Data CRM</button>
+        <div class="muted-note" id="crmInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+      </div>
+      <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: pilih CRM di tab atas, cek tanggal, isi angka lalu tekan <b>Simpan</b>. Kolom otomatis bersih setelah simpan dan siap diisi hari berikutnya.</div>
+    </div>
+    <div class="account-picker compact-form">
       <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Insight Otomatis</h3>
       <div class="muted-note" style="margin-bottom:10px;">Terhitung langsung dari angka yang sedang diisi</div>
       <div id="crmInsightPanel"></div>
     </div>
-    <button class="btn cs-save-btn" id="btnSaveCrm">💾 Simpan Data CRM</button>
-    <div class="muted-note" id="crmInputMsg" style="margin-top:8px;"></div>
   </div>
 
   <div class="section-header"><h2>Overview Hasil CRM</h2><div class="muted-note" id="crmCount">0 data tercatat</div></div>
@@ -1407,7 +1417,7 @@ try{
     <div class="panel-title" style="margin-bottom:12px;">Rekap per CRM</div>
     <div class="table-scroll">
       <table>
-        <thead><tr><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Total BC</th><th>Closing</th><th>Omzet</th><th>Potensial</th><th>Repeat Order</th><th>% RO</th><th>Closing / BC</th></tr></thead>
+        <thead><tr><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Total BC</th><th>Closing</th><th>Omzet</th><th>Potensial</th><th>% RO</th><th>Closing / BC</th></tr></thead>
         <tbody id="tblCrmRekap"></tbody>
       </table>
     </div>
@@ -1422,7 +1432,7 @@ try{
     <div class="panel-title" style="margin-bottom:12px;">Riwayat Harian <span class="muted-note" id="crmRiwayatFor"></span></div>
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Tanggal</th><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Closing</th><th>Omzet</th><th>Potensial</th><th>RO</th><th>% RO</th><th>Kendala</th><th>Aksi</th></tr></thead>
+        <thead><tr><th>Tanggal</th><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Closing</th><th>Omzet</th><th>Potensial</th><th>% RO</th><th>Kendala</th><th>Aksi</th></tr></thead>
         <tbody id="tblCrmData"></tbody>
       </table>
     </div>
@@ -6059,7 +6069,7 @@ function crmApplyFromSheet(json){
     crm: String(r.crm||'').trim(),
     tanggal: r.tanggal||'',
     d0: crmNum(r.d0), d1: crmNum(r.d1), d7: crmNum(r.d7), d14: crmNum(r.d14),
-    closing: crmNum(r.closing), omzet: crmNum(r.omzet), potensial: crmNum(r.potensial), ro: crmNum(r.repeatorder),
+    closing: crmNum(r.closing), omzet: crmNum(r.omzet), potensial: crmNum(r.potensial), ro: crmNum(r.closing),
     kendala: String(r.kendala||'').trim()
   })).filter(r=>r.crm && r.tanggal);
   crmSyncRosterFromData();
@@ -6069,7 +6079,7 @@ function crmApplyFromSheet(json){
 }
 
 async function pushCrmRow(r){
-  return pushOneToSheet({type:'crm', crm:r.crm, tanggal:r.tanggal, d0:r.d0, d1:r.d1, d7:r.d7, d14:r.d14, closing:r.closing, omzet:r.omzet, potensial:r.potensial, repeatorder:r.ro||0, kendala:r.kendala});
+  return pushOneToSheet({type:'crm', crm:r.crm, tanggal:r.tanggal, d0:r.d0, d1:r.d1, d7:r.d7, d14:r.d14, closing:r.closing, omzet:r.omzet, potensial:r.potensial, repeatorder:r.closing||0, kendala:r.kendala});
 }
 async function pushCrmDelete(r){
   return pushOneToSheet({type:'crm', crm:r.crm, tanggal:r.tanggal, hapus:true});
@@ -6128,7 +6138,14 @@ document.getElementById('btnAddCrm').addEventListener('click', ()=>{
   setCrmMsg('crmRosterMsg','CRM "'+name+'" ditambahkan. Isi data harian di bawah — nama tersinkron ke spreadsheet setelah data pertamanya disimpan.','var(--green)');
 });
 document.getElementById('crmNewName').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('btnAddCrm').click(); } });
-document.getElementById('btnCrmToday').addEventListener('click', ()=>{ document.getElementById('crmTanggal').value = fmtISO(new Date()); renderCrmInsight(); });
+function updateCrmDateDisplay(){
+  const el=document.getElementById('crmTanggal'), rd=document.getElementById('crmTanggalReadable');
+  if(!el||!rd) return;
+  const d=new Date((el.value||fmtISO(TODAY_REF))+'T00:00:00');
+  rd.textContent = isNaN(d.getTime()) ? '-' : d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+document.getElementById('crmTanggal').addEventListener('input', updateCrmDateDisplay);
+document.getElementById('btnCrmToday').addEventListener('click', ()=>{ document.getElementById('crmTanggal').value = fmtISO(new Date()); updateCrmDateDisplay(); renderCrmInsight(); });
 
 function readCrmForm(){
   return {
@@ -6139,7 +6156,7 @@ function readCrmForm(){
     closing: crmNum(document.getElementById('crmClosing').value),
     omzet: crmNum(document.getElementById('crmOmzet').value),
     potensial: crmNum(document.getElementById('crmPotensial').value),
-    ro: crmNum(document.getElementById('crmRO').value),
+    ro: crmNum(document.getElementById('crmClosing').value),
     kendala: document.getElementById('crmKendala').value.trim()
   };
 }
@@ -6148,19 +6165,19 @@ function renderCrmInsight(){
   if(!panel) return;
   const f = readCrmForm();
   const bc = crmBroadcastTotal(f);
-  if(bc===0 && f.closing===0 && f.omzet===0 && f.potensial===0 && f.ro===0){
+  if(bc===0 && f.closing===0 && f.omzet===0 && f.potensial===0){
     panel.innerHTML = '<div class="muted-note">Isi angka di atas untuk melihat insight.</div>'; return;
   }
   const rows = [];
   rows.push('Total broadcast <b>'+num(bc)+'</b> (D0 '+num(f.d0)+' · D1 '+num(f.d1)+' · D7 '+num(f.d7)+' · D14 '+num(f.d14)+')');
   if(bc>0) rows.push('Closing per broadcast: <b>'+pctFmt(f.closing/bc*100)+'</b> ('+num(f.closing)+' closing)');
   if(f.closing>0 && f.omzet>0) rows.push('Omzet per closing: <b>'+rupiah(f.omzet/f.closing)+'</b>');
-  if(f.d1>0 && f.ro>0) rows.push('Repeat order: <b>'+pctFmt(f.ro/f.d1*100)+'</b> dari broadcast D1 ('+num(f.ro)+' RO)');
+  if(f.d1>0 && f.closing>0) rows.push('Repeat order: <b>'+pctFmt(f.closing/f.d1*100)+'</b> dari broadcast D1 ('+num(f.closing)+' RO)');
   if(f.potensial>0) rows.push('Customer potensial: <b>'+num(f.potensial)+'</b> — layak di-follow up lagi');
   if(f.kendala) rows.push('Kendala tercatat ✔');
   panel.innerHTML = '<ul style="margin:0;padding-left:18px;line-height:1.7;font-size:13px;">'+rows.map(r=>'<li>'+r+'</li>').join('')+'</ul>';
 }
-['crmD0','crmD1','crmD7','crmD14','crmClosing','crmOmzet','crmPotensial','crmRO','crmKendala'].forEach(id=>{
+['crmD0','crmD1','crmD7','crmD14','crmClosing','crmOmzet','crmPotensial','crmKendala'].forEach(id=>{
   const el = document.getElementById(id); if(el) el.addEventListener('input', renderCrmInsight);
 });
 
@@ -6174,7 +6191,7 @@ async function saveCrmInput(){
   else { entry = Object.assign({crm, tanggal}, f); CRM_DATA.push(entry); }
   saveLocalState();
   renderCrmAll();
-  ['crmD0','crmD1','crmD7','crmD14','crmClosing','crmOmzet','crmPotensial','crmRO','crmKendala'].forEach(id=>{ document.getElementById(id).value=''; });
+  ['crmD0','crmD1','crmD7','crmD14','crmClosing','crmOmzet','crmPotensial','crmKendala'].forEach(id=>{ document.getElementById(id).value=''; });
   renderCrmInsight();
   setCrmMsg('crmInputMsg','Tersimpan — mengirim ke spreadsheet...','var(--muted)');
   const status = await pushCrmRow(entry);
@@ -6190,7 +6207,7 @@ function renderCrmOverview(){
   const sum = (k)=> rows.reduce((a,r)=>a+crmNum(r[k]),0);
   const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
   const tD0=sum('d0'), tD1=sum('d1'), tD7=sum('d7'), tD14=sum('d14');
-  const tBc = tD0+tD1+tD7+tD14, tClosing=sum('closing'), tOmzet=sum('omzet'), tPot=sum('potensial'), tRO=sum('ro');
+  const tBc = tD0+tD1+tD7+tD14, tClosing=sum('closing'), tOmzet=sum('omzet'), tPot=sum('potensial'), tRO=tClosing;
   set('crmCount', rows.length+' data tercatat');
   set('crmKpiOmzet', rupiah(tOmzet)); set('crmKpiClosing', num(tClosing)); set('crmKpiPotensial', num(tPot));
   set('crmKpiBroadcast', num(tBc));
@@ -6202,16 +6219,16 @@ function renderCrmOverview(){
   const by = {};
   rows.forEach(r=>{
     const o = by[r.crm] || (by[r.crm]={d0:0,d1:0,d7:0,d14:0,closing:0,omzet:0,potensial:0,ro:0});
-    o.d0+=r.d0; o.d1+=r.d1; o.d7+=r.d7; o.d14+=r.d14; o.closing+=r.closing; o.omzet+=r.omzet; o.potensial+=r.potensial; o.ro+=crmNum(r.ro);
+    o.d0+=r.d0; o.d1+=r.d1; o.d7+=r.d7; o.d14+=r.d14; o.closing+=r.closing; o.omzet+=r.omzet; o.potensial+=r.potensial; o.ro+=r.closing;
   });
   const names = Object.keys(by).sort((a,b)=>by[b].omzet-by[a].omzet);
   const tb = document.getElementById('tblCrmRekap');
   if(tb){
-    tb.innerHTML = names.length===0 ? '<tr><td colspan="12" class="muted-note">Belum ada data di periode ini.</td></tr>' :
+    tb.innerHTML = names.length===0 ? '<tr><td colspan="11" class="muted-note">Belum ada data di periode ini.</td></tr>' :
       names.map(n=>{ const o=by[n], bc=o.d0+o.d1+o.d7+o.d14;
-        return '<tr><td>'+escapeHtml(n)+'</td><td>'+num(o.d0)+'</td><td>'+num(o.d1)+'</td><td>'+num(o.d7)+'</td><td>'+num(o.d14)+'</td><td><b>'+num(bc)+'</b></td><td>'+num(o.closing)+'</td><td>'+rupiah(o.omzet)+'</td><td>'+num(o.potensial)+'</td><td>'+num(o.ro)+'</td><td>'+(o.d1>0?pctFmt(o.ro/o.d1*100):'-')+'</td><td>'+(bc>0?pctFmt(o.closing/bc*100):'-')+'</td></tr>';
+        return '<tr><td>'+escapeHtml(n)+'</td><td>'+num(o.d0)+'</td><td>'+num(o.d1)+'</td><td>'+num(o.d7)+'</td><td>'+num(o.d14)+'</td><td><b>'+num(bc)+'</b></td><td>'+num(o.closing)+'</td><td>'+rupiah(o.omzet)+'</td><td>'+num(o.potensial)+'</td><td>'+(o.d1>0?pctFmt(o.ro/o.d1*100):'-')+'</td><td>'+(bc>0?pctFmt(o.closing/bc*100):'-')+'</td></tr>';
       }).join('') +
-      '<tr style="font-weight:700;"><td>Total</td><td>'+num(tD0)+'</td><td>'+num(tD1)+'</td><td>'+num(tD7)+'</td><td>'+num(tD14)+'</td><td>'+num(tBc)+'</td><td>'+num(tClosing)+'</td><td>'+rupiah(tOmzet)+'</td><td>'+num(tPot)+'</td><td>'+num(tRO)+'</td><td>'+(tD1>0?pctFmt(tRO/tD1*100):'-')+'</td><td>'+(tBc>0?pctFmt(tClosing/tBc*100):'-')+'</td></tr>';
+      '<tr style="font-weight:700;"><td>Total</td><td>'+num(tD0)+'</td><td>'+num(tD1)+'</td><td>'+num(tD7)+'</td><td>'+num(tD14)+'</td><td>'+num(tBc)+'</td><td>'+num(tClosing)+'</td><td>'+rupiah(tOmzet)+'</td><td>'+num(tPot)+'</td><td>'+(tD1>0?pctFmt(tRO/tD1*100):'-')+'</td><td>'+(tBc>0?pctFmt(tClosing/tBc*100):'-')+'</td></tr>';
   }
 
   // Insight overview
@@ -6249,8 +6266,8 @@ function renderCrmHistory(){
   if(lab) lab.textContent = crmActiveTab ? '— '+crmActiveTab : '';
   const rows = CRM_DATA.filter(r=>(!crmActiveTab || r.crm===crmActiveTab) && csRowInRange(r.tanggal, range))
     .sort((a,b)=>String(b.tanggal).localeCompare(String(a.tanggal)));
-  tb.innerHTML = rows.length===0 ? '<tr><td colspan="13" class="muted-note">Belum ada data untuk CRM &amp; periode ini.</td></tr>' :
-    rows.map(r=>'<tr><td>'+escapeHtml(r.tanggal)+'</td><td>'+escapeHtml(r.crm)+'</td><td>'+num(r.d0)+'</td><td>'+num(r.d1)+'</td><td>'+num(r.d7)+'</td><td>'+num(r.d14)+'</td><td>'+num(r.closing)+'</td><td>'+rupiah(r.omzet)+'</td><td>'+num(r.potensial)+'</td><td>'+num(r.ro)+'</td><td>'+(r.d1>0?pctFmt(crmNum(r.ro)/r.d1*100):'-')+'</td><td style="max-width:260px;white-space:pre-wrap;">'+escapeHtml(r.kendala||'')+'</td><td><button class="btn" data-crm-del="'+escapeHtml(r.crm)+'|'+escapeHtml(r.tanggal)+'" style="padding:3px 9px;">Hapus</button></td></tr>').join('');
+  tb.innerHTML = rows.length===0 ? '<tr><td colspan="12" class="muted-note">Belum ada data untuk CRM &amp; periode ini.</td></tr>' :
+    rows.map(r=>'<tr><td>'+escapeHtml(r.tanggal)+'</td><td>'+escapeHtml(r.crm)+'</td><td>'+num(r.d0)+'</td><td>'+num(r.d1)+'</td><td>'+num(r.d7)+'</td><td>'+num(r.d14)+'</td><td>'+num(r.closing)+'</td><td>'+rupiah(r.omzet)+'</td><td>'+num(r.potensial)+'</td><td>'+(r.d1>0?pctFmt(crmNum(r.closing)/r.d1*100):'-')+'</td><td style="max-width:260px;white-space:pre-wrap;">'+escapeHtml(r.kendala||'')+'</td><td><button class="btn" data-crm-del="'+escapeHtml(r.crm)+'|'+escapeHtml(r.tanggal)+'" style="padding:3px 9px;">Hapus</button></td></tr>').join('');
   tb.querySelectorAll('[data-crm-del]').forEach(b=>{
     b.onclick = async ()=>{
       const [c,t] = b.getAttribute('data-crm-del').split('|');
@@ -6267,7 +6284,7 @@ function renderCrmAll(){
   renderCrmChips();
   renderCrmTabs();
   const nv = document.getElementById('crmNamaView'); if(nv) nv.value = crmActiveTab || '';
-  const td = document.getElementById('crmTanggal'); if(td && !td.value) td.value = fmtISO(TODAY_REF);
+  const td = document.getElementById('crmTanggal'); if(td && !td.value) td.value = fmtISO(TODAY_REF); updateCrmDateDisplay();
   renderCrmOverview();
   renderCrmHistory();
 }
