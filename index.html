@@ -156,15 +156,6 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .kpi .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
 .kpi .value{font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;line-height:1.25;letter-spacing:.01em;}
 .bar-accent{height:3px;width:28px;border-radius:2px;margin-bottom:10px;}
-.crm-up{color:var(--green);font-weight:700;}
-.crm-down{color:var(--red);font-weight:700;}
-.crm-person-empty{padding:22px 18px;text-align:center;}
-.crm-person-sub{font-size:11.5px;opacity:.85;margin-top:4px;color:inherit;}
-.crm-bc-card{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:16px 18px;}
-.crm-bc-split{display:grid;grid-template-columns:repeat(4,minmax(70px,1fr));gap:10px;flex:1;min-width:280px;max-width:520px;}
-.crm-bc-split div{background:rgba(255,255,255,.12);border-radius:10px;padding:8px 12px;text-align:center;}
-.crm-bc-split span{display:block;font-size:11px;letter-spacing:.5px;opacity:.85;}
-.crm-bc-split b{font-size:19px;font-weight:700;}
 .card.kpi{background:var(--kpi-grad);border:none;color:var(--kpi-grad-text);position:relative;overflow:hidden;padding:16px 44px 18px 18px;}
 .card.kpi .label{color:var(--kpi-grad-sub);}
 .card.kpi .value{color:var(--kpi-grad-text);}
@@ -178,6 +169,105 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
 @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
 
+/* ===== OKR ===== */
+.okr-period-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.okr-period-pill{padding:7px 14px;border-radius:20px;font-size:12.5px;font-weight:600;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);cursor:pointer;white-space:nowrap;}
+.okr-period-pill:hover{color:var(--text);border-color:var(--green);}
+.okr-period-pill.active{background:var(--accent-dim);color:var(--green);border-color:var(--green);font-weight:700;}
+.okr-add-period{padding:7px 12px;border-radius:20px;font-size:12.5px;font-weight:700;color:var(--green);background:transparent;border:1px dashed var(--green);cursor:pointer;white-space:nowrap;}
+.okr-add-period:hover{background:var(--good-bg);}
+
+.okr-obj-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:0 3px 0 rgba(0,0,0,.06),0 8px 18px rgba(0,0,0,.08);}
+.okr-obj-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.okr-obj-title{font-family:'Roboto',sans-serif;font-weight:700;font-size:15.5px;line-height:1.4;}
+.okr-obj-owner{font-size:12px;color:var(--muted);margin-top:4px;}
+.okr-obj-owner b{color:var(--text);font-weight:600;}
+.okr-obj-actions{display:flex;gap:8px;flex-shrink:0;align-items:center;}
+.okr-icon-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 2px 0 rgba(0,0,0,.14),0 3px 6px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .12s ease,box-shadow .12s ease,color .12s ease,border-color .12s ease;}
+.okr-icon-btn:hover{color:var(--text);border-color:var(--green);transform:translateY(-1px);box-shadow:0 3px 0 rgba(0,0,0,.16),0 5px 10px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.08);}
+.okr-icon-btn:active{transform:translateY(2px);box-shadow:0 0 0 rgba(0,0,0,.1),inset 0 1px 3px rgba(0,0,0,.25);}
+.okr-icon-btn.danger:hover{color:var(--red);border-color:var(--red);}
+
+.okr-score-chip{flex-shrink:0;min-width:64px;text-align:center;border-radius:10px;padding:7px 12px;font-family:'Roboto',sans-serif;font-weight:700;font-size:16px;box-shadow:0 2px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.35);}
+.okr-score-chip .sub{display:block;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:1px;opacity:.85;}
+.okr-score-chip.good{background:var(--good-bg);color:var(--green);}
+.okr-score-chip.warn{background:var(--warn-bg);color:var(--yellow);}
+.okr-score-chip.bad{background:var(--bad-bg);color:var(--red);}
+
+.okr-kr-row{padding:10px 0;border-top:1px solid var(--line);}
+.okr-kr-row:first-of-type{border-top:none;padding-top:0;}
+.okr-kr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;}
+.okr-kr-text{font-size:13px;font-weight:500;line-height:1.45;}
+.okr-kr-nums{font-size:11.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.okr-kr-nums b{color:var(--text);}
+.okr-kr-actions{display:flex;gap:6px;flex-shrink:0;}
+.okr-kr-mini-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.13),0 3px 5px rgba(0,0,0,.09),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .12s ease,box-shadow .12s ease,color .12s ease,border-color .12s ease;}
+.okr-kr-mini-btn:hover{background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--text);border-color:var(--green);transform:translateY(-1px);box-shadow:0 3px 0 rgba(0,0,0,.15),0 5px 9px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.08);}
+.okr-kr-mini-btn:active{transform:translateY(2px);box-shadow:inset 0 1px 3px rgba(0,0,0,.25);}
+.okr-kr-track{height:7px;border-radius:6px;background:var(--panel-2);overflow:hidden;}
+.okr-kr-fill{height:100%;border-radius:6px;transition:width .3s ease;}
+.okr-kr-fill.good{background:var(--green);}
+.okr-kr-fill.warn{background:var(--yellow);}
+.okr-kr-fill.bad{background:var(--red);}
+.okr-kr-pct{font-size:11px;font-weight:700;flex-shrink:0;width:38px;text-align:right;}
+
+.okr-add-kr-btn{margin-top:12px;background:transparent;border:1px dashed var(--line);color:var(--muted);border-radius:9px;padding:8px 12px;font-size:12px;font-weight:600;width:100%;cursor:pointer;}
+.okr-add-kr-btn:hover{border-color:var(--green);color:var(--green);}
+.okr-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;border:1.5px dashed var(--line);border-radius:14px;}
+.okr-empty b{display:block;color:var(--text);font-size:14.5px;margin-bottom:5px;font-family:'Roboto',sans-serif;}
+
+.okr-init-wrap{margin-top:9px;padding-left:2px;}
+.okr-init-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;}
+.okr-init-check{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--panel-2);font-size:10px;color:transparent;}
+.okr-init-check.done{background:var(--green);border-color:var(--green);color:#06150E;}
+.okr-init-text{flex:1;font-size:12px;color:var(--text);line-height:1.5;}
+.okr-init-text.done{color:var(--muted);text-decoration:line-through;}
+.okr-init-actions{display:flex;gap:6px;flex-shrink:0;align-items:center;}
+.okr-add-init-btn{margin-top:4px;background:transparent;border:none;color:var(--muted);font-size:11.5px;font-weight:600;cursor:pointer;padding:4px 0;}
+.okr-add-init-btn:hover{color:var(--green);}
+
+.okr-refl-btn{padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--muted);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;height:40px;box-shadow:0 2px 0 rgba(0,0,0,.14),0 3px 6px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .12s ease,box-shadow .12s ease,color .12s ease,border-color .12s ease;}
+.okr-refl-btn:hover{color:var(--text);border-color:var(--blue);transform:translateY(-1px);box-shadow:0 3px 0 rgba(0,0,0,.16),0 5px 10px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.08);}
+.okr-refl-btn:active{transform:translateY(2px);box-shadow:inset 0 1px 3px rgba(0,0,0,.25);}
+.okr-refl-btn.filled{color:var(--blue);border-color:var(--blue);}
+.okr-refl-block{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
+.okr-refl-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.okr-refl-item{display:flex;gap:10px;margin-bottom:10px;}
+.okr-refl-item:last-child{margin-bottom:0;}
+.okr-refl-tag{flex-shrink:0;width:78px;font-size:10.5px;font-weight:800;letter-spacing:.03em;padding:3px 0;color:#fff;border-radius:6px;text-align:center;height:20px;line-height:14px;}
+.okr-refl-tag.what{background:var(--blue);}
+.okr-refl-tag.sowhat{background:var(--purple);}
+.okr-refl-tag.nowwhat{background:var(--green);color:#06150E;}
+.okr-refl-text{flex:1;font-size:12.5px;line-height:1.55;color:var(--text);padding-top:2px;}
+.okr-refl-text.muted-note{color:var(--muted);font-style:italic;}
+.okr-refl-modal textarea{width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px 11px;font-size:13px;font-family:'Roboto',sans-serif;resize:vertical;min-height:64px;}
+.okr-refl-what-box{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+
+.okr-kr-dir-badge{font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:2px 7px;border-radius:5px;background:var(--panel-2);color:var(--muted);border:1px solid var(--line);flex-shrink:0;white-space:nowrap;}
+.okr-init-row{flex-wrap:wrap;}
+
+.okr-dir-tag{display:inline-block;margin-left:7px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--panel-2);color:var(--blue);white-space:nowrap;}
+
+/* Collapse/expand Objective card + filter toolbar (biar tetap enak dilihat pas OKR-nya banyak) */
+.okr-filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.okr-filter-select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;font-family:'Roboto',sans-serif;cursor:pointer;}
+.okr-expand-btn{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Roboto',sans-serif;}
+.okr-expand-btn:hover{color:var(--text);border-color:var(--green);}
+.okr-obj-toggle{width:18px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:center;padding-top:3px;color:var(--muted);font-size:10.5px;cursor:pointer;user-select:none;}
+.okr-obj-summary{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:11px;color:var(--muted);flex-wrap:wrap;}
+.okr-obj-mini-track{height:5px;width:110px;border-radius:4px;background:var(--panel-2);overflow:hidden;flex-shrink:0;}
+.okr-obj-mini-fill{height:100%;border-radius:4px;}
+.okr-obj-mini-fill.good{background:var(--green);}
+.okr-obj-mini-fill.warn{background:var(--yellow);}
+.okr-obj-mini-fill.bad{background:var(--red);}
+.okr-obj-body{margin-top:14px;}
+.okr-init-deadline{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-left:6px;}
+.okr-init-deadline.normal{background:var(--panel-2);color:var(--muted);}
+.okr-init-deadline.soon{background:var(--warn-bg);color:var(--yellow);}
+.okr-init-deadline.overdue{background:var(--bad-bg);color:var(--red);}
+.okr-init-deadline.done{background:var(--good-bg);color:var(--green);}
+.okr-deadline-banner{display:none;align-items:center;gap:10px;background:var(--bad-bg);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:var(--red);line-height:1.5;}
+.okr-deadline-banner b{font-weight:800;}
 .cs-stack{display:flex;flex-direction:column;gap:18px;}
 .cs-input-panel{padding:20px 22px !important;}
 .cs-input-panel h3{font-size:15px !important;margin-bottom:14px !important;}
@@ -187,14 +277,6 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;font
 .cs-input-grid .target-row input, .cs-input-grid .target-row select{padding:10px 12px !important;font-size:14px !important;}
 @media(max-width:900px){.cs-input-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.cs-input-grid{grid-template-columns:1fr;}}
-
-/* CRM form: grid rapi */
-.crm-g2{grid-template-columns:repeat(2,1fr) !important;}
-.crm-g3{grid-template-columns:repeat(3,1fr) !important;margin-bottom:14px !important;}
-.crm-g4{grid-template-columns:repeat(4,1fr) !important;}
-.crm-hint{font-weight:400;opacity:.7;font-size:11.5px;}
-@media(max-width:700px){.crm-g3{grid-template-columns:1fr !important;}.crm-g4{grid-template-columns:repeat(2,1fr) !important;}}
-@media(max-width:480px){.crm-g2{grid-template-columns:1fr !important;}}
 .cs-insight-card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:2px 0 16px;}
 .cs-insight-card .adv-card-row{padding:7px 0;font-size:13.5px;}
 .cs-insight-card .adv-card-row .v{font-size:14.5px;}
@@ -736,8 +818,8 @@ try{
     <div class="navbtn" data-page="testing"><span class="ic">🧪</span> Kampanye Testing</div>
     <div class="navbtn" data-page="cs"><span class="ic">📞</span> Input CS</div>
     <div class="navbtn" data-page="cs-ringkasan"><span class="ic">📊</span> Ringkasan CS</div>
-    <div class="navbtn" data-page="crm"><span class="ic">💌</span> CRM</div>
     <div class="navbtn" data-page="laporan"><span class="ic">🗒️</span> Laporan</div>
+    <div class="navbtn" data-page="okr"><span class="ic">🎯</span> OKR Divisi</div>
 
     <div class="sidebar-foot">
       <div class="status" id="apiStatus"><div class="sdot"></div><span id="apiStatusText">Menghubungkan…</span></div>
@@ -988,7 +1070,7 @@ try{
     </div>
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--muted);">Belum ada sinkronisasi pada sesi ini.</div>
     <div id="scriptBox" style="display:none;">
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 14 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSKategoriTidakReal</code> (kolom: kategori, aktif — daftar master kategori alasan Lead OO tidak real yang bisa dikustom bebas, otomatis terisi/update dari menu Hasil CS → Kelola Kategori "Tidak Real"), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakReal</code> (kolom: tanggal, cs, advertiser, kategori, jumlah — rincian jumlah Lead OO tidak real per kategori, bisa beberapa baris per CS per advertiser per tanggal, otomatis terisi/update/hapus dari menu Hasil CS), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSKategoriTidakClosing</code> (kolom: kategori, aktif — daftar master kategori alasan Lead Real yang tidak closing, bebas dikustom, otomatis terisi/update dari menu Hasil CS → Kelola Kategori "Tidak Closing"), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakClosing</code> (kolom: tanggal, cs, advertiser, kategori, jumlah — rincian jumlah Lead Real yang tidak closing per kategori, bisa beberapa baris per CS per advertiser per tanggal, otomatis terisi/update/hapus dari menu Hasil CS), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CRM</code> (kolom: tanggal, crm, d0, d1, d7, d14, closing, omzet, potensial, kendala, repeatorder — data harian tiap CRM, otomatis terisi/update/hapus dari menu CRM).</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 13 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">TestCampaign</code> (kolom: id, advertiser, nama, tanggal, status, spending, hasillead, cpc, ctr, cpm, cpr — daftar kampanye testing, otomatis terisi/update dari menu Kampanye Testing; cpr dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSKategoriTidakReal</code> (kolom: kategori, aktif — daftar master kategori alasan Lead OO tidak real yang bisa dikustom bebas, otomatis terisi/update dari menu Hasil CS → Kelola Kategori "Tidak Real"), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakReal</code> (kolom: tanggal, cs, advertiser, kategori, jumlah — rincian jumlah Lead OO tidak real per kategori, bisa beberapa baris per CS per advertiser per tanggal, otomatis terisi/update/hapus dari menu Hasil CS), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSKategoriTidakClosing</code> (kolom: kategori, aktif — daftar master kategori alasan Lead Real yang tidak closing, bebas dikustom, otomatis terisi/update dari menu Hasil CS → Kelola Kategori "Tidak Closing"), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakClosing</code> (kolom: tanggal, cs, advertiser, kategori, jumlah — rincian jumlah Lead Real yang tidak closing per kategori, bisa beberapa baris per CS per advertiser per tanggal, otomatis terisi/update/hapus dari menu Hasil CS), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">OKR</code> (kolom: periode, obj_id, objective, pic, so_what, now_what, kr_id, key_result, arah, target, capaian, satuan, initiative_id, initiative, deadline, selesai — 1 baris per Initiative, dengan kolom Objective &amp; Key Result diulang di tiap baris supaya sheet-nya langsung terbaca tanpa buka dashboard; KR tanpa Initiative atau Objective tanpa KR tetap dapat 1 baris dengan kolom yang tidak relevan dikosongkan; otomatis terisi/update — seluruh baris 1 periode diganti sekaligus — dari menu OKR Divisi setiap kali ada perubahan).</div>
       <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
@@ -1218,158 +1300,6 @@ try{
   </div>
 </div><!-- /page-cs-ringkasan -->
 
-<div class="page" id="page-crm">
-  <div class="section-header" style="margin-top:0;"><h1>CRM</h1><div class="muted-note">Input hasil broadcast &amp; closing tiap CRM — overview mengikuti filter periode di atas</div></div>
-
-  <div class="kelola-group">
-    <details class="kelola-item" id="kelolaCrmItem" open>
-      <summary>
-        <span class="k-ic">👥</span>
-        <span class="k-title">Kelola CRM<span class="k-sub">Nama CRM yang datanya dicatat</span></span>
-        <span class="k-count" id="crmCountBadge">0</span>
-        <span class="k-chev">▾</span>
-      </summary>
-      <div class="kelola-body">
-        <div class="muted-note">Klik nama di tab bawah untuk pindah CRM. Nama juga otomatis muncul dari data di spreadsheet.</div>
-        <div id="crmChips" class="kelola-chips"></div>
-        <div class="kelola-add-row">
-          <input type="text" id="crmNewName" placeholder="cth: Dina">
-          <button class="btn" id="btnAddCrm">+ Tambah CRM</button>
-        </div>
-        <div class="muted-note" id="crmRosterMsg" style="margin-top:8px;"></div>
-      </div>
-    </details>
-  </div>
-
-  <div class="period-btns" id="crmTabs" style="margin-bottom:22px;"></div>
-
-  <div class="section-header"><h2>Input Data Harian</h2><div class="muted-note">Pilih CRM di tab atas, isi angkanya — tanggal + CRM yang sama akan ditimpa</div></div>
-
-  <div class="daterow-banner">
-    <div class="daterow-left">
-      <span class="daterow-icon">📅</span>
-      <div>
-        <div class="daterow-label">Tanggal untuk input CRM di bawah</div>
-        <div class="daterow-readable" id="crmTanggalReadable">-</div>
-      </div>
-    </div>
-    <div class="daterow-right">
-      <input type="date" id="crmTanggal">
-      <button type="button" class="btn" id="btnCrmToday" style="margin-left:8px;">Hari ini</button>
-    </div>
-  </div>
-
-  <div class="grid grid-2" style="gap:14px;align-items:start;margin-bottom:26px;">
-    <div>
-      <div class="account-picker compact-form">
-        <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📋 Input Harian per CRM</h3>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>CRM</label><input type="text" id="crmNamaView" readonly placeholder="Pilih / tambah CRM dulu"></div>
-
-        <div class="muted-note" style="margin:2px 0 6px;font-weight:600;color:var(--text);">📣 Jumlah Broadcast</div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D0</label><input type="number" id="crmD0" placeholder="Contoh: 100" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D1</label><input type="number" id="crmD1" placeholder="Contoh: 80" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D7</label><input type="number" id="crmD7" placeholder="Contoh: 60" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Broadcast D14</label><input type="number" id="crmD14" placeholder="Contoh: 40" step="1" inputmode="numeric"></div>
-
-        <div class="muted-note" style="margin:10px 0 6px;font-weight:600;color:var(--text);">🎯 Hasil</div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Jumlah Closing (sama dengan Repeat Order)</label><input type="number" id="crmClosing" placeholder="Contoh: 5" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet</label><input type="number" id="crmOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Customer Potensial</label><input type="number" id="crmPotensial" placeholder="Contoh: 12" step="1" inputmode="numeric"></div>
-        <div class="target-row" style="grid-template-columns:1fr;"><label>Catatan Kendala</label>
-          <textarea id="crmKendala" rows="2" placeholder="Cth: nomor tidak aktif, template ditolak, respon rendah..." style="width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px;font:inherit;resize:vertical;"></textarea>
-        </div>
-
-        <button class="btn" id="btnSaveCrm" style="margin-top:6px;width:100%;">💾 Simpan Data CRM</button>
-        <div class="muted-note" id="crmInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
-      </div>
-      <div class="muted-note" style="margin-top:10px;font-size:12px;">✅ Tip: pilih CRM di tab atas, cek tanggal, isi angka lalu tekan <b>Simpan</b>. Kolom otomatis bersih setelah simpan dan siap diisi hari berikutnya.</div>
-    </div>
-    <div class="account-picker compact-form">
-      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:2px;">💡 Insight Otomatis</h3>
-      <div class="muted-note" style="margin-bottom:10px;">Terhitung langsung dari angka yang sedang diisi</div>
-      <div id="crmInsightPanel"></div>
-    </div>
-  </div>
-
-  <div class="section-header"><h2>Overview Hasil CRM</h2><div class="muted-note" id="crmCount">0 data tercatat</div></div>
-  <div class="grid grid-4" style="margin-bottom:14px;">
-    <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="crmKpiOmzet">Rp 0</div></div>
-    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Closing</div><div class="value" id="crmKpiClosing">0</div></div>
-    <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">Customer Potensial</div><div class="value" id="crmKpiPotensial">0</div></div>
-    <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">% Repeat Order</div><div class="value" id="crmKpiROPct">0%</div><div class="muted-note" style="margin-top:4px;color:inherit;opacity:.85;"><span id="crmKpiRO">0</span> RO ÷ broadcast D1</div></div>
-  </div>
-  <div class="card kpi crm-bc-card" style="margin-bottom:18px;">
-    <div class="crm-bc-main">
-      <div class="label">Total Broadcast</div>
-      <div class="value" id="crmKpiBroadcast">0</div>
-      <div class="muted-note" id="crmKpiBroadcastSub" style="margin-top:4px;color:inherit;opacity:.85;"></div>
-    </div>
-    <div class="crm-bc-split">
-      <div><span>D0</span><b id="crmKpiD0">0</b></div>
-      <div><span>D1</span><b id="crmKpiD1">0</b></div>
-      <div><span>D7</span><b id="crmKpiD7">0</b></div>
-      <div><span>D14</span><b id="crmKpiD14">0</b></div>
-    </div>
-  </div>
-
-  <div class="chart-card" style="margin-bottom:18px;">
-    <div class="panel-title" style="margin-bottom:10px;">💡 Insight Periode Ini</div>
-    <div id="crmOverviewInsight"></div>
-  </div>
-
-  <div class="chart-card" style="margin-bottom:18px;padding-bottom:14px;">
-    <div class="panel-title" style="margin-bottom:12px;">Rekap per CRM</div>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Total BC</th><th>Closing</th><th>Omzet</th><th>Potensial</th><th>% RO</th><th>Closing / BC</th></tr></thead>
-        <tbody id="tblCrmRekap"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="chart-card" style="margin-bottom:18px;">
-    <div class="section-header"><h2>Analisa per CRM</h2><div class="muted-note" id="crmPersonSub">—</div></div>
-  <div class="period-btns" id="crmPersonTabs" style="margin-bottom:16px;"></div>
-  <div id="crmPersonEmpty" class="chart-card crm-person-empty muted-note" style="display:none;margin-bottom:18px;"></div>
-  <div id="crmPersonBody">
-    <div class="grid grid-4" id="crmPersonKpi1" style="margin-bottom:14px;"></div>
-    <div class="grid grid-4" id="crmPersonKpi2" style="margin-bottom:18px;"></div>
-    <div class="grid grid-2" style="gap:14px;margin-bottom:18px;align-items:start;">
-      <div class="chart-card">
-        <div class="panel-title" style="margin-bottom:10px;">Tren Harian <span class="muted-note">— omzet (batang) &amp; closing (garis)</span></div>
-        <div class="chart-wrap"><canvas id="crmPersonTrendChart"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="panel-title" style="margin-bottom:10px;">Perbandingan Omzet antar CRM <span class="muted-note">— hijau = CRM terpilih</span></div>
-        <div class="chart-wrap"><canvas id="crmCompareChart"></canvas></div>
-      </div>
-    </div>
-    <div class="chart-card" style="margin-bottom:18px;">
-      <div class="panel-title" style="margin-bottom:10px;">💡 Insight <span id="crmPersonInsightName"></span></div>
-      <div id="crmPersonInsight"></div>
-    </div>
-    <div class="chart-card" style="margin-bottom:18px;">
-      <div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala <span id="crmPersonKendalaName"></span></div>
-      <div id="crmPersonKendala"></div>
-    </div>
-  </div>
-
-  <div class="chart-card" style="margin-bottom:18px;">
-    <div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala — Semua CRM</div>
-    <div id="crmKendalaList"></div>
-  </div>
-
-  <div class="chart-card" style="padding-bottom:14px;">
-    <div class="panel-title" style="margin-bottom:12px;">Riwayat Harian <span class="muted-note" id="crmRiwayatFor"></span></div>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Tanggal</th><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Closing</th><th>Omzet</th><th>Potensial</th><th>% RO</th><th>Kendala</th><th>Aksi</th></tr></thead>
-        <tbody id="tblCrmData"></tbody>
-      </table>
-    </div>
-  </div>
-</div><!-- /page-crm -->
-
 <div class="page" id="page-laporan">
   <div class="section-header laporan-noprint" style="margin-top:0;">
     <h1>Laporan</h1>
@@ -1399,7 +1329,7 @@ try{
       <div class="lap-kpi-grid" style="margin-bottom:14px;">
         <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Budget</div><div class="value" id="gabBudget">Rp 0</div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="gabOmzet">Rp 0</div></div>
-        <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Gabungan</div><div class="value" id="gabRoas">0.00x</div><div class="muted-note" id="gabRoasCrm" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
+        <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Gabungan</div><div class="value" id="gabRoas">0.00x</div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">CPP Gabungan</div><div class="value" id="gabCpp">-</div><div class="muted-note" style="margin-top:4px;color:inherit;opacity:.85;">biaya per closing</div></div>
       </div>
       <div class="lap-kpi-grid" style="margin-bottom:18px;">
@@ -1534,11 +1464,143 @@ try{
   </div>
 </div><!-- /page-laporan -->
 
+<div class="page" id="page-okr">
+  <div class="section-header" style="margin-top:0;">
+    <h1>OKR Divisi</h1>
+    <div class="muted-note">Objectives &amp; Key Results — evaluasi target &amp; pencapaian tim per periode</div>
+  </div>
+
+  <div class="okr-period-bar" id="okrPeriodBar"></div>
+
+  <div class="grid grid-4" style="margin-bottom:18px;">
+    <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Skor Rata-rata Divisi</div><div class="value" id="okrKpiScore">0%</div></div>
+    <div class="card"><div class="bar-accent" style="background:var(--blue)"></div><div class="label" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Jumlah Objective</div><div class="value" id="okrKpiObj" style="font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;">0</div></div>
+    <div class="card"><div class="bar-accent" style="background:var(--green)"></div><div class="label" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Key Result Tercapai</div><div class="value" id="okrKpiDone" style="font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;color:var(--green);">0</div></div>
+    <div class="card"><div class="bar-accent" style="background:var(--red)"></div><div class="label" style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Key Result Berisiko</div><div class="value" id="okrKpiRisk" style="font-family:'Roboto',sans-serif;font-size:25px;font-weight:700;margin-top:8px;color:var(--red);">0</div></div>
+  </div>
+
+  <div class="okr-deadline-banner" id="okrDeadlineBanner"></div>
+
+  <div class="section-header">
+    <h2>Daftar Objective</h2>
+    <button class="btn" id="btnAddObjective">+ Objective Baru</button>
+  </div>
+
+  <div class="okr-filter-bar">
+    <select id="okrFilterPicSelect" class="okr-filter-select"><option value="">Semua PIC</option></select>
+    <select id="okrFilterStatusSelect" class="okr-filter-select">
+      <option value="all">Semua Status</option>
+      <option value="good">🟢 On Track</option>
+      <option value="warn">🟡 Perlu Perhatian</option>
+      <option value="bad">🔴 Berisiko</option>
+    </select>
+    <div style="flex:1;"></div>
+    <button class="okr-expand-btn" id="btnOkrExpandAll" type="button">⤢ Buka Semua</button>
+    <button class="okr-expand-btn" id="btnOkrCollapseAll" type="button">⤡ Tutup Semua</button>
+  </div>
+
+  <div id="okrObjList"></div>
+</div><!-- /page-okr -->
 
 
 
   </div><!-- /main -->
 </div><!-- /app -->
+
+<!-- OKR: Modal Objective -->
+<div class="edit-modal-overlay" id="okrObjModalOverlay" style="display:none;">
+  <div class="edit-modal">
+    <h3 id="okrObjModalTitle">Objective Baru</h3>
+    <div class="field">
+      <label>Objective</label>
+      <input type="text" id="okrObjTitleInput" placeholder="Contoh: Meningkatkan efisiensi biaya iklan divisi">
+    </div>
+    <div class="field">
+      <label>PIC / Owner</label>
+      <input type="text" id="okrObjOwnerInput" placeholder="Contoh: Tim Media Buyer">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrObjCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrObjSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- OKR: Modal Key Result -->
+<div class="edit-modal-overlay" id="okrKrModalOverlay" style="display:none;">
+  <div class="edit-modal">
+    <h3 id="okrKrModalTitle">Key Result Baru</h3>
+    <div class="field">
+      <label>Deskripsi Key Result</label>
+      <input type="text" id="okrKrTextInput" placeholder="Contoh: Menurunkan CPL rata-rata ke Rp 15.000">
+    </div>
+    <div class="field">
+      <label>Arah Target</label>
+      <select id="okrKrDirectionInput">
+        <option value="higher">Semakin tinggi semakin baik (leads, CTR, closing, dll)</option>
+        <option value="lower">Semakin rendah semakin baik (CPL, CPA, biaya, dll)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Target</label>
+      <input type="number" id="okrKrTargetInput" placeholder="Contoh: 100">
+    </div>
+    <div class="field">
+      <label>Capaian Saat Ini</label>
+      <input type="number" id="okrKrCurrentInput" placeholder="Contoh: 65">
+    </div>
+    <div class="field">
+      <label>Satuan (opsional)</label>
+      <input type="text" id="okrKrUnitInput" placeholder="Contoh: %, leads, Rp, akun">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrKrCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrKrSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- OKR: Modal Initiative -->
+<div class="edit-modal-overlay" id="okrInitModalOverlay" style="display:none;">
+  <div class="edit-modal">
+    <h3 id="okrInitModalTitle">Initiative Baru</h3>
+    <div class="field">
+      <label>Kegiatan / Aktivitas</label>
+      <input type="text" id="okrInitTextInput" placeholder="Contoh: Ujicoba LP baru">
+    </div>
+    <div class="field">
+      <label>Deadline (opsional)</label>
+      <input type="date" id="okrInitDeadlineInput">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrInitCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrInitSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- OKR: Modal Refleksi (What / So What / Now What) -->
+<div class="edit-modal-overlay" id="okrReflModalOverlay" style="display:none;">
+  <div class="edit-modal okr-refl-modal" style="width:440px;">
+    <h3>Refleksi Akhir Periode</h3>
+    <div class="field">
+      <label>What — Apa yang terjadi (otomatis dari skor)</label>
+      <div class="okr-refl-what-box" id="okrReflWhatBox">—</div>
+    </div>
+    <div class="field">
+      <label>So What — Kenapa itu penting / apa maknanya</label>
+      <textarea id="okrReflSoWhatInput" placeholder="Contoh: Efisiensi biaya iklan masih di bawah target, kemungkinan karena creative kurang relevan dengan audiens baru."></textarea>
+    </div>
+    <div class="field">
+      <label>Now What — Langkah selanjutnya</label>
+      <textarea id="okrReflNowWhatInput" placeholder="Contoh: Kuartal depan fokus uji creative baru & sempitkan targeting audiens."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal" id="okrReflCancelBtn">Batal</button>
+      <button class="btn-modal primary" id="okrReflSaveBtn">Simpan</button>
+    </div>
+  </div>
+</div>
 
 <!-- FLOATING REPORT BUTTON -->
 <button class="btn-report-float" id="btnOpenReport">
@@ -2929,7 +2991,6 @@ function render(){
 
   // ---- Ringkasan Hasil CS: ikut sinkron dengan filter tanggal global ----
   if(typeof renderCsData==='function') renderCsData();
-  if(typeof renderCrmAll==='function') renderCrmAll();
 }
 
 /* ============== HALAMAN LAPORAN (rekap siap kirim per advertiser) ============== */
@@ -3219,13 +3280,6 @@ function renderLaporanGabungan(advRows, range){
   const gabPctLeadEl = document.getElementById('gabPctLead'); if(gabPctLeadEl) gabPctLeadEl.textContent = grand.oo>0 ? pctFmt(grandPctLead) : '0%';
   const gabRateEl = document.getElementById('gabRate'); if(gabRateEl) gabRateEl.textContent = pctFmt(grandRate);
   const gabRoasEl = document.getElementById('gabRoas'); if(gabRoasEl) gabRoasEl.textContent = grandRoas.toFixed(2)+'x';
-  const gabRoasCrmEl = document.getElementById('gabRoasCrm');
-  if(gabRoasCrmEl){
-    const crmOmzetAll = CRM_DATA.filter(r=>csRowInRange(r.tanggal, range)).reduce((a,r)=>a+crmNum(r.omzet),0);
-    gabRoasCrmEl.textContent = (crmOmzetAll>0 && grand.spendPPN>0)
-      ? 'Dengan CRM: '+((grand.omzet+crmOmzetAll)/grand.spendPPN).toFixed(2)+'x (omzet CRM '+rupiahShort(crmOmzetAll)+')'
-      : '';
-  }
   const gabNotRealEl = document.getElementById('gabNotReal'); if(gabNotRealEl) gabNotRealEl.textContent = num(grand.notReal);
   const gabNotClosingEl = document.getElementById('gabNotClosing'); if(gabNotClosingEl) gabNotClosingEl.textContent = num(grand.notClosing);
   const gabCppEl = document.getElementById('gabCpp'); if(gabCppEl) gabCppEl.textContent = grand.closing>0 ? rupiah(grand.spendPPN/grand.closing) : '-';
@@ -4407,7 +4461,7 @@ const APPS_SCRIPT_CODE = `// ===================================================
 // {error: "..."} (bukan halaman HTML) supaya dashboard bisa menampilkan penyebab asli.
 // ============================================================
 var CACHE_KEY = 'dashboard_data_v1';
-var CACHE_SECONDS = 300;  // doPost otomatis menghapus cache, jadi aman dibuat lama. Edit manual di sheet baru terlihat setelah N detik
+var CACHE_SECONDS = 25;   // makin besar = makin ringan, tapi data "telat" sampai N detik
 var CACHE_CHUNK = 40000;  // jumlah karakter per potongan (aman di bawah limit 100KB/key)
 var CACHE_MAX_CHUNKS = 50;
 
@@ -4469,7 +4523,7 @@ function doGet(e){
     var csNotRealSheet = ss.getSheetByName('CSTidakReal');
     var csNotClosingKatSheet = ss.getSheetByName('CSKategoriTidakClosing');
     var csNotClosingSheet = ss.getSheetByName('CSTidakClosing');
-    var crmSheet = ss.getSheetByName('CRM');
+    var okrSheet = ss.getSheetByName('OKR');
     var akun = sheetToObjects(akunSheet);
     var leads = sheetToObjects(leadSheet);
     var akunwl = sheetToObjects(akunWlSheet);
@@ -4482,8 +4536,8 @@ function doGet(e){
     var csnotreal = sheetToObjects(csNotRealSheet);
     var csnotclosingkategori = sheetToObjects(csNotClosingKatSheet);
     var csnotclosing = sheetToObjects(csNotClosingSheet);
-    var crm = sheetToObjects(crmSheet);
-    var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, crm: crm});
+    var okr = sheetToObjects(okrSheet);
+    var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, testcampaign: testcampaign, csdata: csdata, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, okr: okr});
 
     try{
       cachePutBig(cache, json);
@@ -4515,7 +4569,7 @@ function doPost(e){
     akun:'Akun', lead:'Leads', akunwl:'AkunWL', akunhistori:'AkunHistori', target:'Target',
     testcampaign:'TestCampaign', cs:'CS', csroster:'CSRoster',
     csnotrealkategori:'CSKategoriTidakReal', csnotreal:'CSTidakReal',
-    csnotclosingkategori:'CSKategoriTidakClosing', csnotclosing:'CSTidakClosing', crm:'CRM'
+    csnotclosingkategori:'CSKategoriTidakClosing', csnotclosing:'CSTidakClosing', okr:'OKR'
   };
   var neededSheetName = REQUIRED_SHEET_NAME[data.type];
   if(neededSheetName && !ss.getSheetByName(neededSheetName)){
@@ -4556,8 +4610,8 @@ function doPost(e){
       upsertCsNotClosingKategori(ss, data);
     } else if(data.type === 'csnotclosing'){
       upsertCsNotClosing(ss, data);
-    } else if(data.type === 'crm'){
-      upsertCrm(ss, data);
+    } else if(data.type === 'okr'){
+      replaceOkrRows(ss, data);
     }
   } finally {
     // Hapus cache LAGI setelah tulis selesai (masih di dalam lock) supaya tidak ada pull yang
@@ -4570,11 +4624,6 @@ function doPost(e){
 
 // Format sel tanggal (bisa berupa Date object atau string) jadi 'yyyy-MM-dd'
 // supaya bisa dibandingkan apple-to-apple dengan tanggal yang dikirim dashboard.
-var _SS_TZ = null;
-function getSsTz(){
-  if(!_SS_TZ) _SS_TZ = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
-  return _SS_TZ;
-}
 function formatCellDate(v){
   if(Object.prototype.toString.call(v) === '[object Date]'){
     // PENTING: pakai timezone SPREADSHEET (File > Pengaturan Spreadsheet > Zona Waktu),
@@ -4582,7 +4631,7 @@ function formatCellDate(v){
     // otomatis mengonversi teks tanggal jadi Date object memakai timezone SPREADSHEET —
     // kalau timezone script beda dengan timezone spreadsheet, tanggal yang dibalikin ke
     // dashboard bisa kegeser 1 hari (mis. data tanggal 16 jadi kebaca 15 atau 17).
-    return Utilities.formatDate(v, getSsTz(), 'yyyy-MM-dd');
+    return Utilities.formatDate(v, SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone(), 'yyyy-MM-dd');
   }
   return String(v).trim();
 }
@@ -4833,25 +4882,23 @@ function upsertTestCampaign(ss, data){
   sh.appendRow([id, data.advertiser, data.nama, data.tanggal, data.status, data.spending, data.hasillead, data.cpc, data.ctr, data.cpm, data.cpr]);
 }
 
-// Sheet "CRM" = data harian tiap CRM: tanggal | crm | d0 | d1 | d7 | d14 | closing | omzet | potensial | kendala | repeatorder
-// 1 baris per (tanggal + nama CRM). Kirim hapus:true untuk menghapus baris.
-function upsertCrm(ss, data){
-  var sh = ss.getSheetByName('CRM');
+function replaceOkrRows(ss, data){
+  var sh = ss.getSheetByName('OKR');
   if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  var crm = String(data.crm).trim().toLowerCase();
-  var vals = [data.tanggal, data.crm, data.d0, data.d1, data.d7, data.d14, data.closing, data.omzet, data.potensial, data.kendala || '', data.repeatorder || 0];
-  for(var i=1;i<rows.length;i++){
-    if(formatCellDate(rows[i][0]) === String(data.tanggal).trim() && String(rows[i][1]).trim().toLowerCase() === crm){
-      if(data.hapus){ sh.deleteRow(i+1); return; }
-      sh.getRange(i+1,1,1,11).setValues([vals]);
-      return;
-    }
+  var values = sh.getDataRange().getValues();
+  var periode = String(data.periode).trim();
+  for(var i=values.length-1;i>=1;i--){
+    if(String(values[i][0]).trim() === periode) sh.deleteRow(i+1);
   }
-  if(data.hapus) return;
-  sh.appendRow(vals);
+  var rows = data.rows || [];
+  rows.forEach(function(r){
+    sh.appendRow([
+      periode, r.obj_id||'', r.objective||'', r.pic||'', r.so_what||'', r.now_what||'',
+      r.kr_id||'', r.key_result||'', r.arah||'', (r.target==null?'':r.target), (r.capaian==null?'':r.capaian), r.satuan||'',
+      r.initiative_id||'', r.initiative||'', r.deadline||'', r.selesai||''
+    ]);
+  });
 }
-
 
 function sheetToObjects(sheet){
   if(!sheet) return [];
@@ -4926,6 +4973,15 @@ function jsonOutput(obj){
 //                  BEBERAPA baris per CS per advertiser per tanggal, 1 baris per kategori
 //                  yang diisi; upsert berdasarkan tanggal+cs+advertiser+kategori, otomatis
 //                  terisi/update/hapus dari menu Hasil CS)
+// Sheet "OKR" → kolom: periode | obj_id | objective | pic | so_what | now_what | kr_id |
+//                  key_result | arah | target | capaian | satuan | initiative_id |
+//                  initiative | deadline | selesai
+//                  (1 baris per Initiative — kolom objective/key_result DIULANG di tiap
+//                  baris supaya sheet-nya flat & langsung terbaca; kalau KR belum punya
+//                  Initiative atau Objective belum punya KR, tetap 1 baris dgn kolom
+//                  terkait dikosongkan. Sinkron dengan cara "ganti semua baris 1 periode
+//                  sekaligus" tiap kali ada perubahan di menu OKR Divisi — bukan upsert
+//                  per baris — supaya penghapusan Objective/KR/Initiative ikut terbawa.)
 // ============================================================`;
 
 function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
@@ -5077,17 +5133,11 @@ function lapExplainHtmlReply(html){
 }
 async function fetchSheetJson(url){
   const ATTEMPTS = 3;
-  window.__deferSave = true; window.__saveDirty = false;
   let lastErr = null;
   for(let i=0;i<ATTEMPTS;i++){
     try{
-      const ctrl = new AbortController();
-      const tmo = setTimeout(()=>ctrl.abort(), 120000);
-      let res, text;
-      try{
-        res = await fetch(url+'?action=read', {cache:'no-store', signal: ctrl.signal});
-        text = (await res.text()).trim();
-      } finally { clearTimeout(tmo); }
+      const res = await fetch(url+'?action=read', {cache:'no-store'});
+      const text = (await res.text()).trim();
       if(text.charAt(0)==='<') throw new Error(lapExplainHtmlReply(text));
       let json;
       try{ json = JSON.parse(text); }catch(pe){ throw new Error('balasan server bukan JSON valid ('+text.slice(0,80)+')'); }
@@ -5096,11 +5146,10 @@ async function fetchSheetJson(url){
     }catch(e){
       lastErr = e;
       console.warn('[Sinkron] percobaan '+(i+1)+'/'+ATTEMPTS+' gagal:', e.message);
-      if(i < ATTEMPTS-1) await new Promise(r=> setTimeout(r, 1000*(i+1)));
+      if(i < ATTEMPTS-1) await new Promise(r=> setTimeout(r, 2000*(i+1)));
     }
   }
-  window.__deferSave = false;
-  throw new Error((lastErr.name==='AbortError' ? 'timeout >120 detik' : lastErr.message)+' — sudah dicoba '+ATTEMPTS+'x');
+  throw new Error(lastErr.message+' — sudah dicoba '+ATTEMPTS+'x');
 }
 async function pullFromSheet(){
   const url = getAppsScriptUrl();
@@ -5326,7 +5375,6 @@ async function pullFromSheet(){
       saveLocalState();
       if(typeof renderCsData==='function') renderCsData();
     }
-    const countCrm = crmApplyFromSheet(json);
     let countCs=0;
     if(Array.isArray(json.csdata)){
       CS_DATA = json.csdata.map(r=>({
@@ -5345,6 +5393,45 @@ async function pullFromSheet(){
       if(typeof renderCsTabs==='function') renderCsTabs();
       if(typeof renderCsData==='function') renderCsData();
     }
+    // ==== OKR DIVISI: sheet "OKR" adalah sumber kebenaran per periode ====
+    // Sheet-nya flat (1 baris per Initiative, kolom Objective/KR diulang) — di sini disusun
+    // ulang jadi struktur Objective > Key Result > Initiative per periode. Periode yang ada
+    // di sheet menimpa data lokal periode tsb (supaya perubahan dari device/browser lain ikut
+    // masuk). Periode lokal yang tidak ada barisnya di sheet (mis. baru dibuat & masih kosong)
+    // tetap dipertahankan, tidak dihapus oleh pull ini.
+    let countOkr=0;
+    if(Array.isArray(json.okr)){
+      const rebuiltPeriods = {};
+      json.okr.forEach(r=>{
+        const periode = String(r.periode||'').trim();
+        if(!periode) return;
+        if(!rebuiltPeriods[periode]) rebuiltPeriods[periode] = { objectives: [] };
+        const objId = String(r.obj_id||'').trim();
+        if(!objId) return; // baris kosong/tanpa objective, tidak ada yang direkonstruksi
+        let obj = rebuiltPeriods[periode].objectives.find(o=> o.id===objId);
+        if(!obj){
+          obj = { id: objId, title: r.objective||'', owner: r.pic||'', krs: [], reflection: { soWhat: r.so_what||'', nowWhat: r.now_what||'' } };
+          rebuiltPeriods[periode].objectives.push(obj);
+        }
+        const krId = String(r.kr_id||'').trim();
+        if(!krId) return;
+        let kr = obj.krs.find(k=> k.id===krId);
+        if(!kr){
+          kr = { id: krId, text: r.key_result||'', target: parseFloat(r.target)||0, current: parseFloat(r.capaian)||0, unit: r.satuan||'', direction: r.arah==='lower'?'lower':'higher', initiatives: [] };
+          obj.krs.push(kr);
+        }
+        const initId = String(r.initiative_id||'').trim();
+        if(!initId) return;
+        if(!kr.initiatives.some(i=> i.id===initId)){
+          kr.initiatives.push({ id: initId, text: r.initiative||'', done: String(r.selesai||'').toLowerCase()==='ya', deadline: r.deadline||'' });
+        }
+      });
+      Object.keys(rebuiltPeriods).forEach(p=>{ OKR_STATE.periods[p] = rebuiltPeriods[p]; countOkr++; });
+      if(!OKR_STATE.periods[OKR_STATE.activePeriod]) OKR_STATE.activePeriod = okrCurrentQuarterLabel();
+      okrEnsurePeriod(OKR_STATE.activePeriod);
+      okrSaveLocalOnly();
+      if(typeof okrRenderAll==='function') okrRenderAll();
+    }
     const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
     const blockedNote = blockedRemovalNames.length>0 ? (' ⚠️ '+blockedRemovalNames.length+' akun ('+blockedRemovalNames.join(', ')+') terlihat hilang dari sheet AkunWL, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0 || blockedRemovalNames.length>0){
@@ -5352,19 +5439,16 @@ async function pullFromSheet(){
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
       if(skippedLeadAdv.size>0) warnParts.push('Advertiser tidak dikenal: '+[...skippedLeadAdv].join(', '));
       const extraWarn = warnParts.length>0 ? (' <b>Tapi ada baris yang DILEWATI</b> karena belum terdaftar di dashboard — data ini TIDAK ikut dihitung ke total budget: '+warnParts.join(' | ')+'. Tambahkan akun/advertiser ini ke daftar di kode dashboard agar ikut terhitung.') : '';
-      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, '+countCrm+' data CRM.'+removedNote+blockedNote+extraWarn;
+      msg.innerHTML = '⚠️ Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, '+countOkr+' periode OKR.'+removedNote+blockedNote+extraWarn;
       msg.style.color='var(--red)';
     } else {
-      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, '+countCrm+' data CRM dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
+      msg.textContent = 'Berhasil menarik '+countAkun+' baris akun, '+countLead+' baris lead, '+countRoster+' akun WL ('+countHistori+' baris histori advertiser), '+countTarget+' baris target, '+countTc+' campaign testing, '+countCsRoster+' nama CS, '+countCs+' data CS, '+countCsNotRealKat+' kategori tidak real, '+countCsNotReal+' rincian tidak real, '+countCsNotClosingKat+' kategori tidak closing, '+countCsNotClosing+' rincian tidak closing, dan '+countOkr+' periode OKR dari spreadsheet.'+removedNote+' Data dashboard sudah disamakan persis dengan spreadsheet.';
       msg.style.color='var(--green)';
     }
     render();
   }catch(err){
     msg.textContent = 'Gagal menarik data: '+err.message;
     msg.style.color='var(--red)';
-  } finally {
-    window.__deferSave = false;
-    if(window.__saveDirty){ window.__saveDirty = false; saveLocalState(); }
   }
 }
 async function pushOneToSheet(payload, _attempt){
@@ -5554,10 +5638,10 @@ async function pushAllToSheet(){
   for(const n of CS_NOTCLOSING){
     await pushCsNotClosingRow(n.cs, n.tanggal, n.advertiser, n.kategori, n.jumlah); sent++;
   }
-  for(const r of CRM_DATA){
-    await pushCrmRow(r); sent++;
+  for(const period of Object.keys(OKR_STATE.periods)){
+    await pushOkrPeriodToSheet(period); sent++;
   }
-  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, daftar nama CS, data CS, data CRM, kategori & rincian Lead OO tidak real, kategori & rincian Lead Real tidak closing) ke spreadsheet.';
+  msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, Kampanye Testing, daftar nama CS, data CS, kategori & rincian Lead OO tidak real, kategori & rincian Lead Real tidak closing, dan seluruh periode OKR Divisi) ke spreadsheet.';
   msg.style.color='var(--green)';
 }
 document.getElementById('btnPullSheet').onclick = pullFromSheet;
@@ -5800,442 +5884,6 @@ async function addTestCampaign(){
 }
 document.getElementById('btnAddTestCampaign').addEventListener('click', addTestCampaign);
 document.getElementById('tcShowMetricsToggle').addEventListener('change', applyTestMetricColVisibility);
-
-/* ============== CRM: broadcast D0/D1/D7/D14, closing, omzet, potensial, kendala ============== */
-let CRM_LIST = [];
-let CRM_HIDDEN = []; // nama CRM yang dihapus user dari daftar — tidak dimunculkan lagi otomatis
-let CRM_DATA = []; // {crm, tanggal, d0, d1, d7, d14, closing, omzet, potensial, kendala}
-let crmActiveTab = null;
-
-function crmNum(v){ const n = parseFloat(v); return isFinite(n) ? n : 0; }
-function crmBroadcastTotal(r){ return crmNum(r.d0)+crmNum(r.d1)+crmNum(r.d7)+crmNum(r.d14); }
-function crmSyncRosterFromData(){
-  CRM_DATA.forEach(r=>{ if(r.crm && !CRM_LIST.includes(r.crm) && !CRM_HIDDEN.includes(r.crm)) CRM_LIST.push(r.crm); });
-}
-function crmApplyFromSheet(json){
-  if(!Array.isArray(json.crm)) return 0;
-  CRM_DATA = json.crm.map(r=>({
-    crm: String(r.crm||'').trim(),
-    tanggal: r.tanggal||'',
-    d0: crmNum(r.d0), d1: crmNum(r.d1), d7: crmNum(r.d7), d14: crmNum(r.d14),
-    closing: crmNum(r.closing), omzet: crmNum(r.omzet), potensial: crmNum(r.potensial), ro: crmNum(r.closing),
-    kendala: String(r.kendala||'').trim()
-  })).filter(r=>r.crm && r.tanggal);
-  crmSyncRosterFromData();
-  saveLocalState();
-  renderCrmAll();
-  return CRM_DATA.length;
-}
-
-async function pushCrmRow(r){
-  return pushOneToSheet({type:'crm', crm:r.crm, tanggal:r.tanggal, d0:r.d0, d1:r.d1, d7:r.d7, d14:r.d14, closing:r.closing, omzet:r.omzet, potensial:r.potensial, repeatorder:r.closing||0, kendala:r.kendala});
-}
-async function pushCrmDelete(r){
-  return pushOneToSheet({type:'crm', crm:r.crm, tanggal:r.tanggal, hapus:true});
-}
-function setCrmMsg(id, text, colorVar){
-  const el = document.getElementById(id);
-  if(el){ el.textContent = text; el.style.color = colorVar || 'var(--muted)'; }
-}
-
-function renderCrmChips(){
-  const wrap = document.getElementById('crmChips');
-  const badge = document.getElementById('crmCountBadge');
-  if(badge) badge.textContent = CRM_LIST.length;
-  if(!wrap) return;
-  if(CRM_LIST.length===0){ wrap.innerHTML = '<span class="muted-note">Belum ada CRM. Tambahkan lewat form di bawah.</span>'; return; }
-  wrap.innerHTML = CRM_LIST.map(c=>
-    '<span class="kelola-chip">'+escapeHtml(c)+'<button data-del-crm="'+escapeHtml(c)+'" title="Hapus CRM">✕</button></span>'
-  ).join('');
-  wrap.querySelectorAll('[data-del-crm]').forEach(btn=>{
-    btn.onclick = ()=>{
-      const c = btn.getAttribute('data-del-crm');
-      if(!confirm('Hapus CRM "'+c+'" dari daftar? Datanya di dashboard ini akan disembunyikan (data di spreadsheet tidak dihapus).')) return;
-      CRM_LIST = CRM_LIST.filter(x=>x!==c);
-      if(!CRM_HIDDEN.includes(c)) CRM_HIDDEN.push(c);
-      CRM_DATA = CRM_DATA.filter(r=>r.crm!==c);
-      if(crmActiveTab===c) crmActiveTab = null;
-      saveLocalState();
-      renderCrmAll();
-      setCrmMsg('crmRosterMsg','CRM "'+c+'" dihapus dari dashboard ini.','var(--muted)');
-    };
-  });
-}
-function renderCrmTabs(){
-  const wrap = document.getElementById('crmTabs');
-  if(!wrap) return;
-  if(CRM_LIST.length===0){ wrap.innerHTML=''; crmActiveTab=null; return; }
-  if(!crmActiveTab || !CRM_LIST.includes(crmActiveTab)) crmActiveTab = CRM_LIST[0];
-  wrap.innerHTML = CRM_LIST.map(c=>
-    '<div class="period-btn'+(c===crmActiveTab?' active':'')+'" data-crm-tab="'+escapeHtml(c)+'">'+escapeHtml(c)+'</div>'
-  ).join('');
-  wrap.querySelectorAll('[data-crm-tab]').forEach(b=>{
-    b.onclick = ()=>{ crmActiveTab = b.getAttribute('data-crm-tab'); renderCrmAll(); };
-  });
-}
-document.getElementById('btnAddCrm').addEventListener('click', ()=>{
-  const inp = document.getElementById('crmNewName');
-  const name = inp.value.trim();
-  if(!name){ alert('Nama CRM wajib diisi.'); return; }
-  if(CRM_LIST.some(x=>x.toLowerCase()===name.toLowerCase())){ alert('CRM dengan nama itu sudah ada.'); return; }
-  CRM_HIDDEN = CRM_HIDDEN.filter(x=>x.toLowerCase()!==name.toLowerCase());
-  CRM_LIST.push(name);
-  crmActiveTab = name;
-  inp.value = '';
-  saveLocalState();
-  renderCrmAll();
-  setCrmMsg('crmRosterMsg','CRM "'+name+'" ditambahkan. Isi data harian di bawah — nama tersinkron ke spreadsheet setelah data pertamanya disimpan.','var(--green)');
-});
-document.getElementById('crmNewName').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('btnAddCrm').click(); } });
-function updateCrmDateDisplay(){
-  const el=document.getElementById('crmTanggal'), rd=document.getElementById('crmTanggalReadable');
-  if(!el||!rd) return;
-  const d=new Date((el.value||fmtISO(TODAY_REF))+'T00:00:00');
-  rd.textContent = isNaN(d.getTime()) ? '-' : d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-}
-document.getElementById('crmTanggal').addEventListener('input', updateCrmDateDisplay);
-document.getElementById('btnCrmToday').addEventListener('click', ()=>{ document.getElementById('crmTanggal').value = fmtISO(new Date()); updateCrmDateDisplay(); renderCrmInsight(); });
-
-function readCrmForm(){
-  return {
-    d0: crmNum(document.getElementById('crmD0').value),
-    d1: crmNum(document.getElementById('crmD1').value),
-    d7: crmNum(document.getElementById('crmD7').value),
-    d14: crmNum(document.getElementById('crmD14').value),
-    closing: crmNum(document.getElementById('crmClosing').value),
-    omzet: crmNum(document.getElementById('crmOmzet').value),
-    potensial: crmNum(document.getElementById('crmPotensial').value),
-    ro: crmNum(document.getElementById('crmClosing').value),
-    kendala: document.getElementById('crmKendala').value.trim()
-  };
-}
-function renderCrmInsight(){
-  const panel = document.getElementById('crmInsightPanel');
-  if(!panel) return;
-  const f = readCrmForm();
-  const bc = crmBroadcastTotal(f);
-  if(bc===0 && f.closing===0 && f.omzet===0 && f.potensial===0){
-    panel.innerHTML = '<div class="muted-note">Isi angka di atas untuk melihat insight.</div>'; return;
-  }
-  const rows = [];
-  rows.push('Total broadcast <b>'+num(bc)+'</b> (D0 '+num(f.d0)+' · D1 '+num(f.d1)+' · D7 '+num(f.d7)+' · D14 '+num(f.d14)+')');
-  if(bc>0) rows.push('Closing per broadcast: <b>'+pctFmt(f.closing/bc*100)+'</b> ('+num(f.closing)+' closing)');
-  if(f.closing>0 && f.omzet>0) rows.push('Omzet per closing: <b>'+rupiah(f.omzet/f.closing)+'</b>');
-  if(f.d1>0 && f.closing>0) rows.push('Repeat order: <b>'+pctFmt(f.closing/f.d1*100)+'</b> dari broadcast D1 ('+num(f.closing)+' RO)');
-  if(f.potensial>0) rows.push('Customer potensial: <b>'+num(f.potensial)+'</b> — layak di-follow up lagi');
-  if(f.kendala) rows.push('Kendala tercatat ✔');
-  panel.innerHTML = '<ul style="margin:0;padding-left:18px;line-height:1.7;font-size:13px;">'+rows.map(r=>'<li>'+r+'</li>').join('')+'</ul>';
-}
-['crmD0','crmD1','crmD7','crmD14','crmClosing','crmOmzet','crmPotensial','crmKendala'].forEach(id=>{
-  const el = document.getElementById(id); if(el) el.addEventListener('input', renderCrmInsight);
-});
-
-async function saveCrmInput(){
-  const crm = crmActiveTab;
-  if(!crm){ alert('Pilih atau tambahkan CRM terlebih dahulu.'); return; }
-  const tanggal = document.getElementById('crmTanggal').value || fmtISO(TODAY_REF);
-  const f = readCrmForm();
-  let entry = CRM_DATA.find(r=>r.crm===crm && r.tanggal===tanggal);
-  if(entry){ Object.assign(entry, f); }
-  else { entry = Object.assign({crm, tanggal}, f); CRM_DATA.push(entry); }
-  saveLocalState();
-  renderCrmAll();
-  ['crmD0','crmD1','crmD7','crmD14','crmClosing','crmOmzet','crmPotensial','crmKendala'].forEach(id=>{ document.getElementById(id).value=''; });
-  renderCrmInsight();
-  setCrmMsg('crmInputMsg','Tersimpan — mengirim ke spreadsheet...','var(--muted)');
-  const status = await pushCrmRow(entry);
-  if(status==='ok') setCrmMsg('crmInputMsg','✅ Tersimpan & terkirim ke spreadsheet.','var(--green)');
-  else if(status==='no-url') setCrmMsg('crmInputMsg','Tersimpan di dashboard. Belum terhubung ke spreadsheet (isi URL Apps Script di menu Pengaturan Integrasi).','var(--yellow)');
-  else setCrmMsg('crmInputMsg','Tersimpan di dashboard, tapi gagal mengirim ke spreadsheet. Cek URL Apps Script, pastikan sheet "CRM" sudah dibuat, dan koneksi internet.','var(--red)');
-}
-document.getElementById('btnSaveCrm').addEventListener('click', saveCrmInput);
-
-function renderCrmOverview(){
-  const range = getRange();
-  const rows = CRM_DATA.filter(r=>csRowInRange(r.tanggal, range));
-  const sum = (k)=> rows.reduce((a,r)=>a+crmNum(r[k]),0);
-  const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-  const tD0=sum('d0'), tD1=sum('d1'), tD7=sum('d7'), tD14=sum('d14');
-  const tBc = tD0+tD1+tD7+tD14, tClosing=sum('closing'), tOmzet=sum('omzet'), tPot=sum('potensial'), tRO=tClosing;
-  set('crmCount', rows.length+' data tercatat');
-  set('crmKpiOmzet', rupiah(tOmzet)); set('crmKpiClosing', num(tClosing)); set('crmKpiPotensial', num(tPot));
-  set('crmKpiBroadcast', num(tBc));
-  set('crmKpiBroadcastSub', tBc>0 ? 'Closing/BC: '+pctFmt(tClosing/tBc*100) : '');
-  set('crmKpiRO', num(tRO)); set('crmKpiROPct', tD1>0 ? pctFmt(tRO/tD1*100) : '0%');
-  set('crmKpiD0', num(tD0)); set('crmKpiD1', num(tD1)); set('crmKpiD7', num(tD7)); set('crmKpiD14', num(tD14));
-
-  // Rekap per CRM
-  const by = {};
-  rows.forEach(r=>{
-    const o = by[r.crm] || (by[r.crm]={d0:0,d1:0,d7:0,d14:0,closing:0,omzet:0,potensial:0,ro:0});
-    o.d0+=r.d0; o.d1+=r.d1; o.d7+=r.d7; o.d14+=r.d14; o.closing+=r.closing; o.omzet+=r.omzet; o.potensial+=r.potensial; o.ro+=r.closing;
-  });
-  const names = Object.keys(by).sort((a,b)=>by[b].omzet-by[a].omzet);
-  const tb = document.getElementById('tblCrmRekap');
-  if(tb){
-    tb.innerHTML = names.length===0 ? '<tr><td colspan="11" class="muted-note">Belum ada data di periode ini.</td></tr>' :
-      names.map(n=>{ const o=by[n], bc=o.d0+o.d1+o.d7+o.d14;
-        return '<tr><td>'+escapeHtml(n)+'</td><td>'+num(o.d0)+'</td><td>'+num(o.d1)+'</td><td>'+num(o.d7)+'</td><td>'+num(o.d14)+'</td><td><b>'+num(bc)+'</b></td><td>'+num(o.closing)+'</td><td>'+rupiah(o.omzet)+'</td><td>'+num(o.potensial)+'</td><td>'+(o.d1>0?pctFmt(o.ro/o.d1*100):'-')+'</td><td>'+(bc>0?pctFmt(o.closing/bc*100):'-')+'</td></tr>';
-      }).join('') +
-      '<tr style="font-weight:700;"><td>Total</td><td>'+num(tD0)+'</td><td>'+num(tD1)+'</td><td>'+num(tD7)+'</td><td>'+num(tD14)+'</td><td>'+num(tBc)+'</td><td>'+num(tClosing)+'</td><td>'+rupiah(tOmzet)+'</td><td>'+num(tPot)+'</td><td>'+(tD1>0?pctFmt(tRO/tD1*100):'-')+'</td><td>'+(tBc>0?pctFmt(tClosing/tBc*100):'-')+'</td></tr>';
-  }
-
-  // Insight overview
-  const ins = document.getElementById('crmOverviewInsight');
-  if(ins){
-    if(rows.length===0){ ins.innerHTML = '<div class="muted-note">Belum ada data CRM pada periode ini.</div>'; }
-    else {
-      const li = [];
-      li.push('Periode ini ada <b>'+num(tBc)+'</b> broadcast dengan hasil <b>'+num(tClosing)+'</b> closing dan omzet <b>'+rupiah(tOmzet)+'</b>'+(tBc>0?' (closing per broadcast '+pctFmt(tClosing/tBc*100)+')':'')+'.');
-      const stage = [['D0',tD0],['D1',tD1],['D7',tD7],['D14',tD14]];
-      if(tBc>0){ const top = stage.slice().sort((a,b)=>b[1]-a[1])[0]; li.push('Broadcast terbanyak di tahap <b>'+top[0]+'</b> ('+num(top[1])+', '+pctFmt(top[1]/tBc*100)+' dari total).'); }
-      if(tClosing>0 && tOmzet>0) li.push('Rata-rata omzet per closing <b>'+rupiah(tOmzet/tClosing)+'</b>.');
-      if(tD1>0 && tRO>0) li.push('Repeat order <b>'+num(tRO)+'</b> = <b>'+pctFmt(tRO/tD1*100)+'</b> dari total broadcast D1.');
-      if(tPot>0) li.push('Ada <b>'+num(tPot)+'</b> customer potensial yang bisa ditindaklanjuti.');
-      if(names.length>1){ li.push('CRM omzet tertinggi: <b>'+escapeHtml(names[0])+'</b> ('+rupiah(by[names[0]].omzet)+').'); }
-      const nK = rows.filter(r=>r.kendala).length;
-      if(nK>0) li.push('<b>'+nK+'</b> catatan kendala dilaporkan — lihat daftar di bawah.');
-      ins.innerHTML = '<ul style="margin:0;padding-left:18px;line-height:1.7;font-size:13px;">'+li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
-    }
-  }
-
-  // Kendala
-  const kw = document.getElementById('crmKendalaList');
-  if(kw){
-    const kr = rows.filter(r=>r.kendala).sort((a,b)=>String(b.tanggal).localeCompare(String(a.tanggal)));
-    kw.innerHTML = kr.length===0 ? '<div class="muted-note">Tidak ada catatan kendala pada periode ini.</div>' :
-      kr.map(r=>'<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;"><span class="muted-note">'+escapeHtml(fmtTanggalID?fmtTanggalID(r.tanggal):r.tanggal)+' · <b>'+escapeHtml(r.crm)+'</b></span><div style="margin-top:3px;white-space:pre-wrap;">'+escapeHtml(r.kendala)+'</div></div>').join('');
-  }
-}
-function renderCrmHistory(){
-  const range = getRange();
-  const tb = document.getElementById('tblCrmData');
-  if(!tb) return;
-  const lab = document.getElementById('crmRiwayatFor');
-  if(lab) lab.textContent = crmActiveTab ? '— '+crmActiveTab : '';
-  const rows = CRM_DATA.filter(r=>(!crmActiveTab || r.crm===crmActiveTab) && csRowInRange(r.tanggal, range))
-    .sort((a,b)=>String(b.tanggal).localeCompare(String(a.tanggal)));
-  tb.innerHTML = rows.length===0 ? '<tr><td colspan="12" class="muted-note">Belum ada data untuk CRM &amp; periode ini.</td></tr>' :
-    rows.map(r=>'<tr><td>'+escapeHtml(r.tanggal)+'</td><td>'+escapeHtml(r.crm)+'</td><td>'+num(r.d0)+'</td><td>'+num(r.d1)+'</td><td>'+num(r.d7)+'</td><td>'+num(r.d14)+'</td><td>'+num(r.closing)+'</td><td>'+rupiah(r.omzet)+'</td><td>'+num(r.potensial)+'</td><td>'+(r.d1>0?pctFmt(crmNum(r.closing)/r.d1*100):'-')+'</td><td style="max-width:260px;white-space:pre-wrap;">'+escapeHtml(r.kendala||'')+'</td><td><button class="btn" data-crm-del="'+escapeHtml(r.crm)+'|'+escapeHtml(r.tanggal)+'" style="padding:3px 9px;">Hapus</button></td></tr>').join('');
-  tb.querySelectorAll('[data-crm-del]').forEach(b=>{
-    b.onclick = async ()=>{
-      const [c,t] = b.getAttribute('data-crm-del').split('|');
-      if(!confirm('Hapus data CRM '+c+' tanggal '+t+'?')) return;
-      const r = CRM_DATA.find(x=>x.crm===c && x.tanggal===t);
-      CRM_DATA = CRM_DATA.filter(x=>!(x.crm===c && x.tanggal===t));
-      saveLocalState();
-      renderCrmAll();
-      if(r) await pushCrmDelete(r);
-    };
-  });
-}
-/* ============== ANALISA PER CRM ============== */
-function crmDayKey(t){
-  const x = String(t||'');
-  if(/^\d{4}-\d{2}-\d{2}$/.test(x)) return x;
-  const d = new Date(x);
-  return isNaN(d) ? x : fmtISO(d);
-}
-function crmAgg(rows){
-  const o = {d0:0,d1:0,d7:0,d14:0,closing:0,omzet:0,potensial:0,days:new Set(),kendala:0};
-  rows.forEach(r=>{
-    o.d0+=crmNum(r.d0); o.d1+=crmNum(r.d1); o.d7+=crmNum(r.d7); o.d14+=crmNum(r.d14);
-    o.closing+=crmNum(r.closing); o.omzet+=crmNum(r.omzet); o.potensial+=crmNum(r.potensial);
-    o.days.add(crmDayKey(r.tanggal));
-    if(r.kendala) o.kendala++;
-  });
-  o.bc = o.d0+o.d1+o.d7+o.d14;
-  o.ro  = o.d1>0 ? o.closing/o.d1*100 : null;
-  o.cbc = o.bc>0 ? o.closing/o.bc*100 : null;
-  o.opc = o.closing>0 ? o.omzet/o.closing : null;
-  return o;
-}
-function crmDeltaHtml(cur, ref, label){
-  if(cur==null || !(ref>0)) return '';
-  const p = (cur-ref)/ref*100, up = p>=0;
-  return '<span class="'+(up?'crm-up':'crm-down')+'">'+(up?'▲ ':'▼ ')+pctFmt(Math.abs(p))+'</span> '+label;
-}
-function crmKpiCard(color, label, value, sub){
-  return '<div class="card kpi"><div class="bar-accent" style="background:var(--'+color+')"></div>'+
-    '<div class="label">'+label+'</div><div class="value">'+value+'</div>'+
-    (sub?'<div class="muted-note crm-person-sub">'+sub+'</div>':'')+'</div>';
-}
-function renderCrmPerson(){
-  const body = document.getElementById('crmPersonBody');
-  if(!body) return;
-  const empty = document.getElementById('crmPersonEmpty');
-  const tabsEl = document.getElementById('crmPersonTabs');
-  const subEl = document.getElementById('crmPersonSub');
-  const me = crmActiveTab;
-  const range = getRange();
-
-  tabsEl.innerHTML = CRM_LIST.map(c=>
-    '<div class="period-btn'+(c===me?' active':'')+'" data-crm-ptab="'+escapeHtml(c)+'">'+escapeHtml(c)+'</div>'
-  ).join('');
-  tabsEl.querySelectorAll('[data-crm-ptab]').forEach(b=>{
-    b.onclick = ()=>{ crmActiveTab = b.getAttribute('data-crm-ptab'); renderCrmAll(); };
-  });
-
-  ['crmPersonTrendChart','crmCompareChart'].forEach(id=>{
-    if(chartReg[id]){ chartReg[id].destroy(); delete chartReg[id]; }
-  });
-
-  const showEmpty = (msg)=>{ body.style.display='none'; empty.style.display=''; empty.textContent=msg; };
-  if(!me){ subEl.textContent='—'; showEmpty('Belum ada CRM. Tambahkan nama CRM di bagian "Kelola CRM" lalu isi data hariannya.'); return; }
-
-  // batas akhir efektif: jangan hitung hari yang belum terjadi
-  let effEnd = new Date(range[1]);
-  if(range[0] <= ANCHOR_DATE && effEnd > ANCHOR_DATE) effEnd = new Date(ANCHOR_DATE);
-  const lenDays = Math.max(1, Math.round((effEnd-range[0])/864e5)+1);
-  const fmtD = d=> (typeof fmtTanggalID==='function' ? fmtTanggalID(fmtISO(d)) : fmtISO(d));
-  subEl.textContent = me+' · '+fmtD(range[0])+(lenDays>1?' – '+fmtD(effEnd):'');
-
-  const inRange = CRM_DATA.filter(r=>csRowInRange(r.tanggal, range));
-  const byCrm = {};
-  inRange.forEach(r=>{ (byCrm[r.crm]=byCrm[r.crm]||[]).push(r); });
-  const names = Object.keys(byCrm);
-  const aggs = {}; names.forEach(n=>{ aggs[n]=crmAgg(byCrm[n]); });
-  if(!aggs[me]){ showEmpty('CRM '+me+' belum punya data di periode ini. Ganti periode di atas atau isi data harian di form input.'); return; }
-  body.style.display=''; empty.style.display='none';
-
-  const a = aggs[me];
-  const n = names.length, multi = n>1;
-  const ranked = names.slice().sort((x,y)=>aggs[y].omzet-aggs[x].omzet);
-  const rank = ranked.indexOf(me)+1;
-  const tot = crmAgg(inRange);
-  const avgOmzet = tot.omzet/n, avgClosing = tot.closing/n, avgBc = tot.bc/n, avgPot = tot.potensial/n;
-
-  // periode sebelumnya (durasi sama, tepat sebelum periode ini)
-  const pe = new Date(range[0]); pe.setDate(pe.getDate()-1);
-  const ps = new Date(pe); ps.setDate(ps.getDate()-(lenDays-1));
-  const prev = crmAgg(CRM_DATA.filter(r=>r.crm===me && csRowInRange(r.tanggal,[ps,pe])));
-  const hasPrev = prev.days.size>0;
-
-  // ---- KPI ----
-  const k1 = [
-    crmKpiCard('green','Omzet', rupiah(a.omzet),
-      (multi?'Peringkat <b>#'+rank+'</b> dari '+n+' CRM':'')+
-      (hasPrev ? (multi?'<br>':'')+crmDeltaHtml(a.omzet, prev.omzet, 'vs periode lalu') : '')),
-    crmKpiCard('blue','Closing', num(a.closing),
-      (hasPrev ? crmDeltaHtml(a.closing, prev.closing, 'vs periode lalu') : '')+
-      (multi ? (hasPrev?'<br>':'')+crmDeltaHtml(a.closing, avgClosing, 'vs rata-rata tim') : '')),
-    crmKpiCard('yellow','% Repeat Order', a.ro==null?'-':pctFmt(a.ro),
-      '<b>'+num(a.closing)+'</b> RO ÷ broadcast D1'+(multi && a.ro!=null && tot.ro!=null ? '<br>Rata-rata tim '+pctFmt(tot.ro):'')),
-    crmKpiCard('purple','Omzet per Closing', a.opc==null?'-':rupiah(a.opc),
-      multi && a.opc!=null && tot.opc!=null ? crmDeltaHtml(a.opc, tot.opc, 'vs rata-rata tim') : '')
-  ];
-  document.getElementById('crmPersonKpi1').innerHTML = k1.join('');
-
-  const pctActive = lenDays>0 ? a.days.size/lenDays*100 : 0;
-  const k2 = [
-    crmKpiCard('blue','Total Broadcast', num(a.bc),
-      'D0 '+num(a.d0)+' · D1 '+num(a.d1)+' · D7 '+num(a.d7)+' · D14 '+num(a.d14)+
-      (multi ? '<br>'+crmDeltaHtml(a.bc, avgBc, 'vs rata-rata tim') : '')),
-    crmKpiCard('green','Closing / Broadcast', a.cbc==null?'-':pctFmt(a.cbc),
-      multi && a.cbc!=null && tot.cbc!=null ? 'Rata-rata tim '+pctFmt(tot.cbc) : ''),
-    crmKpiCard('purple','Customer Potensial', num(a.potensial),
-      multi && tot.potensial>0 ? pctFmt(a.potensial/tot.potensial*100)+' dari total tim' : ''),
-    crmKpiCard('yellow','Hari Input Data', a.days.size+' / '+lenDays,
-      pctFmt(Math.min(100,pctActive))+' hari terisi')
-  ];
-  document.getElementById('crmPersonKpi2').innerHTML = k2.join('');
-
-  // ---- Tren harian ----
-  const dayList = [];
-  for(let d=new Date(range[0]); d<=effEnd; d.setDate(d.getDate()+1)) dayList.push(fmtISO(d));
-  const mapOm = {}, mapCl = {};
-  byCrm[me].forEach(r=>{ const k=crmDayKey(r.tanggal); mapOm[k]=(mapOm[k]||0)+crmNum(r.omzet); mapCl[k]=(mapCl[k]||0)+crmNum(r.closing); });
-  const labels = dayList.map(k=>{ const d=new Date(k+'T00:00:00'); return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}); });
-  const blue = cssVar('--blue')||'#4C8DFF', green = cssVar('--green')||'#2FBE82';
-  const tooltipBase = {backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text')};
-  const trendEl = document.getElementById('crmPersonTrendChart');
-  if(trendEl && typeof Chart!=='undefined'){
-    chartReg['crmPersonTrendChart'] = new Chart(trendEl, {
-      data:{ labels, datasets:[
-        { type:'bar', label:'Omzet', data:dayList.map(k=>mapOm[k]||0), backgroundColor:blue+'AA', borderRadius:4, maxBarThickness:22, yAxisID:'y', order:2 },
-        { type:'line', label:'Closing', data:dayList.map(k=>mapCl[k]||0), borderColor:green, backgroundColor:'transparent', tension:.3, pointRadius:dayList.length>45?0:3, borderWidth:2, yAxisID:'y1', order:1 }
-      ]},
-      options:{
-        responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-        plugins:{ legend:{display:true,position:'bottom',labels:{color:cssVar('--text'),boxWidth:14,font:{size:11}}},
-          tooltip:Object.assign({},tooltipBase,{callbacks:{label:c=> c.dataset.label==='Omzet' ? 'Omzet: '+rupiah(c.parsed.y) : 'Closing: '+num(c.parsed.y)}}) },
-        scales:{
-          x:{ grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:9} },
-          y:{ position:'left', beginAtZero:true, grid:{color:cssVar('--chart-grid')}, ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:v=>rupiahShort(v)} },
-          y1:{ position:'right', beginAtZero:true, grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:10},precision:0} }
-        }
-      }
-    });
-  }
-
-  // ---- Perbandingan antar CRM ----
-  const cmpEl = document.getElementById('crmCompareChart');
-  if(cmpEl && typeof Chart!=='undefined'){
-    chartReg['crmCompareChart'] = new Chart(cmpEl, {
-      type:'bar',
-      data:{ labels:ranked, datasets:[{ label:'Omzet', data:ranked.map(x=>aggs[x].omzet),
-        backgroundColor:ranked.map(x=> x===me ? green : blue+'66'), borderRadius:5, maxBarThickness:26 }]},
-      options:{
-        indexAxis:'y', responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false}, tooltip:Object.assign({},tooltipBase,{callbacks:{label:c=>{
-          const x=aggs[c.label]; return ['Omzet: '+rupiah(x.omzet),'Closing: '+num(x.closing)+' · '+(x.cbc==null?'-':pctFmt(x.cbc))+' dari broadcast'];
-        }}}) },
-        scales:{
-          x:{ beginAtZero:true, grid:{color:cssVar('--chart-grid')}, ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:v=>rupiahShort(v)} },
-          y:{ grid:{display:false}, ticks:{color:cssVar('--chart-tick'),font:{size:11}} }
-        }
-      }
-    });
-  }
-
-  // ---- Insight per orang ----
-  const li = [];
-  li.push('<b>'+escapeHtml(me)+'</b> mengirim <b>'+num(a.bc)+'</b> broadcast dengan hasil <b>'+num(a.closing)+'</b> closing dan omzet <b>'+rupiah(a.omzet)+'</b>'+(a.cbc!=null?' (closing per broadcast '+pctFmt(a.cbc)+')':'')+'.');
-  if(multi){
-    const d = avgOmzet>0 ? (a.omzet-avgOmzet)/avgOmzet*100 : null;
-    li.push('Peringkat omzet <b>#'+rank+' dari '+n+' CRM</b>'+(d!=null?', '+(d>=0?'<b class="crm-up">'+pctFmt(d)+' di atas</b>':'<b class="crm-down">'+pctFmt(Math.abs(d))+' di bawah</b>')+' rata-rata tim ('+rupiah(avgOmzet)+').':'.'));
-    if(a.cbc!=null && tot.cbc!=null){
-      const better = a.cbc>=tot.cbc;
-      li.push('Closing per broadcast '+pctFmt(a.cbc)+' — '+(better?'<span class="crm-up">lebih tinggi</span>':'<span class="crm-down">lebih rendah</span>')+' dari rata-rata tim ('+pctFmt(tot.cbc)+').');
-    }
-    if(a.opc!=null && tot.opc!=null){
-      const better = a.opc>=tot.opc;
-      li.push('Omzet per closing '+rupiah(a.opc)+' — '+(better?'<span class="crm-up">di atas</span>':'<span class="crm-down">di bawah</span>')+' rata-rata tim ('+rupiah(tot.opc)+').');
-    }
-  } else if(a.opc!=null){
-    li.push('Rata-rata omzet per closing <b>'+rupiah(a.opc)+'</b>.');
-  }
-  if(hasPrev){
-    const dO = prev.omzet>0 ? (a.omzet-prev.omzet)/prev.omzet*100 : null;
-    if(dO!=null) li.push('Dibanding periode sebelumnya, omzet '+(dO>=0?'<b class="crm-up">naik '+pctFmt(dO)+'</b>':'<b class="crm-down">turun '+pctFmt(Math.abs(dO))+'</b>')+' ('+rupiah(prev.omzet)+' → '+rupiah(a.omzet)+').');
-  }
-  if(a.bc>0){
-    const st = [['D0',a.d0],['D1',a.d1],['D7',a.d7],['D14',a.d14]].sort((x,y)=>y[1]-x[1])[0];
-    li.push('Broadcast terbanyak di tahap <b>'+st[0]+'</b> ('+num(st[1])+', '+pctFmt(st[1]/a.bc*100)+' dari total miliknya).');
-  }
-  if(a.ro!=null) li.push('Repeat order <b>'+pctFmt(a.ro)+'</b> dari broadcast D1'+(multi && tot.ro!=null ? ' (rata-rata tim '+pctFmt(tot.ro)+')':'')+'.');
-  const bestDay = dayList.slice().sort((x,y)=>(mapOm[y]||0)-(mapOm[x]||0))[0];
-  if(bestDay && (mapOm[bestDay]||0)>0) li.push('Hari terbaik: <b>'+escapeHtml(fmtD(new Date(bestDay+'T00:00:00')))+'</b> dengan omzet <b>'+rupiah(mapOm[bestDay])+'</b>.');
-  if(a.potensial>0) li.push('Ada <b>'+num(a.potensial)+'</b> customer potensial yang bisa ditindaklanjuti.');
-  if(pctActive<70 && lenDays>=3) li.push('Data baru terisi <b>'+a.days.size+' dari '+lenDays+' hari</b> — angka di atas mungkin belum mencerminkan performa penuh.');
-  document.getElementById('crmPersonInsightName').innerHTML = '<span class="muted-note">— '+escapeHtml(me)+'</span>';
-  document.getElementById('crmPersonInsight').innerHTML = '<ul style="margin:0;padding-left:18px;line-height:1.7;font-size:13px;">'+li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
-
-  // ---- Kendala per orang ----
-  document.getElementById('crmPersonKendalaName').innerHTML = '<span class="muted-note">— '+escapeHtml(me)+'</span>';
-  const kr = byCrm[me].filter(r=>r.kendala).sort((x,y)=>String(y.tanggal).localeCompare(String(x.tanggal)));
-  document.getElementById('crmPersonKendala').innerHTML = kr.length===0 ? '<div class="muted-note">Tidak ada catatan kendala dari '+escapeHtml(me)+' pada periode ini.</div>' :
-    kr.map(r=>'<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;"><span class="muted-note">'+escapeHtml(fmtTanggalID?fmtTanggalID(r.tanggal):r.tanggal)+'</span><div style="margin-top:3px;white-space:pre-wrap;">'+escapeHtml(r.kendala)+'</div></div>').join('');
-}
-function renderCrmAll(){
-  renderCrmChips();
-  renderCrmTabs();
-  const nv = document.getElementById('crmNamaView'); if(nv) nv.value = crmActiveTab || '';
-  const td = document.getElementById('crmTanggal'); if(td && !td.value) td.value = fmtISO(TODAY_REF); updateCrmDateDisplay();
-  renderCrmOverview();
-  renderCrmPerson();
-  renderCrmHistory();
-}
 
 /* ============== OMZET & CLOSING CS ============== */
 let CS_LIST = [];
@@ -6899,12 +6547,10 @@ renderCsNotClosingKatChips();
 renderCsNotClosingInputs();
 renderCsData();
 renderCsInsight();
-renderCrmAll();
 
 /* ============== PENYIMPANAN LOKAL (agar data tidak hilang saat tab ditutup) ============== */
 const LOCAL_KEY = 'dashboardAdvertiserState_v1';
 function saveLocalState(){
-  if(window.__deferSave){ window.__saveDirty = true; return; }
   try{
     const state = {
       advertisers: ADVERTISERS,
@@ -6930,9 +6576,6 @@ function saveLocalState(){
       csNotClosingKategori: CS_NOTCLOSING_KATEGORI,
       csNotClosingKategoriHidden: CS_NOTCLOSING_KATEGORI_HIDDEN,
       csNotClosing: CS_NOTCLOSING,
-      crmData: CRM_DATA,
-      crmList: CRM_LIST,
-      crmHidden: CRM_HIDDEN,
       appsScriptUrl: document.getElementById('appsScriptUrl').value,
       dataStart: fmtISO(DATA_START),
       savedAt: new Date().toISOString()
@@ -6996,9 +6639,6 @@ function loadLocalState(){
     CS_NOTCLOSING_KATEGORI = Array.isArray(state.csNotClosingKategori) ? state.csNotClosingKategori : CS_NOTCLOSING_KATEGORI;
     CS_NOTCLOSING_KATEGORI_HIDDEN = Array.isArray(state.csNotClosingKategoriHidden) ? state.csNotClosingKategoriHidden : CS_NOTCLOSING_KATEGORI_HIDDEN;
     CS_NOTCLOSING = Array.isArray(state.csNotClosing) ? state.csNotClosing : [];
-    CRM_DATA = Array.isArray(state.crmData) ? state.crmData : [];
-    CRM_LIST = Array.isArray(state.crmList) ? state.crmList : [];
-    CRM_HIDDEN = Array.isArray(state.crmHidden) ? state.crmHidden : [];
     if(Array.isArray(state.selectedAccounts)){
       // Data lama tidak punya field ini — kalau ada, pakai apa adanya (termasuk akun yang
       // sudah ditandai mati, supaya histori spend-nya tetap ikut di laporan).
@@ -7047,7 +6687,7 @@ document.getElementById('btnResetAllData').onclick = resetAllData;
 
 // State report
 let reportState = {
-  reportMode: 'advertiser',  // 'advertiser' | 'cs' | 'gabungan' | 'crm'
+  reportMode: 'advertiser',  // 'advertiser' | 'cs' | 'gabungan'
   useCustomDate: false,      // true = pakai tanggal khusus report, bukan filter periode global
   dateStart: '',
   dateEnd: '',
@@ -7075,20 +6715,6 @@ let reportState = {
   showGabCpp: true,
   showGabRate: true,
   showGabRoas: true,
-  // Blok CRM di mode 'gabungan' (ditaruh setelah semua advertiser, karena CRM tidak terikat advertiser)
-  showGabCrm: true,
-  selectedCrmList: new Set(),
-  showCrmOmzet: true,
-  showCrmBc: true,
-  showCrmClosing: true,
-  showCrmRo: true,
-  showCrmCbc: true,
-  showCrmPot: true,
-  showGabCrmRoas: true,
-  // Kolom tambahan khusus mode 'crm' (kolom Omzet/Broadcast/Closing/%RO/Closing-BC/Potensial memakai showCrm* yang sama dengan blok CRM di Gabungan)
-  showCrmStages: true,
-  showCrmOpc: true,
-  showCrmKendala: true,
   phoneNumber: '',
   customHeader: '',
   customFooter: ''
@@ -7105,7 +6731,6 @@ function csRowInRange(tanggal, range){
 function buildReportText(){
   if(reportState.reportMode === 'cs') return buildCsReportText();
   if(reportState.reportMode === 'gabungan') return buildGabunganReportText();
-  if(reportState.reportMode === 'crm') return buildCrmReportText();
   return buildAdvertiserReportText();
 }
 
@@ -7361,139 +6986,14 @@ function buildCsReportText(){
    Spending+PPN dihitung dari ACCOUNTS (sama seperti mode Report Advertiser).
    Omzet, Closing & Lead Real diambil dari CS_DATA (input Hasil CS) per advertiser,
    lalu digabung jadi CPP, Closing Rate & ROAS — sama seperti tabel "Laporan Gabungan". */
-/* Blok CRM untuk Report Gabungan: satu entri per CRM (omzet, broadcast, closing, % RO, closing/BC, potensial)
-   + total kalau CRM-nya lebih dari satu. CRM yang tidak punya data di periode report dilewati. */
-function buildGabCrmLines(range){
-  if(!reportState.showGabCrm) return [];
-  const rows = CRM_DATA.filter(r=> reportState.selectedCrmList.has(r.crm) && csRowInRange(r.tanggal, range));
-  if(rows.length===0) return [];
-  const by = {};
-  rows.forEach(r=>{ (by[r.crm]=by[r.crm]||[]).push(r); });
-  const aggs = {};
-  Object.keys(by).forEach(n=>{ aggs[n]=crmAgg(by[n]); });
-  const names = Object.keys(aggs).sort((a,b)=>aggs[b].omzet-aggs[a].omzet);
-  const fields = (o, ind)=>{
-    const L = [];
-    if(reportState.showCrmOmzet)   L.push(ind+'Omzet          : '+rupiah(o.omzet));
-    if(reportState.showCrmBc)      L.push(ind+'Broadcast      : '+num(o.bc));
-    if(reportState.showCrmClosing) L.push(ind+'Closing        : '+num(o.closing));
-    if(reportState.showCrmRo)      L.push(ind+'% Repeat Order : '+(o.ro==null?'-':pctFmt(o.ro)));
-    if(reportState.showCrmCbc)     L.push(ind+'Closing / BC   : '+(o.cbc==null?'-':pctFmt(o.cbc)));
-    if(reportState.showCrmPot)     L.push(ind+'Potensial      : '+num(o.potensial));
-    return L;
-  };
-  const out = ['──────────────────────','*HASIL CRM*'];
-  names.forEach((n,i)=>{
-    out.push((i+1)+'. *'+n+'*');
-    fields(aggs[n],'   ').forEach(x=>out.push(x));
-    if(i<names.length-1) out.push('');
-  });
-  if(names.length>1){
-    out.push('');
-    out.push('*TOTAL CRM*');
-    fields(crmAgg(rows),'   ').forEach(x=>out.push(x));
-  }
-  out.push('──────────────────────');
-  return out;
-}
-
-/* ROAS gabungan = (omzet CS + omzet CRM) ÷ spend+PPN, pakai advertiser & CRM yang dipilih. Ditampilkan sebagai
-   tambahan — ROAS per advertiser tetap omzet CS saja, karena CRM tidak terikat ke advertiser. */
-/* ============== REPORT CRM (mandiri) ==============
-   Satu entri per CRM terpilih yang punya data di periode report + total kalau lebih dari satu. */
-function buildCrmReportText(){
-  const range = getReportRange();
-  const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
-    ? fmtDateID(range[0])
-    : fmtDateID(range[0]) + ' s/d ' + fmtDateID(range[1]);
-
-  const rows = CRM_DATA.filter(r=> reportState.selectedCrmList.has(r.crm) && csRowInRange(r.tanggal, range));
-  if(rows.length===0) return null;
-  const by = {};
-  rows.forEach(r=>{ (by[r.crm]=by[r.crm]||[]).push(r); });
-  const aggs = {};
-  Object.keys(by).forEach(n=>{ aggs[n]=crmAgg(by[n]); });
-  const names = Object.keys(aggs).sort((a,b)=>aggs[b].omzet-aggs[a].omzet);
-
-  const fields = (o, ind)=>{
-    const L = [];
-    if(reportState.showCrmOmzet)   L.push(ind+'Omzet          : '+rupiah(o.omzet));
-    if(reportState.showCrmBc)      L.push(ind+'Broadcast      : '+num(o.bc));
-    if(reportState.showCrmStages)  L.push(ind+'D0/D1/D7/D14   : '+num(o.d0)+' / '+num(o.d1)+' / '+num(o.d7)+' / '+num(o.d14));
-    if(reportState.showCrmClosing) L.push(ind+'Closing        : '+num(o.closing));
-    if(reportState.showCrmRo)      L.push(ind+'% Repeat Order : '+(o.ro==null?'-':pctFmt(o.ro)));
-    if(reportState.showCrmCbc)     L.push(ind+'Closing / BC   : '+(o.cbc==null?'-':pctFmt(o.cbc)));
-    if(reportState.showCrmOpc)     L.push(ind+'Omzet / Closing: '+(o.opc==null?'-':rupiah(o.opc)));
-    if(reportState.showCrmPot)     L.push(ind+'Potensial      : '+num(o.potensial));
-    return L;
-  };
-
-  const lines = [];
-  lines.push('*REPORT CRM*');
-  lines.push('Periode: ' + dateLabel);
-  if(reportState.customHeader.trim()) lines.push(reportState.customHeader.trim());
-  lines.push('');
-
-  names.forEach((n,i)=>{
-    lines.push((i+1)+'. *'+n+'*');
-    fields(aggs[n],'   ').forEach(x=>lines.push(x));
-    if(reportState.showCrmKendala){
-      const kr = by[n].filter(r=>r.kendala).sort((a,b)=>String(crmDayKey(a.tanggal)).localeCompare(String(crmDayKey(b.tanggal))));
-      if(kr.length>0){
-        lines.push('   Kendala:');
-        kr.forEach(r=>{
-          const d = new Date(crmDayKey(r.tanggal)+'T00:00:00');
-          const ds = isNaN(d) ? String(r.tanggal) : d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'});
-          lines.push('   - '+ds+': '+String(r.kendala).replace(/\s*\n\s*/g,' '));
-        });
-      }
-    }
-    if(i<names.length-1) lines.push('');
-  });
-
-  if(names.length>1){
-    lines.push('');
-    lines.push('──────────────────────');
-    lines.push('*TOTAL CRM*');
-    fields(crmAgg(rows),'   ').forEach(x=>lines.push(x));
-    lines.push('──────────────────────');
-  }
-
-  if(reportState.customFooter.trim()){
-    lines.push('');
-    lines.push(reportState.customFooter.trim());
-  }
-  lines.push('');
-  lines.push('_Generated: ' + new Date().toLocaleString('id-ID') + '_');
-  return lines.join('\n');
-}
-
-function buildGabCrmRoasLines(range, spend, omzetCs){
-  if(!reportState.showGabCrm || !reportState.showGabCrmRoas) return [];
-  const omzetCrm = CRM_DATA.filter(r=> reportState.selectedCrmList.has(r.crm) && csRowInRange(r.tanggal, range))
-    .reduce((a,r)=>a+crmNum(r.omzet),0);
-  if(!(omzetCrm>0)) return [];
-  const total = omzetCs+omzetCrm;
-  return [
-    '*ROAS GABUNGAN (CS + CRM)*',
-    '   Omzet CS      : '+rupiah(omzetCs),
-    '   Omzet CRM     : '+rupiah(omzetCrm),
-    '   Total Omzet   : '+rupiah(total),
-    '   Total Spend   : '+rupiah(spend),
-    '   ROAS          : '+(spend>0 ? (total/spend).toFixed(2)+'x' : '-'),
-    '──────────────────────'
-  ];
-}
-
 function buildGabunganReportText(){
   const range = getReportRange();
   const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
     ? fmtDateID(range[0])
     : fmtDateID(range[0]) + ' s/d ' + fmtDateID(range[1]);
 
-  const crmLines = buildGabCrmLines(range);
   const lines = [];
-  lines.push(crmLines.length>0 ? '*REPORT GABUNGAN — ADVERTISER, HASIL CS & CRM*' : '*REPORT GABUNGAN — ADVERTISER & HASIL CS*');
+  lines.push('*REPORT GABUNGAN — ADVERTISER & HASIL CS*');
   lines.push('Periode: ' + dateLabel);
   if(reportState.customHeader.trim()){
     lines.push(reportState.customHeader.trim());
@@ -7557,13 +7057,6 @@ function buildGabunganReportText(){
     lines.push('──────────────────────');
   }
 
-  if(crmLines.length>0){
-    const roasLines = buildGabCrmRoasLines(range, grandSpend, grandOmzet);
-    lines.push('');
-    (roasLines.length>0 ? crmLines.slice(0,-1) : crmLines).forEach(x=>lines.push(x));
-    if(roasLines.length>0){ lines.push(''); roasLines.forEach(x=>lines.push(x)); }
-  }
-
   if(reportState.customFooter.trim()){
     lines.push('');
     lines.push(reportState.customFooter.trim());
@@ -7582,8 +7075,6 @@ function refreshReportPreview(){
   if(!txt){
     el.textContent = reportState.reportMode === 'cs'
       ? '⚠ Pilih minimal satu CS yang punya data pada periode ini.'
-      : reportState.reportMode === 'crm'
-      ? '⚠ Pilih minimal satu CRM yang punya data pada periode ini.'
       : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard / punya data Hasil CS.';
     el.style.color = 'var(--red)';
   } else {
@@ -7601,9 +7092,6 @@ function openReportModal(){
   }
   if(reportState.selectedCsList.size === 0){
     CS_LIST.forEach(cs=> reportState.selectedCsList.add(cs));
-  }
-  if(reportState.selectedCrmList.size === 0){
-    CRM_LIST.forEach(c=> reportState.selectedCrmList.add(c));
   }
   // Prefill tanggal khusus report dengan periode dashboard aktif saat ini, kalau belum pernah diisi
   if(!reportState.dateStart || !reportState.dateEnd){
@@ -7626,7 +7114,6 @@ function openReportModal(){
         <div class="period-btn ${reportState.reportMode==='advertiser'?'active':''}" data-mode="advertiser">📢 Report Advertiser</div>
         <div class="period-btn ${reportState.reportMode==='cs'?'active':''}" data-mode="cs">📞 Report CS</div>
         <div class="period-btn ${reportState.reportMode==='gabungan'?'active':''}" data-mode="gabungan">📊 Report Gabungan</div>
-        <div class="period-btn ${reportState.reportMode==='crm'?'active':''}" data-mode="crm">💌 Report CRM</div>
       </div>
 
       <!-- Tanggal Report (independen dari filter periode global) -->
@@ -7680,54 +7167,6 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showGabCpp?'on':''}" data-key="showGabCpp">🎯 CPP</div>
             <div class="toggle-chip ${reportState.showGabRate?'on':''}" data-key="showGabRate">📈 Closing Rate</div>
             <div class="toggle-chip ${reportState.showGabRoas?'on':''}" data-key="showGabRoas">📊 ROAS</div>
-          </div>
-        </div>
-
-        <div class="report-section">
-          <div class="report-section-title">Hasil CRM <span style="font-weight:400;color:var(--muted);">(ditambahkan di bawah semua advertiser)</span></div>
-          <div class="toggle-group">
-            <div class="toggle-chip ${reportState.showGabCrm?'on':''}" data-key="showGabCrm">💌 Sertakan CRM</div>
-          </div>
-        </div>
-
-        <div class="report-section">
-          <div class="report-section-title">Pilih CRM</div>
-          <div class="adv-chips" id="reportCrmChips"></div>
-        </div>
-
-        <div class="report-section">
-          <div class="report-section-title">Kolom CRM</div>
-          <div class="toggle-group">
-            <div class="toggle-chip ${reportState.showCrmOmzet?'on':''}" data-key="showCrmOmzet">💰 Omzet</div>
-            <div class="toggle-chip ${reportState.showCrmBc?'on':''}" data-key="showCrmBc">📣 Broadcast</div>
-            <div class="toggle-chip ${reportState.showCrmClosing?'on':''}" data-key="showCrmClosing">✅ Closing</div>
-            <div class="toggle-chip ${reportState.showCrmRo?'on':''}" data-key="showCrmRo">🔁 % Repeat Order</div>
-            <div class="toggle-chip ${reportState.showCrmCbc?'on':''}" data-key="showCrmCbc">📈 Closing / BC</div>
-            <div class="toggle-chip ${reportState.showCrmPot?'on':''}" data-key="showCrmPot">⭐ Potensial</div>
-            <div class="toggle-chip ${reportState.showGabCrmRoas?'on':''}" data-key="showGabCrmRoas">🔗 ROAS CS + CRM</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============ SECTION: REPORT CRM ============ -->
-      <div id="reportSectionCrm" style="display:${reportState.reportMode==='crm'?'':'none'};">
-        <div class="report-section">
-          <div class="report-section-title">Pilih CRM</div>
-          <div class="adv-chips" id="reportCrmOnlyChips"></div>
-        </div>
-
-        <div class="report-section">
-          <div class="report-section-title">Kolom Report</div>
-          <div class="toggle-group">
-            <div class="toggle-chip ${reportState.showCrmOmzet?'on':''}" data-key="showCrmOmzet">💰 Omzet</div>
-            <div class="toggle-chip ${reportState.showCrmBc?'on':''}" data-key="showCrmBc">📣 Broadcast</div>
-            <div class="toggle-chip ${reportState.showCrmStages?'on':''}" data-key="showCrmStages">🗓️ Rincian D0–D14</div>
-            <div class="toggle-chip ${reportState.showCrmClosing?'on':''}" data-key="showCrmClosing">✅ Closing</div>
-            <div class="toggle-chip ${reportState.showCrmRo?'on':''}" data-key="showCrmRo">🔁 % Repeat Order</div>
-            <div class="toggle-chip ${reportState.showCrmCbc?'on':''}" data-key="showCrmCbc">📈 Closing / BC</div>
-            <div class="toggle-chip ${reportState.showCrmOpc?'on':''}" data-key="showCrmOpc">🧾 Omzet / Closing</div>
-            <div class="toggle-chip ${reportState.showCrmPot?'on':''}" data-key="showCrmPot">⭐ Potensial</div>
-            <div class="toggle-chip ${reportState.showCrmKendala?'on':''}" data-key="showCrmKendala">🚧 Kendala</div>
           </div>
         </div>
       </div>
@@ -7846,36 +7285,6 @@ function openReportModal(){
     });
   }
 
-  // Render CRM chips (dipakai di Report Gabungan & Report CRM — pilihan keduanya disinkronkan)
-  function renderCrmChipsInto(wrap){
-    if(!wrap) return;
-    if(CRM_LIST.length===0){
-      wrap.innerHTML = '<span class="muted-note">Belum ada CRM. Tambahkan dulu di menu CRM.</span>';
-      return;
-    }
-    CRM_LIST.forEach(c=>{
-      const chip = document.createElement('label');
-      chip.className = 'adv-chip' + (reportState.selectedCrmList.has(c)?' selected':'');
-      chip.style.color = 'var(--purple)';
-      chip.innerHTML = `<input type="checkbox" ${reportState.selectedCrmList.has(c)?'checked':''}><span>${escapeHtml(c)}</span>`;
-      chip.querySelector('input').addEventListener('change', e=>{
-        if(e.target.checked){ reportState.selectedCrmList.add(c); }
-        else { reportState.selectedCrmList.delete(c); }
-        overlay.querySelectorAll('#reportCrmChips .adv-chip, #reportCrmOnlyChips .adv-chip').forEach(x=>{
-          const span = x.querySelector('span'), cb = x.querySelector('input');
-          if(span && cb && span.textContent===c){
-            cb.checked = reportState.selectedCrmList.has(c);
-            x.classList.toggle('selected', reportState.selectedCrmList.has(c));
-          }
-        });
-        refreshReportPreview();
-      });
-      wrap.appendChild(chip);
-    });
-  }
-  renderCrmChipsInto(document.getElementById('reportCrmChips'));
-  renderCrmChipsInto(document.getElementById('reportCrmOnlyChips'));
-
   // Render filter Advertiser utk mode CS — kosong = semua advertiser digabung (perilaku lama)
   const csAdvFilterWrap = document.getElementById('reportCsAdvFilterChips');
   if(ADVERTISERS.length===0){
@@ -7903,7 +7312,6 @@ function openReportModal(){
       document.getElementById('reportSectionAdvertiser').style.display = reportState.reportMode==='advertiser' ? '' : 'none';
       document.getElementById('reportSectionCs').style.display = reportState.reportMode==='cs' ? '' : 'none';
       document.getElementById('reportSectionGabungan').style.display = reportState.reportMode==='gabungan' ? '' : 'none';
-      document.getElementById('reportSectionCrm').style.display = reportState.reportMode==='crm' ? '' : 'none';
       refreshReportPreview();
     });
   });
@@ -7935,8 +7343,7 @@ function openReportModal(){
     chip.addEventListener('click', ()=>{
       const key = chip.dataset.key;
       reportState[key] = !reportState[key];
-      // chip dengan key yang sama bisa muncul di dua tab (mis. kolom CRM di Gabungan & Report CRM) — samakan tampilannya
-      overlay.querySelectorAll('.toggle-chip[data-key="'+key+'"]').forEach(c=> c.classList.toggle('on', reportState[key]));
+      chip.classList.toggle('on', reportState[key]);
       refreshReportPreview();
     });
   });
@@ -8172,7 +7579,6 @@ async function autoPullOnLoad(){
       countCsNotClosing2 = CS_NOTCLOSING.length;
       if(typeof renderCsData==='function') renderCsData();
     }
-    crmApplyFromSheet(json);
     saveLocalState();
     render();
     const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0 || blockedRemovalNames2.length>0);
@@ -8210,9 +7616,6 @@ async function autoPullOnLoad(){
     loadBanner.style.borderColor = 'var(--yellow)';
     loadBanner.style.color = 'var(--yellow)';
     setTimeout(()=>{ loadBanner.style.transition='opacity .5s'; loadBanner.style.opacity='0'; setTimeout(()=>loadBanner.remove(),500); }, 3000);
-  } finally {
-    window.__deferSave = false;
-    if(window.__saveDirty){ window.__saveDirty = false; saveLocalState(); }
   }
 }
 
@@ -8294,7 +7697,6 @@ applyTheme(getSavedTheme());
     if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
     if(typeof renderCsData==='function') renderCsData();
     if(typeof renderCsInsight==='function') renderCsInsight();
-    if(typeof renderCrmAll==='function') renderCrmAll();
   }
   if(!defaultTargetMigrated){
     // Migrasi default -> bulanan DIMATIKAN: dulu jalan sebelum data Sheet ditarik dan menimpa
@@ -8321,7 +7723,7 @@ applyTheme(getSavedTheme());
 })();
 
 /* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
-const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing'];
+const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','testing','okr'];
 function syncGlobalFilterbarVisibility(pageId){
   const bar = document.querySelector('.global-filterbar');
   if(!bar) return;
@@ -8359,5 +7761,621 @@ document.getElementById('btnGotoIntegrasi').addEventListener('click', () => {
 // Set kondisi awal saat halaman pertama kali dimuat (halaman aktif default: overview)
 syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.page || 'overview');
 
+/* ==================================================================
+   OKR DIVISI — Objectives & Key Results
+   Disimpan di localStorage untuk akses instan, DAN disinkronkan ke sheet
+   "OKR" di spreadsheet (kalau URL Apps Script sudah diisi) supaya data
+   OKR ikut aman & konsisten di semua device/browser seperti modul lain.
+   Seluruh isi 1 periode (semua Objective/KR/Initiative/Refleksi-nya)
+   dikirim sebagai satu blok JSON per periode — bukan dipecah per baris —
+   karena strukturnya berlapis.
+   ================================================================== */
+const OKR_KEY = 'dashboardOkrState_v1';
+
+/* Status buka/tutup card Objective (UI-only, tidak ikut disimpan/disinkron) & filter tampilan.
+   null = belum diinisialisasi utk periode aktif saat ini (diisi otomatis saat render pertama). */
+let OKR_UI_COLLAPSED = null;
+let okrFilterPic = '';
+let okrFilterStatus = 'all';
+
+function okrCurrentQuarterLabel(){
+  const d = new Date();
+  const q = Math.floor(d.getMonth()/3)+1;
+  return d.getFullYear()+'-Q'+q;
+}
+
+function okrLoad(){
+  let state = null;
+  try{ state = JSON.parse(localStorage.getItem(OKR_KEY) || 'null'); }catch(e){ state = null; }
+  if(!state || typeof state !== 'object'){
+    state = { activePeriod: okrCurrentQuarterLabel(), periods: {} };
+  }
+  if(!state.periods) state.periods = {};
+  if(!state.activePeriod) state.activePeriod = okrCurrentQuarterLabel();
+  if(!state.periods[state.activePeriod]) state.periods[state.activePeriod] = { objectives: [] };
+  return state;
+}
+function okrSaveLocalOnly(){
+  try{ localStorage.setItem(OKR_KEY, JSON.stringify(OKR_STATE)); }catch(e){ console.warn('Gagal menyimpan data OKR:', e); }
+}
+function okrSave(){
+  okrSaveLocalOnly();
+  // Kirim juga ke spreadsheet (fire-and-forget, tidak menunggu/blokir UI) supaya OKR
+  // ikut tersinkron seperti modul lain. Kalau URL Apps Script belum diisi atau koneksi
+  // gagal, pushOneToSheet cukup diam-diam gagal — data tetap aman di localStorage dan
+  // akan tersinkron lagi otomatis begitu perubahan berikutnya disimpan.
+  pushOkrPeriodToSheet(OKR_STATE.activePeriod);
+}
+/* Ratakan 1 periode OKR jadi daftar baris flat (1 baris per Initiative), dengan kolom
+   Objective & Key Result diulang di tiap baris — supaya sheet-nya langsung terbaca
+   tanpa perlu buka dashboard. KR tanpa Initiative dan Objective tanpa KR tetap dapat
+   1 baris (kolom yang tidak relevan dikosongkan), supaya datanya tidak hilang saat
+   di-sync ke spreadsheet. */
+function okrFlattenPeriod(period){
+  const data = OKR_STATE.periods[period] || { objectives: [] };
+  const objs = data.objectives || [];
+  const rows = [];
+  const blankRow = ()=>({ obj_id:'', objective:'', pic:'', so_what:'', now_what:'', kr_id:'', key_result:'', arah:'', target:'', capaian:'', satuan:'', initiative_id:'', initiative:'', deadline:'', selesai:'' });
+  objs.forEach(obj=>{
+    const refl = obj.reflection || {};
+    const objBase = { obj_id: obj.id, objective: obj.title||'', pic: obj.owner||'', so_what: refl.soWhat||'', now_what: refl.nowWhat||'' };
+    const krs = obj.krs || [];
+    if(!krs.length){ rows.push(Object.assign(blankRow(), objBase)); return; }
+    krs.forEach(kr=>{
+      const krBase = Object.assign({}, objBase, { kr_id: kr.id, key_result: kr.text||'', arah: kr.direction==='lower'?'lower':'higher', target: kr.target, capaian: kr.current, satuan: kr.unit||'' });
+      const inits = kr.initiatives || [];
+      if(!inits.length){ rows.push(Object.assign(blankRow(), krBase)); return; }
+      inits.forEach(ini=>{
+        rows.push(Object.assign(blankRow(), krBase, { initiative_id: ini.id, initiative: ini.text||'', deadline: ini.deadline||'', selesai: ini.done?'ya':'tidak' }));
+      });
+    });
+  });
+  return rows;
+}
+function pushOkrPeriodToSheet(period){
+  if(!period || !OKR_STATE.periods[period]) return;
+  return pushOneToSheet({ type:'okr', periode: period, rows: okrFlattenPeriod(period) });
+}
+let OKR_STATE = okrLoad();
+
+function okrGenId(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function okrEnsurePeriod(p){
+  if(!OKR_STATE.periods[p]) OKR_STATE.periods[p] = { objectives: [] };
+  return OKR_STATE.periods[p];
+}
+function okrActivePeriodData(){ return okrEnsurePeriod(OKR_STATE.activePeriod); }
+
+/* Skor 1 Key Result: dibatasi 0–1.5 (biar stretch goal tetap kelihatan >100%),
+   tapi bar visual dibatasi maksimal 100% supaya tidak meluber.
+   Mendukung 2 arah:
+   - 'higher' (default): semakin besar capaian, semakin bagus (leads, CTR, closing, dll)
+   - 'lower': semakin kecil capaian, semakin bagus (CPL, CPA, biaya, dll) — rumus dibalik */
+function okrKrScore(kr){
+  const target = Number(kr.target);
+  const current = Number(kr.current);
+  if(!isFinite(target) || target === 0) return 0;
+  if(kr.direction === 'lower'){
+    if(!isFinite(current)) return 0;
+    if(current <= 0) return 1.5; // biaya 0 = capaian terbaik
+    const raw = target / current;
+    return Math.max(0, Math.min(raw, 1.5));
+  }
+  const raw = current / target;
+  return Math.max(0, Math.min(raw, 1.5));
+}
+function okrObjScore(obj){
+  if(!obj.krs || !obj.krs.length) return 0;
+  const scores = obj.krs.map(okrKrScore);
+  const capped = scores.map(s=> Math.min(s,1)); // rata-rata objective dihitung dari capaian aktual, cap di 100% per KR
+  return capped.reduce((a,b)=>a+b,0) / capped.length;
+}
+function okrScoreClass(pct){ // pct 0-100
+  if(pct >= 70) return 'good';
+  if(pct >= 40) return 'warn';
+  return 'bad';
+}
+
+/* ---------- Render: pill periode ---------- */
+function okrRenderPeriodBar(){
+  const wrap = document.getElementById('okrPeriodBar');
+  if(!wrap) return;
+  const periods = Object.keys(OKR_STATE.periods).sort();
+  wrap.innerHTML = periods.map(p=>
+    '<div class="okr-period-pill'+(p===OKR_STATE.activePeriod?' active':'')+'" data-period="'+p+'">'+p+'</div>'
+  ).join('') + '<div class="okr-add-period" id="okrAddPeriodBtn">+ Periode Baru</div>';
+
+  wrap.querySelectorAll('.okr-period-pill').forEach(pill=>{
+    pill.addEventListener('click', ()=>{
+      OKR_STATE.activePeriod = pill.dataset.period;
+      OKR_UI_COLLAPSED = null; okrFilterPic=''; okrFilterStatus='all';
+      okrSave();
+      okrRenderAll();
+    });
+  });
+  const addBtn = document.getElementById('okrAddPeriodBtn');
+  if(addBtn) addBtn.addEventListener('click', ()=>{
+    const val = prompt('Nama periode baru (format bebas, contoh: 2026-Q4 atau "Tahunan 2027"):', okrCurrentQuarterLabel());
+    if(!val) return;
+    const clean = val.trim();
+    if(!clean) return;
+    okrEnsurePeriod(clean);
+    OKR_STATE.activePeriod = clean;
+    OKR_UI_COLLAPSED = null; okrFilterPic=''; okrFilterStatus='all';
+    okrSave();
+    okrRenderAll();
+  });
+}
+
+/* ---------- Render: KPI ringkasan ---------- */
+function okrRenderKpi(){
+  const data = okrActivePeriodData();
+  const objs = data.objectives || [];
+  let allKrScores = [];
+  objs.forEach(o=> (o.krs||[]).forEach(kr=> allKrScores.push(okrKrScore(kr))));
+
+  const avgObjScore = objs.length ? (objs.reduce((a,o)=> a+okrObjScore(o), 0) / objs.length) : 0;
+  const done = allKrScores.filter(s=> s>=1).length;
+  const risk = allKrScores.filter(s=> s<0.4).length;
+
+  document.getElementById('okrKpiScore').textContent = Math.round(avgObjScore*100) + '%';
+  document.getElementById('okrKpiObj').textContent = objs.length;
+  document.getElementById('okrKpiDone').textContent = done;
+  document.getElementById('okrKpiRisk').textContent = risk;
+}
+
+/* Ringkasan cepat 1 Objective (dipakai di header card, biar kelihatan tanpa harus dibuka) */
+function okrObjSummary(obj){
+  const krs = obj.krs || [];
+  const done = krs.filter(kr=> okrKrScore(kr) >= 1).length;
+  const risk = krs.filter(kr=> okrKrScore(kr) < 0.4).length;
+  return { total: krs.length, done: done, risk: risk };
+}
+
+/* Isi ulang dropdown filter PIC berdasarkan daftar Objective di periode aktif saat ini.
+   Kalau PIC yang lagi difilter ternyata sudah tidak ada Objective-nya lagi di periode ini
+   (mis. abis ganti periode), filter di-reset ke "Semua PIC" biar tidak nampilin kosong. */
+function okrPopulatePicFilter(objs){
+  const sel = document.getElementById('okrFilterPicSelect');
+  if(!sel) return;
+  const owners = Array.from(new Set(objs.map(o=> (o.owner||'').trim()).filter(Boolean))).sort();
+  if(okrFilterPic && !owners.includes(okrFilterPic)) okrFilterPic = '';
+  sel.innerHTML = '<option value="">Semua PIC</option>' + owners.map(o=>
+    '<option value="'+escapeHtmlOkr(o)+'"'+(o===okrFilterPic?' selected':'')+'>'+escapeHtmlOkr(o)+'</option>'
+  ).join('');
+}
+
+/* ---------- Render: daftar objective + key results ---------- */
+function okrRenderObjectives(){
+  const list = document.getElementById('okrObjList');
+  if(!list) return;
+  const data = okrActivePeriodData();
+  const allObjs = data.objectives || [];
+
+  if(!allObjs.length){
+    okrPopulatePicFilter(allObjs);
+    list.innerHTML = '<div class="okr-empty"><b>Belum ada Objective di periode ini</b>Klik "+ Objective Baru" untuk mulai menyusun target divisi.</div>';
+    return;
+  }
+
+  // Status buka/tutup diinisialisasi sekali per periode: kalau Objective-nya banyak (>2),
+  // defaultnya semua ditutup dulu biar halaman tidak jadi scroll panjang — Objective yang
+  // baru ditambahkan setelahnya otomatis kebuka duluan supaya langsung bisa diisi.
+  if(OKR_UI_COLLAPSED === null){
+    OKR_UI_COLLAPSED = allObjs.length > 2 ? new Set(allObjs.map(o=> o.id)) : new Set();
+  }
+
+  okrPopulatePicFilter(allObjs);
+
+  const objs = allObjs.filter(obj=>{
+    if(okrFilterPic && (obj.owner||'').trim() !== okrFilterPic) return false;
+    if(okrFilterStatus !== 'all'){
+      const pctF = Math.round(okrObjScore(obj)*100);
+      if(okrScoreClass(pctF) !== okrFilterStatus) return false;
+    }
+    return true;
+  });
+
+  if(!objs.length){
+    list.innerHTML = '<div class="okr-empty"><b>Tidak ada Objective yang cocok dengan filter</b>Coba ubah atau reset filter PIC/status di atas.</div>';
+    return;
+  }
+
+  list.innerHTML = objs.map(obj=>{
+    const score = okrObjScore(obj);
+    const pct = Math.round(score*100);
+    const cls = okrScoreClass(pct);
+    const summary = okrObjSummary(obj);
+    const collapsed = OKR_UI_COLLAPSED.has(obj.id);
+    const krsHtml = (obj.krs||[]).length ? (obj.krs||[]).map(kr=>{
+      const krScoreRaw = okrKrScore(kr);
+      const krPctDisplay = Math.round(krScoreRaw*100); // bisa >100 utk stretch
+      const krPctBar = Math.min(krPctDisplay, 100);
+      const krCls = okrScoreClass(Math.min(krPctDisplay,100));
+      const unit = kr.unit ? (' '+kr.unit) : '';
+      const dirTag = kr.direction==='lower' ? '<span class="okr-dir-tag">↓ makin kecil makin baik</span>' : '';
+      const inits = kr.initiatives || [];
+      const initsHtml = inits.map(ini=>
+        '<div class="okr-init-row">'+
+          '<div class="okr-init-check'+(ini.done?' done':'')+'" data-act="toggle-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'" data-init="'+ini.id+'">✓</div>'+
+          '<div class="okr-init-text'+(ini.done?' done':'')+'">'+escapeHtmlOkr(ini.text)+'</div>'+
+          okrInitDeadlineBadge(ini)+
+          '<div class="okr-init-actions">'+
+            '<button class="okr-kr-mini-btn" data-act="edit-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'" data-init="'+ini.id+'" title="Edit">✎</button>'+
+            '<button class="okr-kr-mini-btn" data-act="del-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'" data-init="'+ini.id+'" title="Hapus">🗑</button>'+
+          '</div>'+
+        '</div>'
+      ).join('');
+      return '<div class="okr-kr-row">'+
+        '<div class="okr-kr-top">'+
+          '<div class="okr-kr-text">'+escapeHtmlOkr(kr.text)+'</div>'+
+          '<div class="okr-kr-actions">'+
+            '<button class="okr-kr-mini-btn" data-act="edit-kr" data-obj="'+obj.id+'" data-kr="'+kr.id+'" title="Edit">✎</button>'+
+            '<button class="okr-kr-mini-btn" data-act="del-kr" data-obj="'+obj.id+'" data-kr="'+kr.id+'" title="Hapus">🗑</button>'+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:10px;">'+
+          '<div class="okr-kr-track" style="flex:1;"><div class="okr-kr-fill '+krCls+'" style="width:'+krPctBar+'%;"></div></div>'+
+          '<div class="okr-kr-pct" style="color:var(--'+(krCls==='good'?'green':krCls==='warn'?'yellow':'red')+');">'+krPctDisplay+'%</div>'+
+        '</div>'+
+        '<div class="okr-kr-nums">Capaian: <b>'+fmtOkrNum(kr.current)+unit+'</b> dari target <b>'+fmtOkrNum(kr.target)+unit+'</b>'+dirTag+'</div>'+
+        '<div class="okr-init-wrap">'+
+          initsHtml+
+          '<button class="okr-add-init-btn" data-act="add-init" data-obj="'+obj.id+'" data-kr="'+kr.id+'">+ Tambah Initiative</button>'+
+        '</div>'+
+      '</div>';
+    }).join('') : '<div class="muted-note" style="padding:6px 0 2px;">Belum ada Key Result. Tambahkan minimal 1 untuk mulai mengukur objective ini.</div>';
+
+    const refl = obj.reflection || {};
+    const hasRefl = !!(refl.soWhat || refl.nowWhat);
+    const reflBlock = hasRefl ?
+      '<div class="okr-refl-block">'+
+        '<div class="okr-refl-title">🔄 Refleksi Akhir Periode</div>'+
+        '<div class="okr-refl-item"><div class="okr-refl-tag what">WHAT</div><div class="okr-refl-text">'+escapeHtmlOkr(okrWhatText(obj))+'</div></div>'+
+        '<div class="okr-refl-item"><div class="okr-refl-tag sowhat">SO WHAT</div><div class="okr-refl-text'+(refl.soWhat?'':' muted-note')+'">'+escapeHtmlOkr(refl.soWhat||'Belum diisi')+'</div></div>'+
+        '<div class="okr-refl-item"><div class="okr-refl-tag nowwhat">NOW WHAT</div><div class="okr-refl-text'+(refl.nowWhat?'':' muted-note')+'">'+escapeHtmlOkr(refl.nowWhat||'Belum diisi')+'</div></div>'+
+      '</div>' : '';
+
+    const summaryLine = summary.total ?
+      ('<div class="okr-obj-summary">'+
+        '<div class="okr-obj-mini-track"><div class="okr-obj-mini-fill '+cls+'" style="width:'+Math.min(pct,100)+'%;"></div></div>'+
+        '<span>'+summary.total+' KR'+(summary.done?' · '+summary.done+' tercapai':'')+(summary.risk?' · '+summary.risk+' berisiko':'')+'</span>'+
+      '</div>') :
+      '<div class="okr-obj-summary" style="font-style:italic;">Belum ada Key Result</div>';
+
+    return '<div class="okr-obj-card">'+
+      '<div class="okr-obj-head">'+
+        '<div class="okr-obj-toggle" data-act="toggle-collapse" data-obj="'+obj.id+'" title="'+(collapsed?'Buka':'Tutup')+'">'+(collapsed?'▸':'▾')+'</div>'+
+        '<div style="flex:1;min-width:180px;cursor:pointer;" data-act="toggle-collapse" data-obj="'+obj.id+'">'+
+          '<div class="okr-obj-title">'+escapeHtmlOkr(obj.title)+'</div>'+
+          (obj.owner ? '<div class="okr-obj-owner">PIC: <b>'+escapeHtmlOkr(obj.owner)+'</b></div>' : '')+
+          summaryLine+
+        '</div>'+
+        '<div class="okr-score-chip '+cls+'">'+pct+'%<span class="sub">skor</span></div>'+
+        '<div class="okr-obj-actions">'+
+          '<button class="okr-refl-btn'+(hasRefl?' filled':'')+'" data-act="reflect-obj" data-obj="'+obj.id+'">🔄 Refleksi</button>'+
+          '<button class="okr-icon-btn" data-act="edit-obj" data-obj="'+obj.id+'" title="Edit Objective">✎</button>'+
+          '<button class="okr-icon-btn danger" data-act="del-obj" data-obj="'+obj.id+'" title="Hapus Objective">🗑</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="okr-obj-body" id="okrObjBody-'+obj.id+'" style="display:'+(collapsed?'none':'block')+';">'+
+        krsHtml+
+        '<button class="okr-add-kr-btn" data-act="add-kr" data-obj="'+obj.id+'">+ Tambah Key Result</button>'+
+        reflBlock+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  // Bind aksi
+  list.querySelectorAll('[data-act="toggle-collapse"]').forEach(b=> b.addEventListener('click', ()=> okrToggleCollapse(b.dataset.obj)));
+  list.querySelectorAll('[data-act="edit-obj"]').forEach(b=> b.addEventListener('click', ()=> okrOpenObjModal('edit', b.dataset.obj)));
+  list.querySelectorAll('[data-act="del-obj"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteObjective(b.dataset.obj)));
+  list.querySelectorAll('[data-act="add-kr"]').forEach(b=> b.addEventListener('click', ()=> okrOpenKrModal('add', b.dataset.obj, null)));
+  list.querySelectorAll('[data-act="edit-kr"]').forEach(b=> b.addEventListener('click', ()=> okrOpenKrModal('edit', b.dataset.obj, b.dataset.kr)));
+  list.querySelectorAll('[data-act="del-kr"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteKr(b.dataset.obj, b.dataset.kr)));
+  list.querySelectorAll('[data-act="add-init"]').forEach(b=> b.addEventListener('click', ()=> okrOpenInitModal('add', b.dataset.obj, b.dataset.kr, null)));
+  list.querySelectorAll('[data-act="edit-init"]').forEach(b=> b.addEventListener('click', ()=> okrOpenInitModal('edit', b.dataset.obj, b.dataset.kr, b.dataset.init)));
+  list.querySelectorAll('[data-act="del-init"]').forEach(b=> b.addEventListener('click', ()=> okrDeleteInit(b.dataset.obj, b.dataset.kr, b.dataset.init)));
+  list.querySelectorAll('[data-act="toggle-init"]').forEach(b=> b.addEventListener('click', ()=> okrToggleInit(b.dataset.obj, b.dataset.kr, b.dataset.init)));
+  list.querySelectorAll('[data-act="reflect-obj"]').forEach(b=> b.addEventListener('click', ()=> okrOpenReflModal(b.dataset.obj)));
+}
+
+/* Ringkasan "What" otomatis dari skor & Key Result — bukan diketik manual,
+   supaya bagian What selalu konsisten dengan data (fakta), bukan opini. */
+function okrWhatText(obj){
+  const krs = obj.krs || [];
+  if(!krs.length) return 'Belum ada Key Result yang diukur pada Objective ini.';
+  const pct = Math.round(okrObjScore(obj)*100);
+  const done = krs.filter(kr=> okrKrScore(kr) >= 1).length;
+  const risk = krs.filter(kr=> okrKrScore(kr) < 0.4).length;
+  let parts = ['Skor akhir objective ini '+pct+'% dari '+krs.length+' Key Result ('+done+' tercapai penuh'+(risk?', '+risk+' jauh dari target':'')+').'];
+  return parts.join(' ');
+}
+
+/* ---------- Modal: Refleksi (What / So What / Now What) ---------- */
+let okrReflObjId = null;
+function okrOpenReflModal(objId){
+  okrReflObjId = objId;
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+  if(!obj) return;
+  const refl = obj.reflection || {};
+  document.getElementById('okrReflWhatBox').textContent = okrWhatText(obj);
+  document.getElementById('okrReflSoWhatInput').value = refl.soWhat || '';
+  document.getElementById('okrReflNowWhatInput').value = refl.nowWhat || '';
+  document.getElementById('okrReflModalOverlay').style.display = 'flex';
+  document.getElementById('okrReflSoWhatInput').focus();
+}
+function okrCloseReflModal(){ document.getElementById('okrReflModalOverlay').style.display = 'none'; }
+function okrSaveReflFromModal(){
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===okrReflObjId);
+  if(!obj) return;
+  obj.reflection = {
+    soWhat: document.getElementById('okrReflSoWhatInput').value.trim(),
+    nowWhat: document.getElementById('okrReflNowWhatInput').value.trim()
+  };
+  okrSave();
+  okrCloseReflModal();
+  okrRenderAll();
+}
+
+function fmtOkrNum(n){
+  n = Number(n);
+  if(!isFinite(n)) return '0';
+  return n.toLocaleString('id-ID', {maximumFractionDigits:2});
+}
+function escapeHtmlOkr(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function okrTodayMidnight(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function okrInitDeadlineBadge(ini){
+  if(!ini.deadline) return '';
+  const d = new Date(ini.deadline+'T00:00:00');
+  if(isNaN(d.getTime())) return '';
+  const label = d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'});
+  let cls = 'normal';
+  if(ini.done){
+    cls = 'done';
+  } else {
+    const diffDays = Math.round((d - okrTodayMidnight()) / 86400000);
+    if(diffDays < 0) cls = 'overdue';
+    else if(diffDays <= 3) cls = 'soon';
+  }
+  return '<span class="okr-init-deadline '+cls+'">📅 '+label+'</span>';
+}
+
+/* Banner peringatan initiative yang sudah lewat deadline & belum selesai,
+   supaya kelihatan tanpa harus buka satu-satu Objective. */
+function okrRenderDeadlineBanner(){
+  const el = document.getElementById('okrDeadlineBanner');
+  if(!el) return;
+  const data = okrActivePeriodData();
+  const today = okrTodayMidnight();
+  const overdue = [];
+  (data.objectives||[]).forEach(obj=> (obj.krs||[]).forEach(kr=> (kr.initiatives||[]).forEach(ini=>{
+    if(ini.done || !ini.deadline) return;
+    const d = new Date(ini.deadline+'T00:00:00');
+    if(!isNaN(d.getTime()) && d < today) overdue.push(ini.text);
+  })));
+  if(!overdue.length){ el.style.display = 'none'; el.innerHTML=''; return; }
+  el.style.display = 'flex';
+  const preview = overdue.slice(0,3).map(t=> escapeHtmlOkr(t)).join(' · ');
+  el.innerHTML = '⏰ <div><b>'+overdue.length+' Initiative</b> sudah lewat deadline dan belum selesai: '+preview+(overdue.length>3?' …':'')+'</div>';
+}
+
+function okrRenderAll(){
+  okrRenderPeriodBar();
+  okrRenderKpi();
+  okrRenderDeadlineBanner();
+  okrRenderObjectives();
+}
+
+/* Toggle satu card Objective tanpa render ulang seluruh daftar (biar cepat & tidak
+   kehilangan posisi scroll saat OKR-nya banyak). */
+function okrToggleCollapse(id){
+  if(OKR_UI_COLLAPSED === null) OKR_UI_COLLAPSED = new Set();
+  const body = document.getElementById('okrObjBody-'+id);
+  if(!body) return;
+  const wasCollapsed = OKR_UI_COLLAPSED.has(id);
+  if(wasCollapsed){ OKR_UI_COLLAPSED.delete(id); body.style.display = 'block'; }
+  else { OKR_UI_COLLAPSED.add(id); body.style.display = 'none'; }
+  const chevron = document.querySelector('.okr-obj-toggle[data-obj="'+id+'"]');
+  if(chevron){ chevron.textContent = wasCollapsed ? '▾' : '▸'; chevron.title = wasCollapsed ? 'Tutup' : 'Buka'; }
+}
+function okrExpandAllObjectives(){
+  OKR_UI_COLLAPSED = new Set();
+  okrRenderObjectives();
+}
+function okrCollapseAllObjectives(){
+  const data = okrActivePeriodData();
+  OKR_UI_COLLAPSED = new Set((data.objectives||[]).map(o=> o.id));
+  okrRenderObjectives();
+}
+
+/* ---------- Modal: Objective ---------- */
+let okrObjModalMode = 'add';
+let okrObjModalEditId = null;
+function okrOpenObjModal(mode, id){
+  okrObjModalMode = mode;
+  okrObjModalEditId = id || null;
+  document.getElementById('okrObjModalTitle').textContent = mode==='edit' ? 'Edit Objective' : 'Objective Baru';
+  let title = '', owner = '';
+  if(mode==='edit'){
+    const obj = okrActivePeriodData().objectives.find(o=> o.id===id);
+    if(obj){ title = obj.title; owner = obj.owner||''; }
+  }
+  document.getElementById('okrObjTitleInput').value = title;
+  document.getElementById('okrObjOwnerInput').value = owner;
+  document.getElementById('okrObjModalOverlay').style.display = 'flex';
+  document.getElementById('okrObjTitleInput').focus();
+}
+function okrCloseObjModal(){ document.getElementById('okrObjModalOverlay').style.display = 'none'; }
+
+function okrSaveObjectiveFromModal(){
+  const title = document.getElementById('okrObjTitleInput').value.trim();
+  const owner = document.getElementById('okrObjOwnerInput').value.trim();
+  if(!title){ alert('Objective tidak boleh kosong.'); return; }
+  const data = okrActivePeriodData();
+  if(okrObjModalMode==='edit' && okrObjModalEditId){
+    const obj = data.objectives.find(o=> o.id===okrObjModalEditId);
+    if(obj){ obj.title = title; obj.owner = owner; }
+  } else {
+    data.objectives.push({ id: okrGenId('obj'), title, owner, krs: [] });
+  }
+  okrSave();
+  okrCloseObjModal();
+  okrRenderAll();
+}
+function okrDeleteObjective(id){
+  const data = okrActivePeriodData();
+  const obj = data.objectives.find(o=> o.id===id);
+  if(!obj) return;
+  if(!confirm('Hapus Objective "'+obj.title+'" beserta semua Key Result-nya?\n\nTindakan ini tidak bisa dibatalkan.')) return;
+  data.objectives = data.objectives.filter(o=> o.id!==id);
+  okrSave();
+  okrRenderAll();
+}
+
+/* ---------- Modal: Key Result ---------- */
+let okrKrModalMode = 'add';
+let okrKrModalObjId = null;
+let okrKrModalEditId = null;
+function okrOpenKrModal(mode, objId, krId){
+  okrKrModalMode = mode;
+  okrKrModalObjId = objId;
+  okrKrModalEditId = krId || null;
+  document.getElementById('okrKrModalTitle').textContent = mode==='edit' ? 'Edit Key Result' : 'Key Result Baru';
+  let text='', target='', current='', unit='', direction='higher';
+  if(mode==='edit'){
+    const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+    const kr = obj && obj.krs.find(k=> k.id===krId);
+    if(kr){ text=kr.text; target=kr.target; current=kr.current; unit=kr.unit||''; direction=kr.direction||'higher'; }
+  }
+  document.getElementById('okrKrTextInput').value = text;
+  document.getElementById('okrKrDirectionInput').value = direction;
+  document.getElementById('okrKrTargetInput').value = target;
+  document.getElementById('okrKrCurrentInput').value = current;
+  document.getElementById('okrKrUnitInput').value = unit;
+  document.getElementById('okrKrModalOverlay').style.display = 'flex';
+  document.getElementById('okrKrTextInput').focus();
+}
+function okrCloseKrModal(){ document.getElementById('okrKrModalOverlay').style.display = 'none'; }
+
+function okrSaveKrFromModal(){
+  const text = document.getElementById('okrKrTextInput').value.trim();
+  const direction = document.getElementById('okrKrDirectionInput').value === 'lower' ? 'lower' : 'higher';
+  const target = parseIndoNumber(document.getElementById('okrKrTargetInput').value);
+  const current = parseIndoNumber(document.getElementById('okrKrCurrentInput').value);
+  const unit = document.getElementById('okrKrUnitInput').value.trim();
+  if(!text){ alert('Deskripsi Key Result tidak boleh kosong.'); return; }
+  if(target===null || target===0){ alert('Target harus diisi dengan angka lebih dari 0.'); return; }
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===okrKrModalObjId);
+  if(!obj) return;
+  if(okrKrModalMode==='edit' && okrKrModalEditId){
+    const kr = obj.krs.find(k=> k.id===okrKrModalEditId);
+    if(kr){ kr.text=text; kr.target=target; kr.current=current||0; kr.unit=unit; kr.direction=direction; }
+  } else {
+    obj.krs.push({ id: okrGenId('kr'), text, target, current: current||0, unit, direction });
+  }
+  okrSave();
+  okrCloseKrModal();
+  okrRenderAll();
+}
+function okrDeleteKr(objId, krId){
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+  if(!obj) return;
+  const kr = obj.krs.find(k=> k.id===krId);
+  if(!kr) return;
+  if(!confirm('Hapus Key Result "'+kr.text+'"?')) return;
+  obj.krs = obj.krs.filter(k=> k.id!==krId);
+  okrSave();
+  okrRenderAll();
+}
+
+/* ---------- Modal: Initiative ---------- */
+let okrInitModalMode = 'add';
+let okrInitModalObjId = null;
+let okrInitModalKrId = null;
+let okrInitModalEditId = null;
+function okrFindKr(objId, krId){
+  const obj = okrActivePeriodData().objectives.find(o=> o.id===objId);
+  if(!obj) return null;
+  return obj.krs.find(k=> k.id===krId) || null;
+}
+function okrOpenInitModal(mode, objId, krId, initId){
+  okrInitModalMode = mode;
+  okrInitModalObjId = objId;
+  okrInitModalKrId = krId;
+  okrInitModalEditId = initId || null;
+  document.getElementById('okrInitModalTitle').textContent = mode==='edit' ? 'Edit Initiative' : 'Initiative Baru';
+  let text = '', deadline = '';
+  if(mode==='edit'){
+    const kr = okrFindKr(objId, krId);
+    const ini = kr && (kr.initiatives||[]).find(i=> i.id===initId);
+    if(ini){ text = ini.text; deadline = ini.deadline || ''; }
+  }
+  document.getElementById('okrInitTextInput').value = text;
+  document.getElementById('okrInitDeadlineInput').value = deadline;
+  document.getElementById('okrInitModalOverlay').style.display = 'flex';
+  document.getElementById('okrInitTextInput').focus();
+}
+function okrCloseInitModal(){ document.getElementById('okrInitModalOverlay').style.display = 'none'; }
+
+function okrSaveInitFromModal(){
+  const text = document.getElementById('okrInitTextInput').value.trim();
+  const deadline = document.getElementById('okrInitDeadlineInput').value || '';
+  if(!text){ alert('Kegiatan/Initiative tidak boleh kosong.'); return; }
+  const kr = okrFindKr(okrInitModalObjId, okrInitModalKrId);
+  if(!kr) return;
+  if(!kr.initiatives) kr.initiatives = [];
+  if(okrInitModalMode==='edit' && okrInitModalEditId){
+    const ini = kr.initiatives.find(i=> i.id===okrInitModalEditId);
+    if(ini){ ini.text = text; ini.deadline = deadline; }
+  } else {
+    kr.initiatives.push({ id: okrGenId('init'), text, done: false, deadline });
+  }
+  okrSave();
+  okrCloseInitModal();
+  okrRenderAll();
+}
+function okrDeleteInit(objId, krId, initId){
+  const kr = okrFindKr(objId, krId);
+  if(!kr) return;
+  const ini = (kr.initiatives||[]).find(i=> i.id===initId);
+  if(!ini) return;
+  if(!confirm('Hapus initiative "'+ini.text+'"?')) return;
+  kr.initiatives = kr.initiatives.filter(i=> i.id!==initId);
+  okrSave();
+  okrRenderAll();
+}
+function okrToggleInit(objId, krId, initId){
+  const kr = okrFindKr(objId, krId);
+  if(!kr) return;
+  const ini = (kr.initiatives||[]).find(i=> i.id===initId);
+  if(!ini) return;
+  ini.done = !ini.done;
+  okrSave();
+  okrRenderAll();
+}
+
+/* ---------- Bind tombol statis & init ---------- */
+document.getElementById('btnAddObjective').addEventListener('click', ()=> okrOpenObjModal('add', null));
+document.getElementById('btnOkrExpandAll').addEventListener('click', okrExpandAllObjectives);
+document.getElementById('btnOkrCollapseAll').addEventListener('click', okrCollapseAllObjectives);
+document.getElementById('okrFilterPicSelect').addEventListener('change', (e)=>{ okrFilterPic = e.target.value; okrRenderObjectives(); });
+document.getElementById('okrFilterStatusSelect').addEventListener('change', (e)=>{ okrFilterStatus = e.target.value; okrRenderObjectives(); });
+document.getElementById('okrObjCancelBtn').addEventListener('click', okrCloseObjModal);
+document.getElementById('okrObjSaveBtn').addEventListener('click', okrSaveObjectiveFromModal);
+document.getElementById('okrKrCancelBtn').addEventListener('click', okrCloseKrModal);
+document.getElementById('okrKrSaveBtn').addEventListener('click', okrSaveKrFromModal);
+document.getElementById('okrObjModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrObjModalOverlay') okrCloseObjModal(); });
+document.getElementById('okrKrModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrKrModalOverlay') okrCloseKrModal(); });
+document.getElementById('okrInitCancelBtn').addEventListener('click', okrCloseInitModal);
+document.getElementById('okrInitSaveBtn').addEventListener('click', okrSaveInitFromModal);
+document.getElementById('okrInitModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrInitModalOverlay') okrCloseInitModal(); });
+document.getElementById('okrReflCancelBtn').addEventListener('click', okrCloseReflModal);
+document.getElementById('okrReflSaveBtn').addEventListener('click', okrSaveReflFromModal);
+document.getElementById('okrReflModalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='okrReflModalOverlay') okrCloseReflModal(); });
+
+okrRenderAll();
 </script>
 </body></html>
