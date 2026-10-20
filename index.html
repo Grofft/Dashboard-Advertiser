@@ -988,7 +988,7 @@ try{
     </div>
     <div class="muted-note" id="sheetSyncMsg" style="margin-bottom: 10px; color: var(--muted);">Belum ada sinkronisasi pada sesi ini.</div>
     <div id="scriptBox" style="display:none;">
-      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 12 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunWL</code> (kolom: nama, advertiser, ppn, aktif — daftar master akun kondisi TERKINI, otomatis terisi/update dari menu Data Akun), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">AkunHistori</code> (kolom: nama, advertiser, tanggal_mulai — log riwayat perpindahan advertiser per akun, append-only, otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun; inilah yang membuat histori budget lama tetap ikut advertiser lama walau akun sudah dipindah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Target</code> (kolom: advertiser, tipe, tahun, bulan, nilai — target harian per advertiser, otomatis terisi/update dari menu Target), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo — data omzet & closing harian per CS per advertiser, otomatis terisi/update dari menu Hasil CS; closing rate dihitung otomatis), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSKategoriTidakReal</code> (kolom: kategori, aktif — daftar master kategori alasan Lead OO tidak real yang bisa dikustom bebas, otomatis terisi/update dari menu Hasil CS → Kelola Kategori "Tidak Real"), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakReal</code> (kolom: tanggal, cs, advertiser, kategori, jumlah — rincian jumlah Lead OO tidak real per kategori, bisa beberapa baris per CS per advertiser per tanggal, otomatis terisi/update/hapus dari menu Hasil CS), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSKategoriTidakClosing</code> (kolom: kategori, aktif — daftar master kategori alasan Lead Real yang tidak closing, bebas dikustom, otomatis terisi/update dari menu Hasil CS → Kelola Kategori "Tidak Closing"), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakClosing</code> (kolom: tanggal, cs, advertiser, kategori, jumlah — rincian jumlah Lead Real yang tidak closing per kategori, bisa beberapa baris per CS per advertiser per tanggal, otomatis terisi/update/hapus dari menu Hasil CS), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CRM</code> (kolom: tanggal, crm, d0, d1, d7, d14, closing, omzet, potensial, kendala, repeatorder — data harian tiap CRM, otomatis terisi/update/hapus dari menu CRM).</div>
+      <div class="muted-note" style="margin-bottom:8px;">Buka Google Sheet Anda → <b>Extensions → Apps Script</b> → tempel kode ini → <b>Deploy → New deployment → Web app</b> (Execute as: Me, Who has access: Anyone) → salin URL yang dihasilkan ke kolom di atas. Buat 7 sheet bernama <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Akun</code> (kolom: tanggal, nama, budget, spendppn), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Leads</code> (kolom: tanggal, advertiser, real, oo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CS</code> (kolom: tanggal, cs, advertiser, omzet, hasilclosing, leadreal, leadoo), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakReal</code> (kolom: tanggal, cs, advertiser, kategori, jumlah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CSTidakClosing</code> (kolom: tanggal, cs, advertiser, kategori, jumlah), <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">CRM</code> (kolom: tanggal, crm, d0, d1, d7, d14, closing, omzet, potensial, kendala, repeatorder), dan <code style="background:var(--code-bg);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--green);">Pengaturan</code> (kolom: jenis, data1, data2, data3, data4, data5 — satu sheet gabungan untuk daftar akun WL, histori akun, target, roster CS, kategori Tidak Real, dan kategori Tidak Closing; otomatis terisi dari dashboard, tidak perlu diisi manual). Kalau sebelumnya sudah punya sheet AkunWL, AkunHistori, Target, CSRoster, CSKategoriTidakReal, dan CSKategoriTidakClosing, jalankan fungsi <b>migrasiKePengaturan</b> sekali dari editor Apps Script untuk memindahkan isinya, lalu sheet lama boleh dihapus.</div>
       <pre style="background:var(--report-preview-bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;line-height:1.6;overflow-x:auto;color:var(--report-preview-text);font-family:'Roboto',sans-serif;" id="scriptCode"></pre>
       <button class="btn secondary" id="btnCopyScript" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin Kode</button>
     </div>
@@ -4413,26 +4413,22 @@ function doGet(e){
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var akunSheet = ss.getSheetByName('Akun');
     var leadSheet = ss.getSheetByName('Leads');
-    var akunWlSheet = ss.getSheetByName('AkunWL');
-    var akunHistoriSheet = ss.getSheetByName('AkunHistori');
-    var targetSheet = ss.getSheetByName('Target');
     var csSheet = ss.getSheetByName('CS');
-    var csRosterSheet = ss.getSheetByName('CSRoster');
-    var csNotRealKatSheet = ss.getSheetByName('CSKategoriTidakReal');
     var csNotRealSheet = ss.getSheetByName('CSTidakReal');
-    var csNotClosingKatSheet = ss.getSheetByName('CSKategoriTidakClosing');
     var csNotClosingSheet = ss.getSheetByName('CSTidakClosing');
     var crmSheet = ss.getSheetByName('CRM');
+    var pengSheet = ss.getSheetByName('Pengaturan');
+    var peng = pengaturanToObjects(pengSheet);
+    var akunwl = peng.akunwl;
+    var historiakun = peng.akunhistori;
+    var target = peng.target;
+    var csroster = peng.csroster;
+    var csnotrealkategori = peng.csnotrealkategori;
+    var csnotclosingkategori = peng.csnotclosingkategori;
     var akun = sheetToObjects(akunSheet);
     var leads = sheetToObjects(leadSheet);
-    var akunwl = sheetToObjects(akunWlSheet);
-    var historiakun = sheetToObjects(akunHistoriSheet);
-    var target = sheetToObjects(targetSheet);
     var csdata = sheetToObjects(csSheet);
-    var csroster = sheetToObjects(csRosterSheet);
-    var csnotrealkategori = sheetToObjects(csNotRealKatSheet);
     var csnotreal = sheetToObjects(csNotRealSheet);
-    var csnotclosingkategori = sheetToObjects(csNotClosingKatSheet);
     var csnotclosing = sheetToObjects(csNotClosingSheet);
     var crm = sheetToObjects(crmSheet);
     var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, csdata: csdata, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, crm: crm});
@@ -4464,10 +4460,9 @@ function doPost(e){
   // sama sekali. Cek di bawah ini memastikan sheet tujuan memang ada SEBELUM mulai menulis,
   // supaya kalau memang belum ada, client dapat pesan error yang jelas — bukan sukses palsu.
   var REQUIRED_SHEET_NAME = {
-    akun:'Akun', lead:'Leads', akunwl:'AkunWL', akunhistori:'AkunHistori', target:'Target',
-    cs:'CS', csroster:'CSRoster',
-    csnotrealkategori:'CSKategoriTidakReal', csnotreal:'CSTidakReal',
-    csnotclosingkategori:'CSKategoriTidakClosing', csnotclosing:'CSTidakClosing', crm:'CRM'
+    akun:'Akun', lead:'Leads', cs:'CS', csnotreal:'CSTidakReal', csnotclosing:'CSTidakClosing', crm:'CRM',
+    akunwl:'Pengaturan', akunhistori:'Pengaturan', target:'Pengaturan', csroster:'Pengaturan',
+    csnotrealkategori:'Pengaturan', csnotclosingkategori:'Pengaturan'
   };
   var neededSheetName = REQUIRED_SHEET_NAME[data.type];
   if(neededSheetName && !ss.getSheetByName(neededSheetName)){
@@ -4592,17 +4587,7 @@ function upsertCsData(ss, data){
 // supaya nama CS langsung muncul di browser/device lain begitu "Tarik Data dari Spreadsheet",
 // walaupun CS itu belum pernah diisi data harian sama sekali.
 function upsertCsRoster(ss, data){
-  var sh = ss.getSheetByName('CSRoster');
-  if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  var nama = String(data.nama).trim().toLowerCase();
-  for(var i=1;i<rows.length;i++){
-    if(String(rows[i][0]).trim().toLowerCase() === nama){
-      sh.getRange(i+1,1,1,2).setValues([[data.nama, data.aktif ? 'ya' : 'tidak']]);
-      return;
-    }
-  }
-  sh.appendRow([data.nama, data.aktif ? 'ya' : 'tidak']);
+  pengUpsert(ss, 'csroster', [0], [data.nama, data.aktif ? 'ya' : 'tidak'], false);
 }
 
 // Sheet "CSKategoriTidakReal" = daftar MASTER kategori alasan Lead OO "tidak real"
@@ -4611,17 +4596,7 @@ function upsertCsRoster(ss, data){
 // otomatis di-upsert setiap kali kategori ditambah/dihapus dari dashboard (menu Hasil CS
 // → Kelola Kategori "Tidak Real"), supaya kategori langsung muncul di browser/device lain.
 function upsertCsNotRealKategori(ss, data){
-  var sh = ss.getSheetByName('CSKategoriTidakReal');
-  if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  var kategori = String(data.kategori).trim().toLowerCase();
-  for(var i=1;i<rows.length;i++){
-    if(String(rows[i][0]).trim().toLowerCase() === kategori){
-      sh.getRange(i+1,1,1,2).setValues([[data.kategori, data.aktif ? 'ya' : 'tidak']]);
-      return;
-    }
-  }
-  sh.appendRow([data.kategori, data.aktif ? 'ya' : 'tidak']);
+  pengUpsert(ss, 'csnotrealkategori', [0], [data.kategori, data.aktif ? 'ya' : 'tidak'], false);
 }
 
 // Sheet "CSTidakReal" = rincian JUMLAH Lead OO yang tidak real, dipecah per kategori,
@@ -4652,17 +4627,7 @@ function upsertCsNotReal(ss, data){
 // budget belum ada, followup gagal, dll — bebas dikustom user). Pola identik dengan
 // "CSKategoriTidakReal" di atas.
 function upsertCsNotClosingKategori(ss, data){
-  var sh = ss.getSheetByName('CSKategoriTidakClosing');
-  if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  var kategori = String(data.kategori).trim().toLowerCase();
-  for(var i=1;i<rows.length;i++){
-    if(String(rows[i][0]).trim().toLowerCase() === kategori){
-      sh.getRange(i+1,1,1,2).setValues([[data.kategori, data.aktif ? 'ya' : 'tidak']]);
-      return;
-    }
-  }
-  sh.appendRow([data.kategori, data.aktif ? 'ya' : 'tidak']);
+  pengUpsert(ss, 'csnotclosingkategori', [0], [data.kategori, data.aktif ? 'ya' : 'tidak'], false);
 }
 
 // Sheet "CSTidakClosing" = rincian JUMLAH Lead Real yang tidak closing, dipecah per
@@ -4692,16 +4657,7 @@ function upsertCsNotClosing(ss, data){
 // ditambah kalau belum) setiap kali akun ditambah/diedit/diaktif-nonaktifkan
 // di dashboard, atau saat klik "Kirim Semua Data ke Spreadsheet".
 function upsertAkunWL(ss, data){
-  var sh = ss.getSheetByName('AkunWL');
-  if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  for(var i=1;i<rows.length;i++){
-    if(String(rows[i][0]).trim().toLowerCase() === String(data.nama).trim().toLowerCase()){
-      sh.getRange(i+1,1,1,4).setValues([[data.nama, data.advertiser, data.ppn, data.aktif]]);
-      return;
-    }
-  }
-  sh.appendRow([data.nama, data.advertiser, data.ppn, data.aktif]);
+  pengUpsert(ss, 'akunwl', [0], [data.nama, data.advertiser, data.ppn, data.aktif], false);
 }
 
 // Sheet "AkunHistori" = LOG perpindahan advertiser per akun (append-only, beda dari AkunWL
@@ -4711,18 +4667,8 @@ function upsertAkunWL(ss, data){
 // Baris-baris lama TIDAK pernah dihapus/ditimpa oleh perpindahan baru — itulah yang membuat
 // histori budget/spend advertiser lama tetap aman walau akun sudah pindah tangan.
 function upsertAkunHistori(ss, data){
-  var sh = ss.getSheetByName('AkunHistori');
-  if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  var nama = String(data.nama).trim().toLowerCase();
-  var tgl = String(data.tanggal_mulai).trim();
-  for(var i=1;i<rows.length;i++){
-    if(String(rows[i][0]).trim().toLowerCase() === nama && formatCellDate(rows[i][2]) === tgl){
-      sh.getRange(i+1,1,1,3).setValues([[data.nama, data.advertiser, data.tanggal_mulai]]);
-      return;
-    }
-  }
-  sh.appendRow([data.nama, data.advertiser, data.tanggal_mulai]);
+  // kunci = nama + tanggal_mulai (kolom ke-1 dan ke-3), baris lama tidak pernah dihapus
+  pengUpsert(ss, 'akunhistori', [0, 2], [data.nama, data.advertiser, data.tanggal_mulai], false);
 }
 
 // Sheet "Target" = target harian per advertiser, sinkron dari menu "Target Bulanan".
@@ -4734,34 +4680,12 @@ function upsertAkunHistori(ss, data){
 // baris "__MODE__" selalu dicari berdasarkan nama saja (hanya ada 1 baris mode).
 // Kirim payload dengan hapus:true untuk menghapus baris override bulanan (mis. saat "Reset ke Default Harian").
 function upsertTarget(ss, data){
-  var sh = ss.getSheetByName('Target');
-  if(!sh) return;
-  var rows = sh.getDataRange().getValues();
-  var adv = String(data.advertiser).trim().toLowerCase();
-  var isMode = (adv === '__mode__');
-  var tahun = String(data.tahun==null?'':data.tahun).trim();
-  var bulan = String(data.bulan==null?'':data.bulan).trim();
-  var tipe = String(data.tipe||'').trim().toLowerCase();
-  for(var i=1;i<rows.length;i++){
-    var rAdv = String(rows[i][0]).trim().toLowerCase();
-    if(isMode){
-      if(rAdv === '__mode__'){
-        sh.getRange(i+1,1,1,5).setValues([[data.advertiser, data.tipe, '', '', '']]);
-        return;
-      }
-      continue;
-    }
-    var rTipe = String(rows[i][1]).trim().toLowerCase();
-    var rTahun = String(rows[i][2]).trim();
-    var rBulan = String(rows[i][3]).trim();
-    if(rAdv===adv && rTipe===tipe && rTahun===tahun && rBulan===bulan){
-      if(data.hapus){ sh.deleteRow(i+1); return; }
-      sh.getRange(i+1,1,1,5).setValues([[data.advertiser, data.tipe, data.tahun, data.bulan, data.nilai]]);
-      return;
-    }
+  var isMode = (String(data.advertiser).trim().toLowerCase() === '__mode__');
+  if(isMode){
+    pengUpsert(ss, 'target', [0], [data.advertiser, data.tipe, '', '', ''], false);
+  } else {
+    pengUpsert(ss, 'target', [0, 1, 2, 3], [data.advertiser, data.tipe, data.tahun == null ? '' : data.tahun, data.bulan == null ? '' : data.bulan, data.nilai], !!data.hapus);
   }
-  if(data.hapus) return; // tidak ada baris yang cocok untuk dihapus
-  sh.appendRow([data.advertiser, data.tipe, data.tahun, data.bulan, data.nilai]);
 }
 
 // Sheet "CRM" = data harian tiap CRM: tanggal | crm | d0 | d1 | d7 | d14 | closing | omzet | potensial | kendala | repeatorder
@@ -4781,6 +4705,120 @@ function upsertCrm(ss, data){
   }
   if(data.hapus) return;
   sh.appendRow(vals);
+}
+
+// ============================================================
+// SHEET "Pengaturan" = GABUNGAN 6 sheet pengaturan lama (AkunWL, AkunHistori, Target,
+// CSRoster, CSKategoriTidakReal, CSKategoriTidakClosing) jadi SATU sheet.
+// Kolom: jenis | data1 | data2 | data3 | data4 | data5
+// Isi data1..data5 untuk tiap jenis:
+//   akunwl               -> nama | advertiser | ppn | aktif
+//   akunhistori          -> nama | advertiser | tanggal_mulai
+//   target               -> advertiser | tipe | tahun | bulan | nilai
+//   csroster             -> nama | aktif
+//   csnotrealkategori    -> kategori | aktif
+//   csnotclosingkategori -> kategori | aktif
+// Dashboard tetap menerima data dengan bentuk yang sama seperti sebelumnya.
+// ============================================================
+var PENGATURAN_JENIS = {
+  akunwl: ['nama','advertiser','ppn','aktif'],
+  akunhistori: ['nama','advertiser','tanggal_mulai'],
+  target: ['advertiser','tipe','tahun','bulan','nilai'],
+  csroster: ['nama','aktif'],
+  csnotrealkategori: ['kategori','aktif'],
+  csnotclosingkategori: ['kategori','aktif']
+};
+
+function pengNorm(v){
+  return String(v == null ? '' : formatCellDate(v)).trim().toLowerCase();
+}
+
+// Baca sheet Pengaturan lalu pecah per jenis ke format ringkas {__cols, rows}
+function pengaturanToObjects(sheet){
+  var out = {};
+  for(var k in PENGATURAN_JENIS){ out[k] = {__cols: PENGATURAN_JENIS[k], rows: []}; }
+  if(!sheet) return out;
+  var lastRow = sheet.getLastRow();
+  if(lastRow < 2) return out;
+  var data = sheet.getRange(2, 1, lastRow - 1, 6).getValues();
+  for(var i=0;i<data.length;i++){
+    var jenis = String(data[i][0]).trim().toLowerCase();
+    var cols = PENGATURAN_JENIS[jenis];
+    if(!cols) continue;
+    var vals = [], any = false;
+    for(var j=0;j<cols.length;j++){
+      var v = formatCellDate(data[i][j+1]);
+      if(v !== '') any = true;
+      vals.push(v);
+    }
+    if(any) out[jenis].rows.push(vals);
+  }
+  return out;
+}
+
+// Tulis / timpa / hapus 1 baris di sheet Pengaturan.
+// keyIdx = urutan kolom data (mulai 0) yang jadi kunci pencarian baris.
+function pengUpsert(ss, jenis, keyIdx, vals, hapus){
+  var sh = ss.getSheetByName('Pengaturan');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var padded = vals.slice();
+  while(padded.length < 5) padded.push('');
+  for(var i=1;i<rows.length;i++){
+    if(String(rows[i][0]).trim().toLowerCase() !== jenis) continue;
+    var cocok = true;
+    for(var k=0;k<keyIdx.length;k++){
+      if(pengNorm(rows[i][keyIdx[k] + 1]) !== pengNorm(vals[keyIdx[k]])){ cocok = false; break; }
+    }
+    if(cocok){
+      if(hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1, 1, 1, 6).setValues([[jenis].concat(padded)]);
+      return;
+    }
+  }
+  if(hapus) return;
+  sh.appendRow([jenis].concat(padded));
+}
+
+// ============================================================
+// JALANKAN SEKALI SAJA (menu Run -> migrasiKePengaturan) kalau Anda sudah punya data di
+// 6 sheet lama. Fungsi ini menyalin isinya ke sheet "Pengaturan". Setelah dicek hasilnya
+// benar, 6 sheet lama boleh dihapus.
+// ============================================================
+function migrasiKePengaturan(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var tujuan = ss.getSheetByName('Pengaturan');
+  if(!tujuan) tujuan = ss.insertSheet('Pengaturan');
+  if(tujuan.getLastRow() < 1) tujuan.appendRow(['jenis','data1','data2','data3','data4','data5']);
+  if(tujuan.getLastRow() > 1){
+    Logger.log('Sheet Pengaturan sudah berisi data, migrasi dibatalkan supaya tidak dobel.');
+    return;
+  }
+  var peta = [
+    ['AkunWL','akunwl',4], ['AkunHistori','akunhistori',3], ['Target','target',5],
+    ['CSRoster','csroster',2], ['CSKategoriTidakReal','csnotrealkategori',2],
+    ['CSKategoriTidakClosing','csnotclosingkategori',2]
+  ];
+  var baru = [];
+  peta.forEach(function(p){
+    var sh = ss.getSheetByName(p[0]);
+    if(!sh) return;
+    var lastRow = sh.getLastRow();
+    if(lastRow < 2) return;
+    var data = sh.getRange(2, 1, lastRow - 1, p[2]).getValues();
+    data.forEach(function(r){
+      var baris = [p[1]], any = false;
+      for(var j=0;j<5;j++){
+        var v = j < p[2] ? formatCellDate(r[j]) : '';
+        if(v !== '') any = true;
+        baris.push(v);
+      }
+      if(any) baru.push(baris);
+    });
+  });
+  if(baru.length) tujuan.getRange(tujuan.getLastRow() + 1, 1, baru.length, 6).setValues(baru);
+  clearDashboardCache();
+  Logger.log('Migrasi selesai: ' + baru.length + ' baris dipindahkan ke sheet Pengaturan.');
 }
 
 // Format ringkas: nama kolom ditulis 1x saja + baris berupa array (bukan objek berulang),
@@ -4811,48 +4849,17 @@ function jsonOutput(obj){
 }
 
 // ============================================================
-// STRUKTUR SHEET YANG DIPERLUKAN (buat 11 sheet ini di spreadsheet):
-// Sheet "Akun"   → kolom: tanggal | nama | budget | spendppn   (1 baris per akun per tanggal — upsert, ditimpa kalau diinput ulang)
-// Sheet "Leads"  → kolom: tanggal | advertiser | real | oo     (1 baris per advertiser per tanggal — upsert, ditimpa kalau diinput ulang)
-// Sheet "AkunWL" → kolom: nama | advertiser | ppn | aktif      (daftar master akun — KONDISI TERKINI saja,
-//                  1 baris per akun — otomatis terisi/update dari dashboard)
-// Sheet "AkunHistori" → kolom: nama | advertiser | tanggal_mulai  (LOG perpindahan advertiser per akun,
-//                  APPEND-ONLY — 1 baris per periode kepemilikan. Ini yang membuat histori budget/spend
-//                  tetap teratribusi ke advertiser lama walau akun sudah dipindah ke advertiser baru.
-//                  Otomatis terisi setiap kali advertiser pemilik akun diganti dari menu Data Akun.)
-// Sheet "Target" → kolom: advertiser | tipe | tahun | bulan | nilai (target harian per advertiser;
-//                  tipe "default" = target harian umum, tipe "bulanan" = override per bulan+tahun,
-//                  baris advertiser "__MODE__" menyimpan mode aktif harian/bulanan di kolom tipe)
-// Sheet "CS" → kolom: tanggal | cs | advertiser | omzet | hasilclosing | leadreal | leadoo
-//                  (1 baris per CS per tanggal per advertiser — upsert berdasarkan
-//                  tanggal+cs+advertiser, ditimpa kalau diinput ulang; closing rate =
-//                  hasilclosing ÷ leadreal, dihitung otomatis di dashboard. Rincian KENAPA
-//                  sebagian leadoo di baris ini tidak real ada di sheet "CSTidakReal", dan
-//                  rincian KENAPA sebagian leadreal tidak closing ada di sheet
-//                  "CSTidakClosing", keduanya di bawah)
-// Sheet "CSRoster" → kolom: nama | aktif    (daftar master nama CS/Sales — KONDISI TERKINI saja,
-//                  1 baris per nama CS — otomatis terisi/update saat CS ditambah/dihapus dari
-//                  menu Hasil CS. Ini yang membuat nama CS baru langsung sinkron ke semua
-//                  browser/device begitu "Tarik Data dari Spreadsheet", meski belum ada data
-//                  harian sama sekali untuk CS itu)
-// Sheet "CSKategoriTidakReal" → kolom: kategori | aktif    (daftar master kategori alasan
-//                  Lead OO "tidak real" — bebas dikustom, KONDISI TERKINI saja, 1 baris per
-//                  kategori — otomatis terisi/update saat kategori ditambah/dihapus dari
-//                  menu Hasil CS → Kelola Kategori "Tidak Real")
-// Sheet "CSTidakReal" → kolom: tanggal | cs | advertiser | kategori | jumlah
-//                  (rincian jumlah Lead OO tidak real per kategori — BISA BEBERAPA baris
-//                  per CS per advertiser per tanggal, 1 baris per kategori yang diisi;
-//                  upsert berdasarkan tanggal+cs+advertiser+kategori, otomatis
-//                  terisi/update/hapus dari menu Hasil CS)
-// Sheet "CSKategoriTidakClosing" → kolom: kategori | aktif    (daftar master kategori
-//                  alasan Lead Real yang tidak closing — bebas dikustom, KONDISI TERKINI
-//                  saja, 1 baris per kategori — otomatis terisi/update saat kategori
-//                  ditambah/dihapus dari menu Hasil CS → Kelola Kategori "Tidak Closing")
+// STRUKTUR SHEET YANG DIPERLUKAN (buat 7 sheet ini di spreadsheet):
+// Sheet "Akun"   → kolom: tanggal | nama | budget | spendppn   (1 baris per akun per tanggal)
+// Sheet "Leads"  → kolom: tanggal | advertiser | real | oo     (1 baris per advertiser per tanggal)
+// Sheet "CS"     → kolom: tanggal | cs | advertiser | omzet | hasilclosing | leadreal | leadoo
+// Sheet "CSTidakReal"    → kolom: tanggal | cs | advertiser | kategori | jumlah
 // Sheet "CSTidakClosing" → kolom: tanggal | cs | advertiser | kategori | jumlah
-//                  (rincian jumlah Lead Real yang tidak closing per kategori — BISA
-//                  BEBERAPA baris per CS per advertiser per tanggal, 1 baris per kategori
-//                  yang diisi; upsert berdasarkan tanggal+cs+advertiser+kategori, otomatis
-//                  terisi/update/hapus dari menu Hasil CS)
+// Sheet "CRM"    → kolom: tanggal | crm | d0 | d1 | d7 | d14 | closing | omzet | potensial | kendala | repeatorder
+// Sheet "Pengaturan" → kolom: jenis | data1 | data2 | data3 | data4 | data5
+//                  (GABUNGAN AkunWL, AkunHistori, Target, CSRoster, CSKategoriTidakReal,
+//                  CSKategoriTidakClosing — otomatis terisi/update dari dashboard; lihat
+//                  PENGATURAN_JENIS di atas untuk arti kolom data1..data5 tiap jenis)
 // ============================================================`;
 
 function getAppsScriptUrl(){ return document.getElementById('appsScriptUrl').value.trim(); }
@@ -5272,8 +5279,8 @@ async function pullFromSheet(){
       if(typeof renderCsTabs==='function') renderCsTabs();
       if(typeof renderCsData==='function') renderCsData();
     }
-    const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
-    const blockedNote = blockedRemovalNames.length>0 ? (' ⚠️ '+blockedRemovalNames.length+' akun ('+blockedRemovalNames.join(', ')+') terlihat hilang dari sheet AkunWL, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
+    const removedNote = countRemoved>0 ? (' '+countRemoved+' akun dihapus (tidak ada lagi di sheet Pengaturan).') : '';
+    const blockedNote = blockedRemovalNames.length>0 ? (' ⚠️ '+blockedRemovalNames.length+' akun ('+blockedRemovalNames.join(', ')+') terlihat hilang dari sheet Pengaturan, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
     if(skippedAkunNames.size>0 || skippedLeadAdv.size>0 || blockedRemovalNames.length>0){
       let warnParts=[];
       if(skippedAkunNames.size>0) warnParts.push('Nama akun tidak dikenal: '+[...skippedAkunNames].join(', '));
@@ -7854,8 +7861,8 @@ async function autoPullOnLoad(){
     saveLocalState();
     render();
     const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0 || blockedRemovalNames2.length>0);
-    const removedNote2 = countRemoved2>0 ? (' '+countRemoved2+' akun dihapus (tidak ada lagi di sheet AkunWL).') : '';
-    const blockedNote2 = blockedRemovalNames2.length>0 ? (' ⚠️ '+blockedRemovalNames2.length+' akun ('+blockedRemovalNames2.join(', ')+') terlihat hilang dari sheet AkunWL, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
+    const removedNote2 = countRemoved2>0 ? (' '+countRemoved2+' akun dihapus (tidak ada lagi di sheet Pengaturan).') : '';
+    const blockedNote2 = blockedRemovalNames2.length>0 ? (' ⚠️ '+blockedRemovalNames2.length+' akun ('+blockedRemovalNames2.join(', ')+') terlihat hilang dari sheet Pengaturan, TAPI TIDAK dihapus otomatis karena jumlahnya mencurigakan (kemungkinan sinkronisasi di device lain belum selesai). Cek manual dulu sebelum menghapus.') : '';
     if(msg){
       const now = new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
       if(hasSkipped2){
