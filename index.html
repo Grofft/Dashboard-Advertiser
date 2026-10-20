@@ -4639,7 +4639,7 @@ const APPS_SCRIPT_CODE = `// ===================================================
 // {error: "..."} (bukan halaman HTML) supaya dashboard bisa menampilkan penyebab asli.
 // ============================================================
 var CACHE_KEY = 'dashboard_data_v1';
-var CACHE_SECONDS = 25;   // makin besar = makin ringan, tapi data "telat" sampai N detik
+var CACHE_SECONDS = 300;  // doPost otomatis menghapus cache, jadi aman dibuat lama. Edit manual di sheet baru terlihat setelah N detik
 var CACHE_CHUNK = 40000;  // jumlah karakter per potongan (aman di bawah limit 100KB/key)
 var CACHE_MAX_CHUNKS = 50;
 
@@ -4806,6 +4806,11 @@ function doPost(e){
 
 // Format sel tanggal (bisa berupa Date object atau string) jadi 'yyyy-MM-dd'
 // supaya bisa dibandingkan apple-to-apple dengan tanggal yang dikirim dashboard.
+var _SS_TZ = null;
+function getSsTz(){
+  if(!_SS_TZ) _SS_TZ = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone();
+  return _SS_TZ;
+}
 function formatCellDate(v){
   if(Object.prototype.toString.call(v) === '[object Date]'){
     // PENTING: pakai timezone SPREADSHEET (File > Pengaturan Spreadsheet > Zona Waktu),
@@ -4813,7 +4818,7 @@ function formatCellDate(v){
     // otomatis mengonversi teks tanggal jadi Date object memakai timezone SPREADSHEET —
     // kalau timezone script beda dengan timezone spreadsheet, tanggal yang dibalikin ke
     // dashboard bisa kegeser 1 hari (mis. data tanggal 16 jadi kebaca 15 atau 17).
-    return Utilities.formatDate(v, SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone(), 'yyyy-MM-dd');
+    return Utilities.formatDate(v, getSsTz(), 'yyyy-MM-dd');
   }
   return String(v).trim();
 }
@@ -5334,11 +5339,17 @@ function lapExplainHtmlReply(html){
 }
 async function fetchSheetJson(url){
   const ATTEMPTS = 3;
+  window.__deferSave = true; window.__saveDirty = false;
   let lastErr = null;
   for(let i=0;i<ATTEMPTS;i++){
     try{
-      const res = await fetch(url+'?action=read', {cache:'no-store'});
-      const text = (await res.text()).trim();
+      const ctrl = new AbortController();
+      const tmo = setTimeout(()=>ctrl.abort(), 45000);
+      let res, text;
+      try{
+        res = await fetch(url+'?action=read', {cache:'no-store', signal: ctrl.signal});
+        text = (await res.text()).trim();
+      } finally { clearTimeout(tmo); }
       if(text.charAt(0)==='<') throw new Error(lapExplainHtmlReply(text));
       let json;
       try{ json = JSON.parse(text); }catch(pe){ throw new Error('balasan server bukan JSON valid ('+text.slice(0,80)+')'); }
@@ -5347,10 +5358,11 @@ async function fetchSheetJson(url){
     }catch(e){
       lastErr = e;
       console.warn('[Sinkron] percobaan '+(i+1)+'/'+ATTEMPTS+' gagal:', e.message);
-      if(i < ATTEMPTS-1) await new Promise(r=> setTimeout(r, 2000*(i+1)));
+      if(i < ATTEMPTS-1) await new Promise(r=> setTimeout(r, 1000*(i+1)));
     }
   }
-  throw new Error(lastErr.message+' — sudah dicoba '+ATTEMPTS+'x');
+  window.__deferSave = false;
+  throw new Error((lastErr.name==='AbortError' ? 'timeout >45 detik' : lastErr.message)+' — sudah dicoba '+ATTEMPTS+'x');
 }
 async function pullFromSheet(){
   const url = getAppsScriptUrl();
@@ -5651,6 +5663,9 @@ async function pullFromSheet(){
   }catch(err){
     msg.textContent = 'Gagal menarik data: '+err.message;
     msg.style.color='var(--red)';
+  } finally {
+    window.__deferSave = false;
+    if(window.__saveDirty){ window.__saveDirty = false; saveLocalState(); }
   }
 }
 async function pushOneToSheet(payload, _attempt){
@@ -7193,6 +7208,7 @@ renderCrmAll();
 /* ============== PENYIMPANAN LOKAL (agar data tidak hilang saat tab ditutup) ============== */
 const LOCAL_KEY = 'dashboardAdvertiserState_v1';
 function saveLocalState(){
+  if(window.__deferSave){ window.__saveDirty = true; return; }
   try{
     const state = {
       advertisers: ADVERTISERS,
@@ -8498,6 +8514,9 @@ async function autoPullOnLoad(){
     loadBanner.style.borderColor = 'var(--yellow)';
     loadBanner.style.color = 'var(--yellow)';
     setTimeout(()=>{ loadBanner.style.transition='opacity .5s'; loadBanner.style.opacity='0'; setTimeout(()=>loadBanner.remove(),500); }, 3000);
+  } finally {
+    window.__deferSave = false;
+    if(window.__saveDirty){ window.__saveDirty = false; saveLocalState(); }
   }
 }
 
