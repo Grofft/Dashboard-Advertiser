@@ -4639,7 +4639,7 @@ const APPS_SCRIPT_CODE = `// ===================================================
 // {error: "..."} (bukan halaman HTML) supaya dashboard bisa menampilkan penyebab asli.
 // ============================================================
 var CACHE_KEY = 'dashboard_data_v1';
-var CACHE_SECONDS = 25;   // makin besar = makin ringan, tapi data "telat" sampai N detik
+var CACHE_SECONDS = 120;  // cache lebih lama = jauh lebih ringan (cache otomatis dihapus tiap ada data baru masuk lewat doPost)
 var CACHE_CHUNK = 40000;  // jumlah karakter per potongan (aman di bawah limit 100KB/key)
 var CACHE_MAX_CHUNKS = 50;
 
@@ -4674,6 +4674,13 @@ function clearDashboardCache(){
   CacheService.getScriptCache().removeAll(keys);
 }
 
+// OPSIONAL: pasang trigger waktu (Triggers -> Add trigger -> prewarmCache -> Time-driven -> setiap 1 menit)
+// supaya cache selalu hangat dan dashboard tidak perlu menunggu baca 14 sheet dari nol.
+function prewarmCache(){
+  clearDashboardCache();
+  doGet({});
+}
+
 function doGet(e){
   var lock = null, gotLock = false;
   try{
@@ -4687,6 +4694,7 @@ function doGet(e){
     gotLock = lock.tryLock(15000);
     cached = cacheGetBig(cache);
     if(cached) return rawJson(cached);
+    if(!gotLock) return rawJson(JSON.stringify({error: 'Server sedang sibuk memproses permintaan lain, coba lagi sebentar'}));
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var akunSheet = ss.getSheetByName('Akun');
@@ -5329,23 +5337,39 @@ function lapExplainHtmlReply(html){
   if(/sign in|accounts\.google\.com|ServiceLogin|masuk/i.test(blob) && !/too many|quota|limit/i.test(blob))
     return 'Google meminta login — cek deployment Apps Script: "Who has access" harus "Anyone"';
   if(/too many times|quota|limit|terlalu banyak/i.test(blob)) return 'kena batas kuota/limit Google (terlalu banyak permintaan) — '+text.slice(0,120);
+  if(/unable to open the file|page not found|file.*not.*found|tidak dapat membuka/i.test(blob))
+    return 'URL Web App Apps Script tidak valid / deployment sudah tidak aktif — buka Apps Script > Deploy > Manage deployments, buat New deployment (Execute as: Me, Who has access: Anyone), lalu tempel URL /exec yang baru di Pengaturan Integrasi';
   if(/timed out|maximum execution time|exceeded/i.test(blob)) return 'Apps Script timeout (data terlalu besar/lambat) — '+text.slice(0,120);
   return 'Google membalas halaman HTML: '+(text.slice(0,140)||title||'(kosong)');
 }
 async function fetchSheetJson(url){
   const ATTEMPTS = 3;
+  const TIMEOUT_MS = 45000;
   let lastErr = null;
   for(let i=0;i<ATTEMPTS;i++){
     try{
-      const res = await fetch(url+'?action=read', {cache:'no-store'});
-      const text = (await res.text()).trim();
-      if(text.charAt(0)==='<') throw new Error(lapExplainHtmlReply(text));
+      const ctrl = new AbortController();
+      const tm = setTimeout(()=>ctrl.abort(), TIMEOUT_MS);
+      let text;
+      try{
+        const res = await fetch(url+'?action=read', {cache:'no-store', signal:ctrl.signal});
+        text = (await res.text()).trim();
+      }catch(fe){
+        if(fe && fe.name==='AbortError') throw new Error('server tidak merespons dalam '+(TIMEOUT_MS/1000)+' detik');
+        throw fe;
+      }finally{ clearTimeout(tm); }
+      if(text.charAt(0)==='<'){
+        const why = lapExplainHtmlReply(text);
+        if(/URL Web App Apps Script tidak valid/.test(why)){ const fe2 = new Error(why); fe2.fatal = true; throw fe2; }
+        throw new Error(why);
+      }
       let json;
       try{ json = JSON.parse(text); }catch(pe){ throw new Error('balasan server bukan JSON valid ('+text.slice(0,80)+')'); }
       if(json && json.error) throw new Error('Apps Script error: '+json.error);
       return json;
     }catch(e){
       lastErr = e;
+      if(e && e.fatal) throw new Error(e.message);
       console.warn('[Sinkron] percobaan '+(i+1)+'/'+ATTEMPTS+' gagal:', e.message);
       if(i < ATTEMPTS-1) await new Promise(r=> setTimeout(r, 2000*(i+1)));
     }
