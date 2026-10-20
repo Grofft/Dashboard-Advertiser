@@ -613,6 +613,43 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
     .daterange-trigger span:not(.drt-ic):not(.drt-chev){white-space:normal;}
     .btn{padding:8px 12px;font-size:12.5px;}
   }
+
+/* ===== Laporan v2: tampilan & interaksi ===== */
+#laporanTabs{gap:4px;padding:4px;}
+#laporanTabs .period-btn{padding:8px 14px;font-size:12.5px;border-radius:8px;transition:all .15s;}
+#laporanTabs .period-btn:hover{color:var(--text);background:var(--soft-white);}
+.lap-find{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 12px;font-size:12.5px;min-width:210px;}
+.lap-persp{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:18px;}
+.lap-pcard{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;box-shadow:var(--shadow-card);}
+.lap-pcard:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 22px rgba(0,0,0,.18);}
+.lap-pcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pc,var(--green));}
+.lap-pcard .pt{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.lap-pcard .pv{font-size:24px;font-weight:700;margin:6px 0 2px;}
+.lap-pcard .ps{font-size:12px;color:var(--muted);line-height:1.7;}
+.lap-pcard .go{position:absolute;right:14px;top:14px;font-size:11px;color:var(--accent);font-weight:600;opacity:0;transition:opacity .15s;}
+.lap-pcard:hover .go{opacity:1;}
+.lap-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.lap-chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;user-select:none;transition:all .15s;}
+.lap-chip:hover{color:var(--text);border-color:var(--accent);}
+.lap-chip.on{background:var(--green);color:#06150E;border-color:var(--green);}
+.lap-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px;}
+.lap-bar .nm{width:44px;font-weight:700;}
+.lap-bar .tr{flex:1;height:22px;background:var(--panel-2);border-radius:6px;overflow:hidden;}
+.lap-bar .fl{height:100%;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1);display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:#06150E;white-space:nowrap;}
+.lap-bar .pc{width:96px;text-align:right;color:var(--muted);font-size:12px;}
+.lap-pane table th{cursor:pointer;position:sticky;top:0;user-select:none;}
+.lap-pane table th:hover{filter:brightness(1.1);}
+.lap-pane table th.asc::after{content:" ▲";font-size:9px;}
+.lap-pane table th.desc::after{content:" ▼";font-size:9px;}
+.lap-pane table tbody tr{transition:background .12s;}
+.lap-pane table tbody tr:hover{background:var(--row-hover);}
+.lap-pane .chart-card,.lap-pane .card.kpi{transition:box-shadow .15s,transform .15s;}
+.lap-pane .card.kpi:hover{transform:translateY(-2px);}
+.lap-medal{display:inline-block;width:20px;text-align:center;}
+.lap-up{color:var(--green);font-weight:600;}.lap-dn{color:var(--red);font-weight:600;}
+.lap-ctl{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.lap-kend{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;}
+@media print{.lap-find,.lap-chips,.lap-pcard .go{display:none !important;}}
 /* ===== Halaman Laporan: sub-tab (Ringkasan / Detail Advertiser / Closing & CS / Kategori) ===== */
 .lap-pane{display:none;}
 .lap-pane.active{display:block;}
@@ -1276,7 +1313,7 @@ try{
     </div>
   </div>
 
-  <div class="chart-card" style="margin-bottom:18px;">
+  <div class="crm-person-wrap" style="margin-bottom:18px;">
     <div class="section-header"><h2>Analisa per CRM</h2><div class="muted-note" id="crmPersonSub">—</div></div>
   <div class="period-btns" id="crmPersonTabs" style="margin-bottom:16px;"></div>
   <div id="crmPersonEmpty" class="chart-card crm-person-empty muted-note" style="display:none;margin-bottom:18px;"></div>
@@ -1302,6 +1339,7 @@ try{
       <div id="crmPersonKendala"></div>
     </div>
   </div>
+  </div><!-- /crm-person-wrap -->
 
   <div class="chart-card" style="margin-bottom:18px;">
     <div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala — Semua CRM</div>
@@ -1327,11 +1365,14 @@ try{
   <div class="laporan-noprint" style="margin-bottom:14px;">
     <button class="btn" id="btnPrintLaporan">🖨️ Cetak / Simpan PDF</button>
     <button class="btn" id="btnExportPptLaporan" style="margin-left:8px;">📑 Export PPT</button>
+    <button class="btn" id="btnCsvLaporan" style="margin-left:8px;">⬇️ CSV Tab Ini</button>
+    <input class="lap-find" id="lapFind" placeholder="🔎 Cari advertiser / CS / CRM di tab ini…" style="margin-left:8px;">
   </div>
   <div class="period-btns laporan-noprint" id="laporanTabs" style="margin-bottom:18px;">
     <div class="period-btn active" data-laptab="ringkasan">📌 Ringkasan</div>
     <div class="period-btn" data-laptab="advertiser">📊 Detail Advertiser</div>
     <div class="period-btn" data-laptab="cs">📞 Closing &amp; CS</div>
+    <div class="period-btn" data-laptab="crm">💌 CRM</div>
     <div class="period-btn" data-laptab="kategori">🔎 Lead Tidak Real &amp; Tidak Closing</div>
   </div>
 
@@ -1341,6 +1382,7 @@ try{
     <!-- ================= TAB: RINGKASAN ================= -->
     <div class="lap-pane active" id="lapPane-ringkasan">
       <div class="lap-print-title">📌 Ringkasan</div>
+      <div class="lap-persp" id="lapPersp"></div>
       <div id="laporanSummary" style="margin-bottom:4px;"></div>
 
       <div class="section-header"><h2>Ringkasan Closing &amp; Hasil CS</h2></div>
@@ -1373,7 +1415,8 @@ try{
     <div class="lap-pane" id="lapPane-advertiser">
       <div class="lap-print-title">📊 Detail Advertiser</div>
       <div class="chart-card" style="margin-bottom:18px;">
-        <div style="font-size:13.5px;font-weight:700;margin-bottom:10px;">📊 Spending per Advertiser</div>
+        <div class="lap-ctl"><div style="font-size:13.5px;font-weight:700;">📊 Perbandingan Advertiser</div>
+          <div class="lap-chips laporan-noprint" id="lapAdvMetric"><span class="lap-chip on" data-m="budget">Spending</span><span class="lap-chip" data-m="real">Lead Real</span><span class="lap-chip" data-m="cpl">CPL Real</span><span class="lap-chip" data-m="pct">% Target</span></div></div>
         <div class="chart-wrap" style="height:220px;"><canvas id="laporanAdvBarChart"></canvas></div>
       </div>
 
@@ -1480,6 +1523,26 @@ try{
       </div>
     </div>
 
+
+    <!-- ================= TAB: CRM ================= -->
+    <div class="lap-pane" id="lapPane-crm">
+      <div class="lap-print-title">💌 CRM</div>
+      <div class="lap-ctl"><div class="lap-chips laporan-noprint" id="lapCrmChips"></div><div class="muted-note" id="lapCrmNote"></div></div>
+      <div class="lap-kpi-grid" id="lapCrmKpi" style="margin-bottom:16px;"></div>
+      <div class="grid grid-2" style="gap:14px;margin-bottom:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">
+        <div class="chart-card" style="padding-bottom:14px;"><div class="panel-title" style="margin-bottom:10px;">🧭 Alur Broadcast D0 → D14</div><div id="lapCrmFunnel"></div></div>
+        <div class="chart-card" style="padding-bottom:14px;"><div class="panel-title" style="margin-bottom:10px;">💡 Insight CRM</div><div id="lapCrmInsight"></div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:16px;">
+        <div class="lap-ctl"><div style="font-size:13.5px;font-weight:700;">📈 Tren Harian</div>
+          <div class="lap-chips laporan-noprint" id="lapCrmMetric"><span class="lap-chip on" data-m="omzet">Omzet</span><span class="lap-chip" data-m="closing">Closing</span><span class="lap-chip" data-m="bc">Broadcast</span></div></div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="lapCrmTrend"></canvas></div>
+      </div>
+      <div class="section-header"><h2>Rekap per CRM</h2></div>
+      <div class="muted-note" style="margin:-6px 0 12px 0;">Klik judul kolom untuk mengurutkan · klik baris untuk memfilter semua angka ke CRM itu.</div>
+      <div class="table-scroll" style="margin-bottom:16px;"><table><thead><tr><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Broadcast</th><th>Closing</th><th>Omzet</th><th>Closing/BC</th><th>% RO (D1)</th><th>Omzet/Closing</th><th>Potensial</th></tr></thead><tbody id="lapCrmTable"></tbody></table></div>
+      <div class="chart-card"><div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala</div><div id="lapCrmKendala"></div></div>
+    </div>
   </div>
 </div><!-- /page-laporan -->
 
@@ -2880,6 +2943,15 @@ function render(){
 
 /* ============== HALAMAN LAPORAN (rekap siap kirim per advertiser) ============== */
 function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, totalCPLReal, range){
+  // Advertiser yang diarsip (resign) TIDAK ikut laporan — angka laporan hanya dari advertiser aktif.
+  const LAP_ARCH = ADV_ARCHIVED, LAP_ACTIVE = ADVERTISERS.filter(a=>!LAP_ARCH.has(a));
+  if(advRows.some(r=>LAP_ARCH.has(r.adv))){
+    advRows = advRows.filter(r=>!LAP_ARCH.has(r.adv));
+    totalBudget = advRows.reduce((s,r)=>s+r.budget,0);
+    totalSpend = advRows.reduce((s,r)=>s+r.spendPPN,0);
+    totalLeadsReal = advRows.reduce((s,r)=>s+r.real,0);
+    totalCPLReal = totalLeadsReal>0 ? totalBudget/totalLeadsReal : 0;
+  }
   const periodLabel = fmtDateID(range[0])+' - '+fmtDateID(range[1]);
   const lbl1 = document.getElementById('laporanPeriodLabel'); if(lbl1) lbl1.textContent = periodLabel;
   const lbl2 = document.getElementById('laporanPeriodLabel2'); if(lbl2) lbl2.textContent = periodLabel;
@@ -2893,7 +2965,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   // periode yang dipilih — bukan dihitung ulang dikali jumlah hari di range, supaya angkanya
   // selalu sama dengan yang diatur di halaman Target Bulanan, apapun rentang tanggal filternya.
   const monthsInRange = Array.from(new Set(datesIn(range).map(d=> d.getFullYear()+'-'+(d.getMonth()+1))));
-  const totalTarget = ADVERTISERS.reduce((s,adv)=>{
+  const totalTarget = LAP_ACTIVE.reduce((s,adv)=>{
     const advTarget = monthsInRange.reduce((s2,key)=>{
       const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
       return s2 + getMonthlyTarget(adv, m, y) * 29;
@@ -2901,7 +2973,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
     return s + advTarget;
   }, 0);
   let totalTargetLeadRaw = 0, totalTargetBudgetCpl = 0;
-  ADVERTISERS.forEach(adv=>{
+  LAP_ACTIVE.forEach(adv=>{
     monthsInRange.forEach(key=>{
       const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
       const ct = getCplTarget(adv,'real',m,y);
@@ -3104,6 +3176,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   renderLaporanCsRekap(advRows, range);
   renderLaporanSorotan(advRows, range);
   renderLaporanKategori(advRows, range);
+  if(typeof lapxRenderAll==='function') lapxRenderAll(advRows, range, totalBudget, totalLeadsReal, totalCPLReal);
 
   const notes = [];
   advRows.forEach(r=>{
@@ -3116,6 +3189,126 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   renderNotesMarquee(document.getElementById('laporanNotes'), notes);
   renderNotesMarquee(document.getElementById('globalNotesMarquee'), notes);
 }
+
+
+/* ============== LAPORAN v2: perspektif Advertiser / CS / CRM, interaktif ============== */
+var LAPX = {crm:'semua', crmMetric:'omzet', advMetric:'budget', ctx:null};
+function lapxPrev(range){ const n=Math.round((range[1]-range[0])/864e5)+1; const e=new Date(range[0]); e.setDate(e.getDate()-1); const b=new Date(e); b.setDate(b.getDate()-n+1); b.setHours(0,0,0,0); e.setHours(0,0,0,0); return [b,e]; }
+function lapxDelta(cur,prev,goodUp){ if(!(prev>0)||cur==null) return ''; const p=(cur-prev)/prev*100; if(Math.abs(p)<0.05) return '= sama'; const up=p>0; return '<span class="'+((up===(goodUp!==false))?'lap-up':'lap-dn')+'">'+(up?'▲ ':'▼ ')+Math.abs(p).toFixed(1).replace('.',',')+'%</span> vs periode lalu'; }
+function lapxCrmRows(range){ return (typeof CRM_DATA!=='undefined'?CRM_DATA:[]).filter(r=>csRowInRange(r.tanggal,range)); }
+function lapxChartOpts(yfmt){ return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text')}},scales:{x:{grid:{display:false},ticks:{color:cssVar('--chart-tick'),font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{beginAtZero:true,grid:{color:cssVar('--chart-grid')},ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:yfmt}}}}; }
+
+function lapxRenderPersp(advRows, range, totalBudget, totalLeadsReal, totalCPLReal){
+  const el=document.getElementById('lapPersp'); if(!el) return;
+  const cs=(typeof CS_DATA!=='undefined'?CS_DATA:[]).filter(r=>csRowInRange(r.tanggal,range)&&!ADV_ARCHIVED.has(r.advertiser));
+  const lr=cs.reduce((a,r)=>a+lapN(r.leadReal),0), cl=cs.reduce((a,r)=>a+lapN(r.hasilClosing),0), om=cs.reduce((a,r)=>a+lapN(r.omzet),0);
+  const rate=lr>0?cl/lr*100:null, kpi=(typeof CS_CLOSING_RATE_KPI!=='undefined'?CS_CLOSING_RATE_KPI:85);
+  const cr=lapxCrmRows(range), ca=crmAgg(cr);
+  const roas=totalBudget>0?om/totalBudget:null;
+  const card=(tab,color,t,v,lines)=>'<div class="lap-pcard" data-go="'+tab+'" style="--pc:var(--'+color+')"><span class="go">Lihat detail →</span><div class="pt">'+t+'</div><div class="pv">'+v+'</div><div class="ps">'+lines.join('<br>')+'</div></div>';
+  el.innerHTML=
+   card('advertiser','blue','📊 Sisi Advertiser',rupiah(totalBudget),['Lead Real: <b>'+num(totalLeadsReal)+'</b> · CPL Real: <b>'+(totalLeadsReal>0?rupiah(totalCPLReal):'-')+'</b>',advRows.length+' advertiser aktif'])+
+   card('cs','green','📞 Sisi CS',rate==null?'-':pctFmt(rate),['Closing rate '+(rate==null?'':(rate>=kpi?'<span class="lap-up">✔ capai KPI '+kpi+'%</span>':'<span class="lap-dn">✘ di bawah KPI '+kpi+'%</span>')),'Closing <b>'+num(cl)+'</b> · Omzet <b>'+rupiah(om)+'</b>'+(roas!=null?' · ROAS <b>'+roas.toFixed(2)+'x</b>':'')])+
+   card('crm','purple','💌 Sisi CRM',rupiah(ca.omzet),['Closing <b>'+num(ca.closing)+'</b> dari <b>'+num(ca.bc)+'</b> broadcast'+(ca.cbc!=null?' ('+pctFmt(ca.cbc)+')':''),'Repeat order '+(ca.ro==null?'-':'<b>'+pctFmt(ca.ro)+'</b>')+' · Potensial <b>'+num(ca.potensial)+'</b>']);
+}
+
+function lapxRenderAdvChart(){
+  const c=LAPX.ctx; const el=document.getElementById('laporanAdvBarChart'); if(!c||!el||typeof Chart==='undefined') return;
+  const m=LAPX.advMetric, rows=c.advRows;
+  const val=r=>{const t=r.budget-r.kekurangan; return m==='budget'?r.budget:m==='real'?r.real:m==='cpl'?(r.real>0?r.cplReal:0):(t>0?r.budget/t*100:0);};
+  const fmt=v=>m==='budget'||m==='cpl'?rupiah(v):m==='pct'?v.toFixed(0)+'%':num(v);
+  if(chartReg['laporanAdvBarChart']){chartReg['laporanAdvBarChart'].destroy();}
+  const o=lapxChartOpts(v=>m==='budget'||m==='cpl'?rupiahShort(v):m==='pct'?v+'%':v); o.indexAxis='y';
+  o.scales={x:{beginAtZero:true,grid:{color:cssVar('--chart-grid')},ticks:o.scales.y.ticks},y:{grid:{display:false},ticks:{color:cssVar('--chart-tick'),font:{size:11}}}};
+  o.plugins.tooltip.callbacks={label:ctx=>fmt(ctx.parsed.x)};
+  chartReg['laporanAdvBarChart']=new Chart(el,{type:'bar',data:{labels:rows.map(r=>r.adv),datasets:[{data:rows.map(val),backgroundColor:rows.map(r=>ADV_COLOR[r.adv]||'#4C8DFF'),borderRadius:6,maxBarThickness:28}]},options:o});
+}
+
+function lapxRenderCrm(){
+  if(!document.getElementById('lapCrmKpi')) return;
+  const range=getRange(), all=lapxCrmRows(range), pr=lapxCrmRows(lapxPrev(range));
+  const names=Array.from(new Set(all.map(r=>r.crm))).sort();
+  if(LAPX.crm!=='semua' && !names.includes(LAPX.crm)) LAPX.crm='semua';
+  const sel=LAPX.crm, rows=sel==='semua'?all:all.filter(r=>r.crm===sel), prow=sel==='semua'?pr:pr.filter(r=>r.crm===sel);
+  const a=crmAgg(rows), p=crmAgg(prow);
+  document.getElementById('lapCrmChips').innerHTML=['semua'].concat(names).map(n=>'<span class="lap-chip'+(n===sel?' on':'')+'" data-crm="'+escapeHtml(n)+'">'+(n==='semua'?'Semua CRM':escapeHtml(n))+'</span>').join('');
+  document.getElementById('lapCrmNote').textContent=rows.length+' data tercatat · '+a.days.size+' hari input';
+  const k=(c,l,v,sub)=>crmKpiCard(c,l,v,sub);
+  document.getElementById('lapCrmKpi').innerHTML=
+    k('green','Total Omzet',rupiah(a.omzet),lapxDelta(a.omzet,p.omzet))+k('blue','Total Closing',num(a.closing),lapxDelta(a.closing,p.closing))+
+    k('purple','Total Broadcast',num(a.bc),lapxDelta(a.bc,p.bc))+k('yellow','Closing / Broadcast',a.cbc==null?'-':pctFmt(a.cbc),lapxDelta(a.cbc,p.cbc))+
+    k('green','% Repeat Order (D1)',a.ro==null?'-':pctFmt(a.ro),lapxDelta(a.ro,p.ro))+k('blue','Omzet / Closing',a.opc==null?'-':rupiah(a.opc),lapxDelta(a.opc,p.opc))+
+    k('purple','Customer Potensial',num(a.potensial),lapxDelta(a.potensial,p.potensial));
+  // funnel
+  const st=[['D0',a.d0,'blue'],['D1',a.d1,'green'],['D7',a.d7,'yellow'],['D14',a.d14,'purple']], mx=Math.max.apply(null,st.map(x=>x[1]).concat([1]));
+  document.getElementById('lapCrmFunnel').innerHTML=a.bc===0?'<div class="muted-note">Belum ada data broadcast.</div>':st.map(x=>'<div class="lap-bar"><span class="nm">'+x[0]+'</span><div class="tr"><div class="fl" style="width:'+Math.max(x[1]/mx*100,x[1]>0?6:0)+'%;background:var(--'+x[2]+')">'+num(x[1])+'</div></div><span class="pc">'+pctFmt(x[1]/a.bc*100)+'</span></div>').join('')+'<div class="lap-funnel-note">Persentase = porsi tiap tahap dari total broadcast.</div>';
+  // per CRM
+  const by={}; all.forEach(r=>{(by[r.crm]=by[r.crm]||[]).push(r);});
+  const list=Object.keys(by).map(n=>({n:n,a:crmAgg(by[n])})).sort((x,y)=>y.a.omzet-x.a.omzet);
+  const medal=['🥇','🥈','🥉'];
+  document.getElementById('lapCrmTable').innerHTML=list.length===0?'<tr><td colspan="12" class="muted-note">Belum ada data CRM pada periode ini.</td></tr>':list.map((x,i)=>{const o=x.a;
+    return '<tr data-crm="'+escapeHtml(x.n)+'" style="cursor:pointer;'+(x.n===sel?'background:var(--row-hover);':'')+'"><td><span class="lap-medal">'+(medal[i]||'')+'</span><b>'+escapeHtml(x.n)+'</b></td><td>'+num(o.d0)+'</td><td>'+num(o.d1)+'</td><td>'+num(o.d7)+'</td><td>'+num(o.d14)+'</td><td><b>'+num(o.bc)+'</b></td><td>'+num(o.closing)+'</td><td>'+rupiah(o.omzet)+'</td><td>'+pctFmt(o.cbc)+'</td><td>'+pctFmt(o.ro)+'</td><td>'+(o.opc==null?'-':rupiah(o.opc))+'</td><td>'+num(o.potensial)+'</td></tr>';}).join('');
+  // insight
+  const li=[];
+  if(rows.length===0) li.push('Belum ada data CRM pada periode ini.');
+  else{
+    li.push('<b>'+num(a.bc)+'</b> broadcast menghasilkan <b>'+num(a.closing)+'</b> closing &amp; omzet <b>'+rupiah(a.omzet)+'</b>.');
+    if(list.length>1&&sel==='semua') li.push('CRM omzet tertinggi: <b>'+escapeHtml(list[0].n)+'</b> ('+rupiah(list[0].a.omzet)+'), kontribusi '+pctFmt(a.omzet>0?list[0].a.omzet/a.omzet*100:0)+'.');
+    const best=list.filter(x=>x.a.cbc!=null).sort((x,y)=>y.a.cbc-x.a.cbc)[0]; if(best&&sel==='semua'&&list.length>1) li.push('Konversi terbaik (closing/broadcast): <b>'+escapeHtml(best.n)+'</b> '+pctFmt(best.a.cbc)+'.');
+    if(a.ro!=null) li.push('Repeat order <b>'+pctFmt(a.ro)+'</b> dari broadcast D1.'+(p.ro>0?' '+lapxDelta(a.ro,p.ro):''));
+    if(a.potensial>0) li.push('<b>'+num(a.potensial)+'</b> customer potensial siap ditindaklanjuti.');
+  }
+  document.getElementById('lapCrmInsight').innerHTML='<ul style="margin:0;padding-left:18px;line-height:1.8;font-size:13px;">'+li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+  const kr=rows.filter(r=>r.kendala).sort((x,y)=>String(y.tanggal).localeCompare(String(x.tanggal)));
+  document.getElementById('lapCrmKendala').innerHTML=kr.length===0?'<div class="muted-note">Tidak ada catatan kendala.</div>':kr.map(r=>'<div class="lap-kend"><span class="muted-note">'+escapeHtml(fmtTanggalID(crmDayKey(r.tanggal)))+' · <b>'+escapeHtml(r.crm)+'</b></span><br>'+escapeHtml(r.kendala)+'</div>').join('');
+  // trend
+  const ds=datesIn(range), keys=ds.map(fmtISO), m=LAPX.crmMetric, idx={}; keys.forEach((k2,i)=>idx[k2]=i);
+  const data=keys.map(()=>0); rows.forEach(r=>{const i=idx[crmDayKey(r.tanggal)]; if(i==null) return; data[i]+= m==='omzet'?crmNum(r.omzet):m==='closing'?crmNum(r.closing):crmBroadcastTotal(r);});
+  const el=document.getElementById('lapCrmTrend');
+  if(el&&typeof Chart!=='undefined'){
+    if(chartReg['lapCrmTrend']) chartReg['lapCrmTrend'].destroy();
+    const col=cssVar(m==='omzet'?'--green':m==='closing'?'--blue':'--purple')||'#2FBE82';
+    const o=lapxChartOpts(v=>m==='omzet'?rupiahShort(v):v); o.plugins.tooltip.callbacks={label:c2=>m==='omzet'?rupiah(c2.parsed.y):num(c2.parsed.y)};
+    chartReg['lapCrmTrend']=new Chart(el,{type:'bar',data:{labels:trendLabels(range),datasets:[{data:data,backgroundColor:col+'cc',hoverBackgroundColor:col,borderRadius:4,maxBarThickness:22}]},options:o});
+  }
+}
+
+function lapxRenderAll(advRows,range,totalBudget,totalLeadsReal,totalCPLReal){
+  LAPX.ctx={advRows:advRows,range:range};
+  lapxRenderPersp(advRows,range,totalBudget,totalLeadsReal,totalCPLReal);
+  lapxRenderAdvChart(); lapxRenderCrm(); lapxApplyFind();
+}
+
+/* ---- interaksi: kartu perspektif, chip, sort tabel, cari, CSV ---- */
+function lapxApplyFind(){
+  const q=((document.getElementById('lapFind')||{}).value||'').trim().toLowerCase();
+  document.querySelectorAll('#laporanReportArea .lap-pane.active tbody tr').forEach(tr=>{ tr.style.display=(!q||tr.textContent.toLowerCase().includes(q)||/TOTAL|Total/.test(tr.firstElementChild&&tr.firstElementChild.textContent))?'':'none'; });
+}
+function lapxCellVal(td){ if(!td) return ''; let t=''; for(const n of td.childNodes){ if(n.nodeType===3&&n.textContent.trim()){t=n.textContent;break;} if(n.nodeType===1&&!n.classList.contains('lap-delta')&&n.textContent.trim()){t=n.textContent;break;} } t=t.trim(); const x=t.replace(/Rp|%|x|\s/g,'').replace(/\.(?=\d{3})/g,'').replace(',','.'); const v=parseFloat(x); return (isNaN(v)||/[a-zA-Z]/.test(x))?t.toLowerCase():v; }
+document.addEventListener('click',function(e){
+  const t=e.target;
+  const pc=t.closest&&t.closest('.lap-pcard'); if(pc){ setLaporanTab(pc.dataset.go); return; }
+  const mc=t.closest&&t.closest('#lapAdvMetric .lap-chip'); if(mc){ LAPX.advMetric=mc.dataset.m; document.querySelectorAll('#lapAdvMetric .lap-chip').forEach(c=>c.classList.toggle('on',c===mc)); lapxRenderAdvChart(); return; }
+  const cm=t.closest&&t.closest('#lapCrmMetric .lap-chip'); if(cm){ LAPX.crmMetric=cm.dataset.m; document.querySelectorAll('#lapCrmMetric .lap-chip').forEach(c=>c.classList.toggle('on',c===cm)); lapxRenderCrm(); return; }
+  const cc=t.closest&&t.closest('#lapCrmChips .lap-chip'); if(cc){ LAPX.crm=cc.dataset.crm; lapxRenderCrm(); return; }
+  const cr=t.closest&&t.closest('#lapCrmTable tr[data-crm]'); if(cr){ LAPX.crm=(LAPX.crm===cr.dataset.crm)?'semua':cr.dataset.crm; lapxRenderCrm(); return; }
+  const th=t.closest&&t.closest('#laporanReportArea .lap-pane table th'); if(th){
+    const tb=th.closest('table').tBodies[0], i=th.cellIndex, asc=!th.classList.contains('asc');
+    th.parentNode.querySelectorAll('th').forEach(x=>x.classList.remove('asc','desc')); th.classList.add(asc?'asc':'desc');
+    const rows=Array.from(tb.rows).filter(r=>r.cells.length>1), tot=rows.filter(r=>/^\s*(TOTAL|Total)/.test(r.cells[0].textContent)), body=rows.filter(r=>!tot.includes(r));
+    body.sort((a,b)=>{const x=lapxCellVal(a.cells[i]),y=lapxCellVal(b.cells[i]); const r=(typeof x==='number'&&typeof y==='number')?x-y:String(x).localeCompare(String(y),'id'); return asc?r:-r;});
+    body.concat(tot).forEach(r=>tb.appendChild(r));
+  }
+});
+(function(){
+  const f=document.getElementById('lapFind'); if(f) f.addEventListener('input',lapxApplyFind);
+  const b=document.getElementById('btnCsvLaporan'); if(b) b.addEventListener('click',()=>{
+    const pane=document.querySelector('#laporanReportArea .lap-pane.active'); let out=[];
+    pane.querySelectorAll('table').forEach(tb=>{ tb.querySelectorAll('tr').forEach(tr=>{ if(tr.style.display==='none') return; out.push(Array.from(tr.cells).map(c=>'"'+c.textContent.replace(/\s+/g,' ').trim().replace(/"/g,'""')+'"').join(',')); }); out.push(''); });
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\ufeff'+out.join('\n')],{type:'text/csv'})); a.download='Laporan_'+LAP_TAB+'_'+fmtISO(new Date())+'.csv'; a.click();
+  });
+  const oldTab=setLaporanTab; setLaporanTab=function(tab){ oldTab(tab); const f2=document.getElementById('lapFind'); if(f2){f2.value='';} document.querySelectorAll('#laporanReportArea tbody tr').forEach(r=>r.style.display=''); try{ if(chartReg['lapCrmTrend']) chartReg['lapCrmTrend'].resize(); }catch(e){} };
+})();
 
 /* ============== LAPORAN GABUNGAN (Advertiser + Hasil CS) ==============
    Spending+PPN diambil dari advRows (data Akun/Advertiser — sudah dihitung
@@ -5942,6 +6135,7 @@ function renderCrmAll(){
   renderCrmOverview();
   renderCrmPerson();
   renderCrmHistory();
+  if(typeof lapxRenderCrm==='function') lapxRenderCrm();
 }
 
 /* ============== OMZET & CLOSING CS ============== */
