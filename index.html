@@ -5338,12 +5338,12 @@ function lapExplainHtmlReply(html){
     return 'Google meminta login — cek deployment Apps Script: "Who has access" harus "Anyone"';
   if(/too many times|quota|limit|terlalu banyak/i.test(blob)) return 'kena batas kuota/limit Google (terlalu banyak permintaan) — '+text.slice(0,120);
   if(/unable to open the file|page not found|file.*not.*found|tidak dapat membuka/i.test(blob))
-    return 'URL Web App Apps Script tidak valid / deployment sudah tidak aktif — buka Apps Script > Deploy > Manage deployments, buat New deployment (Execute as: Me, Who has access: Anyone), lalu tempel URL /exec yang baru di Pengaturan Integrasi';
+    return 'Google menolak membuka Web App di browser ini (kadang sementara). Kalau di browser/perangkat lain URL yang sama berhasil: coba tutup tab lalu buka lagi, logout akun Google lain / pakai profil browser dengan 1 akun, matikan ekstensi (adblock/privacy) & VPN, atau Ctrl+Shift+R. Kalau di semua browser gagal: deployment mati, buat New deployment';
   if(/timed out|maximum execution time|exceeded/i.test(blob)) return 'Apps Script timeout (data terlalu besar/lambat) — '+text.slice(0,120);
   return 'Google membalas halaman HTML: '+(text.slice(0,140)||title||'(kosong)');
 }
 async function fetchSheetJson(url){
-  const ATTEMPTS = 3;
+  const ATTEMPTS = 4;
   const TIMEOUT_MS = 45000;
   let lastErr = null;
   for(let i=0;i<ATTEMPTS;i++){
@@ -5352,7 +5352,7 @@ async function fetchSheetJson(url){
       const tm = setTimeout(()=>ctrl.abort(), TIMEOUT_MS);
       let text;
       try{
-        const res = await fetch(url+'?action=read', {cache:'no-store', signal:ctrl.signal});
+        const res = await fetch(url+'?action=read&_='+Date.now()+'_'+i, {cache:'no-store', signal:ctrl.signal});
         text = (await res.text()).trim();
       }catch(fe){
         if(fe && fe.name==='AbortError') throw new Error('server tidak merespons dalam '+(TIMEOUT_MS/1000)+' detik');
@@ -5360,7 +5360,6 @@ async function fetchSheetJson(url){
       }finally{ clearTimeout(tm); }
       if(text.charAt(0)==='<'){
         const why = lapExplainHtmlReply(text);
-        if(/URL Web App Apps Script tidak valid/.test(why)){ const fe2 = new Error(why); fe2.fatal = true; throw fe2; }
         throw new Error(why);
       }
       let json;
