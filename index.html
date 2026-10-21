@@ -953,11 +953,11 @@ try{
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;">
           <span style="font-size:12.5px;font-weight:700;">📅 Standar jumlah hari dalam sebulan (pengali target)</span>
           <div class="period-btns" id="stdHariBtns" style="width:auto;">
-            <div class="period-btn" data-h="28">28</div><div class="period-btn" data-h="29">29</div><div class="period-btn" data-h="30">30</div><div class="period-btn" data-h="31">31</div>
+            <div class="period-btn" data-h="28">28</div><div class="period-btn" data-h="29">29</div><div class="period-btn" data-h="30">30</div><div class="period-btn" data-h="31">31</div><div class="period-btn" data-h="auto" title="Bulan 31 hari → 29, bulan 30 hari → 28, bulan 28/29 hari → 28">⚙ Otomatis</div>
           </div>
           <span class="muted-note" style="margin:0;">atau isi manual:</span>
           <input type="number" id="stdHariInput" min="1" max="31" step="1" value="29" style="width:70px;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 8px;font-size:13px;">
-          <span class="muted-note" style="margin:0;">Target bulan penuh = target harian × <b class="stdHariLbl">29</b> hari</span>
+          <span class="muted-note" style="margin:0;">Target bulan penuh = target harian × <b class="stdHariLbl">29</b> hari <span id="stdAutoNote"></span></span>
         </div>
         <div id="targetRowsMonthly"></div>
         <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Budget (Non PPN) bulan ini − (Target bulan itu × <span class="stdHariLbl">29</span> hari, standar yang bisa diatur di atas). Kekurangan di kartu dashboard periode manapun kini juga memakai standar <span class="stdHariLbl">29</span> hari yang sama untuk periode satu bulan penuh (bukan jumlah hari asli periode), supaya semua angka kekurangan selalu konsisten.</div>
@@ -1892,20 +1892,31 @@ function hasCustomMonthlyTarget(adv, month, year){
 /* Toggle Harian/Bulanan sudah dihapus — dashboard sekarang selalu pakai mode "bulanan":
    target default per advertiser + override per bulan (fallback ke default bila belum di-override). */
 let targetMode = 'bulanan';
+let STANDAR_AUTO = false; // true = otomatis menurut jumlah hari bulan: 31→29, 30→28, 29/28→28
 let STANDAR_HARI = 29; // pengali target bulan penuh (28/29/30/31 atau custom 1–31), tersimpan di state
+function stdHari(y, m1){ // m1 = bulan 1..12 → pengali target bulan penuh untuk bulan itu
+  if(!STANDAR_AUTO) return STANDAR_HARI;
+  return new Date(y, m1, 0).getDate() >= 31 ? 29 : 28;
+}
+function stdHariLabel(){ return STANDAR_AUTO ? 'otomatis' : String(STANDAR_HARI); }
 function updateStdHariUI(){
-  document.querySelectorAll('.stdHariLbl').forEach(e=> e.textContent = STANDAR_HARI);
-  const i = document.getElementById('stdHariInput'); if(i && document.activeElement!==i) i.value = STANDAR_HARI;
-  document.querySelectorAll('#stdHariBtns [data-h]').forEach(b=> b.classList.toggle('active', +b.dataset.h===STANDAR_HARI));
+  const an = document.getElementById('stdAutoNote'); if(an) an.textContent = STANDAR_AUTO ? '· bulan 31 hari → 29 · bulan 30 hari → 28 · bulan 28/29 hari → 28' : '';
+  document.querySelectorAll('.stdHariLbl').forEach(e=> e.textContent = STANDAR_AUTO ? '28–29 (otomatis)' : STANDAR_HARI);
+  const i = document.getElementById('stdHariInput'); if(i && document.activeElement!==i) i.value = STANDAR_AUTO ? '' : STANDAR_HARI;
+  document.querySelectorAll('#stdHariBtns [data-h]').forEach(b=> b.classList.toggle('active', STANDAR_AUTO ? b.dataset.h==='auto' : +b.dataset.h===STANDAR_HARI));
 }
 async function setStandarHari(n){
-  n = Math.round(Number(n));
-  if(!(n>=1 && n<=31)){ updateStdHariUI(); return; }
-  STANDAR_HARI = n; DIRTY_TARGETS['__STD__|1|1'] = true;
+  if(n==='auto'){ STANDAR_AUTO = true; n = STANDAR_HARI; }
+  else {
+    n = Math.round(Number(n));
+    if(!(n>=1 && n<=31)){ updateStdHariUI(); return; }
+    STANDAR_AUTO = false; STANDAR_HARI = n;
+  }
+  DIRTY_TARGETS['__STD__|1|1'] = true;
   saveLocalState(); updateStdHariUI(); render(); renderTargetRowsMonthly();
   const st = await pushStandarHari();
   if(st==='ok'){ delete DIRTY_TARGETS['__STD__|1|1']; saveLocalState(); }
-  else if(typeof showQuickToast==='function') showQuickToast('Standar '+n+' hari belum tersimpan ke spreadsheet (koneksi gagal) — akan dicoba lagi otomatis.', 'var(--yellow)');
+  else if(typeof showQuickToast==='function') showQuickToast('Standar '+(STANDAR_AUTO?'otomatis':n+' hari')+' belum tersimpan ke spreadsheet (koneksi gagal) — akan dicoba lagi otomatis.', 'var(--yellow)');
 }
 let activeEditMonth = new Date().getMonth()+1; // 1..12
 let activeEditYear = new Date().getFullYear();  // tahun aktif untuk edit target bulanan
@@ -1974,7 +1985,7 @@ function renderMonthPicker(){
 /* ===== Pesan Target & KPI untuk staff (bahasa santai, siap paste ke WA) ===== */
 function buildTargetMessage(advList, month, year){
   const bulanTxt = MONTH_NAMES_FULL[month-1]+' '+year;
-  const hari = STANDAR_HARI; // standar jumlah hari (bisa diatur), sama dengan kalkulasi Target Bulan di dashboard
+  const hari = stdHari(year, month); // standar jumlah hari (bisa diatur), sama dengan kalkulasi Target Bulan di dashboard
   const blok = (adv)=>{
     const harian = getMonthlyTarget(adv, month, year);
     const cplR = getCplTarget(adv,'real',month,year);
@@ -2039,7 +2050,7 @@ function renderTargetRowsMonthly(){
   grid.style.marginBottom = '14px';
   wrap.appendChild(grid);
 
-  const daysInActiveMonth = STANDAR_HARI; // standar hari (bisa diatur) untuk kalkulasi Target Bulan (bukan jumlah hari kalender asli)
+  const daysInActiveMonth = stdHari(activeEditYear, activeEditMonth); // standar hari (bisa diatur) untuk kalkulasi Target Bulan (bukan jumlah hari kalender asli)
   let totalTargetBulan = 0, totalSpendBulan = 0, totalTargetLead = 0, totalLeadRealBulan = 0, totalLeadRealTgt = 0;
 
   ADVERTISERS.forEach(adv=>{
@@ -2243,7 +2254,7 @@ function isFullCalendarMonthRange(range){
    hari, custom parsial) pakai jumlah hari asli, target efektif per hari (default atau override). */
 function calcTargetInRange(adv, range){
   if(isFullCalendarMonthRange(range)){
-    return getEffectiveTargetForDate(adv, range[0]) * STANDAR_HARI;
+    return getEffectiveTargetForDate(adv, range[0]) * stdHari(range[0].getFullYear(), range[0].getMonth()+1);
   }
   const dates = datesIn(range);
   return dates.reduce((s, d)=> s + getEffectiveTargetForDate(adv, d), 0);
@@ -2363,9 +2374,9 @@ function deltaBadgeAbs(curr, prev, invert){
 /* Berapa hari (maks 29, standar tetap) dari bulan kalender tertentu yang sudah berjalan sampai hari ini */
 function monthElapsedDays(y, m){
   const first = new Date(y,m,1), last = new Date(y,m+1,0);
-  if(last < TODAY_REF) return STANDAR_HARI;      // bulan sudah lewat
+  if(last < TODAY_REF) return stdHari(y, m+1);      // bulan sudah lewat
   if(first > TODAY_REF) return 0;      // bulan belum mulai
-  return Math.min(TODAY_REF.getDate(), STANDAR_HARI);
+  return Math.min(TODAY_REF.getDate(), stdHari(y, m+1));
 }
 /* Snapshot satu bulan kalender untuk 1 advertiser: target bulan (harian x 29), budget & lead bulan itu,
    dan hari berjalan. Dipakai crosscheck kebutuhan harian (target bulanan dibagi rata per hari). */
@@ -2375,7 +2386,7 @@ function advMonthSnapshot(adv, refDate){
   const accsSel = ACCOUNTS.filter(a=>selectedAccounts.has(a.id) && everOwnedBy(a,adv));
   const budget = accsSel.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,monthRange),0);
   const real = sumIn(ADV_LEADS[adv].real, monthRange);
-  const target = getMonthlyTarget(adv, m+1, y) * STANDAR_HARI;
+  const target = getMonthlyTarget(adv, m+1, y) * stdHari(y, m+1);
   const cplT = getCplTarget(adv,'real',m+1,y);
   const targetLead = (target>0 && cplT>0) ? Math.round(target/cplT) : 0;
   return {year:y, month:m, budget, real, target, targetLead, elapsed: monthElapsedDays(y,m)};
@@ -2385,7 +2396,7 @@ function advMonthSnapshot(adv, refDate){
 function advExpectedByNow(adv, range){
   const elapsedDates = datesIn(range).filter(d=>d<=TODAY_REF);
   return isFullCalendarMonthRange(range)
-    ? getEffectiveTargetForDate(adv, range[0]) * Math.min(elapsedDates.length, STANDAR_HARI)
+    ? getEffectiveTargetForDate(adv, range[0]) * Math.min(elapsedDates.length, stdHari(range[0].getFullYear(), range[0].getMonth()+1))
     : elapsedDates.reduce((s,d)=> s + getEffectiveTargetForDate(adv, d), 0);
 }
 /* Budget SEMUA akun yang dimiliki advertiser di periode tsb (tidak peduli akun mana yang dicentang).
@@ -2461,16 +2472,16 @@ function buildAdvInsightPanel(r, target, range){
   // sisa target bulan itu dibagi sisa hari (standar 29 hari) — bukan target periode yang sedang dilihat.
   const ms = advMonthSnapshot(r.adv, range[1]);
   const hariBerjalan = ms.elapsed;
-  const sisaHari = Math.max(STANDAR_HARI-hariBerjalan,0);
+  const sisaHari = Math.max(stdHari(ms.year, ms.month+1)-hariBerjalan,0);
   const kebutuhanSpendingHari = sisaHari>0 ? Math.max(ms.target-ms.budget,0)/sisaHari : 0;
   const kebutuhanLeadsHari = sisaHari>0 ? Math.round(Math.max(ms.targetLead-ms.real,0)/sisaHari) : 0;
   const crosscheckBox =
   '<div class="crosscheck-box">'+
-    '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[ms.month]+' '+ms.year+' (sisa '+sisaHari+' hari dari '+STANDAR_HARI+' hari)</div>'+
+    '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[ms.month]+' '+ms.year+' (sisa '+sisaHari+' hari dari '+stdHari(ms.year, ms.month+1)+' hari)</div>'+
     '<div class="crosscheck-grid">'+
       '<div class="crosscheck-item"><div class="k">Kebutuhan Spending / hari agar capai target</div><div class="v">'+rupiah(kebutuhanSpendingHari)+'</div></div>'+
       '<div class="crosscheck-item"><div class="k">Kebutuhan Leads / hari agar capai target</div><div class="v">'+num(kebutuhanLeadsHari)+'</div></div>'+
-      '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / '+STANDAR_HARI+' hari</div></div>'+
+      '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / '+stdHari(ms.year, ms.month+1)+' hari</div></div>'+
     '</div>'+
   '</div>';
 
@@ -3050,7 +3061,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   const totalTarget = ADVERTISERS.reduce((s,adv)=>{
     const advTarget = monthsInRange.reduce((s2,key)=>{
       const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
-      return s2 + getMonthlyTarget(adv, m, y) * STANDAR_HARI;
+      return s2 + getMonthlyTarget(adv, m, y) * stdHari(y, m);
     }, 0);
     return s + advTarget;
   }, 0);
@@ -3059,7 +3070,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
     monthsInRange.forEach(key=>{
       const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
       const ct = getCplTarget(adv,'real',m,y);
-      if(ct>0){ const tb = getMonthlyTarget(adv,m,y)*STANDAR_HARI; totalTargetBudgetCpl += tb; totalTargetLeadRaw += tb/ct; }
+      if(ct>0){ const tb = getMonthlyTarget(adv,m,y)*stdHari(y,m); totalTargetBudgetCpl += tb; totalTargetLeadRaw += tb/ct; }
     });
   });
   const totalTargetLead = Math.round(totalTargetLeadRaw);
@@ -3082,7 +3093,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   }, {target:0, budget:0, targetLead:0, real:0});
   const msY = range[1].getFullYear(), msM = range[1].getMonth();
   const hariBerjalan = monthElapsedDays(msY, msM);
-  const sisaHari = Math.max(STANDAR_HARI-hariBerjalan,0);
+  const sisaHari = Math.max(stdHari(msY, msM+1)-hariBerjalan,0);
   const kebutuhanSpendingHari = sisaHari>0 ? Math.max(msAgg.target-msAgg.budget,0)/sisaHari : 0;
   const kebutuhanLeadsHari = sisaHari>0 ? Math.round(Math.max(msAgg.targetLead-msAgg.real,0)/sisaHari) : 0;
 
@@ -3133,11 +3144,11 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
       '<div class="insight-box-msg"><span class="ic">i</span><span>'+insightMsg+'</span></div>'+
     '</div>'+
     '<div class="crosscheck-box">'+
-      '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[msM]+' '+msY+' (sisa '+sisaHari+' hari dari '+STANDAR_HARI+' hari)</div>'+
+      '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[msM]+' '+msY+' (sisa '+sisaHari+' hari dari '+stdHari(msY, msM+1)+' hari)</div>'+
       '<div class="crosscheck-grid">'+
         '<div class="crosscheck-item"><div class="k">Kebutuhan Spending / hari agar capai target</div><div class="v">'+rupiah(kebutuhanSpendingHari)+'</div></div>'+
         '<div class="crosscheck-item"><div class="k">Kebutuhan Leads / hari agar capai target</div><div class="v">'+num(kebutuhanLeadsHari)+'</div></div>'+
-        '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / '+STANDAR_HARI+' hari</div></div>'+
+        '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / '+stdHari(msY, msM+1)+' hari</div></div>'+
       '</div>'+
     '</div>';
   }
@@ -4487,7 +4498,7 @@ function buildAdvShortfallText(adv){
 
   // ---- Harapan: kebutuhan harian sesuai kondisi ----
   const ms = advMonthSnapshot(adv, range[1]);
-  const sisaHari = Math.max(STANDAR_HARI-ms.elapsed,0);
+  const sisaHari = Math.max(stdHari(ms.year, ms.month+1)-ms.elapsed,0);
   const needSpend = sisaHari>0 ? Math.max(ms.target-ms.budget,0)/sisaHari : 0;
   const needLead = sisaHari>0 ? Math.ceil(Math.max(ms.targetLead-ms.real,0)/sisaHari) : 0;
 
@@ -5507,8 +5518,11 @@ async function pullFromSheet(){
         return;
       }
       if(advRaw.toLowerCase()==='__standar_hari__'){
-        const n = Math.round(parseFloat(r.nilai));
-        if(n>=1 && n<=31 && !DIRTY_TARGETS['__STD__|1|1'] && n!==STANDAR_HARI){ STANDAR_HARI = n; countTarget++; }
+        if(!DIRTY_TARGETS['__STD__|1|1']){
+          const raw = String(r.nilai).trim().toLowerCase();
+          if(raw==='auto'){ if(!STANDAR_AUTO){ STANDAR_AUTO = true; countTarget++; } }
+          else { const n = Math.round(parseFloat(raw)); if(n>=1 && n<=31 && (STANDAR_AUTO || n!==STANDAR_HARI)){ STANDAR_AUTO = false; STANDAR_HARI = n; countTarget++; } }
+        }
         return;
       }
       const adv = ADVERTISERS.find(a=>a.toLowerCase()===advRaw.toLowerCase());
@@ -5763,7 +5777,7 @@ async function pushAllCplTargets(){
   }
 }
 async function pushStandarHari(){
-  return pushOneToSheet({type:'target', advertiser:'__STANDAR_HARI__', tipe:'standar_hari', tahun:'', bulan:'', nilai:STANDAR_HARI});
+  return pushOneToSheet({type:'target', advertiser:'__STANDAR_HARI__', tipe:'standar_hari', tahun:'', bulan:'', nilai:(STANDAR_AUTO?'auto':STANDAR_HARI)});
 }
 async function pushTargetMode(mode){
   return pushOneToSheet({type:'target', advertiser:'__MODE__', tipe:mode, tahun:'', bulan:'', nilai:''});
@@ -7019,6 +7033,7 @@ function saveLocalState(){
       defaultTargetMigrated: defaultTargetMigrated,
       targetMode: targetMode,
       standarHari: STANDAR_HARI,
+      standarAuto: STANDAR_AUTO,
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
       accCounter: accCounter,
       selectedAccounts: Array.from(selectedAccounts),
@@ -7058,6 +7073,7 @@ function loadLocalState(){
     defaultTargetMigrated = !!state.defaultTargetMigrated;
     if(state.targetMode) targetMode = state.targetMode;
     if(state.standarHari>=1 && state.standarHari<=31) STANDAR_HARI = Math.round(state.standarHari);
+    STANDAR_AUTO = !!state.standarAuto;
     accCounter = state.accCounter || accCounter;
     ACCOUNTS.length = 0;
     (state.accounts||[]).forEach(a=>{
