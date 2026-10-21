@@ -614,42 +614,34 @@ footer.note{margin-top:34px;font-size:11px;color:var(--footer-text);font-family:
     .btn{padding:8px 12px;font-size:12.5px;}
   }
 
-/* ===== Laporan v2: tampilan & interaksi ===== */
-#laporanTabs{gap:4px;padding:4px;}
-#laporanTabs .period-btn{padding:8px 14px;font-size:12.5px;border-radius:8px;transition:all .15s;}
-#laporanTabs .period-btn:hover{color:var(--text);background:var(--soft-white);}
-.lap-find{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 12px;font-size:12.5px;min-width:210px;}
-.lap-persp{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:18px;}
-.lap-pcard{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;box-shadow:var(--shadow-card);}
-.lap-pcard:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 22px rgba(0,0,0,.18);}
-.lap-pcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pc,var(--green));}
-.lap-pcard .pt{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-.lap-pcard .pv{font-size:24px;font-weight:700;margin:6px 0 2px;}
-.lap-pcard .ps{font-size:12px;color:var(--muted);line-height:1.7;}
-.lap-pcard .go{position:absolute;right:14px;top:14px;font-size:11px;color:var(--accent);font-weight:600;opacity:0;transition:opacity .15s;}
-.lap-pcard:hover .go{opacity:1;}
-.lap-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-.lap-chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;user-select:none;transition:all .15s;}
-.lap-chip:hover{color:var(--text);border-color:var(--accent);}
-.lap-chip.on{background:var(--green);color:#06150E;border-color:var(--green);}
-.lap-bar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px;}
-.lap-bar .nm{width:44px;font-weight:700;}
-.lap-bar .tr{flex:1;height:22px;background:var(--panel-2);border-radius:6px;overflow:hidden;}
-.lap-bar .fl{height:100%;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1);display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:#06150E;white-space:nowrap;}
-.lap-bar .pc{width:96px;text-align:right;color:var(--muted);font-size:12px;}
-.lap-pane table th{cursor:pointer;position:sticky;top:0;user-select:none;}
-.lap-pane table th:hover{filter:brightness(1.1);}
-.lap-pane table th.asc::after{content:" ▲";font-size:9px;}
-.lap-pane table th.desc::after{content:" ▼";font-size:9px;}
-.lap-pane table tbody tr{transition:background .12s;}
-.lap-pane table tbody tr:hover{background:var(--row-hover);}
-.lap-pane .chart-card,.lap-pane .card.kpi{transition:box-shadow .15s,transform .15s;}
-.lap-pane .card.kpi:hover{transform:translateY(-2px);}
-.lap-medal{display:inline-block;width:20px;text-align:center;}
-.lap-up{color:var(--green);font-weight:600;}.lap-dn{color:var(--red);font-weight:600;}
-.lap-ctl{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
-.lap-kend{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;}
-@media print{.lap-find,.lap-chips,.lap-pcard .go{display:none !important;}}
+/* ===== Laporan interaktif ===== */
+#laporanTabs{position:sticky;top:0;z-index:15;background:var(--panel);padding:8px;border:1px solid var(--line);border-radius:12px;}
+th.lap-sortable{cursor:pointer;user-select:none;white-space:nowrap;}
+th.lap-sortable:hover{color:var(--green);}
+th.lap-sortable.asc::after{content:" ▲";font-size:9px;}
+th.lap-sortable.desc::after{content:" ▼";font-size:9px;}
+.lap-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px 0;}
+.lap-tools input{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12.5px;min-width:190px;}
+.lap-tools .lap-count{font-size:11.5px;color:var(--muted);}
+.lap-mini{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;}
+.lap-mini:hover{border-color:var(--green);}
+.lap-mini.active{background:var(--accent-dim);border-color:var(--accent);color:var(--text);}
+.lap-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.lap-chip{padding:6px 13px;border-radius:20px;border:1px solid var(--line);background:var(--panel-2);font-size:12.5px;font-weight:600;cursor:pointer;color:var(--text);}
+.lap-chip:hover{border-color:var(--green);}
+.lap-chip.active{background:var(--green);border-color:var(--green);color:#fff;}
+tr.lap-sel td{background:var(--accent-dim)!important;}
+#lapCrmTable tr[data-crm]{cursor:pointer;}
+#lapCrmTable tr[data-crm]:hover td{background:var(--panel-2);}
+.lap-how{margin:0 0 14px 0;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);padding:9px 13px;font-size:12.5px;}
+.lap-how summary{cursor:pointer;font-weight:700;}
+.lap-how ul{margin:8px 0 2px 0;padding-left:18px;line-height:1.7;}
+.lap-fun-row{display:grid;grid-template-columns:44px 1fr 150px;gap:10px;align-items:center;margin:7px 0;font-size:12.5px;}
+.lap-fun-bar{height:16px;border-radius:8px;background:var(--panel-2);overflow:hidden;}
+.lap-fun-bar>i{display:block;height:100%;border-radius:8px;}
+@media(max-width:768px){#laporanTabs{overflow-x:auto;flex-wrap:nowrap;}.lap-fun-row{grid-template-columns:36px 1fr 100px;}}
+@media print{.lap-how{display:none;}}
+
 /* ===== Halaman Laporan: sub-tab (Ringkasan / Detail Advertiser / Closing & CS / Kategori) ===== */
 .lap-pane{display:none;}
 .lap-pane.active{display:block;}
@@ -761,6 +753,39 @@ try{
   document.documentElement.setAttribute("data-theme","light");
 }
 </script>
+<style id="lapPolish">
+/* ===== Polesan tampilan halaman Laporan (hanya #page-laporan) ===== */
+#page-laporan>.section-header.laporan-noprint{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--green);border-radius:14px;padding:16px 20px;margin:0 0 14px;align-items:center;box-shadow:var(--shadow-card);}
+#page-laporan>.section-header.laporan-noprint h1{font-size:24px;letter-spacing:.01em;}
+#page-laporan>.laporan-noprint>.btn{background:var(--panel);color:var(--text);border:1px solid var(--line);box-shadow:none;font-weight:600;transition:border-color .15s,transform .15s;}
+#page-laporan>.laporan-noprint>.btn:hover{border-color:var(--green);transform:translateY(-1px);}
+#laporanTabs{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:5px;gap:4px;box-shadow:var(--shadow-card);}
+#laporanTabs .period-btn{padding:10px 16px;font-size:13px;border-radius:10px;transition:background .15s,color .15s;}
+#laporanTabs .period-btn:hover:not(.active){background:var(--panel-2);color:var(--text);}
+#laporanTabs .period-btn.active{background:var(--green);color:#fff;box-shadow:0 3px 10px rgba(22,163,74,.35);}
+#laporanReportArea>.section-header:first-child h2{font-size:21px;}
+#page-laporan .section-header h2{display:flex;align-items:center;gap:10px;}
+#page-laporan .section-header h2::before{content:'';width:4px;height:20px;border-radius:3px;background:var(--green);flex:none;}
+#page-laporan .card.kpi{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:16px 18px 16px 24px;transition:transform .15s,box-shadow .15s;}
+#page-laporan .card.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.10);}
+#page-laporan .card.kpi::before{display:none;}
+#page-laporan .card.kpi .label{color:var(--muted);}
+#page-laporan .card.kpi .value{color:var(--text);font-size:26px;}
+#page-laporan .card.kpi .bar-accent{top:0;bottom:0;left:0;right:auto;width:5px;height:auto;border-radius:0;box-shadow:none;}
+#page-laporan .card.kpi .muted-note{color:var(--muted)!important;opacity:1!important;}
+.lap-delta{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;background:var(--panel-2);color:var(--muted);}
+.lap-delta.up{background:rgba(22,163,74,.14);color:var(--green);}
+.lap-delta.down{background:rgba(215,56,79,.14);color:var(--red);}
+#page-laporan .chart-card{border-radius:14px;box-shadow:var(--shadow-card);}
+#page-laporan .panel-title{font-weight:700;}
+#laporanReportArea table thead th{white-space:nowrap;}
+#laporanReportArea table td{font-variant-numeric:tabular-nums;}
+#laporanReportArea table tbody tr:nth-child(even){background:rgba(120,150,135,.07);}
+#laporanReportArea table tbody tr:hover{background:var(--panel-2);}
+#laporanReportArea table tbody tr[data-crm]{transition:background .12s;}
+.lap-chip{transition:all .15s;}
+.lap-chip:hover:not(.active){border-color:var(--green);}
+</style>
 </head>
 <body>
 
@@ -820,7 +845,8 @@ try{
   </div>
 </div>
 
-<div class="global-notes-marquee notes-marquee-wrap" id="globalNotesMarquee"></div>
+<!-- running teks (marquee) dihapus dari tampilan -->
+<div class="global-notes-marquee notes-marquee-wrap" id="globalNotesMarquee" style="display:none!important;"></div>
 </div><!-- /global-filterbar-wrap -->
 
 
@@ -904,7 +930,7 @@ try{
     <!-- PANEL TARGET (hanya override per bulan — Target Default dihapus, tidak ada fallback lagi) -->
     <div class="target-panel" style="margin-bottom:14px;">
       <div class="monthly-target-note" id="targetModeNote">
-        <b>Target Bulanan:</b> isi target tiap bulan untuk tiap advertiser. Bulan yang belum diisi = target 0 (tidak ada fallback ke nilai default lagi). Kekurangan = Budget (Non PPN) − (Target bulan itu × jumlah hari dalam periode; standar 29 hari untuk periode satu bulan penuh).
+        <b>Target Bulanan:</b> isi target tiap bulan untuk tiap advertiser. Bulan yang belum diisi = target 0 (tidak ada fallback ke nilai default lagi). Kekurangan = Budget (Non PPN) − (Target bulan itu × jumlah hari dalam periode; standar <span class="stdHariLbl">29</span> hari untuk periode satu bulan penuh).
       </div>
 
       <!-- PANEL OVERRIDE BULANAN -->
@@ -924,8 +950,17 @@ try{
           <button class="btn" id="btnCopyToAll" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">Salin ke Semua Bulan</button>
         </div>
 
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;">
+          <span style="font-size:12.5px;font-weight:700;">📅 Standar jumlah hari dalam sebulan (pengali target)</span>
+          <div class="period-btns" id="stdHariBtns" style="width:auto;">
+            <div class="period-btn" data-h="28">28</div><div class="period-btn" data-h="29">29</div><div class="period-btn" data-h="30">30</div><div class="period-btn" data-h="31">31</div>
+          </div>
+          <span class="muted-note" style="margin:0;">atau isi manual:</span>
+          <input type="number" id="stdHariInput" min="1" max="31" step="1" value="29" style="width:70px;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 8px;font-size:13px;">
+          <span class="muted-note" style="margin:0;">Target bulan penuh = target harian × <b class="stdHariLbl">29</b> hari</span>
+        </div>
         <div id="targetRowsMonthly"></div>
-        <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Budget (Non PPN) bulan ini − (Target bulan itu × 29 hari, standar tetap). Kekurangan di kartu dashboard periode manapun kini juga memakai standar 29 hari yang sama untuk periode satu bulan penuh (bukan jumlah hari asli periode), supaya semua angka kekurangan selalu konsisten.</div>
+        <div class="muted-note" style="margin-top:8px;">Kekurangan target spending bulanan = Budget (Non PPN) bulan ini − (Target bulan itu × <span class="stdHariLbl">29</span> hari, standar yang bisa diatur di atas). Kekurangan di kartu dashboard periode manapun kini juga memakai standar <span class="stdHariLbl">29</span> hari yang sama untuk periode satu bulan penuh (bukan jumlah hari asli periode), supaya semua angka kekurangan selalu konsisten.</div>
       </div>
     </div>
   </div>
@@ -1313,7 +1348,7 @@ try{
     </div>
   </div>
 
-  <div class="crm-person-wrap" style="margin-bottom:18px;">
+  <div class="chart-card" style="margin-bottom:18px;">
     <div class="section-header"><h2>Analisa per CRM</h2><div class="muted-note" id="crmPersonSub">—</div></div>
   <div class="period-btns" id="crmPersonTabs" style="margin-bottom:16px;"></div>
   <div id="crmPersonEmpty" class="chart-card crm-person-empty muted-note" style="display:none;margin-bottom:18px;"></div>
@@ -1339,7 +1374,7 @@ try{
       <div id="crmPersonKendala"></div>
     </div>
   </div>
-  </div><!-- /crm-person-wrap -->
+  </div><!-- /chart-card Analisa per CRM (penutup yang sebelumnya hilang → bikin Laporan ikut tersembunyi) -->
 
   <div class="chart-card" style="margin-bottom:18px;">
     <div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala — Semua CRM</div>
@@ -1360,20 +1395,19 @@ try{
 <div class="page" id="page-laporan">
   <div class="section-header laporan-noprint" style="margin-top:0;">
     <h1>Laporan</h1>
-    <div class="muted-note">Rekap siap kirim per advertiser — ikut periode yang dipilih di atas · <span id="laporanPeriodLabel">—</span></div>
+    <div class="muted-note">Rekap siap kirim dari sisi Advertiser, CS &amp; CRM — ikut periode yang dipilih di atas · <span id="laporanPeriodLabel">—</span></div>
   </div>
   <div class="laporan-noprint" style="margin-bottom:14px;">
     <button class="btn" id="btnPrintLaporan">🖨️ Cetak / Simpan PDF</button>
     <button class="btn" id="btnExportPptLaporan" style="margin-left:8px;">📑 Export PPT</button>
-    <button class="btn" id="btnCsvLaporan" style="margin-left:8px;">⬇️ CSV Tab Ini</button>
-    <input class="lap-find" id="lapFind" placeholder="🔎 Cari advertiser / CS / CRM di tab ini…" style="margin-left:8px;">
+    <button class="btn" id="btnCopyLaporan" style="margin-left:8px;">📋 Salin Ringkasan Tab Ini</button>
   </div>
   <div class="period-btns laporan-noprint" id="laporanTabs" style="margin-bottom:18px;">
     <div class="period-btn active" data-laptab="ringkasan">📌 Ringkasan</div>
     <div class="period-btn" data-laptab="advertiser">📊 Detail Advertiser</div>
     <div class="period-btn" data-laptab="cs">📞 Closing &amp; CS</div>
-    <div class="period-btn" data-laptab="crm">💌 CRM</div>
     <div class="period-btn" data-laptab="kategori">🔎 Lead Tidak Real &amp; Tidak Closing</div>
+    <div class="period-btn" data-laptab="crm">💌 CRM</div>
   </div>
 
   <div id="laporanReportArea">
@@ -1382,7 +1416,6 @@ try{
     <!-- ================= TAB: RINGKASAN ================= -->
     <div class="lap-pane active" id="lapPane-ringkasan">
       <div class="lap-print-title">📌 Ringkasan</div>
-      <div class="lap-persp" id="lapPersp"></div>
       <div id="laporanSummary" style="margin-bottom:4px;"></div>
 
       <div class="section-header"><h2>Ringkasan Closing &amp; Hasil CS</h2></div>
@@ -1414,9 +1447,14 @@ try{
     <!-- ================= TAB: DETAIL ADVERTISER ================= -->
     <div class="lap-pane" id="lapPane-advertiser">
       <div class="lap-print-title">📊 Detail Advertiser</div>
+      <details class="lap-how laporan-noprint"><summary>📖 Cara membaca tabel ini</summary><ul>
+<li><b>CPL Real / CPL OO</b> = Spend + PPN ÷ Lead Real / Lead OO. Makin kecil makin hemat.</li>
+<li><b>vs Target</b> = Budget terpakai ÷ target budget periode ini. Hijau = target tercapai.</li>
+<li>Angka kecil berwarna di bawah nilai = perubahan dibanding periode sebelumnya. Hijau membaik, merah memburuk.</li>
+<li>Klik judul kolom untuk mengurutkan, ketik di kotak cari untuk menyaring baris, tombol CSV untuk mengunduh.</li></ul></details>
+
       <div class="chart-card" style="margin-bottom:18px;">
-        <div class="lap-ctl"><div style="font-size:13.5px;font-weight:700;">📊 Perbandingan Advertiser</div>
-          <div class="lap-chips laporan-noprint" id="lapAdvMetric"><span class="lap-chip on" data-m="budget">Spending</span><span class="lap-chip" data-m="real">Lead Real</span><span class="lap-chip" data-m="cpl">CPL Real</span><span class="lap-chip" data-m="pct">% Target</span></div></div>
+        <div style="font-size:13.5px;font-weight:700;margin-bottom:10px;">📊 Spending per Advertiser</div>
         <div class="chart-wrap" style="height:220px;"><canvas id="laporanAdvBarChart"></canvas></div>
       </div>
 
@@ -1435,6 +1473,12 @@ try{
     <!-- ================= TAB: CLOSING & CS ================= -->
     <div class="lap-pane" id="lapPane-cs">
       <div class="lap-print-title">📞 Closing &amp; CS</div>
+      <details class="lap-how laporan-noprint"><summary>📖 Cara membaca tabel ini</summary><ul>
+<li><b>% Lead</b> = Lead Real ÷ Lead OO. <b>vs Target</b> = Budget ÷ target budget.</li>
+<li><b>CPP</b> = Spending + PPN ÷ Closing. <b>ROAS</b> = Omzet ÷ Spending + PPN (hijau ≥ 1x, merah &lt; 1x).</li>
+<li><b>Closing Rate</b> = Closing ÷ Lead Real. Pada rekap per CS, hijau jika mencapai standar KPI CS, merah jika di bawahnya.</li>
+<li>Klik judul kolom untuk mengurutkan, ketik di kotak cari untuk menyaring baris.</li></ul></details>
+
       <div class="section-header" style="margin-top:0;"><h2>📊 Laporan Gabungan — Advertiser &amp; Hasil CS</h2></div>
       <div class="muted-note" style="margin:-6px 0 12px 0;">Spending + PPN diambil dari data Akun/Advertiser, Omzet &amp; Closing diambil dari input Hasil CS — digabung per advertiser untuk periode yang sama.</div>
       <div class="table-scroll" style="margin-bottom:6px;">
@@ -1523,26 +1567,58 @@ try{
       </div>
     </div>
 
-
     <!-- ================= TAB: CRM ================= -->
     <div class="lap-pane" id="lapPane-crm">
       <div class="lap-print-title">💌 CRM</div>
-      <div class="lap-ctl"><div class="lap-chips laporan-noprint" id="lapCrmChips"></div><div class="muted-note" id="lapCrmNote"></div></div>
-      <div class="lap-kpi-grid" id="lapCrmKpi" style="margin-bottom:16px;"></div>
-      <div class="grid grid-2" style="gap:14px;margin-bottom:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">
-        <div class="chart-card" style="padding-bottom:14px;"><div class="panel-title" style="margin-bottom:10px;">🧭 Alur Broadcast D0 → D14</div><div id="lapCrmFunnel"></div></div>
-        <div class="chart-card" style="padding-bottom:14px;"><div class="panel-title" style="margin-bottom:10px;">💡 Insight CRM</div><div id="lapCrmInsight"></div></div>
-      </div>
+      <details class="lap-how laporan-noprint"><summary>📖 Cara membaca laporan CRM</summary><ul>
+        <li><b>Closing (Repeat Order)</b> = jumlah closing hasil broadcast. <b>Closing/BC</b> = Closing ÷ total broadcast (D0+D1+D7+D14).</li>
+        <li><b>Repeat Order vs D1</b> = Closing ÷ Broadcast D1. <b>Omzet/Closing</b> = rata-rata nilai tiap closing.</li>
+        <li>Pilih nama CRM di bawah (atau klik baris tabel) untuk fokus ke satu CRM. Pilih "Semua CRM" untuk kembali.</li>
+        <li>Teks ▲ / ▼ di kartu = perubahan dibanding periode sebelumnya dengan jumlah hari yang sama.</li></ul></details>
+      <div class="muted-note" style="margin-bottom:10px;">Sumber: input harian di menu CRM — <b id="lapCrmFilterNote">Semua CRM</b></div>
+      <div class="lap-chips laporan-noprint" id="lapCrmChips"></div>
+
+      <div class="lap-kpi-grid" style="margin-bottom:16px;" id="lapCrmKpi"></div>
+
       <div class="chart-card" style="margin-bottom:16px;">
-        <div class="lap-ctl"><div style="font-size:13.5px;font-weight:700;">📈 Tren Harian</div>
-          <div class="lap-chips laporan-noprint" id="lapCrmMetric"><span class="lap-chip on" data-m="omzet">Omzet</span><span class="lap-chip" data-m="closing">Closing</span><span class="lap-chip" data-m="bc">Broadcast</span></div></div>
-        <div class="chart-wrap" style="height:230px;"><canvas id="lapCrmTrend"></canvas></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <div style="font-size:13.5px;font-weight:700;" id="lapCrmChartTitle">📈 Tren Harian CRM</div>
+          <div class="laporan-noprint" style="display:flex;gap:6px;" id="lapCrmMode">
+            <button type="button" class="lap-mini active" data-mode="omzet">Omzet &amp; Closing</button>
+            <button type="button" class="lap-mini" data-mode="bc">Broadcast per Tahap</button>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="lapCrmTrendChart"></canvas></div>
       </div>
-      <div class="section-header"><h2>Rekap per CRM</h2></div>
-      <div class="muted-note" style="margin:-6px 0 12px 0;">Klik judul kolom untuk mengurutkan · klik baris untuk memfilter semua angka ke CRM itu.</div>
-      <div class="table-scroll" style="margin-bottom:16px;"><table><thead><tr><th>CRM</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Broadcast</th><th>Closing</th><th>Omzet</th><th>Closing/BC</th><th>% RO (D1)</th><th>Omzet/Closing</th><th>Potensial</th></tr></thead><tbody id="lapCrmTable"></tbody></table></div>
-      <div class="chart-card"><div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala</div><div id="lapCrmKendala"></div></div>
+
+      <div class="chart-card" style="margin-bottom:16px;">
+        <div class="panel-title" style="margin-bottom:6px;">🧭 Alur Broadcast — D0 sampai D14</div>
+        <div id="lapCrmFunnel"></div>
+      </div>
+
+      <div class="section-header"><h2>👥 Rekap per CRM</h2><div class="muted-note laporan-noprint">Klik baris untuk fokus ke CRM tersebut</div></div>
+      <div class="chart-card" style="margin-bottom:16px;padding-bottom:14px;">
+        <div class="table-scroll">
+          <table>
+            <thead><tr>
+              <th>CRM</th><th>Hari Input</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Total Broadcast</th><th>Closing</th><th>Closing/BC</th><th>Repeat Order (vs D1)</th><th>Omzet</th><th>Omzet/Closing</th><th>Potensial</th>
+            </tr></thead>
+            <tbody id="lapCrmTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:16px;">
+        <div class="panel-title" style="margin-bottom:10px;">💡 Sorotan CRM Periode Ini</div>
+        <div id="lapCrmInsight"></div>
+      </div>
+
+      <div class="chart-card" style="padding-bottom:14px;">
+        <div class="panel-title" style="margin-bottom:10px;">🚧 Catatan Kendala CRM</div>
+        <div id="lapCrmKendala"></div>
+      </div>
     </div>
+
   </div>
 </div><!-- /page-laporan -->
 
@@ -1816,6 +1892,21 @@ function hasCustomMonthlyTarget(adv, month, year){
 /* Toggle Harian/Bulanan sudah dihapus — dashboard sekarang selalu pakai mode "bulanan":
    target default per advertiser + override per bulan (fallback ke default bila belum di-override). */
 let targetMode = 'bulanan';
+let STANDAR_HARI = 29; // pengali target bulan penuh (28/29/30/31 atau custom 1–31), tersimpan di state
+function updateStdHariUI(){
+  document.querySelectorAll('.stdHariLbl').forEach(e=> e.textContent = STANDAR_HARI);
+  const i = document.getElementById('stdHariInput'); if(i && document.activeElement!==i) i.value = STANDAR_HARI;
+  document.querySelectorAll('#stdHariBtns [data-h]').forEach(b=> b.classList.toggle('active', +b.dataset.h===STANDAR_HARI));
+}
+async function setStandarHari(n){
+  n = Math.round(Number(n));
+  if(!(n>=1 && n<=31)){ updateStdHariUI(); return; }
+  STANDAR_HARI = n; DIRTY_TARGETS['__STD__|1|1'] = true;
+  saveLocalState(); updateStdHariUI(); render(); renderTargetRowsMonthly();
+  const st = await pushStandarHari();
+  if(st==='ok'){ delete DIRTY_TARGETS['__STD__|1|1']; saveLocalState(); }
+  else if(typeof showQuickToast==='function') showQuickToast('Standar '+n+' hari belum tersimpan ke spreadsheet (koneksi gagal) — akan dicoba lagi otomatis.', 'var(--yellow)');
+}
 let activeEditMonth = new Date().getMonth()+1; // 1..12
 let activeEditYear = new Date().getFullYear();  // tahun aktif untuk edit target bulanan
 
@@ -1883,7 +1974,7 @@ function renderMonthPicker(){
 /* ===== Pesan Target & KPI untuk staff (bahasa santai, siap paste ke WA) ===== */
 function buildTargetMessage(advList, month, year){
   const bulanTxt = MONTH_NAMES_FULL[month-1]+' '+year;
-  const hari = 29; // standar tetap, sama dengan kalkulasi Target Bulan di dashboard
+  const hari = STANDAR_HARI; // standar jumlah hari (bisa diatur), sama dengan kalkulasi Target Bulan di dashboard
   const blok = (adv)=>{
     const harian = getMonthlyTarget(adv, month, year);
     const cplR = getCplTarget(adv,'real',month,year);
@@ -1948,7 +2039,7 @@ function renderTargetRowsMonthly(){
   grid.style.marginBottom = '14px';
   wrap.appendChild(grid);
 
-  const daysInActiveMonth = 29; // standar tetap 29 hari untuk kalkulasi Target Bulan (bukan jumlah hari kalender asli)
+  const daysInActiveMonth = STANDAR_HARI; // standar hari (bisa diatur) untuk kalkulasi Target Bulan (bukan jumlah hari kalender asli)
   let totalTargetBulan = 0, totalSpendBulan = 0, totalTargetLead = 0, totalLeadRealBulan = 0, totalLeadRealTgt = 0;
 
   ADVERTISERS.forEach(adv=>{
@@ -2152,7 +2243,7 @@ function isFullCalendarMonthRange(range){
    hari, custom parsial) pakai jumlah hari asli, target efektif per hari (default atau override). */
 function calcTargetInRange(adv, range){
   if(isFullCalendarMonthRange(range)){
-    return getEffectiveTargetForDate(adv, range[0]) * 29;
+    return getEffectiveTargetForDate(adv, range[0]) * STANDAR_HARI;
   }
   const dates = datesIn(range);
   return dates.reduce((s, d)=> s + getEffectiveTargetForDate(adv, d), 0);
@@ -2272,9 +2363,9 @@ function deltaBadgeAbs(curr, prev, invert){
 /* Berapa hari (maks 29, standar tetap) dari bulan kalender tertentu yang sudah berjalan sampai hari ini */
 function monthElapsedDays(y, m){
   const first = new Date(y,m,1), last = new Date(y,m+1,0);
-  if(last < TODAY_REF) return 29;      // bulan sudah lewat
+  if(last < TODAY_REF) return STANDAR_HARI;      // bulan sudah lewat
   if(first > TODAY_REF) return 0;      // bulan belum mulai
-  return Math.min(TODAY_REF.getDate(), 29);
+  return Math.min(TODAY_REF.getDate(), STANDAR_HARI);
 }
 /* Snapshot satu bulan kalender untuk 1 advertiser: target bulan (harian x 29), budget & lead bulan itu,
    dan hari berjalan. Dipakai crosscheck kebutuhan harian (target bulanan dibagi rata per hari). */
@@ -2284,7 +2375,7 @@ function advMonthSnapshot(adv, refDate){
   const accsSel = ACCOUNTS.filter(a=>selectedAccounts.has(a.id) && everOwnedBy(a,adv));
   const budget = accsSel.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,monthRange),0);
   const real = sumIn(ADV_LEADS[adv].real, monthRange);
-  const target = getMonthlyTarget(adv, m+1, y) * 29;
+  const target = getMonthlyTarget(adv, m+1, y) * STANDAR_HARI;
   const cplT = getCplTarget(adv,'real',m+1,y);
   const targetLead = (target>0 && cplT>0) ? Math.round(target/cplT) : 0;
   return {year:y, month:m, budget, real, target, targetLead, elapsed: monthElapsedDays(y,m)};
@@ -2294,7 +2385,7 @@ function advMonthSnapshot(adv, refDate){
 function advExpectedByNow(adv, range){
   const elapsedDates = datesIn(range).filter(d=>d<=TODAY_REF);
   return isFullCalendarMonthRange(range)
-    ? getEffectiveTargetForDate(adv, range[0]) * Math.min(elapsedDates.length, 29)
+    ? getEffectiveTargetForDate(adv, range[0]) * Math.min(elapsedDates.length, STANDAR_HARI)
     : elapsedDates.reduce((s,d)=> s + getEffectiveTargetForDate(adv, d), 0);
 }
 /* Budget SEMUA akun yang dimiliki advertiser di periode tsb (tidak peduli akun mana yang dicentang).
@@ -2370,16 +2461,16 @@ function buildAdvInsightPanel(r, target, range){
   // sisa target bulan itu dibagi sisa hari (standar 29 hari) — bukan target periode yang sedang dilihat.
   const ms = advMonthSnapshot(r.adv, range[1]);
   const hariBerjalan = ms.elapsed;
-  const sisaHari = Math.max(29-hariBerjalan,0);
+  const sisaHari = Math.max(STANDAR_HARI-hariBerjalan,0);
   const kebutuhanSpendingHari = sisaHari>0 ? Math.max(ms.target-ms.budget,0)/sisaHari : 0;
   const kebutuhanLeadsHari = sisaHari>0 ? Math.round(Math.max(ms.targetLead-ms.real,0)/sisaHari) : 0;
   const crosscheckBox =
   '<div class="crosscheck-box">'+
-    '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[ms.month]+' '+ms.year+' (sisa '+sisaHari+' hari dari 29 hari)</div>'+
+    '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[ms.month]+' '+ms.year+' (sisa '+sisaHari+' hari dari '+STANDAR_HARI+' hari)</div>'+
     '<div class="crosscheck-grid">'+
       '<div class="crosscheck-item"><div class="k">Kebutuhan Spending / hari agar capai target</div><div class="v">'+rupiah(kebutuhanSpendingHari)+'</div></div>'+
       '<div class="crosscheck-item"><div class="k">Kebutuhan Leads / hari agar capai target</div><div class="v">'+num(kebutuhanLeadsHari)+'</div></div>'+
-      '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / 29 hari</div></div>'+
+      '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / '+STANDAR_HARI+' hari</div></div>'+
     '</div>'+
   '</div>';
 
@@ -2943,15 +3034,6 @@ function render(){
 
 /* ============== HALAMAN LAPORAN (rekap siap kirim per advertiser) ============== */
 function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, totalCPLReal, range){
-  // Advertiser yang diarsip (resign) TIDAK ikut laporan — angka laporan hanya dari advertiser aktif.
-  const LAP_ARCH = ADV_ARCHIVED, LAP_ACTIVE = ADVERTISERS.filter(a=>!LAP_ARCH.has(a));
-  if(advRows.some(r=>LAP_ARCH.has(r.adv))){
-    advRows = advRows.filter(r=>!LAP_ARCH.has(r.adv));
-    totalBudget = advRows.reduce((s,r)=>s+r.budget,0);
-    totalSpend = advRows.reduce((s,r)=>s+r.spendPPN,0);
-    totalLeadsReal = advRows.reduce((s,r)=>s+r.real,0);
-    totalCPLReal = totalLeadsReal>0 ? totalBudget/totalLeadsReal : 0;
-  }
   const periodLabel = fmtDateID(range[0])+' - '+fmtDateID(range[1]);
   const lbl1 = document.getElementById('laporanPeriodLabel'); if(lbl1) lbl1.textContent = periodLabel;
   const lbl2 = document.getElementById('laporanPeriodLabel2'); if(lbl2) lbl2.textContent = periodLabel;
@@ -2965,19 +3047,19 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   // periode yang dipilih — bukan dihitung ulang dikali jumlah hari di range, supaya angkanya
   // selalu sama dengan yang diatur di halaman Target Bulanan, apapun rentang tanggal filternya.
   const monthsInRange = Array.from(new Set(datesIn(range).map(d=> d.getFullYear()+'-'+(d.getMonth()+1))));
-  const totalTarget = LAP_ACTIVE.reduce((s,adv)=>{
+  const totalTarget = ADVERTISERS.reduce((s,adv)=>{
     const advTarget = monthsInRange.reduce((s2,key)=>{
       const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
-      return s2 + getMonthlyTarget(adv, m, y) * 29;
+      return s2 + getMonthlyTarget(adv, m, y) * STANDAR_HARI;
     }, 0);
     return s + advTarget;
   }, 0);
   let totalTargetLeadRaw = 0, totalTargetBudgetCpl = 0;
-  LAP_ACTIVE.forEach(adv=>{
+  ADVERTISERS.forEach(adv=>{
     monthsInRange.forEach(key=>{
       const parts = key.split('-'); const y = parseInt(parts[0]), m = parseInt(parts[1]);
       const ct = getCplTarget(adv,'real',m,y);
-      if(ct>0){ const tb = getMonthlyTarget(adv,m,y)*29; totalTargetBudgetCpl += tb; totalTargetLeadRaw += tb/ct; }
+      if(ct>0){ const tb = getMonthlyTarget(adv,m,y)*STANDAR_HARI; totalTargetBudgetCpl += tb; totalTargetLeadRaw += tb/ct; }
     });
   });
   const totalTargetLead = Math.round(totalTargetLeadRaw);
@@ -3000,7 +3082,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   }, {target:0, budget:0, targetLead:0, real:0});
   const msY = range[1].getFullYear(), msM = range[1].getMonth();
   const hariBerjalan = monthElapsedDays(msY, msM);
-  const sisaHari = Math.max(29-hariBerjalan,0);
+  const sisaHari = Math.max(STANDAR_HARI-hariBerjalan,0);
   const kebutuhanSpendingHari = sisaHari>0 ? Math.max(msAgg.target-msAgg.budget,0)/sisaHari : 0;
   const kebutuhanLeadsHari = sisaHari>0 ? Math.round(Math.max(msAgg.targetLead-msAgg.real,0)/sisaHari) : 0;
 
@@ -3051,11 +3133,11 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
       '<div class="insight-box-msg"><span class="ic">i</span><span>'+insightMsg+'</span></div>'+
     '</div>'+
     '<div class="crosscheck-box">'+
-      '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[msM]+' '+msY+' (sisa '+sisaHari+' hari dari 29 hari)</div>'+
+      '<div class="crosscheck-title">📅 Crosscheck Kekurangan Target Bulanan · '+MONTH_NAMES[msM]+' '+msY+' (sisa '+sisaHari+' hari dari '+STANDAR_HARI+' hari)</div>'+
       '<div class="crosscheck-grid">'+
         '<div class="crosscheck-item"><div class="k">Kebutuhan Spending / hari agar capai target</div><div class="v">'+rupiah(kebutuhanSpendingHari)+'</div></div>'+
         '<div class="crosscheck-item"><div class="k">Kebutuhan Leads / hari agar capai target</div><div class="v">'+num(kebutuhanLeadsHari)+'</div></div>'+
-        '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / 29 hari</div></div>'+
+        '<div class="crosscheck-item"><div class="k">Hari berjalan</div><div class="v">'+hariBerjalan+' / '+STANDAR_HARI+' hari</div></div>'+
       '</div>'+
     '</div>';
   }
@@ -3176,7 +3258,8 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   renderLaporanCsRekap(advRows, range);
   renderLaporanSorotan(advRows, range);
   renderLaporanKategori(advRows, range);
-  if(typeof lapxRenderAll==='function') lapxRenderAll(advRows, range, totalBudget, totalLeadsReal, totalCPLReal);
+  renderLaporanCrm(range);
+  lapEnhanceTables();
 
   const notes = [];
   advRows.forEach(r=>{
@@ -3189,126 +3272,6 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   renderNotesMarquee(document.getElementById('laporanNotes'), notes);
   renderNotesMarquee(document.getElementById('globalNotesMarquee'), notes);
 }
-
-
-/* ============== LAPORAN v2: perspektif Advertiser / CS / CRM, interaktif ============== */
-var LAPX = {crm:'semua', crmMetric:'omzet', advMetric:'budget', ctx:null};
-function lapxPrev(range){ const n=Math.round((range[1]-range[0])/864e5)+1; const e=new Date(range[0]); e.setDate(e.getDate()-1); const b=new Date(e); b.setDate(b.getDate()-n+1); b.setHours(0,0,0,0); e.setHours(0,0,0,0); return [b,e]; }
-function lapxDelta(cur,prev,goodUp){ if(!(prev>0)||cur==null) return ''; const p=(cur-prev)/prev*100; if(Math.abs(p)<0.05) return '= sama'; const up=p>0; return '<span class="'+((up===(goodUp!==false))?'lap-up':'lap-dn')+'">'+(up?'▲ ':'▼ ')+Math.abs(p).toFixed(1).replace('.',',')+'%</span> vs periode lalu'; }
-function lapxCrmRows(range){ return (typeof CRM_DATA!=='undefined'?CRM_DATA:[]).filter(r=>csRowInRange(r.tanggal,range)); }
-function lapxChartOpts(yfmt){ return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text')}},scales:{x:{grid:{display:false},ticks:{color:cssVar('--chart-tick'),font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{beginAtZero:true,grid:{color:cssVar('--chart-grid')},ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:yfmt}}}}; }
-
-function lapxRenderPersp(advRows, range, totalBudget, totalLeadsReal, totalCPLReal){
-  const el=document.getElementById('lapPersp'); if(!el) return;
-  const cs=(typeof CS_DATA!=='undefined'?CS_DATA:[]).filter(r=>csRowInRange(r.tanggal,range)&&!ADV_ARCHIVED.has(r.advertiser));
-  const lr=cs.reduce((a,r)=>a+lapN(r.leadReal),0), cl=cs.reduce((a,r)=>a+lapN(r.hasilClosing),0), om=cs.reduce((a,r)=>a+lapN(r.omzet),0);
-  const rate=lr>0?cl/lr*100:null, kpi=(typeof CS_CLOSING_RATE_KPI!=='undefined'?CS_CLOSING_RATE_KPI:85);
-  const cr=lapxCrmRows(range), ca=crmAgg(cr);
-  const roas=totalBudget>0?om/totalBudget:null;
-  const card=(tab,color,t,v,lines)=>'<div class="lap-pcard" data-go="'+tab+'" style="--pc:var(--'+color+')"><span class="go">Lihat detail →</span><div class="pt">'+t+'</div><div class="pv">'+v+'</div><div class="ps">'+lines.join('<br>')+'</div></div>';
-  el.innerHTML=
-   card('advertiser','blue','📊 Sisi Advertiser',rupiah(totalBudget),['Lead Real: <b>'+num(totalLeadsReal)+'</b> · CPL Real: <b>'+(totalLeadsReal>0?rupiah(totalCPLReal):'-')+'</b>',advRows.length+' advertiser aktif'])+
-   card('cs','green','📞 Sisi CS',rate==null?'-':pctFmt(rate),['Closing rate '+(rate==null?'':(rate>=kpi?'<span class="lap-up">✔ capai KPI '+kpi+'%</span>':'<span class="lap-dn">✘ di bawah KPI '+kpi+'%</span>')),'Closing <b>'+num(cl)+'</b> · Omzet <b>'+rupiah(om)+'</b>'+(roas!=null?' · ROAS <b>'+roas.toFixed(2)+'x</b>':'')])+
-   card('crm','purple','💌 Sisi CRM',rupiah(ca.omzet),['Closing <b>'+num(ca.closing)+'</b> dari <b>'+num(ca.bc)+'</b> broadcast'+(ca.cbc!=null?' ('+pctFmt(ca.cbc)+')':''),'Repeat order '+(ca.ro==null?'-':'<b>'+pctFmt(ca.ro)+'</b>')+' · Potensial <b>'+num(ca.potensial)+'</b>']);
-}
-
-function lapxRenderAdvChart(){
-  const c=LAPX.ctx; const el=document.getElementById('laporanAdvBarChart'); if(!c||!el||typeof Chart==='undefined') return;
-  const m=LAPX.advMetric, rows=c.advRows;
-  const val=r=>{const t=r.budget-r.kekurangan; return m==='budget'?r.budget:m==='real'?r.real:m==='cpl'?(r.real>0?r.cplReal:0):(t>0?r.budget/t*100:0);};
-  const fmt=v=>m==='budget'||m==='cpl'?rupiah(v):m==='pct'?v.toFixed(0)+'%':num(v);
-  if(chartReg['laporanAdvBarChart']){chartReg['laporanAdvBarChart'].destroy();}
-  const o=lapxChartOpts(v=>m==='budget'||m==='cpl'?rupiahShort(v):m==='pct'?v+'%':v); o.indexAxis='y';
-  o.scales={x:{beginAtZero:true,grid:{color:cssVar('--chart-grid')},ticks:o.scales.y.ticks},y:{grid:{display:false},ticks:{color:cssVar('--chart-tick'),font:{size:11}}}};
-  o.plugins.tooltip.callbacks={label:ctx=>fmt(ctx.parsed.x)};
-  chartReg['laporanAdvBarChart']=new Chart(el,{type:'bar',data:{labels:rows.map(r=>r.adv),datasets:[{data:rows.map(val),backgroundColor:rows.map(r=>ADV_COLOR[r.adv]||'#4C8DFF'),borderRadius:6,maxBarThickness:28}]},options:o});
-}
-
-function lapxRenderCrm(){
-  if(!document.getElementById('lapCrmKpi')) return;
-  const range=getRange(), all=lapxCrmRows(range), pr=lapxCrmRows(lapxPrev(range));
-  const names=Array.from(new Set(all.map(r=>r.crm))).sort();
-  if(LAPX.crm!=='semua' && !names.includes(LAPX.crm)) LAPX.crm='semua';
-  const sel=LAPX.crm, rows=sel==='semua'?all:all.filter(r=>r.crm===sel), prow=sel==='semua'?pr:pr.filter(r=>r.crm===sel);
-  const a=crmAgg(rows), p=crmAgg(prow);
-  document.getElementById('lapCrmChips').innerHTML=['semua'].concat(names).map(n=>'<span class="lap-chip'+(n===sel?' on':'')+'" data-crm="'+escapeHtml(n)+'">'+(n==='semua'?'Semua CRM':escapeHtml(n))+'</span>').join('');
-  document.getElementById('lapCrmNote').textContent=rows.length+' data tercatat · '+a.days.size+' hari input';
-  const k=(c,l,v,sub)=>crmKpiCard(c,l,v,sub);
-  document.getElementById('lapCrmKpi').innerHTML=
-    k('green','Total Omzet',rupiah(a.omzet),lapxDelta(a.omzet,p.omzet))+k('blue','Total Closing',num(a.closing),lapxDelta(a.closing,p.closing))+
-    k('purple','Total Broadcast',num(a.bc),lapxDelta(a.bc,p.bc))+k('yellow','Closing / Broadcast',a.cbc==null?'-':pctFmt(a.cbc),lapxDelta(a.cbc,p.cbc))+
-    k('green','% Repeat Order (D1)',a.ro==null?'-':pctFmt(a.ro),lapxDelta(a.ro,p.ro))+k('blue','Omzet / Closing',a.opc==null?'-':rupiah(a.opc),lapxDelta(a.opc,p.opc))+
-    k('purple','Customer Potensial',num(a.potensial),lapxDelta(a.potensial,p.potensial));
-  // funnel
-  const st=[['D0',a.d0,'blue'],['D1',a.d1,'green'],['D7',a.d7,'yellow'],['D14',a.d14,'purple']], mx=Math.max.apply(null,st.map(x=>x[1]).concat([1]));
-  document.getElementById('lapCrmFunnel').innerHTML=a.bc===0?'<div class="muted-note">Belum ada data broadcast.</div>':st.map(x=>'<div class="lap-bar"><span class="nm">'+x[0]+'</span><div class="tr"><div class="fl" style="width:'+Math.max(x[1]/mx*100,x[1]>0?6:0)+'%;background:var(--'+x[2]+')">'+num(x[1])+'</div></div><span class="pc">'+pctFmt(x[1]/a.bc*100)+'</span></div>').join('')+'<div class="lap-funnel-note">Persentase = porsi tiap tahap dari total broadcast.</div>';
-  // per CRM
-  const by={}; all.forEach(r=>{(by[r.crm]=by[r.crm]||[]).push(r);});
-  const list=Object.keys(by).map(n=>({n:n,a:crmAgg(by[n])})).sort((x,y)=>y.a.omzet-x.a.omzet);
-  const medal=['🥇','🥈','🥉'];
-  document.getElementById('lapCrmTable').innerHTML=list.length===0?'<tr><td colspan="12" class="muted-note">Belum ada data CRM pada periode ini.</td></tr>':list.map((x,i)=>{const o=x.a;
-    return '<tr data-crm="'+escapeHtml(x.n)+'" style="cursor:pointer;'+(x.n===sel?'background:var(--row-hover);':'')+'"><td><span class="lap-medal">'+(medal[i]||'')+'</span><b>'+escapeHtml(x.n)+'</b></td><td>'+num(o.d0)+'</td><td>'+num(o.d1)+'</td><td>'+num(o.d7)+'</td><td>'+num(o.d14)+'</td><td><b>'+num(o.bc)+'</b></td><td>'+num(o.closing)+'</td><td>'+rupiah(o.omzet)+'</td><td>'+pctFmt(o.cbc)+'</td><td>'+pctFmt(o.ro)+'</td><td>'+(o.opc==null?'-':rupiah(o.opc))+'</td><td>'+num(o.potensial)+'</td></tr>';}).join('');
-  // insight
-  const li=[];
-  if(rows.length===0) li.push('Belum ada data CRM pada periode ini.');
-  else{
-    li.push('<b>'+num(a.bc)+'</b> broadcast menghasilkan <b>'+num(a.closing)+'</b> closing &amp; omzet <b>'+rupiah(a.omzet)+'</b>.');
-    if(list.length>1&&sel==='semua') li.push('CRM omzet tertinggi: <b>'+escapeHtml(list[0].n)+'</b> ('+rupiah(list[0].a.omzet)+'), kontribusi '+pctFmt(a.omzet>0?list[0].a.omzet/a.omzet*100:0)+'.');
-    const best=list.filter(x=>x.a.cbc!=null).sort((x,y)=>y.a.cbc-x.a.cbc)[0]; if(best&&sel==='semua'&&list.length>1) li.push('Konversi terbaik (closing/broadcast): <b>'+escapeHtml(best.n)+'</b> '+pctFmt(best.a.cbc)+'.');
-    if(a.ro!=null) li.push('Repeat order <b>'+pctFmt(a.ro)+'</b> dari broadcast D1.'+(p.ro>0?' '+lapxDelta(a.ro,p.ro):''));
-    if(a.potensial>0) li.push('<b>'+num(a.potensial)+'</b> customer potensial siap ditindaklanjuti.');
-  }
-  document.getElementById('lapCrmInsight').innerHTML='<ul style="margin:0;padding-left:18px;line-height:1.8;font-size:13px;">'+li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
-  const kr=rows.filter(r=>r.kendala).sort((x,y)=>String(y.tanggal).localeCompare(String(x.tanggal)));
-  document.getElementById('lapCrmKendala').innerHTML=kr.length===0?'<div class="muted-note">Tidak ada catatan kendala.</div>':kr.map(r=>'<div class="lap-kend"><span class="muted-note">'+escapeHtml(fmtTanggalID(crmDayKey(r.tanggal)))+' · <b>'+escapeHtml(r.crm)+'</b></span><br>'+escapeHtml(r.kendala)+'</div>').join('');
-  // trend
-  const ds=datesIn(range), keys=ds.map(fmtISO), m=LAPX.crmMetric, idx={}; keys.forEach((k2,i)=>idx[k2]=i);
-  const data=keys.map(()=>0); rows.forEach(r=>{const i=idx[crmDayKey(r.tanggal)]; if(i==null) return; data[i]+= m==='omzet'?crmNum(r.omzet):m==='closing'?crmNum(r.closing):crmBroadcastTotal(r);});
-  const el=document.getElementById('lapCrmTrend');
-  if(el&&typeof Chart!=='undefined'){
-    if(chartReg['lapCrmTrend']) chartReg['lapCrmTrend'].destroy();
-    const col=cssVar(m==='omzet'?'--green':m==='closing'?'--blue':'--purple')||'#2FBE82';
-    const o=lapxChartOpts(v=>m==='omzet'?rupiahShort(v):v); o.plugins.tooltip.callbacks={label:c2=>m==='omzet'?rupiah(c2.parsed.y):num(c2.parsed.y)};
-    chartReg['lapCrmTrend']=new Chart(el,{type:'bar',data:{labels:trendLabels(range),datasets:[{data:data,backgroundColor:col+'cc',hoverBackgroundColor:col,borderRadius:4,maxBarThickness:22}]},options:o});
-  }
-}
-
-function lapxRenderAll(advRows,range,totalBudget,totalLeadsReal,totalCPLReal){
-  LAPX.ctx={advRows:advRows,range:range};
-  lapxRenderPersp(advRows,range,totalBudget,totalLeadsReal,totalCPLReal);
-  lapxRenderAdvChart(); lapxRenderCrm(); lapxApplyFind();
-}
-
-/* ---- interaksi: kartu perspektif, chip, sort tabel, cari, CSV ---- */
-function lapxApplyFind(){
-  const q=((document.getElementById('lapFind')||{}).value||'').trim().toLowerCase();
-  document.querySelectorAll('#laporanReportArea .lap-pane.active tbody tr').forEach(tr=>{ tr.style.display=(!q||tr.textContent.toLowerCase().includes(q)||/TOTAL|Total/.test(tr.firstElementChild&&tr.firstElementChild.textContent))?'':'none'; });
-}
-function lapxCellVal(td){ if(!td) return ''; let t=''; for(const n of td.childNodes){ if(n.nodeType===3&&n.textContent.trim()){t=n.textContent;break;} if(n.nodeType===1&&!n.classList.contains('lap-delta')&&n.textContent.trim()){t=n.textContent;break;} } t=t.trim(); const x=t.replace(/Rp|%|x|\s/g,'').replace(/\.(?=\d{3})/g,'').replace(',','.'); const v=parseFloat(x); return (isNaN(v)||/[a-zA-Z]/.test(x))?t.toLowerCase():v; }
-document.addEventListener('click',function(e){
-  const t=e.target;
-  const pc=t.closest&&t.closest('.lap-pcard'); if(pc){ setLaporanTab(pc.dataset.go); return; }
-  const mc=t.closest&&t.closest('#lapAdvMetric .lap-chip'); if(mc){ LAPX.advMetric=mc.dataset.m; document.querySelectorAll('#lapAdvMetric .lap-chip').forEach(c=>c.classList.toggle('on',c===mc)); lapxRenderAdvChart(); return; }
-  const cm=t.closest&&t.closest('#lapCrmMetric .lap-chip'); if(cm){ LAPX.crmMetric=cm.dataset.m; document.querySelectorAll('#lapCrmMetric .lap-chip').forEach(c=>c.classList.toggle('on',c===cm)); lapxRenderCrm(); return; }
-  const cc=t.closest&&t.closest('#lapCrmChips .lap-chip'); if(cc){ LAPX.crm=cc.dataset.crm; lapxRenderCrm(); return; }
-  const cr=t.closest&&t.closest('#lapCrmTable tr[data-crm]'); if(cr){ LAPX.crm=(LAPX.crm===cr.dataset.crm)?'semua':cr.dataset.crm; lapxRenderCrm(); return; }
-  const th=t.closest&&t.closest('#laporanReportArea .lap-pane table th'); if(th){
-    const tb=th.closest('table').tBodies[0], i=th.cellIndex, asc=!th.classList.contains('asc');
-    th.parentNode.querySelectorAll('th').forEach(x=>x.classList.remove('asc','desc')); th.classList.add(asc?'asc':'desc');
-    const rows=Array.from(tb.rows).filter(r=>r.cells.length>1), tot=rows.filter(r=>/^\s*(TOTAL|Total)/.test(r.cells[0].textContent)), body=rows.filter(r=>!tot.includes(r));
-    body.sort((a,b)=>{const x=lapxCellVal(a.cells[i]),y=lapxCellVal(b.cells[i]); const r=(typeof x==='number'&&typeof y==='number')?x-y:String(x).localeCompare(String(y),'id'); return asc?r:-r;});
-    body.concat(tot).forEach(r=>tb.appendChild(r));
-  }
-});
-(function(){
-  const f=document.getElementById('lapFind'); if(f) f.addEventListener('input',lapxApplyFind);
-  const b=document.getElementById('btnCsvLaporan'); if(b) b.addEventListener('click',()=>{
-    const pane=document.querySelector('#laporanReportArea .lap-pane.active'); let out=[];
-    pane.querySelectorAll('table').forEach(tb=>{ tb.querySelectorAll('tr').forEach(tr=>{ if(tr.style.display==='none') return; out.push(Array.from(tr.cells).map(c=>'"'+c.textContent.replace(/\s+/g,' ').trim().replace(/"/g,'""')+'"').join(',')); }); out.push(''); });
-    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\ufeff'+out.join('\n')],{type:'text/csv'})); a.download='Laporan_'+LAP_TAB+'_'+fmtISO(new Date())+'.csv'; a.click();
-  });
-  const oldTab=setLaporanTab; setLaporanTab=function(tab){ oldTab(tab); const f2=document.getElementById('lapFind'); if(f2){f2.value='';} document.querySelectorAll('#laporanReportArea tbody tr').forEach(r=>r.style.display=''); try{ if(chartReg['lapCrmTrend']) chartReg['lapCrmTrend'].resize(); }catch(e){} };
-})();
 
 /* ============== LAPORAN GABUNGAN (Advertiser + Hasil CS) ==============
    Spending+PPN diambil dari advRows (data Akun/Advertiser — sudah dihitung
@@ -3435,11 +3398,230 @@ const lapN = v => Number(v)||0;
 
 function lapResizeCharts(){
   requestAnimationFrame(()=>{
-    ['laporanTrendChart','laporanAdvBarChart','lapKatTrendChart'].forEach(k=>{
+    ['laporanTrendChart','laporanAdvBarChart','lapKatTrendChart','lapCrmTrendChart'].forEach(k=>{
       try{ if(chartReg[k]) chartReg[k].resize(); }catch(e){}
     });
   });
 }
+
+/* ============== LAPORAN: sisi CRM (interaktif) ============== */
+var LAP_CRM_SEL = 'semua';   // 'semua' atau nama CRM
+var LAP_CRM_MODE = 'omzet';  // 'omzet' | 'bc'
+function lapDelta(cur, prev, invert){
+  if(!(prev>0)) return cur>0 ? 'baru (periode lalu kosong)' : '';
+  const p = (cur-prev)/prev*100;
+  if(Math.abs(p)<0.05) return '● sama dengan periode lalu';
+  return (p>0?'▲ naik ':'▼ turun ')+pctFmt(Math.abs(p)).replace('%',' %')+' vs periode lalu';
+}
+function renderLaporanCrm(range){
+  const kpiEl = document.getElementById('lapCrmKpi');
+  if(!kpiEl) return;
+  range = range || getRange();
+  const all = (typeof CRM_DATA!=='undefined' ? CRM_DATA : []);
+  const inR = all.filter(r=> csRowInRange(r.tanggal, range));
+  const names = [...new Set(inR.map(r=>r.crm).filter(Boolean))].sort();
+  if(LAP_CRM_SEL!=='semua' && !names.includes(LAP_CRM_SEL)) LAP_CRM_SEL = 'semua';
+  const sel = LAP_CRM_SEL;
+  const rows = sel==='semua' ? inR : inR.filter(r=>r.crm===sel);
+  const pr = getPrevRange(range);
+  const prevRows = all.filter(r=> csRowInRange(r.tanggal, pr) && (sel==='semua' || r.crm===sel));
+  const tot = crmAgg(rows), prv = crmAgg(prevRows);
+
+  const chips = document.getElementById('lapCrmChips');
+  if(chips) chips.innerHTML = ['semua'].concat(names).map(n=>'<span class="lap-chip'+(n===sel?' active':'')+'" data-crm="'+escapeHtml(n)+'">'+(n==='semua'?'Semua CRM':escapeHtml(n))+'</span>').join('');
+  document.querySelectorAll('#lapCrmMode .lap-mini').forEach(b=> b.classList.toggle('active', b.dataset.mode===LAP_CRM_MODE));
+  const fn = document.getElementById('lapCrmFilterNote'); if(fn) fn.textContent = sel==='semua' ? (names.length ? names.length+' CRM aktif di periode ini' : 'Belum ada data') : 'Fokus: '+sel;
+
+  const card = (color,label,value,sub,d)=> '<div class="card kpi"><div class="bar-accent" style="background:var(--'+color+')"></div><div class="label">'+label+'</div><div class="value">'+value+'</div>'+
+    '<div class="muted-note" style="color:inherit;opacity:.88;">'+(sub||'&nbsp;')+'</div>'+(d?'<div class="lap-delta '+(d.indexOf('▲')===0?'up':d.indexOf('▼')===0?'down':'')+'">'+d+'</div>':'')+'</div>';
+  kpiEl.innerHTML =
+    card('green','Total Omzet CRM', rupiah(tot.omzet), tot.closing>0 ? 'Rata-rata '+rupiah(tot.omzet/tot.closing)+' / closing' : '', lapDelta(tot.omzet,prv.omzet))+
+    card('blue','Closing (Repeat Order)', num(tot.closing), tot.d1>0 ? 'RO vs D1: '+pctFmt(tot.ro) : '', lapDelta(tot.closing,prv.closing))+
+    card('purple','Total Broadcast', num(tot.bc), tot.bc>0 ? 'Closing/BC: '+pctFmt(tot.cbc) : '', lapDelta(tot.bc,prv.bc))+
+    card('yellow','Customer Potensial', num(tot.potensial), 'Bisa ditindaklanjuti', lapDelta(tot.potensial,prv.potensial))+
+    card('blue','Hari Input', num(tot.days.size), 'dari '+datesIn(range).length+' hari periode', '')+
+    card('red','Catatan Kendala', num(tot.kendala), tot.kendala>0 ? 'Lihat daftar di bawah' : 'Tidak ada kendala', '');
+
+  // ---- Alur broadcast ----
+  const fun = document.getElementById('lapCrmFunnel');
+  if(fun){
+    const st = [['D0',tot.d0,'--green'],['D1',tot.d1,'--blue'],['D7',tot.d7,'--purple'],['D14',tot.d14,'--yellow']];
+    const mx = Math.max(1,...st.map(x=>x[1]));
+    fun.innerHTML = tot.bc>0 ? st.map(x=>'<div class="lap-fun-row"><b>'+x[0]+'</b><div class="lap-fun-bar"><i style="width:'+(x[1]/mx*100).toFixed(1)+'%;background:var('+x[2]+')"></i></div><span>'+num(x[1])+' · '+pctFmt(x[1]/tot.bc*100)+'</span></div>').join('')+
+      '<div class="muted-note" style="margin-top:6px;">'+num(tot.closing)+' closing dari '+num(tot.bc)+' broadcast ('+pctFmt(tot.cbc)+')'+(tot.d1>0?' · repeat order '+pctFmt(tot.ro)+' dari D1':'')+'.</div>'
+      : '<div class="muted-note">Belum ada data broadcast pada periode ini.</div>';
+  }
+
+  // ---- Rekap per CRM (selalu tampil semua CRM, baris terpilih disorot) ----
+  const by = {};
+  inR.forEach(r=>{ const k=r.crm||'(tanpa nama)'; (by[k]=by[k]||[]).push(r); });
+  const list = Object.keys(by).map(k=>({name:k, a:crmAgg(by[k])})).sort((x,y)=>y.a.omzet-x.a.omzet);
+  const totAll = crmAgg(inR);
+  const tb = document.getElementById('lapCrmTable');
+  if(tb){
+    const line = (n,a,b,raw)=> '<tr'+(b?' style="font-weight:700;"':' data-crm="'+escapeHtml(raw)+'"')+(!b&&raw===sel?' class="lap-sel"':'')+'><td>'+n+'</td><td>'+a.days.size+'</td><td>'+num(a.d0)+'</td><td>'+num(a.d1)+'</td><td>'+num(a.d7)+'</td><td>'+num(a.d14)+'</td><td><b>'+num(a.bc)+'</b></td><td>'+num(a.closing)+'</td><td>'+pctFmt(a.cbc)+'</td><td>'+pctFmt(a.ro)+'</td><td>'+rupiah(a.omzet)+'</td><td>'+(a.opc==null?'-':rupiah(a.opc))+'</td><td>'+num(a.potensial)+'</td></tr>';
+    tb.innerHTML = list.length ? list.map(x=>line(escapeHtml(x.name),x.a,false,x.name)).join('')+line('Total',totAll,true,'')
+      : '<tr><td colspan="13" class="muted-note">Belum ada data CRM pada periode ini.</td></tr>';
+  }
+
+  // ---- Sorotan ----
+  const ins = document.getElementById('lapCrmInsight');
+  if(ins){
+    if(!rows.length){ ins.innerHTML = '<div class="muted-note">Belum ada data CRM pada periode ini.</div>'; }
+    else{
+      const li = [];
+      li.push((sel==='semua'?'Periode ini':'<b>'+escapeHtml(sel)+'</b> pada periode ini')+' ada <b>'+num(tot.bc)+'</b> broadcast dengan <b>'+num(tot.closing)+'</b> closing dan omzet <b>'+rupiah(tot.omzet)+'</b>'+(tot.bc>0?' (closing per broadcast '+pctFmt(tot.cbc)+')':'')+'.');
+      if(prv.omzet>0) li.push('Omzet '+lapDelta(tot.omzet,prv.omzet).replace('▲','<b>naik</b> —').replace('▼','<b>turun</b> —')+' ('+rupiah(prv.omzet)+' → '+rupiah(tot.omzet)+').');
+      if(sel==='semua' && list.length>1){
+        li.push('Omzet tertinggi: <b>'+escapeHtml(list[0].name)+'</b> ('+rupiah(list[0].a.omzet)+').');
+        const byRate = list.filter(x=>x.a.cbc!=null).sort((x,y)=>y.a.cbc-x.a.cbc)[0];
+        if(byRate) li.push('Closing per broadcast terbaik: <b>'+escapeHtml(byRate.name)+'</b> ('+pctFmt(byRate.a.cbc)+').');
+      }
+      const stage=[['D0',tot.d0],['D1',tot.d1],['D7',tot.d7],['D14',tot.d14]];
+      if(tot.bc>0){ const top=stage.slice().sort((x,y)=>y[1]-x[1])[0]; li.push('Broadcast terbanyak di tahap <b>'+top[0]+'</b> ('+num(top[1])+', '+pctFmt(top[1]/tot.bc*100)+' dari total).'); }
+      if(tot.potensial>0) li.push('Ada <b>'+num(tot.potensial)+'</b> customer potensial yang bisa ditindaklanjuti.');
+      ins.innerHTML = '<ul style="margin:0;padding-left:18px;line-height:1.7;font-size:13px;">'+li.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+    }
+  }
+
+  // ---- Kendala ----
+  const kw = document.getElementById('lapCrmKendala');
+  if(kw){
+    const kr = rows.filter(r=>r.kendala).sort((a,b)=>String(b.tanggal).localeCompare(String(a.tanggal)));
+    kw.innerHTML = kr.length ? kr.map(r=>'<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;"><span class="muted-note">'+escapeHtml(fmtTanggalID(r.tanggal))+' · <b>'+escapeHtml(r.crm)+'</b></span><div>'+escapeHtml(r.kendala)+'</div></div>').join('')
+      : '<div class="muted-note">Tidak ada catatan kendala pada periode ini.</div>';
+  }
+
+  // ---- Tren harian (2 mode) ----
+  const cv = document.getElementById('lapCrmTrendChart');
+  const ttl = document.getElementById('lapCrmChartTitle');
+  if(ttl) ttl.textContent = '📈 Tren Harian CRM — '+(LAP_CRM_MODE==='omzet'?'Omzet & Closing':'Broadcast per Tahap')+(sel==='semua'?'':' · '+sel);
+  if(cv && typeof Chart!=='undefined'){
+    const days = datesIn(range), labels = trendLabels(range);
+    const idx = {}; days.forEach((d,i)=> idx[fmtISO(d)] = i);
+    const z = ()=> days.map(()=>0);
+    const om=z(), cl=z(), d0=z(), d1=z(), d7=z(), d14=z();
+    rows.forEach(r=>{ const i = idx[crmDayKey(r.tanggal)]; if(i==null) return;
+      om[i]+=crmNum(r.omzet); cl[i]+=crmNum(r.closing); d0[i]+=crmNum(r.d0); d1[i]+=crmNum(r.d1); d7[i]+=crmNum(r.d7); d14[i]+=crmNum(r.d14); });
+    if(chartReg['lapCrmTrendChart']){ chartReg['lapCrmTrendChart'].destroy(); delete chartReg['lapCrmTrendChart']; }
+    const col = (v,f)=> cssVar(v)||f;
+    const common = { responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+      plugins:{ legend:{display:true,position:'bottom',labels:{color:cssVar('--text'),boxWidth:14,font:{size:11}}},
+        tooltip:{backgroundColor:cssVar('--panel-2'),borderColor:cssVar('--line'),borderWidth:1,titleColor:cssVar('--text'),bodyColor:cssVar('--text')} } };
+    const xs = {grid:{display:false},ticks:{color:cssVar('--chart-tick'),font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:9}};
+    const ys = (cb)=>({position:'left',beginAtZero:true,grid:{color:cssVar('--chart-grid')},ticks:{color:cssVar('--chart-tick'),font:{size:10},callback:cb}});
+    if(LAP_CRM_MODE==='omzet'){
+      chartReg['lapCrmTrendChart'] = new Chart(cv, { data:{ labels, datasets:[
+        { type:'bar', label:'Omzet', data:om, backgroundColor:col('--green','#2FBE82')+'99', borderRadius:4, yAxisID:'y' },
+        { type:'line', label:'Closing', data:cl, borderColor:col('--blue','#4C8DFF'), backgroundColor:'transparent', tension:.35, pointRadius:2, borderWidth:2, yAxisID:'y1' } ]},
+        options:Object.assign({}, common, { scales:{ x:xs, y:ys(v=>rupiahShort(v)), y1:{position:'right',beginAtZero:true,grid:{display:false},ticks:{color:cssVar('--chart-tick'),font:{size:10},precision:0}} } }) });
+    } else {
+      const ds = (l,d,c)=>({ type:'bar', label:l, data:d, backgroundColor:c, stack:'bc', borderRadius:2 });
+      chartReg['lapCrmTrendChart'] = new Chart(cv, { data:{ labels, datasets:[
+        ds('D0',d0,col('--green','#2FBE82')), ds('D1',d1,col('--blue','#4C8DFF')), ds('D7',d7,col('--purple','#8B5CF6')), ds('D14',d14,col('--yellow','#E8B931')) ]},
+        options:Object.assign({}, common, { scales:{ x:Object.assign({stacked:true},xs), y:Object.assign({stacked:true},ys(v=>num(v))) } }) });
+    }
+  }
+}
+// Interaksi tab CRM (dipasang sekali; elemen induknya permanen)
+(function(){
+  const pane = document.getElementById('lapPane-crm'); if(!pane) return;
+  pane.addEventListener('click', e=>{
+    const chip = e.target.closest('#lapCrmChips .lap-chip');
+    const row  = e.target.closest('#lapCrmTable tr[data-crm]');
+    const mode = e.target.closest('#lapCrmMode .lap-mini');
+    if(chip){ LAP_CRM_SEL = chip.dataset.crm; }
+    else if(row){ LAP_CRM_SEL = (LAP_CRM_SEL===row.dataset.crm) ? 'semua' : row.dataset.crm; }
+    else if(mode){ LAP_CRM_MODE = mode.dataset.mode; }
+    else return;
+    renderLaporanCrm(getRange()); lapEnhanceTables();
+  });
+})();
+
+/* ============== LAPORAN: alat tabel (urutkan, cari, unduh CSV) ============== */
+function lapCellNum(td){
+  const t = (td.textContent||'').trim();
+  if(!/^-?\s*(Rp\s*)?-?\d/.test(t)) return null;
+  const m = t.match(/-?\s*(?:Rp\s*)?-?\d[\d.]*(?:,\d+)?/);
+  if(!m) return null;
+  const v = parseFloat(m[0].replace(/Rp|\s/g,'').replace(/\./g,'').replace(',','.'));
+  return isFinite(v) ? v : null;
+}
+function lapIsTotalRow(tr){ return /^total/i.test((tr.cells[0]&&tr.cells[0].textContent||'').trim()); }
+function lapApplyTable(tb){
+  const body = tb.tBodies[0]; if(!body) return;
+  const trs = [...body.rows];
+  if(!trs.length || trs.some(r=> [...r.cells].some(c=>c.colSpan>1))) return;
+  const data = trs.filter(r=>!lapIsTotalRow(r)), tot = trs.filter(lapIsTotalRow);
+  const st = tb._lapSort;
+  if(st){
+    const numeric = data.filter(r=> lapCellNum(r.cells[st.ci]||{textContent:''})!=null).length >= data.length*0.6;
+    data.sort((a,b)=>{
+      const ca=a.cells[st.ci], cb=b.cells[st.ci]; if(!ca||!cb) return 0;
+      let r;
+      if(numeric){ const x=lapCellNum(ca), y=lapCellNum(cb); r = (x==null?-Infinity:x)-(y==null?-Infinity:y); if(!isFinite(r)) r = (x==null)-(y==null)?(x==null?-1:1):0; }
+      else r = ca.textContent.trim().localeCompare(cb.textContent.trim(),'id');
+      return st.dir==='asc' ? r : -r;
+    });
+    data.forEach(r=> body.appendChild(r)); tot.forEach(r=> body.appendChild(r));
+  }
+  const q = (tb._lapQ||'').toLowerCase();
+  let shown = 0;
+  data.forEach(r=>{ const ok = !q || r.textContent.toLowerCase().includes(q); r.style.display = ok?'':'none'; if(ok) shown++; });
+  if(tb._lapCount) tb._lapCount.textContent = (q ? shown+' dari ' : '')+data.length+' baris';
+}
+function lapTableCsv(tb){
+  const esc = v => '"'+String(v).replace(/\s+/g,' ').trim().replace(/"/g,'""')+'"';
+  const out = [[...tb.tHead.rows[0].cells].map(c=>esc(c.textContent.replace(/[▲▼]/g,'')))];
+  [...tb.tBodies[0].rows].filter(r=>r.style.display!=='none').forEach(r=> out.push([...r.cells].map(c=>esc(c.textContent))));
+  const blob = new Blob(['\ufeff'+out.map(r=>r.join(',')).join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'laporan_'+(document.querySelector('#laporanTabs .period-btn.active')?.dataset.laptab||'tabel')+'.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+const LAP_GLOSS = {
+  'Closing Rate':'Closing ÷ Lead Real','Closing/BC':'Closing ÷ total broadcast','Repeat Order':'Closing ÷ broadcast D1','Omzet/Closing':'Rata-rata omzet per closing',
+  'Lead OO':'Lead mentah yang masuk (awal alur: Lead OO → Lead Real → Closing)','Lead Real':'Lead valid setelah dikurangi Tidak Real',
+  'Tidak Real':'Lead yang dinilai tidak valid oleh CS','Tidak Closing':'Lead real yang tidak jadi closing',
+  'CPL':'Biaya per lead = spending ÷ jumlah lead','CPP':'Biaya per pembelian = spending ÷ closing','ROAS':'Omzet ÷ spending iklan',
+  'Spending':'Biaya iklan termasuk PPN','vs Target':'Selisih capaian terhadap target','Hari Input':'Jumlah hari yang sudah diinput',
+  'D0':'Broadcast tahap D0','D1':'Broadcast tahap D1','D7':'Broadcast tahap D7','D14':'Broadcast tahap D14','Potensial':'Customer potensial untuk ditindaklanjuti'
+};
+function lapEnhanceTables(){
+  document.querySelectorAll('#laporanReportArea table').forEach(tb=>{
+    if(!tb.tHead || !tb.tHead.rows[0] || !tb.tBodies[0]) return;
+    if(!tb._lapInit){
+      tb._lapInit = true;
+      [...tb.tHead.rows[0].cells].forEach((th,ci)=>{
+        th.classList.add('lap-sortable'); const gk = Object.keys(LAP_GLOSS).find(k=> th.textContent.trim().toLowerCase().startsWith(k.toLowerCase())); th.title = (gk ? LAP_GLOSS[gk]+' — ' : '')+'klik untuk mengurutkan';
+        th.addEventListener('click', ()=>{
+          const cur = tb._lapSort;
+          tb._lapSort = { ci, dir: (cur && cur.ci===ci && cur.dir==='desc') ? 'asc' : 'desc' };
+          [...tb.tHead.rows[0].cells].forEach((h,k)=>{ h.classList.remove('asc','desc'); if(k===ci) h.classList.add(tb._lapSort.dir); });
+          lapApplyTable(tb);
+        });
+      });
+      const wrap = tb.closest('.table-scroll') || tb;
+      const bar = document.createElement('div'); bar.className = 'lap-tools laporan-noprint';
+      bar.innerHTML = '<input type="search" placeholder="🔎 Cari baris…"><span class="lap-count"></span><button type="button" class="lap-mini">⬇ CSV</button>';
+      wrap.parentNode.insertBefore(bar, wrap);
+      tb._lapCount = bar.querySelector('.lap-count');
+      bar.querySelector('input').addEventListener('input', e=>{ tb._lapQ = e.target.value; lapApplyTable(tb); });
+      bar.querySelector('button').addEventListener('click', ()=> lapTableCsv(tb));
+    }
+    lapApplyTable(tb);
+  });
+}
+
+const btnCopyLap = document.getElementById('btnCopyLaporan');
+if(btnCopyLap) btnCopyLap.addEventListener('click', ()=>{
+  const pane = document.querySelector('#laporanReportArea .lap-pane.active'); if(!pane) return;
+  const L = ['*'+((pane.querySelector('.lap-print-title')||{}).textContent||'Laporan').trim()+'* — '+((document.getElementById('laporanPeriodLabel')||{}).textContent||''), ''];
+  pane.querySelectorAll('.card.kpi, .lap-hl').forEach(el=>{ const lb=el.querySelector('.label,.k'), vl=el.querySelector('.value,.v'); if(lb&&vl) L.push('• '+lb.textContent.trim()+': '+vl.textContent.trim()); });
+  const txt = L.join('\n'), old = btnCopyLap.textContent, ok = ()=>{ btnCopyLap.textContent='✅ Tersalin'; setTimeout(()=>btnCopyLap.textContent=old,1500); };
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(ok).catch(()=>{ const t=document.createElement('textarea'); t.value=txt; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); ok(); }catch(e){} t.remove(); });
+});
+
 function setLaporanTab(tab){
   LAP_TAB = tab;
   document.querySelectorAll('#laporanTabs .period-btn').forEach(t=> t.classList.toggle('active', t.dataset.laptab===tab));
@@ -3915,6 +4097,13 @@ async function exportLaporanPPT(){
       addTable('Rincian Kategori per CS', document.getElementById('lapKatCsTable') && document.getElementById('lapKatCsTable').closest('table'));
     }
 
+    p = pane('crm');
+    if(p){
+      addCards('CRM — Ringkasan', collectCards(p, '.card.kpi'));
+      addChart('Tren Harian CRM — Omzet & Closing', 'lapCrmTrendChart');
+      addTable('Rekap per CRM', document.getElementById('lapCrmTable') && document.getElementById('lapCrmTable').closest('table'));
+    }
+
     const safe = (period || 'periode').replace(/[^\w\-]+/g,'_').replace(/^_+|_+$/g,'');
     await pptx.writeFile({ fileName: 'Laporan_Iklan_' + safe + '.pptx' });
   }catch(e){
@@ -4298,7 +4487,7 @@ function buildAdvShortfallText(adv){
 
   // ---- Harapan: kebutuhan harian sesuai kondisi ----
   const ms = advMonthSnapshot(adv, range[1]);
-  const sisaHari = Math.max(29-ms.elapsed,0);
+  const sisaHari = Math.max(STANDAR_HARI-ms.elapsed,0);
   const needSpend = sisaHari>0 ? Math.max(ms.target-ms.budget,0)/sisaHari : 0;
   const needLead = sisaHari>0 ? Math.ceil(Math.max(ms.targetLead-ms.real,0)/sisaHari) : 0;
 
@@ -5317,6 +5506,11 @@ async function pullFromSheet(){
         if(m==='harian'||m==='bulanan') modeFromSheet = m;
         return;
       }
+      if(advRaw.toLowerCase()==='__standar_hari__'){
+        const n = Math.round(parseFloat(r.nilai));
+        if(n>=1 && n<=31 && !DIRTY_TARGETS['__STD__|1|1'] && n!==STANDAR_HARI){ STANDAR_HARI = n; countTarget++; }
+        return;
+      }
       const adv = ADVERTISERS.find(a=>a.toLowerCase()===advRaw.toLowerCase());
       if(!adv) return;
       const tipe = String(r.tipe||'').trim().toLowerCase();
@@ -5352,7 +5546,9 @@ async function pullFromSheet(){
       });
     }
     if(modeFromSheet) applyTargetModeUI(modeFromSheet);
+    updateStdHariUI();
     if(countTarget>0 || modeFromSheet){
+      if(typeof render==='function') render();
       renderTargetRows();
       if(targetMode==='bulanan'){ renderMonthPicker(); renderTargetRowsMonthly(); renderCopyFromSelect(); }
       saveLocalState();
@@ -5566,6 +5762,9 @@ async function pushAllCplTargets(){
     }
   }
 }
+async function pushStandarHari(){
+  return pushOneToSheet({type:'target', advertiser:'__STANDAR_HARI__', tipe:'standar_hari', tahun:'', bulan:'', nilai:STANDAR_HARI});
+}
 async function pushTargetMode(mode){
   return pushOneToSheet({type:'target', advertiser:'__MODE__', tipe:mode, tahun:'', bulan:'', nilai:''});
 }
@@ -5580,6 +5779,7 @@ async function flushDirtyTargets(){
   await Promise.all(keys.map(async (key)=>{
     const parts = key.split('|');
     const adv = parts[0], year = parseInt(parts[1]), month = parseInt(parts[2]);
+    if(adv==='__STD__'){ const st0 = await pushStandarHari(); if(st0==='ok') delete DIRTY_TARGETS[key]; return; }
     if(!adv || !year || !month) { delete DIRTY_TARGETS[key]; return; }
     if(parts[3]){
       const kind = String(parts[3]).replace('cpl_','');
@@ -5595,6 +5795,7 @@ async function flushDirtyTargets(){
 }
 async function pushAllTargetsToSheet(){
   await pushTargetMode(targetMode);
+  await pushStandarHari();
   await pushAllCplTargets();
   for(const adv of ADVERTISERS){
     await pushTargetDefault(adv);
@@ -5635,6 +5836,7 @@ async function pushAllToSheet(){
     }
   }
   await pushTargetMode(targetMode); sent++;
+  await pushStandarHari(); sent++;
   await pushAllCplTargets();
   for(const adv of ADVERTISERS){
     await pushTargetDefault(adv); sent++;
@@ -6135,7 +6337,7 @@ function renderCrmAll(){
   renderCrmOverview();
   renderCrmPerson();
   renderCrmHistory();
-  if(typeof lapxRenderCrm==='function') lapxRenderCrm();
+  if(typeof renderLaporanCrm==='function'){ renderLaporanCrm(getRange()); if(typeof lapEnhanceTables==='function') lapEnhanceTables(); }
 }
 
 /* ============== OMZET & CLOSING CS ============== */
@@ -6816,6 +7018,7 @@ function saveLocalState(){
       targetsCpl: TARGETS_CPL,
       defaultTargetMigrated: defaultTargetMigrated,
       targetMode: targetMode,
+      standarHari: STANDAR_HARI,
       accounts: ACCOUNTS.map(a=>({id:a.id, name:a.name, advertiser:a.advertiser, ppn:(a.ppn!=null?a.ppn:3), status:a.status, budgetSeries:a.budgetSeries, spendSeries:a.spendSeries, ownerHistory: ensureOwnerHistory(a)})),
       accCounter: accCounter,
       selectedAccounts: Array.from(selectedAccounts),
@@ -6854,6 +7057,7 @@ function loadLocalState(){
     DIRTY_TARGETS = state.dirtyTargets || {};
     defaultTargetMigrated = !!state.defaultTargetMigrated;
     if(state.targetMode) targetMode = state.targetMode;
+    if(state.standarHari>=1 && state.standarHari<=31) STANDAR_HARI = Math.round(state.standarHari);
     accCounter = state.accCounter || accCounter;
     ACCOUNTS.length = 0;
     (state.accounts||[]).forEach(a=>{
@@ -8194,6 +8398,11 @@ applyTheme(getSavedTheme());
     if(url) autoPullOnLoad();
   });
 })();
+
+document.querySelectorAll('#stdHariBtns [data-h]').forEach(b=> b.addEventListener('click', ()=> setStandarHari(b.dataset.h)));
+const stdHariIn = document.getElementById('stdHariInput');
+if(stdHariIn) stdHariIn.addEventListener('change', ()=> setStandarHari(stdHariIn.value));
+updateStdHariUI();
 
 /* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
 const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi'];
