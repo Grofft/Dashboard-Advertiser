@@ -2675,6 +2675,7 @@ function buildAccGroupEl(adv, archived){
     el.querySelector('input').onchange=(e)=>{
       if(e.target.checked) selectedAccounts.add(acc.id); else selectedAccounts.delete(acc.id);
       el.classList.toggle('checked', e.target.checked);
+      saveLocalState();
       render();
     };
     if(!archived){
@@ -2846,8 +2847,8 @@ function openAddModal(defaultAdv){
     saveLocalState(); closeModal(); renderAccountGroups(); render(); renderInputSelectors(); syncAccountRoster([newAcc]);
   };
 }
-document.getElementById('btnSelectAll').onclick=()=>{ selectedAccounts=new Set(ACCOUNTS.map(a=>a.id)); renderAccountGroups(); render(); };
-document.getElementById('btnClearAll').onclick=()=>{ selectedAccounts=new Set(); renderAccountGroups(); render(); };
+document.getElementById('btnSelectAll').onclick=()=>{ selectedAccounts=new Set(ACCOUNTS.map(a=>a.id)); saveLocalState(); renderAccountGroups(); render(); };
+document.getElementById('btnClearAll').onclick=()=>{ selectedAccounts=new Set(); saveLocalState(); renderAccountGroups(); render(); };
 
 function openAddAdvertiserModal(){
   closeModal();
