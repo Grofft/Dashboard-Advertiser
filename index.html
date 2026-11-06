@@ -874,7 +874,7 @@ try{
         <option value="leadOO">Lead OO</option>
         <option value="cplReal">CPL Real</option>
         <option value="cplOO">CPL OO</option>
-        <option value="pctLead">% Lead (Real dari Total Lead)</option>
+        <option value="pctLead">% Lead Real (dari Lead OO)</option>
       </select>
       <!-- Multi-select checkbox dropdown -->
       <div id="metricDropdownWrap" style="position:relative;">
@@ -890,7 +890,7 @@ try{
           <label class="metric-opt" data-val="leadOO"><input type="checkbox" value="leadOO"> Lead OO</label>
           <label class="metric-opt" data-val="cplReal"><input type="checkbox" value="cplReal"> CPL Real</label>
           <label class="metric-opt" data-val="cplOO"><input type="checkbox" value="cplOO"> CPL OO</label>
-          <label class="metric-opt" data-val="pctLead"><input type="checkbox" value="pctLead"> % Lead (Real dari Total Lead)</label>
+          <label class="metric-opt" data-val="pctLead"><input type="checkbox" value="pctLead"> % Lead Real (dari Lead OO)</label>
           <div style="padding:6px 12px 4px;border-top:1px solid var(--line);margin-top:4px;display:flex;gap:8px;">
             <button id="metricSelectAll" type="button" style="font-size:11px;font-weight:600;color:var(--green);background:none;border:none;cursor:pointer;padding:0;">Pilih Semua</button>
             <button id="metricClearAll" type="button" style="font-size:11px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;">Kosongkan</button>
@@ -901,6 +901,73 @@ try{
     <div id="advChartLegend"></div>
     <div class="chart-wrap"><canvas id="chartAdvMetric"></canvas></div>
   </div>
+
+  <!-- ===== Ringkasan CS di Overview ===== -->
+  <div class="section-header" style="margin-top:22px;"><h2>Performa CS</h2></div>
+  <div class="muted-note" style="margin-bottom:10px;">Data Hasil CS pada periode terpilih (ikut filter tanggal di atas). Detail input ada di halaman Ringkasan CS &amp; Input CS.</div>
+  <div class="grid grid-4" id="ovCsKpis"></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:14px;">
+    <div class="card chart-card">
+      <div class="panel-title">Tren Harian Omzet &amp; Closing</div>
+      <div class="panel-desc">Batang = omzet, garis = jumlah closing.</div>
+      <div class="chart-wrap"><canvas id="chartOvCsTrend"></canvas></div>
+    </div>
+    <div class="card chart-card">
+      <div class="panel-title">Hasil CS per Advertiser</div>
+      <div class="panel-desc">Omzet, closing &amp; closing rate tiap advertiser.</div>
+      <div class="table-scroll"><table><thead><tr><th>Advertiser</th><th>Lead Real</th><th>Closing</th><th>Omzet</th><th>Closing Rate</th></tr></thead><tbody id="ovCsAdvTable"></tbody></table></div>
+    </div>
+  </div>
+  <div class="card chart-card" style="margin-top:14px;">
+    <div class="panel-title">Detail per CS</div>
+    <div class="panel-desc">Closing rate hijau jika mencapai KPI <span id="ovCsKpiLbl">85</span>%, merah jika di bawahnya.</div>
+    <div class="table-scroll"><table><thead><tr><th>CS</th><th>Hari Input</th><th>Lead OO</th><th>Tidak Real</th><th>Lead Real</th><th>Tidak Closing</th><th>Closing</th><th>Omzet</th><th>Closing Rate</th></tr></thead><tbody id="ovCsTable"></tbody></table></div>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:14px;">
+    <div class="card chart-card"><div class="panel-title">Alasan Lead Tidak Real</div><div id="ovCsNotReal"></div></div>
+    <div class="card chart-card"><div class="panel-title">Alasan Tidak Closing</div><div id="ovCsNotClosing"></div></div>
+  </div>
+
+  <!-- ===== Ringkasan CRM di Overview ===== -->
+  <div class="section-header" style="margin-top:28px;"><h2>Performa CRM</h2></div>
+  <div class="muted-note" style="margin-bottom:10px;">Data CRM pada periode terpilih (ikut filter tanggal di atas). Detail input ada di halaman CRM.</div>
+  <div class="grid grid-3" id="ovCrmKpis"></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:14px;">
+    <div class="card chart-card">
+      <div class="panel-title">Tren Harian CRM</div>
+      <div class="panel-desc">Batang = omzet, garis = closing.</div>
+      <div class="chart-wrap"><canvas id="chartOvCrmTrend"></canvas></div>
+    </div>
+    <div class="card chart-card">
+      <div class="panel-title">Alur Broadcast</div>
+      <div class="panel-desc">Jumlah broadcast per tahap (D0, D1, D7, D14).</div>
+      <div id="ovCrmFunnel"></div>
+    </div>
+  </div>
+  <div class="card chart-card" style="margin-top:14px;">
+    <div class="panel-title">Detail per CRM</div>
+    <div class="table-scroll"><table><thead><tr><th>CRM</th><th>Hari Input</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Total BC</th><th>Closing</th><th>Closing/BC</th><th>RO vs D1</th><th>Omzet</th><th>Omzet/Closing</th><th>Potensial</th></tr></thead><tbody id="ovCrmTable"></tbody></table></div>
+  </div>
+  <div class="card chart-card" style="margin-top:14px;">
+    <div class="panel-title">Catatan Kendala CRM</div>
+    <div id="ovCrmKendala"></div>
+  </div>
+
+  <!-- ===== Insight Tambahan ===== -->
+  <div class="section-header" style="margin-top:28px;"><h2>Insight Tambahan</h2></div>
+  <div class="muted-note" style="margin-bottom:10px;">Dihitung otomatis dari data yang sama dan ikut filter tanggal/akun di atas (kecuali Proyeksi Akhir Bulan, Anomali CPL, dan Pola Hari yang memakai bulan berjalan / 14 hari / 90 hari terakhir). Lead advertiser dan closing CS dicocokkan per tanggal, jadi closing bisa berasal dari lead hari sebelumnya.</div>
+  <div class="card chart-card"><div class="panel-title">Efisiensi Iklan → Closing</div><div class="panel-desc">Cost per Closing = Spend + PPN ÷ Closing CS. ROAS = Omzet CS ÷ Spend + PPN (merah bila di bawah 1x).</div><div id="ovInsEff"></div></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));margin-top:14px;">
+    <div class="card chart-card"><div class="panel-title">Funnel Lead → Closing</div><div class="panel-desc">Di mana kebocoran terbesar: iklan (lead tidak real) atau CS (tidak closing).</div><div id="ovInsFunnel"></div></div>
+    <div class="card chart-card"><div class="panel-title">Proyeksi Akhir Bulan</div><div id="ovInsProj"></div></div>
+  </div>
+  <div class="card chart-card" style="margin-top:14px;"><div class="panel-title">Pareto Alasan Tidak Real &amp; Tidak Closing</div><div class="panel-desc">Alasan teratas per advertiser dan per CS pada periode terpilih.</div><div id="ovInsPareto"></div></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));margin-top:14px;">
+    <div class="card chart-card"><div class="panel-title">Deteksi Anomali CPL</div><div id="ovInsAnom"></div></div>
+    <div class="card chart-card"><div class="panel-title">Pola Hari dalam Seminggu</div><div id="ovInsDow"></div></div>
+  </div>
+  <div class="card chart-card" style="margin-top:14px;"><div class="panel-title">Omzet per Closing (AOV) &amp; per Lead Real — per CS</div><div id="ovInsAov"></div></div>
+  <div class="card chart-card" style="margin-top:14px;"><div class="panel-title">CRM: Drop-off Broadcast &amp; Pipeline</div><div class="panel-desc">Persentase di kurung dihitung terhadap D0. Omzet vs Potensial = realisasi dari nilai potensial.</div><div id="ovInsCrm"></div></div>
 
 </div><!-- /page-overview -->
 
@@ -1427,7 +1494,7 @@ try{
         <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">CPP Gabungan</div><div class="value" id="gabCpp">-</div><div class="muted-note" style="margin-top:4px;color:inherit;opacity:.85;">biaya per closing</div></div>
       </div>
       <div class="lap-kpi-grid" style="margin-bottom:18px;">
-        <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">% Lead Gabungan</div><div class="value" id="gabPctLead">0%</div></div>
+        <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">% Lead Real Gabungan</div><div class="value" id="gabPctLead">0%</div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Closing Rate Gabungan</div><div class="value" id="gabRate">0%</div><div class="muted-note" id="gabRateNote" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--red)"></div><div class="label">Total Lead Tidak Real</div><div class="value" id="gabNotReal">0</div><div class="muted-note" id="gabNotRealPct" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--red)"></div><div class="label">Total Lead Tidak Closing</div><div class="value" id="gabNotClosing">0</div><div class="muted-note" id="gabNotClosingPct" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
@@ -1442,13 +1509,16 @@ try{
         <div style="font-size:13.5px;font-weight:700;margin-bottom:10px;">📈 Tren Performa Harian</div>
         <div class="chart-wrap" style="height:230px;"><canvas id="laporanTrendChart"></canvas></div>
       </div>
-    </div>
+          <div class="chart-card" data-lapins style="margin-bottom:16px;"><div class="panel-title">📅 Proyeksi Akhir Bulan</div><div id="lapInsProj"></div></div>
+      <div class="chart-card" data-lapins style="margin-bottom:16px;"><div class="panel-title">🚨 Deteksi Anomali CPL</div><div id="lapInsAnom"></div></div>
+      <div class="chart-card" data-lapins style="margin-bottom:16px;"><div class="panel-title">🗓️ Pola Hari dalam Seminggu</div><div id="lapInsDow"></div></div>
+</div>
 
     <!-- ================= TAB: DETAIL ADVERTISER ================= -->
     <div class="lap-pane" id="lapPane-advertiser">
       <div class="lap-print-title">📊 Detail Advertiser</div>
       <details class="lap-how laporan-noprint"><summary>📖 Cara membaca tabel ini</summary><ul>
-<li><b>CPL Real / CPL OO</b> = Spend + PPN ÷ Lead Real / Lead OO. Makin kecil makin hemat.</li>
+<li><b>CPL Real / CPL OO</b> = Budget (Non PPN) semua akun advertiser ÷ Lead Real / Lead OO. <i>CPP &amp; ROAS memakai Spend + PPN, jadi tidak sebanding langsung dengan CPL</i>. Makin kecil makin hemat.</li>
 <li><b>vs Target</b> = Budget terpakai ÷ target budget periode ini. Hijau = target tercapai.</li>
 <li>Angka kecil berwarna di bawah nilai = perubahan dibanding periode sebelumnya. Hijau membaik, merah memburuk.</li>
 <li>Klik judul kolom untuk mengurutkan, ketik di kotak cari untuk menyaring baris, tombol CSV untuk mengunduh.</li></ul></details>
@@ -1474,7 +1544,7 @@ try{
     <div class="lap-pane" id="lapPane-cs">
       <div class="lap-print-title">📞 Closing &amp; CS</div>
       <details class="lap-how laporan-noprint"><summary>📖 Cara membaca tabel ini</summary><ul>
-<li><b>% Lead</b> = Lead Real ÷ Lead OO. <b>vs Target</b> = Budget ÷ target budget.</li>
+<li><b>% Lead Real</b> = Lead Real ÷ Lead OO (persentase dari Lead OO). <b>vs Target</b> = Budget ÷ target budget.</li>
 <li><b>CPP</b> = Spending + PPN ÷ Closing. <b>ROAS</b> = Omzet ÷ Spending + PPN (hijau ≥ 1x, merah &lt; 1x).</li>
 <li><b>Closing Rate</b> = Closing ÷ Lead Real. Pada rekap per CS, hijau jika mencapai standar KPI CS, merah jika di bawahnya.</li>
 <li>Klik judul kolom untuk mengurutkan, ketik di kotak cari untuk menyaring baris.</li></ul></details>
@@ -1484,7 +1554,7 @@ try{
       <div class="table-scroll" style="margin-bottom:6px;">
         <table>
           <thead><tr>
-            <th>Advertiser</th><th>Budget</th><th>Spending + PPN</th><th>Omzet</th><th>Lead Real</th><th>Lead OO</th><th>% Lead</th><th>vs Target</th><th>Closing</th><th>CPP</th><th>Closing Rate</th><th>ROAS</th><th>Lead Tidak Real</th><th>Lead Tidak Closing</th>
+            <th>Advertiser</th><th>Budget</th><th>Spending + PPN</th><th>Omzet</th><th>Lead Real</th><th>Lead OO</th><th>% Lead Real</th><th>vs Target</th><th>Closing</th><th>CPP</th><th>Closing Rate</th><th>ROAS</th><th>Lead Tidak Real</th><th>Lead Tidak Closing</th>
           </tr></thead>
           <tbody id="laporanGabunganTable"></tbody>
         </table>
@@ -1500,7 +1570,9 @@ try{
           <tbody id="laporanCsTable"></tbody>
         </table>
       </div>
-    </div>
+          <div class="chart-card" data-lapins style="margin-bottom:16px;"><div class="panel-title">📈 Tren Mingguan Closing Rate</div><div id="lapWeekly"></div></div>
+      <div class="chart-card" data-lapins style="margin-bottom:16px;"><div class="panel-title">💰 Omzet per Closing (AOV) per CS</div><div id="lapInsAov"></div></div>
+</div>
 
     <!-- ================= TAB: LEAD TIDAK REAL & TIDAK CLOSING ================= -->
     <div class="lap-pane" id="lapPane-kategori">
@@ -2905,7 +2977,300 @@ const baseOpts=(legend)=>({
     y:{grid:{color:cssVar('--chart-grid')},ticks:{color:cssVar('--chart-tick'),font:{size:10.5}}}}
 });
 
+/* ---- Overview: ringkasan detail CS (ikut filter tanggal global) ---- */
+function renderOverviewCs(range){
+  const kEl = document.getElementById('ovCsKpis');
+  if(!kEl) return;
+  const advs = ADVERTISERS.slice();
+  const A = lapCsAgg(advs, range);
+  const P = lapCsAgg(advs, getPrevRange(range));
+  const rate = (c,r)=> r>0 ? c/r*100 : null;
+  const cr = rate(A.closing, A.real), crP = rate(P.closing, P.real);
+  const lbl = document.getElementById('ovCsKpiLbl'); if(lbl) lbl.textContent = CS_CLOSING_RATE_KPI;
+  const card = (color,label,val,delta,sub)=>'<div class="card kpi"><div class="bar-accent" style="background:'+color+'"></div><div class="label">'+label+'</div><div class="value">'+val+'</div>'+((delta||sub)?'<div class="lap-delta">'+(delta||'')+(sub?' <span class="muted-note">'+sub+'</span>':'')+'</div>':'')+'</div>';
+  const rateColor = cr==null ? '' : ' style="color:var(--'+(cr>=CS_CLOSING_RATE_KPI?'green':'red')+')"';
+  kEl.innerHTML =
+    card('var(--green)','Total Omzet',rupiah(A.omzet),deltaBadge(A.omzet,P.omzet)) +
+    card('var(--blue)','Hasil Closing',num(A.closing),deltaBadge(A.closing,P.closing)) +
+    card('var(--purple)','Closing Rate','<span'+rateColor+'>'+pctFmt(cr)+'</span>',(cr!=null&&crP!=null)?deltaBadge(cr,crP):'','KPI '+CS_CLOSING_RATE_KPI+'%') +
+    card('var(--blue)','Lead Real',num(A.real),deltaBadge(A.real,P.real)) +
+    card('#F2C12E','Lead OO',num(A.oo),deltaBadge(A.oo,P.oo)) +
+    card('var(--red)','Lead Tidak Real',num(A.notReal),deltaBadge(A.notReal,P.notReal,true),A.oo>0?pctFmt(A.notReal/A.oo*100)+' dari OO':'') +
+    card('var(--red)','Lead Tidak Closing',num(A.notClosing),deltaBadge(A.notClosing,P.notClosing,true),A.real>0?pctFmt(A.notClosing/A.real*100)+' dari real':'') +
+    card('var(--green)','Omzet / Closing',A.closing>0?rupiah(A.omzet/A.closing):'-','');
+
+  const rateCell = (closing, real)=>{
+    if(!(real>0)) return '<td class="muted-note">-</td>';
+    const r = closing/real*100;
+    return '<td style="font-weight:700;color:'+(r>=CS_CLOSING_RATE_KPI?'var(--green)':'var(--red)')+';">'+pctFmt(r)+'</td>';
+  };
+  const redNum = v => v>0 ? '<span style="color:var(--red);font-weight:600;">'+num(v)+'</span>' : '<span class="muted-note">-</span>';
+  const map = {};
+  const get = cs => map[cs] || (map[cs] = { cs, hari:new Set(), oo:0, real:0, closing:0, omzet:0, notReal:0, notClosing:0 });
+  A.csRows.forEach(c=>{ const m=get(c.cs||'-'); m.hari.add(c.tanggal); m.oo+=lapN(c.leadOO); m.real+=lapN(c.leadReal); m.closing+=lapN(c.hasilClosing); m.omzet+=lapN(c.omzet); });
+  A.nr.forEach(n=>{ get(n.cs||'-').notReal += lapN(n.jumlah); });
+  A.nc.forEach(n=>{ get(n.cs||'-').notClosing += lapN(n.jumlah); });
+  const rows = Object.keys(map).map(k=>map[k]).sort((a,b)=>b.omzet-a.omzet);
+  const tb = document.getElementById('ovCsTable');
+  if(tb){
+    if(!rows.length) tb.innerHTML = '<tr><td colspan="9" class="muted-note">Belum ada input Hasil CS pada periode ini</td></tr>';
+    else {
+      const allDays = new Set(A.csRows.map(c=>c.tanggal));
+      tb.innerHTML = rows.map(m=>'<tr><td><span class="tag blue">'+escapeHtml(m.cs)+'</span></td><td>'+m.hari.size+'</td><td>'+num(m.oo)+'</td><td>'+redNum(m.notReal)+'</td><td>'+num(m.real)+'</td><td>'+redNum(m.notClosing)+'</td><td>'+num(m.closing)+'</td><td>'+rupiah(m.omzet)+'</td>'+rateCell(m.closing,m.real)+'</tr>').join('') +
+        '<tr style="font-weight:700;border-top:1px solid var(--line);"><td>TOTAL</td><td>'+allDays.size+'</td><td>'+num(A.oo)+'</td><td>'+redNum(A.notReal)+'</td><td>'+num(A.real)+'</td><td>'+redNum(A.notClosing)+'</td><td>'+num(A.closing)+'</td><td>'+rupiah(A.omzet)+'</td>'+rateCell(A.closing,A.real)+'</tr>';
+    }
+  }
+
+  const ta = document.getElementById('ovCsAdvTable');
+  if(ta){
+    const ar = advs.map(a=>{ const x=lapCsAgg([a],range); return {adv:a, real:x.real, closing:x.closing, omzet:x.omzet}; }).filter(x=>x.real>0||x.closing>0||x.omzet>0).sort((a,b)=>b.omzet-a.omzet);
+    ta.innerHTML = ar.length ? ar.map(x=>'<tr><td>'+escapeHtml(x.adv)+'</td><td>'+num(x.real)+'</td><td>'+num(x.closing)+'</td><td>'+rupiah(x.omzet)+'</td>'+rateCell(x.closing,x.real)+'</tr>').join('')
+      : '<tr><td colspan="5" class="muted-note">Belum ada data pada periode ini</td></tr>';
+  }
+
+  renderCsBreakdown('ovCsNotReal', CS_NOTREAL, A.nr);
+  renderCsBreakdown('ovCsNotClosing', CS_NOTCLOSING, A.nc);
+
+  if(chartReg['chartOvCsTrend']){ chartReg['chartOvCsTrend'].destroy(); delete chartReg['chartOvCsTrend']; }
+  const dates = datesIn(range);
+  const om = {}, cl = {};
+  A.csRows.forEach(c=>{ const d=new Date(c.tanggal); if(isNaN(d)) return; const k=fmtISO(d); om[k]=(om[k]||0)+lapN(c.omzet); cl[k]=(cl[k]||0)+lapN(c.hasilClosing); });
+  const keys = dates.map(d=>fmtISO(d));
+  const o = baseOpts();
+  o.plugins.legend = {display:true, labels:{color:cssVar('--chart-tick'), font:{size:11}}};
+  o.scales.y.ticks.callback = v=>rupiahShort(v);
+  o.scales.y1 = {position:'right', grid:{drawOnChartArea:false}, ticks:{color:cssVar('--chart-tick'), font:{size:10.5}, precision:0}, beginAtZero:true};
+  mkChart('chartOvCsTrend', {
+    data:{ labels:trendLabels(range), datasets:[
+      {type:'bar', label:'Omzet', data:keys.map(k=>om[k]||0), backgroundColor:'#2FBE82', yAxisID:'y', order:2},
+      {type:'line', label:'Closing', data:keys.map(k=>cl[k]||0), borderColor:'#4C8DFF', backgroundColor:'#4C8DFF', tension:.3, pointRadius:2, yAxisID:'y1', order:1}
+    ]}, options:o });
+}
+
+/* ---- Overview: ringkasan detail CRM (ikut filter tanggal global) ---- */
+function renderOverviewCrm(range){
+  const kEl = document.getElementById('ovCrmKpis');
+  if(!kEl) return;
+  range = range || getRange();
+  const all = (typeof CRM_DATA!=='undefined' ? CRM_DATA : []);
+  const rows = all.filter(r=> csRowInRange(r.tanggal, range));
+  const prevRows = all.filter(r=> csRowInRange(r.tanggal, getPrevRange(range)));
+  const tot = crmAgg(rows), prv = crmAgg(prevRows);
+  const card = (color,label,value,sub,d)=> '<div class="card kpi"><div class="bar-accent" style="background:var(--'+color+')"></div><div class="label">'+label+'</div><div class="value">'+value+'</div>'+
+    '<div class="muted-note" style="color:inherit;opacity:.88;">'+(sub||'&nbsp;')+'</div>'+(d?'<div class="lap-delta '+(d.indexOf('▲')===0?'up':d.indexOf('▼')===0?'down':'')+'">'+d+'</div>':'')+'</div>';
+  kEl.innerHTML =
+    card('green','Total Omzet CRM', rupiah(tot.omzet), tot.closing>0 ? 'Rata-rata '+rupiah(tot.omzet/tot.closing)+' / closing' : '', lapDelta(tot.omzet,prv.omzet))+
+    card('blue','Closing (Repeat Order)', num(tot.closing), tot.d1>0 ? 'RO vs D1: '+pctFmt(tot.ro) : '', lapDelta(tot.closing,prv.closing))+
+    card('purple','Total Broadcast', num(tot.bc), tot.bc>0 ? 'Closing/BC: '+pctFmt(tot.cbc) : '', lapDelta(tot.bc,prv.bc))+
+    card('yellow','Customer Potensial', num(tot.potensial), 'Bisa ditindaklanjuti', lapDelta(tot.potensial,prv.potensial))+
+    card('blue','Hari Input', num(tot.days.size), 'dari '+datesIn(range).length+' hari periode', '')+
+    card('red','Catatan Kendala', num(tot.kendala), tot.kendala>0 ? 'Lihat daftar di bawah' : 'Tidak ada kendala', '');
+
+  const fun = document.getElementById('ovCrmFunnel');
+  if(fun){
+    const st = [['D0',tot.d0,'--green'],['D1',tot.d1,'--blue'],['D7',tot.d7,'--purple'],['D14',tot.d14,'--yellow']];
+    const mx = Math.max(1,...st.map(x=>x[1]));
+    fun.innerHTML = tot.bc>0 ? st.map(x=>'<div class="lap-fun-row"><b>'+x[0]+'</b><div class="lap-fun-bar"><i style="width:'+(x[1]/mx*100).toFixed(1)+'%;background:var('+x[2]+')"></i></div><span>'+num(x[1])+' · '+pctFmt(x[1]/tot.bc*100)+'</span></div>').join('')+
+      '<div class="muted-note" style="margin-top:6px;">'+num(tot.closing)+' closing dari '+num(tot.bc)+' broadcast ('+pctFmt(tot.cbc)+')'+(tot.d1>0?' · repeat order '+pctFmt(tot.ro)+' dari D1':'')+'.</div>'
+      : '<div class="muted-note">Belum ada data broadcast pada periode ini.</div>';
+  }
+
+  const by = {};
+  rows.forEach(r=>{ const k=r.crm||'(tanpa nama)'; (by[k]=by[k]||[]).push(r); });
+  const list = Object.keys(by).map(k=>({name:k, a:crmAgg(by[k])})).sort((x,y)=>y.a.omzet-x.a.omzet);
+  const tb = document.getElementById('ovCrmTable');
+  if(tb){
+    const line = (n,a,b)=> '<tr'+(b?' style="font-weight:700;border-top:1px solid var(--line);"':'')+'><td>'+n+'</td><td>'+a.days.size+'</td><td>'+num(a.d0)+'</td><td>'+num(a.d1)+'</td><td>'+num(a.d7)+'</td><td>'+num(a.d14)+'</td><td><b>'+num(a.bc)+'</b></td><td>'+num(a.closing)+'</td><td>'+pctFmt(a.cbc)+'</td><td>'+pctFmt(a.ro)+'</td><td>'+rupiah(a.omzet)+'</td><td>'+(a.opc==null?'-':rupiah(a.opc))+'</td><td>'+num(a.potensial)+'</td></tr>';
+    tb.innerHTML = list.length ? list.map(x=>line('<span class="tag blue">'+escapeHtml(x.name)+'</span>',x.a,false)).join('')+line('TOTAL',tot,true)
+      : '<tr><td colspan="13" class="muted-note">Belum ada data CRM pada periode ini.</td></tr>';
+  }
+
+  const kw = document.getElementById('ovCrmKendala');
+  if(kw){
+    const kr = rows.filter(r=>r.kendala).sort((a,b)=>String(b.tanggal).localeCompare(String(a.tanggal)));
+    kw.innerHTML = kr.length ? kr.map(r=>'<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;"><span class="muted-note">'+escapeHtml(fmtTanggalID(r.tanggal))+' · <b>'+escapeHtml(r.crm)+'</b></span><div>'+escapeHtml(r.kendala)+'</div></div>').join('')
+      : '<div class="muted-note">Tidak ada catatan kendala pada periode ini.</div>';
+  }
+
+  if(chartReg['chartOvCrmTrend']){ chartReg['chartOvCrmTrend'].destroy(); delete chartReg['chartOvCrmTrend']; }
+  const days = datesIn(range);
+  const idx = {}; days.forEach((d,i)=> idx[fmtISO(d)] = i);
+  const om = days.map(()=>0), cl = days.map(()=>0);
+  rows.forEach(r=>{ const i = idx[crmDayKey(r.tanggal)]; if(i==null) return; om[i]+=crmNum(r.omzet); cl[i]+=crmNum(r.closing); });
+  const o = baseOpts();
+  o.plugins.legend = {display:true, labels:{color:cssVar('--chart-tick'), font:{size:11}}};
+  o.scales.y.ticks.callback = v=>rupiahShort(v);
+  o.scales.y1 = {position:'right', grid:{drawOnChartArea:false}, ticks:{color:cssVar('--chart-tick'), font:{size:10.5}, precision:0}, beginAtZero:true};
+  mkChart('chartOvCrmTrend', {
+    data:{ labels:trendLabels(range), datasets:[
+      {type:'bar', label:'Omzet', data:om, backgroundColor:'#2FBE82', yAxisID:'y', order:2},
+      {type:'line', label:'Closing', data:cl, borderColor:'#4C8DFF', backgroundColor:'#4C8DFF', tension:.3, pointRadius:2, yAxisID:'y1', order:1}
+    ]}, options:o });
+}
+
 /* ============== MAIN RENDER ============== */
+/* ===== INSIGHT TAMBAHAN OVERVIEW (efisiensi, funnel, pareto, proyeksi, anomali CPL, AOV CS, CRM, pola hari) ===== */
+function ovEsc(t){return String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function ovPct(v){return (v==null||!isFinite(v))?'–':v.toFixed(1)+'%';}
+function ovRp(v){return (v>0&&isFinite(v))?rupiah(v):'–';}
+function ovSet(id,h){[id,id.replace('ovIns','lapIns')].forEach(i=>{const el=document.getElementById(i); if(el) el.innerHTML=h;});}
+function ovDailyBudget(accs,adv,i){return accs.reduce((t,a)=>ownerAtIndex(a,i)===adv?t+(a.budgetSeries[i]||0):t,0);}
+function ovTable(head,rows,empty){
+  if(!rows.length) return '<div class="muted-note">'+(empty||'Belum ada data pada periode ini.')+'</div>';
+  return '<div class="table-scroll"><table><thead><tr>'+head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+}
+function ovAdvTag(a){return '<b style="color:'+(ADV_COLOR[a]||'var(--text)')+'">'+ovEsc(a)+'</b>';}
+function ovTop3(rows,gk){
+  const g={}; rows.forEach(n=>{const k=n[gk]||'-', c=n.kategori||'Lainnya'; g[k]=g[k]||{}; g[k][c]=(g[k][c]||0)+lapN(n.jumlah);});
+  return Object.keys(g).sort().map(k=>{
+    const arr=Object.entries(g[k]).sort((a,b)=>b[1]-a[1]), tot=arr.reduce((s,x)=>s+x[1],0);
+    return [ovEsc(k), num(tot), arr.slice(0,3).map(x=>ovEsc(x[0])+' <span class="muted">'+num(x[1])+' ('+(x[1]/tot*100).toFixed(0)+'%)</span>').join('<br>')];
+  });
+}
+function renderOvInsights(range, accs){
+  if(!document.getElementById('ovInsEff')) return;
+  accs = accs||[];
+  const advs = ADVERTISERS.slice();
+  const ALL = lapCsAgg(advs, range);
+  const st = advs.map(adv=>{
+    let spend=0,bud=0; accs.forEach(a=>{spend+=sumInForAdv(a,a.spendSeries,adv,range); bud+=sumInForAdv(a,a.budgetSeries,adv,range);});
+    const real=sumIn(ADV_LEADS[adv].real,range), oo=sumIn(ADV_LEADS[adv].oo,range), A=lapCsAgg([adv],range);
+    return {adv,spend,bud,real,oo,A,cpl:real>0?bud/real:0,cpc:A.closing>0?spend/A.closing:0,roas:spend>0?A.omzet/spend:0};
+  });
+
+  /* 1 & 2. Cost per Closing + ROAS */
+  const T = st.reduce((o,s)=>{o.spend+=s.spend;o.bud+=s.bud;o.real+=s.real;o.cl+=s.A.closing;o.om+=s.A.omzet;return o;},{spend:0,bud:0,real:0,cl:0,om:0});
+  const roasCell=v=>v>0?'<b style="color:'+(v>=1?'var(--good)':'var(--bad)')+'">'+v.toFixed(2)+'x</b>':'–';
+  const effRows = st.map(s=>[ovAdvTag(s.adv),rupiah(s.spend),num(s.real),ovRp(s.cpl),num(s.A.closing),ovRp(s.cpc),rupiah(s.A.omzet),roasCell(s.roas)]);
+  effRows.push(['<b>Total</b>',rupiah(T.spend),num(T.real),ovRp(T.real>0?T.bud/T.real:0),num(T.cl),ovRp(T.cl>0?T.spend/T.cl:0),rupiah(T.om),roasCell(T.spend>0?T.om/T.spend:0)]);
+  ovSet('ovInsEff', ovTable(['Advertiser','Spend + PPN','Lead Real','CPL Real','Closing (CS)','Cost / Closing','Omzet (CS)','ROAS'], effRows));
+
+  /* 3. Funnel */
+  const tot=st.reduce((a,s)=>a+s.oo,0);
+  const steps=[['Lead OO (total masuk)',tot,'var(--blue)'],['Lead Real (Advertiser)',T.real,'var(--purple)'],['Lead Real diinput CS',ALL.real,'var(--yellow)'],['Closing',ALL.closing,'var(--green)']];
+  let fh=''; let worst=null;
+  steps.forEach((s,i)=>{
+    const prev=i?steps[i-1][1]:null, p=prev>0?s[1]/prev*100:null;
+    if(i && p!=null && (!worst||p<worst.p)) worst={n:s[0],p};
+    fh+='<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:12.5px"><span>'+s[0]+'</span><span><b>'+num(s[1])+'</b>'+(i?' <span class="muted">('+ovPct(p)+' dari tahap sebelumnya)</span>':'')+'</span></div><div style="height:10px;background:var(--panel-2);border-radius:6px"><div style="height:10px;border-radius:6px;background:'+s[2]+';width:'+(tot>0?Math.min(100,s[1]/tot*100):0)+'%"></div></div></div>';
+  });
+  fh+= worst?'<div class="muted-note" style="margin-top:6px">Penurunan terbesar ada di tahap <b>'+worst.n+'</b> ('+ovPct(worst.p)+' lolos).</div>':'';
+  fh+= ovTable(['Advertiser','Lead OO','% Real dari OO','Closing / Lead Real (CS)'], st.map(s=>[ovAdvTag(s.adv),num(s.oo),ovPct(s.oo>0?s.real/s.oo*100:null),ovPct(s.A.real>0?s.A.closing/s.A.real*100:null)]));
+  ovSet('ovInsFunnel', fh);
+
+  /* 4. Pareto alasan */
+  const hd=g=>[g,'Total','3 Alasan Teratas'];
+  const nrCs=ALL.nr.map(n=>n), ncCs=ALL.nc.map(n=>n);
+  ovSet('ovInsPareto',
+    '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">'+
+    '<div><div class="panel-desc"><b>Tidak Real</b> per Advertiser</div>'+ovTable(hd('Advertiser'),ovTop3(nrCs,'advertiser'))+'</div>'+
+    '<div><div class="panel-desc"><b>Tidak Real</b> per CS</div>'+ovTable(hd('CS'),ovTop3(nrCs,'cs'))+'</div>'+
+    '<div><div class="panel-desc"><b>Tidak Closing</b> per Advertiser</div>'+ovTable(hd('Advertiser'),ovTop3(ncCs,'advertiser'))+'</div>'+
+    '<div><div class="panel-desc"><b>Tidak Closing</b> per CS</div>'+ovTable(hd('CS'),ovTop3(ncCs,'cs'))+'</div></div>');
+
+  /* 5. Proyeksi akhir bulan (berbasis bulan berjalan, tidak ikut filter) */
+  const t=new Date(ANCHOR_DATE); t.setHours(0,0,0,0);
+  const y=t.getFullYear(), m=t.getMonth(), el=t.getDate(), std=stdHari(y,m+1);
+  const s0=idx(new Date(y,m,1)), e0=idx(t);
+  const projRows = advs.map(adv=>{
+    let bud=0,real=0; for(let i=s0;i<=e0;i++){bud+=ovDailyBudget(accs,adv,i); real+=ADV_LEADS[adv].real[i]||0;}
+    const pb=bud/el*std, pr=real/el*std, tg=getEffectiveTargetForDate(adv,t)*std, pc=tg>0?pb/tg*100:null;
+    const lim=cplLimit(adv,'real',[t,t]), pcpl=pr>0?pb/pr:0;
+    const col=pc==null?'':(pc>=100?'var(--good)':pc>=85?'var(--warn)':'var(--bad)');
+    return [ovAdvTag(adv),rupiah(bud),rupiah(pb),tg>0?rupiah(tg):'–','<b style="color:'+col+'">'+ovPct(pc)+'</b>',num(pr),'<span style="color:'+(lim>0&&pcpl>lim?'var(--bad)':'inherit')+'">'+ovRp(pcpl)+'</span>'];
+  });
+  ovSet('ovInsProj','<div class="panel-desc">Hari ke-'+el+' bulan '+BULAN_ID[m]+' '+y+' · proyeksi = rata-rata/hari × standar '+std+' hari (sama dengan pengali target dashboard).</div>'+ovTable(['Advertiser','Budget s/d Hari Ini','Proyeksi Budget','Target Bulanan','% Proyeksi vs Target','Proyeksi Lead Real','Proyeksi CPL Real'],projRows));
+
+  /* 6. Anomali CPL: CPL hari > 125% dari CPL gabungan 7 hari sebelumnya */
+  const anRows = advs.map(adv=>{
+    const flags=[]; let todayTxt='–';
+    for(let i=e0-13;i<=e0;i++){
+      let b7=0,r7=0; for(let j=i-7;j<i;j++){b7+=ovDailyBudget(accs,adv,j); r7+=ADV_LEADS[adv].real[j]||0;}
+      const b=ovDailyBudget(accs,adv,i), r=ADV_LEADS[adv].real[i]||0;
+      if(r>0 && r7>0){const base=b7/r7, cpl=b/r, up=(cpl/base-1)*100;
+        if(up>=25) flags.push(ALL_DATES[i].toLocaleDateString('id-ID',{day:'2-digit',month:'short'})+': '+rupiah(cpl)+' <span style="color:var(--bad)">(+'+up.toFixed(0)+'%)</span>');
+        if(i===e0) todayTxt=rupiah(cpl)+' <span class="muted">(rata-rata 7 hari '+rupiah(base)+', '+(up>=0?'+':'')+up.toFixed(0)+'%)</span>';}
+    }
+    return [ovAdvTag(adv),todayTxt,flags.length?flags.reverse().join('<br>'):'<span style="color:var(--good)">Tidak ada anomali</span>'];
+  });
+  ovSet('ovInsAnom','<div class="panel-desc">CPL Real harian dibandingkan CPL gabungan 7 hari sebelumnya; ditandai bila naik ≥25% (14 hari terakhir).</div>'+ovTable(['Advertiser','CPL Hari Ini','Hari Anomali'],anRows));
+
+  /* 7. AOV & omzet per lead real per CS */
+  const cs={}; ALL.csRows.forEach(c=>{const o=cs[c.cs]||(cs[c.cs]={real:0,cl:0,om:0}); o.real+=lapN(c.leadReal); o.cl+=lapN(c.hasilClosing); o.om+=lapN(c.omzet);});
+  const names=Object.keys(cs).sort((a,b)=>cs[b].om-cs[a].om);
+  ovSet('ovInsAov', ovTable(['CS','Lead Real','Closing','Closing Rate','Omzet','Omzet / Closing (AOV)','Omzet / Lead Real'],
+    names.map(n=>{const o=cs[n]; return [ovEsc(n),num(o.real),num(o.cl),ovPct(o.real>0?o.cl/o.real*100:null),rupiah(o.om),ovRp(o.cl>0?o.om/o.cl:0),ovRp(o.real>0?o.om/o.real:0)];})));
+
+  /* 8. CRM drop-off & pipeline */
+  const crm={}; CRM_DATA.filter(r=>csRowInRange(r.tanggal,range)).forEach(r=>{
+    const o=crm[r.crm]||(crm[r.crm]={d0:0,d1:0,d7:0,d14:0,cl:0,om:0,pot:0});
+    o.d0+=crmNum(r.d0);o.d1+=crmNum(r.d1);o.d7+=crmNum(r.d7);o.d14+=crmNum(r.d14);o.cl+=crmNum(r.closing);o.om+=crmNum(r.omzet);o.pot+=crmNum(r.potensial);});
+  const rt=(a,b)=>b>0?ovPct(a/b*100):'–';
+  ovSet('ovInsCrm', ovTable(['CRM','D0','D1 (% D0)','D7 (% D0)','D14 (% D0)','Closing / BC','Omzet','Potensial','Omzet vs Potensial'],
+    Object.keys(crm).sort((a,b)=>crm[b].om-crm[a].om).map(n=>{const o=crm[n],bc=o.d0+o.d1+o.d7+o.d14;
+      return [ovEsc(n),num(o.d0),num(o.d1)+' <span class="muted">'+rt(o.d1,o.d0)+'</span>',num(o.d7)+' <span class="muted">'+rt(o.d7,o.d0)+'</span>',num(o.d14)+' <span class="muted">'+rt(o.d14,o.d0)+'</span>',rt(o.cl,bc),rupiah(o.om),rupiah(o.pot),rt(o.om,o.pot)];})));
+
+  /* 9. Pola hari dalam seminggu (90 hari terakhir) */
+  const HR=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'], dw=HR.map(()=>({n:0,b:0,r:0,cr:0,cc:0}));
+  const sIdx=Math.max(0,e0-89), rg=[ALL_DATES[sIdx],ALL_DATES[e0]];
+  for(let i=sIdx;i<=e0;i++){const o=dw[ALL_DATES[i].getDay()]; let b=0,r=0; advs.forEach(a=>{b+=ovDailyBudget(accs,a,i); r+=ADV_LEADS[a].real[i]||0;}); if(b>0||r>0){o.n++;o.b+=b;o.r+=r;}}
+  CS_DATA.filter(r=>csRowInRange(r.tanggal,rg)).forEach(r=>{const o=dw[new Date(r.tanggal).getDay()]; o.cr+=lapN(r.leadReal); o.cc+=lapN(r.hasilClosing);});
+  const cpls=dw.map(o=>o.r>0?o.b/o.r:null), valid=cpls.filter(v=>v!=null), mn=Math.min(...valid), mx=Math.max(...valid);
+  ovSet('ovInsDow','<div class="panel-desc">Rata-rata 90 hari terakhir ('+fmtDateID(rg[0])+' – '+fmtDateID(rg[1])+'); hijau = CPL terendah, merah = tertinggi.</div>'+
+    ovTable(['Hari','Hari Aktif','Rata-rata Budget/Hari','Rata-rata Lead Real/Hari','CPL Real','Closing Rate (CS)'],
+      dw.map((o,i)=>{const c=cpls[i], col=(c==null||valid.length<2)?'':(c===mn?'var(--good)':c===mx?'var(--bad)':'');
+        return [HR[i],num(o.n),o.n?rupiah(o.b/o.n):'–',o.n?num(o.r/o.n):'–','<b style="color:'+col+'">'+ovRp(c)+'</b>',ovPct(o.cr>0?o.cc/o.cr*100:null)];})));
+}
+
+/* ===== TAMBAHAN TAB LAPORAN: rekomendasi tindak lanjut, tren mingguan closing rate, teks WA & ekspor ===== */
+function lapActionItems(advs, range){
+  const out=[], accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id)), K=CS_CLOSING_RATE_KPI;
+  advs.forEach(adv=>{
+    const rel=accs.filter(a=>everOwnedBy(a,adv)); if(!rel.length) return;
+    const budget=rel.reduce((s,a)=>s+sumInForAdv(a,a.budgetSeries,adv,range),0), spend=rel.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,range),0);
+    const real=sumIn(ADV_LEADS[adv].real,range), cpl=real>0?advBudgetAllAccounts(adv,range)/real:0, A=lapCsAgg([adv],range);
+    const tg=calcTargetInRange(adv,range), P=(k,v,s,c)=>out.push({k:'🧭 Tindak Lanjut · '+adv,v:v,s:s,cls:c||'bad'});
+    if(real>0 && cplOver(adv,'real',range,cpl)) P('','CPL di atas target','CPL Real '+rupiah(cpl)+' > target '+rupiah(cplLimit(adv,'real',range))+'. Cek targeting, kreatif, dan jam tayang.');
+    if(spend>0 && A.csRows.length>0 && A.omzet/spend<1) P('','ROAS di bawah 1x','ROAS '+(A.omzet/spend).toFixed(2)+'x: omzet belum menutup spend + PPN. Tinjau kualitas lead dan closing.');
+    const rk=lapKatRank(A.nr); if(rk[0] && A.notReal>=5 && rk[0].jumlah/A.notReal>=0.4) P('','Alasan tidak real dominan',rk[0].kategori+' = '+Math.round(rk[0].jumlah/A.notReal*100)+'% dari lead tidak real. Perbaiki targeting/form.');
+    if(tg>0 && budget<tg) P('','Spending di bawah target','Kurang '+rupiah(tg-budget)+' dari target periode. Kejar spending.','');
+  });
+  const cs={}; lapCsAgg(advs,range).csRows.forEach(c=>{const o=cs[c.cs]||(cs[c.cs]={r:0,c:0}); o.r+=lapN(c.leadReal); o.c+=lapN(c.hasilClosing);});
+  Object.keys(cs).filter(n=>cs[n].r>=10 && cs[n].c/cs[n].r*100<K).sort((a,b)=>cs[a].c/cs[a].r-cs[b].c/cs[b].r).slice(0,2)
+    .forEach(n=>out.push({k:'🧭 Tindak Lanjut · CS',v:n+' di bawah KPI',s:'Closing rate '+(cs[n].c/cs[n].r*100).toFixed(1)+'% vs KPI '+K+'% ('+num(cs[n].c)+' dari '+num(cs[n].r)+' lead real). Review follow-up.',cls:'bad'}));
+  return out.length?out.slice(0,6):[{k:'🧭 Tindak Lanjut',v:'Tidak ada tindakan mendesak',s:'CPL, ROAS, spending, alasan tidak real, dan closing rate CS dalam batas.',cls:'good'}];
+}
+function renderLapWeekly(){
+  const el=document.getElementById('lapWeekly'); if(!el) return;
+  const end=new Date(ANCHOR_DATE); end.setHours(0,0,0,0), advs=ADVERTISERS.slice(), K=CS_CLOSING_RATE_KPI, W=[];
+  for(let k=5;k>=0;k--){const e=new Date(end); e.setDate(e.getDate()-7*k); const s=new Date(e); s.setDate(s.getDate()-6); W.push([s,e]);}
+  const col=r=>r==null?'–':'<b style="color:'+(r>=K?'var(--good)':'var(--bad)')+'">'+r.toFixed(1)+'%</b>', rt=A=>A.real>0?A.closing/A.real*100:null;
+  let prev=null;
+  const rows=W.map(([s,e])=>{const A=lapCsAgg(advs,[s,e]), r=rt(A), d=(r!=null&&prev!=null)?(r-prev):null; prev=r;
+    return [fmtDateID(s).replace(/ 20\d\d/,'')+' – '+fmtDateID(e).replace(/ 20\d\d/,''),num(A.real),num(A.closing),col(r),d==null?'–':'<span style="color:'+(d>=0?'var(--good)':'var(--bad)')+'">'+(d>=0?'▲ ':'▼ ')+Math.abs(d).toFixed(1)+' pt</span>']
+      .concat(advs.map(a=>col(rt(lapCsAgg([a],[s,e])))));});
+  el.innerHTML='<div class="panel-desc">6 minggu terakhir (rolling 7 hari). Hijau = mencapai KPI '+K+'%. Dihitung per tanggal input CS, jadi lebih stabil daripada closing rate harian.</div>'+ovTable(['Minggu','Lead Real','Closing','Closing Rate','vs Minggu Lalu'].concat(advs.map(ovEsc)),rows);
+}
+function lapInsCopyLines(pane){
+  const L=[]; pane.querySelectorAll('[data-lapins]').forEach(c=>{const t=c.querySelector('.panel-title'); L.push('','*'+(t?t.textContent.trim():'Insight')+'*');
+    c.querySelectorAll('tr').forEach(tr=>L.push('• '+[...tr.children].map(x=>x.textContent.trim().replace(/\s+/g,' ')).join(' | ')));}); return L;
+}
+function buildReportText(){
+  const base=buildReportTextCore();
+  if(!base || reportState.reportMode==='cs' || reportState.reportMode==='crm') return base;
+  try{
+    const range=getReportRange(), prev=getPrevRange(range), accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
+    const advs=ADVERTISERS.filter(a=>reportState.selectedAdvs.has(a)), L=['','*Efisiensi vs Periode Sebelumnya*'];
+    const ar=v=>v==null?'':' ('+(v>=0?'▲':'▼')+Math.abs(v).toFixed(0)+'%)', ch=(a,b)=>(a>0&&b>0)?(a/b-1)*100:null;
+    const f=rg=>adv=>{const sp=accs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,rg),0), real=sumIn(ADV_LEADS[adv].real,rg), A=lapCsAgg([adv],rg);
+      return {sp,real,cpl:real>0?advBudgetAllAccounts(adv,rg)/real:0,roas:sp>0?A.omzet/sp:0,cpp:A.closing>0?sp/A.closing:0};};
+    advs.forEach(adv=>{const c=f(range)(adv), p=f(prev)(adv); if(!c.sp && !c.real) return;
+      L.push('• *'+adv+'*: CPL Real '+rupiah(c.cpl)+ar(ch(c.cpl,p.cpl))+' | ROAS '+(c.roas>0?c.roas.toFixed(2)+'x':'-')+ar(ch(c.roas,p.roas))+' | Cost/Closing '+(c.cpp>0?rupiah(c.cpp):'-')+ar(ch(c.cpp,p.cpp)));});
+    const act=lapActionItems(advs,range).filter(i=>i.cls==='bad');
+    if(act.length){L.push('','*Tindak Lanjut*'); act.forEach(i=>L.push('• '+i.k.replace('🧭 Tindak Lanjut · ','')+': '+i.v+' — '+i.s));}
+    return L.length>2||act.length ? base+'\n'+L.join('\n') : base;
+  }catch(e){ console.error('Teks laporan tambahan:',e); return base; }
+}
 function render(){
   const range = getRange();
   document.getElementById('dateRangeLabel').textContent = fmtDateID(range[0])+' - '+fmtDateID(range[1]);
@@ -3012,7 +3377,7 @@ function render(){
         '<div class="chart-delta-strip">'+
           '<div class="cds-item accent-1"><div class="cds-top"><span class="cds-icon">📈</span>'+deltaBadge(r.real,r.prev.real)+'</div><span class="cds-v">'+num(r.real)+'</span><span class="cds-k">Real</span></div>'+
           '<div class="cds-item accent-2"><div class="cds-top"><span class="cds-icon">📥</span>'+deltaBadge(r.oo,r.prev.oo)+'</div><span class="cds-v">'+num(r.oo)+'</span><span class="cds-k">OO</span></div>'+
-          '<div class="cds-item accent-3"><div class="cds-top"><span class="cds-icon">🎯</span>'+deltaBadge(r.pctLead,r.prev.pctLead)+'</div><span class="cds-v">'+r.pctLead.toFixed(2)+'%</span><span class="cds-k">% Lead</span></div>'+
+          '<div class="cds-item accent-3"><div class="cds-top"><span class="cds-icon">🎯</span>'+deltaBadge(r.pctLead,r.prev.pctLead)+'</div><span class="cds-v">'+r.pctLead.toFixed(2)+'%</span><span class="cds-k">% Lead Real</span></div>'+
           '<div class="cds-item accent-4"><div class="cds-top"><span class="cds-icon">💳</span>'+deltaBadge(r.budget,r.prev.budget)+'</div><span class="cds-v">'+rupiah(r.budget)+'</span><span class="cds-k">Budget</span></div>'+
           '<div class="cds-item accent-5"><div class="cds-top"><span class="cds-icon">🧾</span>'+deltaBadge(r.spendPPN,r.prev.spendPPN)+'</div><span class="cds-v">'+rupiah(r.spendPPN)+'</span><span class="cds-k">Budget+PPN</span></div>'+
           '<div class="cds-item accent-6"><div class="cds-top"><span class="cds-icon">⚠️</span>'+deltaBadgeAbs(r.kekurangan,r.prev.kekurangan,true)+'</div><span class="cds-v">'+rupiah(r.kekurangan)+'</span><span class="cds-k">Kekurangan</span></div>'+
@@ -3040,6 +3405,8 @@ function render(){
   renderAdvMetricChart(accs, range);
 
   // ---- Ringkasan Hasil CS: ikut sinkron dengan filter tanggal global ----
+  if(typeof renderOverviewCs==='function') renderOverviewCs(range);
+  try{ renderOvInsights(range, accs); renderLapWeekly(); }catch(e){ console.error('Insight tambahan:',e); }
   if(typeof renderCsData==='function') renderCsData();
   if(typeof renderCrmAll==='function') renderCrmAll();
 }
@@ -3630,6 +3997,7 @@ if(btnCopyLap) btnCopyLap.addEventListener('click', ()=>{
   const pane = document.querySelector('#laporanReportArea .lap-pane.active'); if(!pane) return;
   const L = ['*'+((pane.querySelector('.lap-print-title')||{}).textContent||'Laporan').trim()+'* — '+((document.getElementById('laporanPeriodLabel')||{}).textContent||''), ''];
   pane.querySelectorAll('.card.kpi, .lap-hl').forEach(el=>{ const lb=el.querySelector('.label,.k'), vl=el.querySelector('.value,.v'); if(lb&&vl) L.push('• '+lb.textContent.trim()+': '+vl.textContent.trim()); });
+  L.push(...lapInsCopyLines(pane));
   const txt = L.join('\n'), old = btnCopyLap.textContent, ok = ()=>{ btnCopyLap.textContent='✅ Tersalin'; setTimeout(()=>btnCopyLap.textContent=old,1500); };
   (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(ok).catch(()=>{ const t=document.createElement('textarea'); t.value=txt; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); ok(); }catch(e){} t.remove(); });
 });
@@ -3714,6 +4082,7 @@ function renderLaporanSorotan(advRows, range){
   if(rNR) items.push({ k:'🚫 Alasan Lead Tidak Real Terbanyak', v:rNR.kategori, s:num(rNR.jumlah)+' lead · '+pctFmt(A.notReal>0?rNR.jumlah/A.notReal*100:0)+' dari yang tercatat' });
   if(rNC) items.push({ k:'❌ Alasan Tidak Closing Terbanyak', v:rNC.kategori, s:num(rNC.jumlah)+' lead · '+pctFmt(A.notClosing>0?rNC.jumlah/A.notClosing*100:0)+' dari yang tercatat' });
 
+  try{ lapActionItems(advRows.map(r=>r.adv), range).forEach(i=>items.push(i)); }catch(e){ console.error('Tindak lanjut:',e); }
   if(!items.length){ el.innerHTML = '<div class="muted-note">Belum cukup data untuk menampilkan sorotan.</div>'; return; }
   el.innerHTML = '<div class="lap-hl-grid">'+items.map(i=>
     '<div class="lap-hl '+(i.cls||'')+'"><div class="k">'+i.k+'</div><div class="v">'+escapeHtml(i.v)+'</div><div class="s">'+escapeHtml(i.s)+'</div></div>'
@@ -4081,6 +4450,7 @@ async function exportLaporanPPT(){
       addCards('Ringkasan', collectCards(p, '.card.kpi, .insight-mini-card'));
       addCards('Sorotan Periode Ini', collectCards(p, '.lap-hl'));
       addChart('Tren Performa Harian', 'laporanTrendChart');
+      document.querySelectorAll('#lapPane-ringkasan [data-lapins]').forEach(c=>addTable(c.querySelector('.panel-title').textContent.trim(), c.querySelector('table')));
     }
     p = pane('advertiser');
     if(p){
@@ -4091,6 +4461,7 @@ async function exportLaporanPPT(){
     if(p){
       addTable('Laporan Gabungan — Advertiser & Hasil CS', document.getElementById('laporanGabunganTable') && document.getElementById('laporanGabunganTable').closest('table'));
       addTable('Rekap per CS', document.getElementById('laporanCsTable') && document.getElementById('laporanCsTable').closest('table'));
+      document.querySelectorAll('#lapPane-cs [data-lapins]').forEach(c=>addTable(c.querySelector('.panel-title').textContent.trim(), c.querySelector('table')));
     }
     p = pane('kategori');
     if(p){
@@ -4135,7 +4506,7 @@ const METRIC_LABELS = {
   budget:'Budget (Non PPN)', spendPPN:'Budget + PPN',
   leadReal:'Lead Real', leadOO:'Lead OO',
   cplReal:'CPL Real', cplOO:'CPL OO',
-  pctLead:'% Lead (Real dari Total Lead)'
+  pctLead:'% Lead Real (dari Lead OO)'
 };
 // Warna berbeda per metrik (dipakai saat multi-metrik, satu advertiser)
 const METRIC_DASH = {budget:'solid',spendPPN:[6,3],leadReal:'solid',leadOO:[6,3],cplReal:'solid',cplOO:[6,3],pctLead:'solid'};
@@ -4292,7 +4663,7 @@ function renderAdvCardMiniCharts(advRows, range){
 /* ===== CUSTOM LEGEND RENDERER ===== */
 const METRIC_SHORT = {
   budget:'Non PPN', spendPPN:'+PPN', leadReal:'Lead Real',
-  leadOO:'Lead OO', cplReal:'CPL Real', cplOO:'CPL OO', pctLead:'% Lead'
+  leadOO:'Lead OO', cplReal:'CPL Real', cplOO:'CPL OO', pctLead:'% Lead Real'
 };
 function renderAdvLegend(datasets, advsWithAccs, metrics, multiMetric, metricColors){
   const wrap = document.getElementById('advChartLegend');
@@ -6352,6 +6723,7 @@ function renderCrmAll(){
   renderCrmOverview();
   renderCrmPerson();
   renderCrmHistory();
+  if(typeof renderOverviewCrm==='function') renderOverviewCrm(getRange());
   if(typeof renderLaporanCrm==='function'){ renderLaporanCrm(getRange()); if(typeof lapEnhanceTables==='function') lapEnhanceTables(); }
 }
 
@@ -7221,7 +7593,7 @@ function csRowInRange(tanggal, range){
   return d >= range[0] && d <= range[1];
 }
 
-function buildReportText(){
+function buildReportTextCore(){
   if(reportState.reportMode === 'cs') return buildCsReportText();
   if(reportState.reportMode === 'gabungan') return buildGabunganReportText();
   if(reportState.reportMode === 'crm') return buildCrmReportText();
@@ -7297,7 +7669,7 @@ function buildAdvertiserReportText(){
     }
     if(reportState.showLead){
       lines.push('   Lead Real    : ' + num(real) + '  |  OO: ' + num(oo));
-      lines.push('   % Lead       : ' + pctLead + '%');
+      lines.push('   % Lead Real  : ' + pctLead + '%');
     }
     if(reportState.showCPL && real>0){
       lines.push('   CPL Real     : ' + rupiah(cplReal));
