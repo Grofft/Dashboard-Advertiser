@@ -8915,16 +8915,91 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
 </script>
 
 <style>
-.bchip{display:inline-block;padding:4px 10px;margin:3px 4px 3px 0;border-radius:14px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);font-size:12px;cursor:pointer;user-select:none;}
-.bchip.on{background:var(--accent-dim);border-color:var(--accent);color:#EAFFF2;}
-.br-team{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 12px;}
-.br-team div{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;}
-.br-team b{display:block;font-size:11px;letter-spacing:.4px;color:var(--muted);margin-bottom:2px;}
-.br-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
-.br-kpis div{background:var(--panel-2);border-radius:8px;padding:8px 10px;}
-.br-kpis span{display:block;font-size:11px;color:var(--muted);}
-.br-kpis b{font-size:15px;}
-@media(max-width:700px){.br-team{grid-template-columns:1fr;}}
+/* ===== Halaman Per Brand: tampilan baru ===== */
+.bchip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;margin:0;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);font-size:12px;cursor:pointer;user-select:none;transition:background .15s,border-color .15s,color .15s,transform .1s;}
+.bchip:hover{border-color:var(--accent);color:var(--text);}
+.bchip:active{transform:scale(.96);}
+.bchip.on{background:color-mix(in srgb,var(--accent) 16%,var(--panel));border-color:var(--accent);color:var(--text);font-weight:600;}
+.bchip.on::before{content:"✓";font-size:10px;color:var(--accent);}
+.br-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.br-kpis div,.br-k{background:var(--panel-2);border:1px solid transparent;border-radius:10px;padding:10px 12px;transition:border-color .15s,transform .15s;}
+.br-kpis div:hover,.br-k:hover{border-color:var(--line);}
+.br-kpis span,.br-k span{display:block;font-size:11.5px;color:var(--muted);margin-bottom:3px;}
+.br-kpis b,.br-k b{font-size:16px;font-weight:700;}
+.br-k.hero{background:color-mix(in srgb,var(--accent) 8%,var(--panel-2));border-color:color-mix(in srgb,var(--accent) 22%,transparent);}
+.br-k.hero b{font-size:19px;}
+.br-zero{color:var(--muted);font-weight:500;}
+.br-dash{color:var(--muted);}
+.br-roas{display:inline-block;padding:1px 9px;border-radius:999px;font-weight:700;font-size:.92em;}
+.br-roas.good{color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent);}
+.br-roas.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent);}
+.br-bar{display:block;height:4px;border-radius:4px;background:var(--line);margin-top:7px;overflow:hidden;}
+.br-bar u{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .4s;}
+.br-tools{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;}
+.br-find{flex:1;min-width:180px;max-width:320px;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 12px;font-size:13px;}
+.br-find:focus,.br-q:focus{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:1px;}
+.br-lnk{background:none;border:0;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;padding:4px 6px;border-radius:6px;}
+.br-lnk:hover{background:color-mix(in srgb,var(--accent) 12%,transparent);}
+.br-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;box-shadow:var(--shadow-card);overflow:hidden;transition:border-color .2s;}
+.br-card:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));}
+.br-card.br-hide{display:none;}
+.br-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+.br-head:hover{background:color-mix(in srgb,var(--accent) 5%,transparent);}
+.br-ttl{flex:1;min-width:0;}
+.br-ttl h3{margin:0;font-size:16px;font-weight:700;font-family:'Roboto',sans-serif;}
+.br-ttl small{color:var(--muted);font-size:12px;}
+.br-hr{display:flex;align-items:center;gap:8px;}
+.br-hr .lbl{font-size:11.5px;color:var(--muted);}
+.br-av{--h:150;width:38px;height:38px;border-radius:11px;display:inline-grid;place-items:center;font-weight:700;font-size:14px;color:#fff;background:hsl(var(--h) 45% 38%);flex-shrink:0;}
+.br-av.xs{width:20px;height:20px;border-radius:50%;font-size:9px;}
+.br-ico{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);cursor:pointer;display:inline-grid;place-items:center;font-size:14px;transition:all .15s;}
+.br-ico:hover{color:var(--text);border-color:var(--accent);}
+.br-ico.danger:hover{color:var(--bad);border-color:var(--bad);}
+.br-chev{transition:transform .25s;font-size:12px;color:var(--muted);}
+.br-card.coll .br-chev{transform:rotate(-90deg);}
+.br-body{padding:0 16px 16px;display:grid;gap:14px;}
+.br-card.coll .br-body{display:none;}
+.br-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.br-team{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.br-tg{background:var(--panel-2);border-radius:10px;padding:10px 12px;}
+.br-tl{font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:7px;}
+.br-pills{display:flex;flex-wrap:wrap;gap:5px;}
+.br-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:12px;font-family:inherit;color:var(--text);}
+.br-pill.empty{padding:3px 11px;border-style:dashed;color:var(--muted);cursor:pointer;}
+.br-pill.empty:hover{color:var(--accent);border-color:var(--accent);}
+.br-tabs{display:inline-flex;gap:4px;background:var(--panel-2);padding:4px;border-radius:10px;width:max-content;max-width:100%;}
+.br-tab{border:0;background:none;color:var(--muted);font-size:12.5px;font-weight:600;padding:6px 14px;border-radius:7px;cursor:pointer;font-family:inherit;}
+.br-tab.on{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.18);}
+.br-pane{display:none;}.br-pane.on{display:block;animation:brIn .2s ease;}
+@keyframes brIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.br-setbtn{display:flex;align-items:center;gap:8px;width:100%;background:none;border:1px dashed var(--line);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;}
+.br-setbtn:hover{border-color:var(--accent);}
+.br-setbtn .br-chev{margin-left:auto;}
+.br-set.open .br-setbtn .br-chev{transform:rotate(180deg);}
+.br-setw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease;}
+.br-set.open .br-setw{grid-template-rows:1fr;}
+.br-setin{overflow:hidden;min-height:0;}
+.br-setpad{padding-top:12px;display:grid;gap:14px;}
+.br-q{width:100%;max-width:280px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 11px;font-size:12.5px;}
+.br-sgh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12.5px;font-weight:600;}
+.br-sgh em{font-style:normal;font-weight:400;color:var(--muted);margin-left:4px;}
+.br-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.br-accs{display:flex;flex-wrap:wrap;gap:6px;}
+.br-tbl th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap;}
+.br-tbl th[data-sort]:hover{filter:brightness(1.12);}
+.br-tbl th .ar{opacity:.4;margin-left:4px;font-size:10px;}
+.br-tbl th.sorted .ar{opacity:1;}
+.br-tbl td{vertical-align:middle;}
+.br-tbl tr.tot td{font-weight:700;border-top:2px solid var(--line);}
+.br-tbl .bn{display:flex;align-items:center;gap:9px;}
+.br-best{font-size:10.5px;font-weight:700;color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent);border-radius:999px;padding:1px 8px;}
+.br-cb{min-width:130px;}
+.br-cb i{display:block;height:4px;border-radius:4px;background:var(--line);margin-top:5px;overflow:hidden;}
+.br-cb u{display:block;height:100%;background:var(--accent);border-radius:4px;}
+.br-empty{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--muted);}
+.br-card:focus-within{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));}
+@media(max-width:800px){.br-hero{grid-template-columns:repeat(2,1fr);}.br-team{grid-template-columns:1fr;}.br-hr .lbl{display:none;}}
+@media(prefers-reduced-motion:reduce){.br-pane.on{animation:none;}.br-setw,.br-bar u{transition:none;}}
 </style>
 <script>
 /* ===== PER BRAND: brand -> advertiser, CS, CRM, akun. Disimpan di localStorage (kunci terpisah). ===== */
@@ -8994,26 +9069,51 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     return {spend,omzet,closing,real,oo,cOmzet,cClosing,cPot,bc,adReal,adOO,hasAd:lb.length>0,n:cs.length+crm.length};
   }
   const K=(l,v)=>'<div><span>'+l+'</span><b>'+v+'</b></div>';
+  /* ---- State tampilan (tidak disimpan): kartu diciutkan, panel atur terbuka, tab aktif, urutan tabel ---- */
+  const OPEN=new Set(), COLL=new Set(), TAB={}; let SORT={k:'tot',d:-1}, QUERY='';
+  const ini=t=>String(t).trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+  const hue=t=>{ let h=7; for(const c of String(t)) h=(h*31+c.charCodeAt(0))%360; return h; };
+  const av=(t,sz)=>'<span class="br-av'+(sz?' '+sz:'')+'" style="--h:'+hue(t)+'">'+E(ini(t))+'</span>';
+  const fx=v=>v.toFixed(2).replace('.',',')+'x';
+  const badge=(o,sp)=> sp>0 ? '<span class="br-roas '+(o/sp<1?'bad':'good')+'">'+fx(o/sp)+'</span>' : '<span class="br-dash">-</span>';
+  const money=v=> v ? rupiah(v) : '<span class="br-zero">'+rupiah(0)+'</span>';
+  const cnt=v=> v ? num(v) : '<span class="br-zero">0</span>';
+  const KT=(l,v,cls,sub)=>'<div class="br-k '+(cls||'')+'"><span>'+l+'</span><b>'+v+'</b>'+(sub||'')+'</div>';
+  const pool=k=> k==='advertisers' ? ADVERTISERS.slice() : (k==='cs' ? CS_LIST : CRM_LIST).map(nm);
+  const cardOf=n=>[...document.querySelectorAll('#brCards .br-card')].find(c=>c.dataset.bc===n);
+
   function card(b,unassigned){
-    const x=stats(b), roas=x.spend>0?x.omzet/x.spend:null;
-    const list=k=>(b[k]||[]).length?(b[k]).map(E).join(', '):'<span class="muted-note">belum diatur</span>';
-    let h='<div class="card" style="padding:14px 16px;margin-bottom:14px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><div class="panel-title" style="margin:0;">'+(unassigned?'Tanpa Brand':E(b.name))+'</div>'+(unassigned?'<span class="muted-note">Data lama / belum dipilih brand-nya</span>':'<span class="bchip" data-del="'+E(b.name)+'">Hapus brand</span>')+'</div>';
-    if(!unassigned) h+='<div class="br-team"><div><b>ADVERTISER</b>'+list('advertisers')+'</div><div><b>CS</b>'+list('cs')+'</div><div><b>CRM</b>'+list('crm')+'</div></div>';
-    h+='<div class="muted-note" style="margin:8px 0 4px;">Hasil iklan &amp; CS</div><div class="br-kpis">'
-      +K('Spend + PPN',unassigned?'-':rupiah(x.spend))+K('Lead OO Iklan',x.hasAd?num(x.adOO):'-')+K('Lead Real Iklan',x.hasAd?num(x.adReal):'-')+K('CPL Real',(x.hasAd&&x.adReal>0)?rupiah(x.spend/x.adReal):'-')+K('Lead OO (CS)',num(x.oo))+K('Lead Real (CS)',num(x.real))+K('Closing CS',num(x.closing))
-      +K('Closing Rate',x.real>0?pctFmt(x.closing/x.real*100):'-')+K('Omzet CS',rupiah(x.omzet))
-      +K('ROAS CS',roas==null?'-':roas.toFixed(2).replace('.',',')+'x')+K('ROAS Total (CS+CRM)',(unassigned||!(x.spend>0))?'-':((x.omzet+x.cOmzet)/x.spend).toFixed(2).replace('.',',')+'x')+K('Cost / Closing',(x.closing>0&&!unassigned)?rupiah(x.spend/x.closing):'-')+'</div>'
-      +'<div class="muted-note" style="margin:10px 0 4px;">CRM</div><div class="br-kpis">'
-      +K('Total Broadcast',num(x.bc))+K('Closing CRM',num(x.cClosing))+K('Omzet CRM',rupiah(x.cOmzet))+K('Potensial',num(x.cPot))+K('Total Omzet',rupiah(x.omzet+x.cOmzet))+'</div>';
+    const x=stats(b), name=unassigned?'Tanpa Brand':b.name, tot=x.omzet+x.cOmzet, hasSp=!unassigned&&x.spend>0;
+    const coll=COLL.has(name), opn=OPEN.has(name), tab=TAB[name]||'cs', n=E(name);
+    const rate=x.real>0?x.closing/x.real*100:null;
+    const team=(k,label)=>{ const l=b[k]||[]; return '<div class="br-tg"><div class="br-tl">'+label+'</div><div class="br-pills">'+(l.length?l.map(v=>'<span class="br-pill">'+av(v,'xs')+E(v)+'</span>').join(''):'<button class="br-pill empty" data-open="'+n+'">+ belum diatur</button>')+'</div></div>'; };
+    const grp=(k,label)=>{ const items=pool(k), sel=(b[k]||[]).filter(v=>items.includes(v)).length;
+      return '<div><div class="br-sgh"><span>'+label+'<em>'+sel+' dari '+items.length+' dipilih</em></span><span><button class="br-lnk" data-all="'+k+'" data-brand="'+n+'">Pilih semua</button><button class="br-lnk" data-none="'+k+'" data-brand="'+n+'">Kosongkan</button></span></div><div class="br-chips">'+chips(b,k,items.map(v=>({v:v,l:v})))+'</div></div>'; };
+    let h='<div class="br-card'+(coll?' coll':'')+'" data-bc="'+n+'"><div class="br-head" data-toggle="'+n+'">'+av(name)
+      +'<div class="br-ttl"><h3>'+n+'</h3><small>'+(unassigned?'Data lama / belum dipilih brand-nya':(b.advertisers||[]).length+' advertiser, '+(b.cs||[]).length+' CS, '+(b.crm||[]).length+' CRM')+'</small></div>'
+      +'<div class="br-hr">'+(hasSp?'<span class="lbl">ROAS Total</span>'+badge(tot,x.spend):'')
+      +(unassigned?'':'<button class="br-ico" data-open="'+n+'" title="Atur tim &amp; akun" aria-label="Atur tim dan akun">⚙</button><button class="br-ico danger" data-del="'+n+'" title="Hapus brand" aria-label="Hapus brand">✕</button>')
+      +'<span class="br-chev">▼</span></div></div><div class="br-body">';
+    h+='<div class="br-hero">'+KT('Spend + PPN',unassigned?'-':money(x.spend),'hero')+KT('Total Omzet',money(tot),'hero')+KT('ROAS Total',hasSp?badge(tot,x.spend):'-','hero')+KT('Cost / Closing',(x.closing>0&&!unassigned)?rupiah(x.spend/x.closing):'-','hero')+'</div>';
+    if(!unassigned) h+='<div class="br-team">'+team('advertisers','Advertiser')+team('cs','CS')+team('crm','CRM')+'</div>';
+    h+='<div class="br-tabs" role="tablist"><button class="br-tab'+(tab==='cs'?' on':'')+'" data-tab="cs" data-bn="'+n+'">Iklan &amp; CS</button><button class="br-tab'+(tab==='crm'?' on':'')+'" data-tab="crm" data-bn="'+n+'">CRM</button></div>'
+      +'<div class="br-pane'+(tab==='cs'?' on':'')+'" data-pane="cs"><div class="br-kpis">'
+      +KT('Lead OO Iklan',x.hasAd?cnt(x.adOO):'-')+KT('Lead Real Iklan',x.hasAd?cnt(x.adReal):'-')+KT('CPL Real',(x.hasAd&&x.adReal>0)?rupiah(x.spend/x.adReal):'-')
+      +KT('Lead OO (CS)',cnt(x.oo))+KT('Lead Real (CS)',cnt(x.real))+KT('Closing CS',cnt(x.closing))
+      +KT('Closing Rate',rate==null?'-':pctFmt(rate),'',rate==null?'':'<i class="br-bar"><u style="width:'+Math.min(100,rate)+'%"></u></i>')
+      +KT('Omzet CS',money(x.omzet))+KT('ROAS CS',hasSp?badge(x.omzet,x.spend):'-')+'</div></div>'
+      +'<div class="br-pane'+(tab==='crm'?' on':'')+'" data-pane="crm"><div class="br-kpis">'
+      +KT('Total Broadcast',cnt(x.bc))+KT('Closing CRM',cnt(x.cClosing))+KT('Omzet CRM',money(x.cOmzet))+KT('Potensial',cnt(x.cPot))+KT('Total Omzet',money(tot))+'</div></div>';
     if(!unassigned){
-      h+='<details style="margin-top:12px;"><summary style="cursor:pointer;font-size:13px;font-weight:600;">⚙ Atur tim &amp; akun brand ini</summary>'
-        +'<div class="muted-note" style="margin-top:8px;">Advertiser</div>'+chips(b,'advertisers',ADVERTISERS.map(a=>({v:a,l:a})))
-        +'<div class="muted-note" style="margin-top:6px;">CS</div>'+chips(b,'cs',CS_LIST.map(c=>({v:nm(c),l:nm(c)})))
-        +'<div class="muted-note" style="margin-top:6px;">CRM</div>'+chips(b,'crm',CRM_LIST.map(c=>({v:nm(c),l:nm(c)})))
-        +'<div class="muted-note" style="margin-top:6px;">Akun iklan (otomatis mengikuti advertiser yang dipilih)</div>'+(accsOf(b).length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">'+accsOf(b).map(a=>'<span class="tag" style="font-size:11.5px;">'+E(a.name)+' <span class="muted-note">('+E(a.advertiser||'-')+')</span></span>').join('')+'</div>':'<span class="muted-note">Belum ada — pilih advertiser dulu, akunnya ikut otomatis.</span>')+shareRows(b)
-        +'</details>';
+      const accs=accsOf(b);
+      h+='<div class="br-set'+(opn?' open':'')+'"><button class="br-setbtn" data-open="'+n+'">⚙ Atur tim &amp; akun brand ini<span class="br-chev">▼</span></button>'
+        +'<div class="br-setw"><div class="br-setin"><div class="br-setpad"><input class="br-q" type="search" placeholder="Cari nama di daftar..." aria-label="Cari nama">'
+        +grp('advertisers','Advertiser')+grp('cs','CS')+grp('crm','CRM')
+        +'<div><div class="br-sgh"><span>Akun iklan<em>otomatis mengikuti advertiser yang dipilih</em></span></div>'
+        +(accs.length?'<div class="br-accs">'+accs.map(a=>'<span class="br-pill empty" style="cursor:default;border-style:solid;padding:3px 11px;">'+E(a.name)+' <span class="muted-note">('+E(a.advertiser||'-')+')</span></span>').join('')+'</div>':'<span class="muted-note">Belum ada — pilih advertiser dulu, akunnya ikut otomatis.</span>')+shareRows(b)+'</div>'
+        +'</div></div></div></div>';
     }
-    return h+'</div>';
+    return h+'</div></div>';
   }
   function renderBrands(){
     fillSelects();
@@ -9022,45 +9122,74 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     if(sm){
       if(!BR.length){ sm.innerHTML=''; }
       else {
-        const rx=(o,s)=> s>0 ? (()=>{ const v=o/s; return '<span style="color:'+(v<1?'var(--bad)':'var(--good)')+';font-weight:700;">'+v.toFixed(2).replace('.',',')+'x</span>'; })() : '-';
-        const rows=BR.map(b=>({n:b.name,x:stats(b)}));
-        const T=rows.reduce((t,r)=>({sp:t.sp+r.x.spend,oc:t.oc+r.x.omzet,or:t.or+r.x.cOmzet,cl:t.cl+r.x.closing+r.x.cClosing}),{sp:0,oc:0,or:0,cl:0});
+        const rows=BR.map(b=>{ const x=stats(b), tot=x.omzet+x.cOmzet, cl=x.closing+x.cClosing;
+          return {n:b.name,sp:x.spend,oc:x.omzet,or:x.cOmzet,tot,cl,rcs:x.spend>0?x.omzet/x.spend:-1,rt:x.spend>0?tot/x.spend:-1,cpc:(x.spend>0&&cl>0)?x.spend/cl:-1}; });
+        const T=rows.reduce((t,r)=>({sp:t.sp+r.sp,oc:t.oc+r.oc,or:t.or+r.or,cl:t.cl+r.cl}),{sp:0,oc:0,or:0,cl:0});
         const loose=stats({name:null,accounts:[]});
-        const tr=(n,sp,oc,orr,cl,bold)=>'<tr'+(bold?' style="font-weight:700;"':'')+'><td>'+n+'</td><td>'+(sp==null?'-':rupiah(sp))+'</td><td>'+rupiah(oc)+'</td><td>'+rupiah(orr)+'</td><td>'+rupiah(oc+orr)+'</td><td>'+(sp==null?'-':rx(oc,sp))+'</td><td>'+(sp==null?'-':rx(oc+orr,sp))+'</td><td>'+(sp!=null&&cl>0?rupiah(sp/cl):'-')+'</td></tr>';
-        sm.innerHTML='<div class="card" style="padding:14px 16px;margin-bottom:14px;"><div class="panel-title">Perbandingan Brand</div><div class="panel-desc">ROAS CS = Omzet CS ÷ Spend+PPN. ROAS Total = (Omzet CS + Omzet CRM) ÷ Spend+PPN. Merah bila di bawah 1x. Ikut filter tanggal.</div><div class="table-scroll"><table><thead><tr><th>Brand</th><th>Spend + PPN</th><th>Omzet CS</th><th>Omzet CRM</th><th>Total Omzet</th><th>ROAS CS</th><th>ROAS Total</th><th>Cost / Closing</th></tr></thead><tbody>'
-          +rows.map(r=>tr(E(r.n),r.x.spend,r.x.omzet,r.x.cOmzet,r.x.closing+r.x.cClosing,false)).join('')
-          +(loose.n>0?tr('Tanpa Brand',null,loose.omzet,loose.cOmzet,0,false):'')
-          +tr('Total semua brand',T.sp,T.oc,T.or,T.cl,true)
-          +'</tbody></table></div><div class="muted-note" style="margin-top:6px;">Cost / Closing memakai total closing CS + CRM. Baris Total hanya menjumlah brand bernama; "Tanpa Brand" tidak punya spend karena belum terhubung ke advertiser brand.</div></div>';
+        const {k,d}=SORT; rows.sort((p,q)=> k==='n' ? d*p.n.localeCompare(q.n) : d*((p[k]||0)-(q[k]||0)));
+        const maxTot=Math.max(1,...rows.map(r=>r.tot),loose.omzet+loose.cOmzet);
+        const withSp=rows.filter(r=>r.rt>=0), best=withSp.length>1?withSp.reduce((m,r)=>r.rt>m.rt?r:m).n:null;
+        const cell=(v)=>'<td class="br-cb">'+money(v)+'<i><u style="width:'+Math.round(v/maxTot*100)+'%"></u></i></td>';
+        const tr=(r,nameHtml,hasSp,cls)=>'<tr'+(cls?' class="'+cls+'"':'')+'><td>'+nameHtml+'</td><td>'+(hasSp?money(r.sp):'<span class="br-dash">-</span>')+'</td><td>'+money(r.oc)+'</td><td>'+money(r.or)+'</td>'+(cls==='tot'?'<td>'+money(r.tot)+'</td>':cell(r.tot))+'<td>'+(hasSp?badge(r.oc,r.sp):'<span class="br-dash">-</span>')+'</td><td>'+(hasSp?badge(r.oc+r.or,r.sp):'<span class="br-dash">-</span>')+'</td><td>'+((hasSp&&r.cl>0)?rupiah(r.sp/r.cl):'<span class="br-dash">-</span>')+'</td></tr>';
+        const th=(key,label)=>'<th data-sort="'+key+'" class="'+(SORT.k===key?'sorted':'')+'" title="Klik untuk mengurutkan">'+label+'<span class="ar">'+(SORT.k===key?(SORT.d>0?'▲':'▼'):'↕')+'</span></th>';
+        sm.innerHTML='<div class="card" style="padding:16px 18px;margin-bottom:14px;"><div class="panel-title">Perbandingan Brand</div><div class="panel-desc">ROAS CS = Omzet CS ÷ Spend+PPN. ROAS Total = (Omzet CS + Omzet CRM) ÷ Spend+PPN. Merah bila di bawah 1x. Ikut filter tanggal. Klik judul kolom untuk mengurutkan.</div><div class="table-scroll"><table class="br-tbl"><thead><tr>'
+          +th('n','Brand')+th('sp','Spend + PPN')+th('oc','Omzet CS')+th('or','Omzet CRM')+th('tot','Total Omzet')+th('rcs','ROAS CS')+th('rt','ROAS Total')+th('cpc','Cost / Closing')+'</tr></thead><tbody>'
+          +rows.map(r=>tr(r,'<div class="bn">'+av(r.n,'xs')+E(r.n)+(r.n===best?' <span class="br-best">ROAS terbaik</span>':'')+'</div>',true,'')).join('')
+          +(loose.n>0?tr({sp:0,oc:loose.omzet,or:loose.cOmzet,tot:loose.omzet+loose.cOmzet,cl:0},'<div class="bn">'+av('Tanpa Brand','xs')+'Tanpa Brand</div>',false,''):'')
+          +tr({sp:T.sp,oc:T.oc,or:T.or,tot:T.oc+T.or,cl:T.cl},'Total semua brand',true,'tot')
+          +'</tbody></table></div><div class="muted-note" style="margin-top:8px;">Cost / Closing memakai total closing CS + CRM. Baris Total hanya menjumlah brand bernama; "Tanpa Brand" tidak punya spend karena belum terhubung ke advertiser brand.</div></div>';
       }
     }
-    let h=BR.length?BR.map(b=>card(b)).join(''):'<div class="card" style="padding:18px;" ><div class="muted-note">Belum ada brand. Tambahkan di atas, lalu atur advertiser, CS, dan CRM-nya (akun iklan mengikuti advertiser).</div></div>';
+    let h=BR.length?'<div class="br-tools"><input id="brFind" class="br-find" type="search" placeholder="Cari brand..." value="'+E(QUERY)+'" aria-label="Cari brand"><div><button class="br-lnk" data-foldall="1">Ciutkan semua</button><button class="br-lnk" data-foldall="0">Buka semua</button></div></div>'+BR.map(b=>card(b)).join(''):'<div class="br-empty">Belum ada brand. Tambahkan di atas, lalu atur advertiser, CS, dan CRM-nya (akun iklan mengikuti advertiser).</div>';
     const loose={name:null,accounts:[]};
     if(BR.length && stats(loose).n>0) h+=card(loose,true);
-    root.innerHTML=h;
+    root.innerHTML=h; applyFind();
   }
+  function applyFind(){ const q=QUERY.trim().toLowerCase(); document.querySelectorAll('#brCards .br-card').forEach(c=>c.classList.toggle('br-hide',!!q&&!c.dataset.bc.toLowerCase().includes(q))); }
   document.getElementById('brAdd').addEventListener('click',()=>{
     const i=document.getElementById('brNewName'), n=i.value.trim();
     if(!n) return; if(BR.some(b=>b.name.toLowerCase()===n.toLowerCase())){ alert('Nama brand sudah ada.'); return; }
     BR.push({name:n,advertisers:[],cs:[],crm:[],accounts:[]}); i.value=''; save(); pushBrand(BR[BR.length-1]); renderBrands();
   });
+  document.getElementById('brSummary').addEventListener('click',ev=>{
+    const th=ev.target.closest('th[data-sort]'); if(!th) return;
+    const k=th.dataset.sort; SORT=SORT.k===k?{k,d:-SORT.d}:{k,d:k==='n'?1:-1}; renderBrands();
+  });
+  const touch=b=>{ save(); pushBrand(b); renderBrands(); };
   document.getElementById('brCards').addEventListener('click',ev=>{
-    const t=ev.target.closest('.bchip'); if(!t) return;
-    if(t.dataset.del){ if(confirm('Hapus brand "'+t.dataset.del+'"? Data yang sudah ber-brand akan masuk ke "Tanpa Brand".')){ delBrand(t.dataset.del); BR=BR.filter(b=>b.name!==t.dataset.del); if(FB===t.dataset.del){FB='';} save(); renderBrands(); if(window.render_global) window.render_global(); } return; }
-    const b=BR.find(x=>x.name===t.dataset.brand); if(!b) return;
-    const a=b[t.dataset.k]=b[t.dataset.k]||[], i=a.indexOf(t.dataset.v);
-    if(i>=0) a.splice(i,1); else a.push(t.dataset.v);
-    save(); pushBrand(b);
-    const open=ev.target.closest('details'); renderBrands();
-    const d=[...document.querySelectorAll('#brCards .card')].find(c=>c.innerHTML.includes('data-brand="'+E(b.name)+'"'));
-    if(d){ const dt=d.querySelector('details'); if(dt) dt.open=true; }
+    const q=s=>ev.target.closest(s); let t;
+    if(t=q('[data-del]')){ const n=t.dataset.del;
+      if(confirm('Hapus brand "'+n+'"? Data yang sudah ber-brand akan masuk ke "Tanpa Brand".')){ delBrand(n); BR=BR.filter(b=>b.name!==n); OPEN.delete(n); COLL.delete(n); if(FB===n){FB='';} save(); renderBrands(); if(window.render_global) window.render_global(); }
+      return; }
+    if(t=q('[data-open]')){ const n=t.dataset.open, c=cardOf(n); if(!c) return;
+      const st=c.querySelector('.br-set'); if(!st) return;
+      const open=t.classList.contains('empty') ? true : !st.classList.contains('open');
+      st.classList.toggle('open',open); open?OPEN.add(n):OPEN.delete(n);
+      if(open){ COLL.delete(n); c.classList.remove('coll'); setTimeout(()=>st.scrollIntoView({block:'nearest',behavior:'smooth'}),120); }
+      return; }
+    if(t=q('[data-tab]')){ const n=t.dataset.bn, c=cardOf(n); TAB[n]=t.dataset.tab;
+      c.querySelectorAll('.br-tab').forEach(x=>x.classList.toggle('on',x===t));
+      c.querySelectorAll('.br-pane').forEach(x=>x.classList.toggle('on',x.dataset.pane===t.dataset.tab)); return; }
+    if(t=q('[data-foldall]')){ const f=t.dataset.foldall==='1';
+      document.querySelectorAll('#brCards .br-card').forEach(c=>{ c.classList.toggle('coll',f); f?COLL.add(c.dataset.bc):COLL.delete(c.dataset.bc); }); return; }
+    if(t=q('[data-all],[data-none]')){ const b=BR.find(x=>x.name===t.dataset.brand); if(!b) return;
+      const k=t.dataset.all||t.dataset.none; b[k]=t.dataset.all?pool(k):[]; touch(b); return; }
+    if(t=q('.bchip')){ const b=BR.find(x=>x.name===t.dataset.brand); if(!b) return;
+      const a=b[t.dataset.k]=b[t.dataset.k]||[], i=a.indexOf(t.dataset.v);
+      if(i>=0) a.splice(i,1); else a.push(t.dataset.v);
+      touch(b); return; }
+    if(t=q('[data-toggle]')){ const n=t.dataset.toggle, c=cardOf(n); const f=!c.classList.contains('coll'); c.classList.toggle('coll',f); f?COLL.add(n):COLL.delete(n); }
+  });
+  document.getElementById('brCards').addEventListener('input',ev=>{
+    const t=ev.target;
+    if(t.id==='brFind'){ QUERY=t.value; applyFind(); }
+    else if(t.classList.contains('br-q')){ const v=t.value.trim().toLowerCase(); t.closest('.br-setpad').querySelectorAll('.bchip').forEach(c=>{ c.style.display=c.textContent.toLowerCase().includes(v)?'':'none'; }); }
   });
   document.getElementById('brCards').addEventListener('change',ev=>{
     const t=ev.target; if(!t.dataset||!t.dataset.share) return;
     const b=BR.find(x=>x.name===t.dataset.brand); if(!b) return;
     b.share=b.share||{}; b.share[t.dataset.acc]=Math.max(0,Math.min(100,Number(t.value)||0));
-    save(); pushBrand(b); renderBrands();
-    const d=[...document.querySelectorAll('#brCards .card')].find(c=>c.innerHTML.includes('data-brand="'+E(b.name)+'"')); if(d){ const dt=d.querySelector('details'); if(dt) dt.open=true; }
+    touch(b);
   });
   document.querySelectorAll('.navbtn[data-page="brand"], .global-filterbar *').forEach(el=>el.addEventListener('click',()=>setTimeout(renderBrands,50)));
   ['csTanggal','crmTanggal'].forEach(id=>{});
