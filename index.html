@@ -986,7 +986,7 @@ try{
   <div class="section-header" style="margin-top:0;"><h1>Per Brand</h1><div class="muted-note">Tiap brand: siapa advertiser, CS, dan CRM-nya, plus hasilnya. Ikut filter tanggal di atas.</div></div>
   <div class="card" style="padding:14px 16px;margin-bottom:14px;">
     <div class="kelola-add-row"><input type="text" id="brNewName" placeholder="Nama brand, cth: Brand A"><button class="btn" id="brAdd">+ Tambah Brand</button></div>
-    <div class="muted-note" style="margin-top:8px;">Brand dipilih di form Input CS dan Input CRM. Akun iklan dihubungkan ke brand di sini supaya spend bisa dihitung per brand.</div>
+    <div class="muted-note" style="margin-top:8px;">Brand dipilih di form Input CS dan Input CRM. Akun iklan tidak perlu dipilih: otomatis mengikuti advertiser yang dipilih di brand, jadi spend langsung dihitung per brand.</div>
   </div>
   <div id="brSummary"></div>
   <div id="brCards"></div>
@@ -8930,7 +8930,24 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
 /* ===== PER BRAND: brand -> advertiser, CS, CRM, akun. Disimpan di localStorage (kunci terpisah). ===== */
 (function(){
   const KEY='dashBrands_v1'; let BR=[], FB='';
-  const shareOf=(b,id)=> (b.share&&b.share[id]!=null)?Number(b.share[id]):100;
+  /* Akun iklan brand = otomatis semua akun yang dipakai advertiser brand ini (tidak perlu dipilih manual).
+     Bila satu advertiser dipakai di beberapa brand, spend akunnya dibagi rata kecuali alokasi diatur manual. */
+  const advBrandCount=adv=>Math.max(1,BR.filter(x=>(x.advertisers||[]).includes(adv)).length);
+  const accsOf=b=> (b&&(b.advertisers||[]).length) ? ACCOUNTS.filter(a=>b.advertisers.some(adv=>everOwnedBy(a,adv))) : [];
+  const shareOf=(b,id)=>{
+    if(b.share&&b.share[id]!=null) return Number(b.share[id]);
+    const a=ACCOUNTS.find(x=>String(x.id)===String(id));
+    return a ? 100/advBrandCount(a.advertiser) : 100;
+  };
+  // Deret harian akun milik brand: hanya hari saat pemilik akun = advertiser brand ini, dikali alokasi
+  const brandSeries=(b,a,series)=>{
+    const ex=(b.share&&b.share[a.id]!=null)?Number(b.share[a.id]):null;
+    return series.map((v,i)=>{
+      const ow=ownerAtIndex(a,i);
+      if(!(b.advertisers||[]).includes(ow)) return 0;
+      return (v||0)*(ex!=null?ex:100/advBrandCount(ow))/100;
+    });
+  };
   let DI=null; const dateIdx=()=>{ if(!DI){ DI={}; ALL_DATES.forEach((d,i)=>{ DI[fmtISO(d)]=i; }); } return DI; };
   try{ BR=JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){}
   const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(BR)); }catch(e){} };
@@ -8951,10 +8968,14 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     return items.length ? items.map(it=>{ const v=it.v; return '<span class="bchip'+(has(b,k,v)?' on':'')+'" data-brand="'+E(b.name)+'" data-k="'+k+'" data-v="'+E(v)+'">'+E(labelFn?labelFn(it):it.l)+'</span>'; }).join('') : '<span class="muted-note">Belum ada data.</span>';
   }
   function shareRows(b){
-    return (b.accounts||[]).map(id=>{
-      const a=ACCOUNTS.find(x=>String(x.id)===String(id)); if(!a) return '';
-      const tot=BR.filter(x=>has(x,'accounts',id)).reduce((t,x)=>t+shareOf(x,id),0);
-      return '<div class="muted-note" style="margin-top:6px;">Alokasi '+E(a.name)+' ke brand ini: <input type="number" min="0" max="100" step="5" value="'+shareOf(b,id)+'" data-share="1" data-brand="'+E(b.name)+'" data-acc="'+E(id)+'" style="width:64px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:3px 6px;"> % <span style="color:'+(tot>100?'var(--bad)':'var(--muted)')+';">(total di semua brand: '+tot+'%'+(tot>100?' — melebihi 100%':'')+')</span></div>';
+    return accsOf(b).map(a=>{
+      const id=a.id, owners=ensureOwnerHistory(a).map(h=>h.advertiser);
+      // Baris alokasi hanya muncul bila pemilik akun ini benar-benar dipakai >1 brand (atau alokasi sudah diatur manual)
+      const sharedAdvs=owners.filter(adv=>advBrandCount(adv)>1);
+      const shared=(b.share&&b.share[id]!=null) || (sharedAdvs.length>0 && (b.advertisers||[]).some(adv=>sharedAdvs.includes(adv)));
+      if(!shared) return '';
+      const tot=BR.filter(x=>accsOf(x).some(y=>y.id===id) && ((x.share&&x.share[id]!=null) || (x.advertisers||[]).some(adv=>sharedAdvs.includes(adv)))).reduce((t,x)=>t+shareOf(x,id),0);
+      return '<div class="muted-note" style="margin-top:6px;">Alokasi '+E(a.name)+' ke brand ini: <input type="number" min="0" max="100" step="5" value="'+(Math.round(shareOf(b,id)*100)/100)+'" data-share="1" data-brand="'+E(b.name)+'" data-acc="'+E(id)+'" style="width:64px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:3px 6px;"> % <span style="color:'+(tot>100.01?'var(--bad)':'var(--muted)')+';">(total di semua brand: '+(Math.round(tot*100)/100)+'%'+(tot>100.01?' — melebihi 100%':'')+')</span></div>';
     }).join('');
   }
   function stats(b){
@@ -8964,7 +8985,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     const crm=CRM_DATA.filter(r=>inB(r)&&csRowInRange(r.tanggal,range));
     const sum=(a,k)=>a.reduce((t,r)=>t+(Number(r[k])||0),0);
     let spend=0;
-    (b.accounts||[]).forEach(id=>{ const a=ACCOUNTS.find(x=>String(x.id)===String(id)); if(a){ let t=0; for(let i=s;i<=e;i++) t+=(a.spendSeries[i]||0); spend+=t*shareOf(b,id)/100; } });
+    accsOf(b).forEach(a=>{ const ser=brandSeries(b,a,a.spendSeries); for(let i=s;i<=e;i++) spend+=ser[i]||0; });
     const omzet=sum(cs,'omzet'), closing=sum(cs,'hasilClosing'), real=sum(cs,'leadReal'), oo=sum(cs,'leadOO');
     const cOmzet=sum(crm,'omzet'), cClosing=sum(crm,'closing'), cPot=sum(crm,'potensial');
     const bc=sum(crm,'d0')+sum(crm,'d1')+sum(crm,'d7')+sum(crm,'d14');
@@ -8989,7 +9010,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
         +'<div class="muted-note" style="margin-top:8px;">Advertiser</div>'+chips(b,'advertisers',ADVERTISERS.map(a=>({v:a,l:a})))
         +'<div class="muted-note" style="margin-top:6px;">CS</div>'+chips(b,'cs',CS_LIST.map(c=>({v:nm(c),l:nm(c)})))
         +'<div class="muted-note" style="margin-top:6px;">CRM</div>'+chips(b,'crm',CRM_LIST.map(c=>({v:nm(c),l:nm(c)})))
-        +'<div class="muted-note" style="margin-top:6px;">Akun iklan (untuk hitung spend)</div>'+chips(b,'accounts',ACCOUNTS.map(a=>({v:String(a.id),l:a.name+' ('+(a.advertiser||'-')+')'})))+shareRows(b)
+        +'<div class="muted-note" style="margin-top:6px;">Akun iklan (otomatis mengikuti advertiser yang dipilih)</div>'+(accsOf(b).length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">'+accsOf(b).map(a=>'<span class="tag" style="font-size:11.5px;">'+E(a.name)+' <span class="muted-note">('+E(a.advertiser||'-')+')</span></span>').join('')+'</div>':'<span class="muted-note">Belum ada — pilih advertiser dulu, akunnya ikut otomatis.</span>')+shareRows(b)
         +'</details>';
     }
     return h+'</div>';
@@ -9010,10 +9031,10 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
           +rows.map(r=>tr(E(r.n),r.x.spend,r.x.omzet,r.x.cOmzet,r.x.closing+r.x.cClosing,false)).join('')
           +(loose.n>0?tr('Tanpa Brand',null,loose.omzet,loose.cOmzet,0,false):'')
           +tr('Total semua brand',T.sp,T.oc,T.or,T.cl,true)
-          +'</tbody></table></div><div class="muted-note" style="margin-top:6px;">Cost / Closing memakai total closing CS + CRM. Baris Total hanya menjumlah brand bernama; "Tanpa Brand" tidak punya spend karena akunnya belum dihubungkan.</div></div>';
+          +'</tbody></table></div><div class="muted-note" style="margin-top:6px;">Cost / Closing memakai total closing CS + CRM. Baris Total hanya menjumlah brand bernama; "Tanpa Brand" tidak punya spend karena belum terhubung ke advertiser brand.</div></div>';
       }
     }
-    let h=BR.length?BR.map(b=>card(b)).join(''):'<div class="card" style="padding:18px;" ><div class="muted-note">Belum ada brand. Tambahkan di atas, lalu atur advertiser, CS, CRM, dan akunnya.</div></div>';
+    let h=BR.length?BR.map(b=>card(b)).join(''):'<div class="card" style="padding:18px;" ><div class="muted-note">Belum ada brand. Tambahkan di atas, lalu atur advertiser, CS, dan CRM-nya (akun iklan mengikuti advertiser).</div></div>';
     const loose={name:null,accounts:[]};
     if(BR.length && stats(loose).n>0) h+=card(loose,true);
     root.innerHTML=h;
@@ -9044,7 +9065,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
   document.querySelectorAll('.navbtn[data-page="brand"], .global-filterbar *').forEach(el=>el.addEventListener('click',()=>setTimeout(renderBrands,50)));
   ['csTanggal','crmTanggal'].forEach(id=>{});
   const asyncSafe=p=>{ try{ Promise.resolve(p).catch(()=>{}); }catch(e){} };
-  function pushBrand(b){ if(typeof pushOneToSheet!=='function') return; asyncSafe(pushOneToSheet({type:'brand',nama:b.name,advertiser:(b.advertisers||[]).join('|'),cs:(b.cs||[]).join('|'),crm:(b.crm||[]).join('|'),akun:(b.accounts||[]).map(id=>shareOf(b,id)<100?id+':'+shareOf(b,id):id).join('|')})); }
+  function pushBrand(b){ if(typeof pushOneToSheet!=='function') return; asyncSafe(pushOneToSheet({type:'brand',nama:b.name,advertiser:(b.advertisers||[]).join('|'),cs:(b.cs||[]).join('|'),crm:(b.crm||[]).join('|'),akun:accsOf(b).map(a=>(b.share&&b.share[a.id]!=null)?a.id+':'+b.share[a.id]:a.id).join('|')})); }
   function delBrand(n){ if(typeof pushOneToSheet!=='function') return; asyncSafe(pushOneToSheet({type:'brand',nama:n,hapus:true})); }
   window.brandApplyFromSheet=function(json){
     if(!Array.isArray(json.brand)||!json.brand.length) return;
@@ -9091,13 +9112,12 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       CS_DATA=o.cd.filter(r=>r.brand===FB); CRM_DATA=o.cr.filter(r=>r.brand===FB);
       CS_NOTREAL=o.nr.filter(r=>r.brand===FB); CS_NOTCLOSING=o.nc.filter(r=>r.brand===FB);
       if((b.advertisers||[]).length) ADVERTISERS=o.ad.filter(a=>b.advertisers.includes(a));
-      selectedAccounts=new Set([...o.sa].filter(id=>(b.accounts||[]).includes(String(id))));
-      // Alokasi spend/budget akun yang dipakai beberapa brand
-      (b.accounts||[]).forEach(id=>{
-        const pct=shareOf(b,id); if(pct>=100) return;
-        const a=ACCOUNTS.find(x=>String(x.id)===String(id)); if(!a) return;
+      const bAcc=accsOf(b); const bIds=new Set(bAcc.map(a=>String(a.id)));
+      selectedAccounts=new Set([...o.sa].filter(id=>bIds.has(String(id))));
+      // Akun otomatis dari advertiser brand: hanya hari saat pemilik = advertiser brand, dikali alokasi (dibagi bila advertiser dipakai beberapa brand)
+      bAcc.forEach(a=>{
         o.sc.push([a,a.spendSeries,a.budgetSeries]);
-        a.spendSeries=a.spendSeries.map(v=>(v||0)*pct/100); a.budgetSeries=a.budgetSeries.map(v=>(v||0)*pct/100);
+        a.spendSeries=brandSeries(b,a,a.spendSeries); a.budgetSeries=brandSeries(b,a,a.budgetSeries);
       });
       // Lead advertiser dibagi ke brand: 100% bila advertiser hanya milik satu brand, selain itu proporsional
       // dengan Lead OO per brand yang dicatat CS pada hari itu (tanpa data CS: dibagi rata antar brand)
