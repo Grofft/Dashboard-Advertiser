@@ -3286,7 +3286,7 @@ function lapInsCopyLines(pane){
 }
 function buildReportText(){
   const base=buildReportTextCore();
-  if(!base || reportState.reportMode==='cs' || reportState.reportMode==='crm') return base;
+  if(!base || reportState.reportMode==='cs' || reportState.reportMode==='crm' || reportState.reportMode==='brand') return base;
   try{
     const range=getReportRange(), prev=getPrevRange(range), accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
     const advs=ADVERTISERS.filter(a=>reportState.selectedAdvs.has(a)), L=['','*Efisiensi vs Periode Sebelumnya*'];
@@ -7612,11 +7612,13 @@ document.getElementById('btnResetAllData').onclick = resetAllData;
 
 // State report
 let reportState = {
-  reportMode: 'advertiser',  // 'advertiser' | 'cs' | 'gabungan' | 'crm'
+  reportMode: 'advertiser',  // 'advertiser' | 'cs' | 'gabungan' | 'crm' | 'brand'
   useCustomDate: false,      // true = pakai tanggal khusus report, bukan filter periode global
   dateStart: '',
   dateEnd: '',
   selectedAdvs: new Set(),   // advertiser yang dipilih
+  selectedBrands: new Set(), // brand yang dipilih (mode 'brand'); kosong = semua brand
+  showBrSpend: true, showBrOmzetCs: true, showBrOmzetCrm: true, showBrTotal: true, showBrRoasCs: true, showBrRoasTotal: true, showBrCpc: true, showBrClosing: true,
   showBudget: true,
   showSpend: true,
   showLead: true,
@@ -7671,6 +7673,7 @@ function buildReportTextCore(){
   if(reportState.reportMode === 'cs') return buildCsReportText();
   if(reportState.reportMode === 'gabungan') return buildGabunganReportText();
   if(reportState.reportMode === 'crm') return buildCrmReportText();
+  if(reportState.reportMode === 'brand') return window.buildBrandReportText ? window.buildBrandReportText() : null;
   return buildAdvertiserReportText();
 }
 
@@ -8149,6 +8152,8 @@ function refreshReportPreview(){
       ? '⚠ Pilih minimal satu CS yang punya data pada periode ini.'
       : reportState.reportMode === 'crm'
       ? '⚠ Pilih minimal satu CRM yang punya data pada periode ini.'
+      : reportState.reportMode === 'brand'
+      ? '⚠ Belum ada brand. Tambahkan dulu di halaman Per Brand.'
       : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard / punya data Hasil CS.';
     el.style.color = 'var(--red)';
   } else {
@@ -8192,6 +8197,7 @@ function openReportModal(){
         <div class="period-btn ${reportState.reportMode==='cs'?'active':''}" data-mode="cs">📞 Report CS</div>
         <div class="period-btn ${reportState.reportMode==='gabungan'?'active':''}" data-mode="gabungan">📊 Report Gabungan</div>
         <div class="period-btn ${reportState.reportMode==='crm'?'active':''}" data-mode="crm">💌 Report CRM</div>
+        <div class="period-btn ${reportState.reportMode==='brand'?'active':''}" data-mode="brand">🏷️ Report Per Brand</div>
       </div>
 
       <!-- Tanggal Report (independen dari filter periode global) -->
@@ -8298,6 +8304,26 @@ function openReportModal(){
       </div>
 
       <!-- ============ SECTION: REPORT CS ============ -->
+      <div id="reportSectionBrand" style="display:${reportState.reportMode==='brand'?'':'none'};">
+        <div class="report-section">
+          <div class="report-section-title">Pilih Brand <span style="font-weight:400;color:var(--muted);">(opsional — kosongkan untuk semua brand)</span></div>
+          <div class="adv-chips" id="reportBrandChips"></div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-title">Kolom Report</div>
+          <div class="toggle-group">
+            <div class="toggle-chip ${reportState.showBrSpend?'on':''}" data-key="showBrSpend">💸 Spend + PPN</div>
+            <div class="toggle-chip ${reportState.showBrOmzetCs?'on':''}" data-key="showBrOmzetCs">💰 Omzet CS</div>
+            <div class="toggle-chip ${reportState.showBrOmzetCrm?'on':''}" data-key="showBrOmzetCrm">💌 Omzet CRM</div>
+            <div class="toggle-chip ${reportState.showBrTotal?'on':''}" data-key="showBrTotal">🧮 Total Omzet</div>
+            <div class="toggle-chip ${reportState.showBrRoasCs?'on':''}" data-key="showBrRoasCs">📊 ROAS CS</div>
+            <div class="toggle-chip ${reportState.showBrRoasTotal?'on':''}" data-key="showBrRoasTotal">📈 ROAS Total</div>
+            <div class="toggle-chip ${reportState.showBrClosing?'on':''}" data-key="showBrClosing">✅ Closing (CS+CRM)</div>
+            <div class="toggle-chip ${reportState.showBrCpc?'on':''}" data-key="showBrCpc">🎯 Cost / Closing</div>
+          </div>
+        </div>
+      </div>
+
       <div id="reportSectionCs" style="display:${reportState.reportMode==='cs'?'':'none'};">
         <div class="report-section">
           <div class="report-section-title">Pilih CS</div>
@@ -8411,6 +8437,26 @@ function openReportModal(){
     });
   }
 
+  // Chip brand (mode 'brand')
+  (function(){
+    const wrap=document.getElementById('reportBrandChips'); if(!wrap) return;
+    const names=window.brandReportApi?window.brandReportApi.names():[];
+    if(!names.length){ wrap.innerHTML='<span class="muted-note">Belum ada brand. Tambahkan dulu di halaman Per Brand.</span>'; return; }
+    names.forEach(n=>{
+      const chip=document.createElement('label');
+      chip.className='adv-chip'+(reportState.selectedBrands.has(n)?' selected':'');
+      chip.style.color='var(--green)';
+      chip.innerHTML='<input type="checkbox" '+(reportState.selectedBrands.has(n)?'checked':'')+'><span></span>';
+      chip.querySelector('span').textContent=n;
+      chip.querySelector('input').addEventListener('change',e=>{
+        if(e.target.checked){ reportState.selectedBrands.add(n); chip.classList.add('selected'); }
+        else { reportState.selectedBrands.delete(n); chip.classList.remove('selected'); }
+        refreshReportPreview();
+      });
+      wrap.appendChild(chip);
+    });
+  })();
+
   // Render CRM chips (dipakai di Report Gabungan & Report CRM — pilihan keduanya disinkronkan)
   function renderCrmChipsInto(wrap){
     if(!wrap) return;
@@ -8469,6 +8515,7 @@ function openReportModal(){
       document.getElementById('reportSectionCs').style.display = reportState.reportMode==='cs' ? '' : 'none';
       document.getElementById('reportSectionGabungan').style.display = reportState.reportMode==='gabungan' ? '' : 'none';
       document.getElementById('reportSectionCrm').style.display = reportState.reportMode==='crm' ? '' : 'none';
+      document.getElementById('reportSectionBrand').style.display = reportState.reportMode==='brand' ? '' : 'none';
       refreshReportPreview();
     });
   });
@@ -9053,8 +9100,8 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       return '<div class="muted-note" style="margin-top:6px;">Alokasi '+E(a.name)+' ke brand ini: <input type="number" min="0" max="100" step="5" value="'+(Math.round(shareOf(b,id)*100)/100)+'" data-share="1" data-brand="'+E(b.name)+'" data-acc="'+E(id)+'" style="width:64px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:3px 6px;"> % <span style="color:'+(tot>100.01?'var(--bad)':'var(--muted)')+';">(total di semua brand: '+(Math.round(tot*100)/100)+'%'+(tot>100.01?' — melebihi 100%':'')+')</span></div>';
     }).join('');
   }
-  function stats(b){
-    const range=getRange(), [s,e]=indicesForRange(range);
+  function stats(b,rg){
+    const range=rg||getRange(), [s,e]=indicesForRange(range);
     const inB=r=> b.name===null ? !r.brand : r.brand===b.name;
     const cs=CS_DATA.filter(r=>inB(r)&&csRowInRange(r.tanggal,range));
     const crm=CRM_DATA.filter(r=>inB(r)&&csRowInRange(r.tanggal,range));
@@ -9151,6 +9198,46 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     if(!n) return; if(BR.some(b=>b.name.toLowerCase()===n.toLowerCase())){ alert('Nama brand sudah ada.'); return; }
     BR.push({name:n,advertisers:[],cs:[],crm:[],accounts:[]}); i.value=''; save(); pushBrand(BR[BR.length-1]); renderBrands();
   });
+  /* ===== Report WhatsApp per brand (memakai angka yang sama dengan tabel Perbandingan Brand) ===== */
+  window.brandReportApi={ names:()=>BR.map(b=>b.name) };
+  window.buildBrandReportText=function(){
+    if(!BR.length) return null;
+    const range=getReportRange(), f=n=>fmtDateID(n);
+    const dateLabel=f(range[0])===f(range[1])?f(range[0]):f(range[0])+' s/d '+f(range[1]);
+    const sel=reportState.selectedBrands, list=BR.filter(b=>!sel.size||sel.has(b.name));
+    if(!list.length) return null;
+    const L=['*REPORT PER BRAND*','Periode: '+dateLabel];
+    if(reportState.customHeader.trim()) L.push(reportState.customHeader.trim());
+    L.push('');
+    const rx=(o,sp)=>sp>0?(o/sp).toFixed(2)+'x':'-';
+    const block=(x,cls)=>{
+      const tot=x.omzet+x.cOmzet, cl=x.closing+x.cClosing, has=x.spend>0, r=reportState;
+      if(r.showBrSpend)     L.push('   Spend + PPN    : '+rupiah(x.spend));
+      if(r.showBrOmzetCs)   L.push('   Omzet CS       : '+rupiah(x.omzet));
+      if(r.showBrOmzetCrm)  L.push('   Omzet CRM      : '+rupiah(x.cOmzet));
+      if(r.showBrTotal)     L.push('   Total Omzet    : '+rupiah(tot));
+      if(r.showBrRoasCs)    L.push('   ROAS CS        : '+rx(x.omzet,x.spend));
+      if(r.showBrRoasTotal) L.push('   ROAS Total     : '+rx(tot,x.spend));
+      if(r.showBrClosing)   L.push('   Closing        : '+num(cl));
+      if(r.showBrCpc)       L.push('   Cost / Closing : '+((has&&cl>0)?rupiah(x.spend/cl):'-'));
+    };
+    const T={spend:0,omzet:0,cOmzet:0,closing:0,cClosing:0};
+    list.forEach((b,i)=>{
+      const x=stats(b,range);
+      Object.keys(T).forEach(k=>T[k]+=x[k]);
+      L.push((i+1)+'. *'+b.name+'*'); block(x); if(i<list.length-1) L.push('');
+    });
+    if(list.length>1){
+      L.push('','──────────────────────','*TOTAL SEMUA BRAND*'); block(T); L.push('──────────────────────');
+    }
+    if(!sel.size){
+      const lo=stats({name:null,accounts:[]},range);
+      if(lo.n>0 && (lo.omzet+lo.cOmzet)>0) L.push('','_Belum ber-brand: Omzet CS '+rupiah(lo.omzet)+', Omzet CRM '+rupiah(lo.cOmzet)+' (tidak masuk total di atas)_');
+    }
+    if(reportState.customFooter.trim()){ L.push(''); L.push(reportState.customFooter.trim()); }
+    L.push('','_Generated: '+new Date().toLocaleString('id-ID')+'_');
+    return L.join('\n');
+  };
   document.getElementById('brSummary').addEventListener('click',ev=>{
     const th=ev.target.closest('th[data-sort]'); if(!th) return;
     const k=th.dataset.sort; SORT=SORT.k===k?{k,d:-SORT.d}:{k,d:k==='n'?1:-1}; renderBrands();
