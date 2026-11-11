@@ -796,15 +796,17 @@ try{
 <div class="app">
   <div class="sidebar">
     <div class="brand"><div class="dot"></div><span>DASHBOARD IKLAN</span></div>
-    <div class="navbtn active" data-page="overview"><span class="ic">◧</span> Overview</div>
-    <div class="navbtn" data-page="advertiser"><span class="ic">▤</span> Data Hasil Advertiser</div>
-    <div class="navbtn" data-page="akun"><span class="ic">▥</span> Data Akun</div>
-    <div class="navbtn" data-page="input"><span class="ic">＋</span> Data Input</div>
-    <div class="navbtn" data-page="cs"><span class="ic">📞</span> Input CS</div>
-    <div class="navbtn" data-page="cs-ringkasan"><span class="ic">📊</span> Ringkasan CS</div>
-    <div class="navbtn" data-page="crm"><span class="ic">💌</span> CRM</div>
-    <div class="navbtn" data-page="brand"><span class="ic">🏷️</span> Per Brand</div>
-    <div class="navbtn" data-page="laporan"><span class="ic">🗒️</span> Laporan</div>
+    <div class="navbtn active" data-page="overview">Overview</div>
+    <div class="navbtn" data-page="advertiser">Data Hasil Advertiser</div>
+    <div class="navbtn" data-page="akun">Data Akun</div>
+    <div class="navbtn" data-page="input">Data Input</div>
+    <div class="navbtn" data-page="cs">Input CS</div>
+    <div class="navbtn" data-page="cs-ringkasan">Ringkasan CS</div>
+    <div class="navbtn" data-page="crm">CRM</div>
+    <div class="navbtn" data-page="csdl">CS DL</div>
+    <div class="navbtn" data-page="target">Target Omzet</div>
+    <div class="navbtn" data-page="brand">Per Brand</div>
+    <div class="navbtn" data-page="laporan">Laporan</div>
 
     <div class="sidebar-foot">
       <div class="status" id="apiStatus"><div class="sdot"></div><span id="apiStatusText">Menghubungkan…</span></div>
@@ -963,6 +965,11 @@ try{
     <div class="panel-title">Detail per CRM</div>
     <div class="table-scroll"><table><thead><tr><th>CRM</th><th>Hari Input</th><th>D0</th><th>D1</th><th>D7</th><th>D14</th><th>Total BC</th><th>Closing</th><th>Closing/BC</th><th>RO vs D1</th><th>Omzet</th><th>Omzet/Closing</th><th>Potensial</th></tr></thead><tbody id="ovCrmTable"></tbody></table></div>
   </div>
+
+  <!-- ===== Performa CS DL ===== -->
+  <div class="section-header" style="margin-top:28px;"><h2>Performa CS DL</h2><div class="muted-note">Follow-up lead tidak real oleh CS DL (omzet DL tidak dijumlah ke Total Omzet / ROAS)</div></div>
+  <div class="grid grid-4" id="ovCsdlKpis" style="margin-bottom:14px;"></div>
+  <div class="card" style="margin-bottom:14px;"><div id="ovCsdlTable" style="overflow-x:auto;"></div></div>
 
   <!-- ===== Insight Tambahan ===== -->
   <div class="section-header" style="margin-top:28px;"><h2>Insight Tambahan</h2></div>
@@ -1483,6 +1490,74 @@ try{
   </div>
 </div><!-- /page-crm -->
 
+<div class="page" id="page-csdl">
+  <div class="section-header" style="margin-top:0;"><h2>CS DL (Dept Collect Lead)</h2><div class="muted-note">Menindaklanjuti lead "tidak real" dari CS biasa — input per tanggal, CS DL &amp; brand</div></div>
+
+  <div class="kelola-wrap">
+    <details class="kelola">
+      <summary class="kelola-sum"><span class="k-title">⚙️ Kelola CS DL</span><span class="k-count" id="csdlCountBadge">0</span><span class="k-chev">▾</span></summary>
+      <div class="kelola-body">
+        <div class="muted-note">Klik nama di tab bawah untuk pindah CS DL. Nama juga otomatis muncul dari data di spreadsheet.</div>
+        <div id="csdlChips" class="kelola-chips"></div>
+        <div class="kelola-add-row"><input type="text" id="csdlNewName" placeholder="cth: Sinta"><button class="btn" id="btnAddCsdl">+ Tambah CS DL</button></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="period-btns" id="csdlTabs" style="margin-bottom:22px;"></div>
+
+  <div class="daterow-banner">
+    <div class="daterow-left"><span class="daterow-icon">📅</span><div><div class="daterow-label">Tanggal untuk input CS DL di bawah</div><div class="daterow-readable" id="csdlTanggalReadable">-</div></div></div>
+    <div class="daterow-right">
+      <input type="date" id="csdlTanggal"><button type="button" class="btn" id="btnCsdlToday" style="margin-left:8px;">Hari ini</button>
+      <select id="csdlBrand" class="brSel" title="Brand" style="margin-left:8px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 10px;font-size:12.5px;"></select>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="gap:14px;align-items:start;margin-bottom:26px;">
+    <div class="account-picker compact-form">
+      <h3 style="font-family:'Roboto',sans-serif;font-size:13.5px;margin-bottom:8px;">📋 Input Harian per CS DL</h3>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>CS DL</label><input type="text" id="csdlNamaView" readonly placeholder="Pilih / tambah CS DL dulu"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Jumlah Follow-up Lead</label><input type="number" id="csdlFollowUp" placeholder="Contoh: 50" step="1" inputmode="numeric"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Jumlah Closing</label><input type="number" id="csdlClosing" placeholder="Contoh: 5" step="1" inputmode="numeric"></div>
+      <div class="target-row" style="grid-template-columns:1fr;"><label>Omzet Closing</label><input type="number" id="csdlOmzet" placeholder="Contoh: 5000000" step="1000" inputmode="numeric"></div>
+      <div class="muted-note" id="csdlRatePreview" style="margin:4px 0 6px;">Closing Rate: -</div>
+      <button class="btn" id="btnSaveCsdl" style="margin-top:6px;width:100%;">💾 Simpan Data CS DL</button>
+      <div class="muted-note" id="csdlInputMsg" style="margin-top:6px;font-size:11.5px;"></div>
+      <div class="muted-note" style="margin-top:8px;font-size:12px;">Tanggal + CS DL + brand yang sama akan ditimpa. Closing Rate dihitung otomatis = Closing ÷ Follow-up.</div>
+    </div>
+    <div class="chart-card"><h3 style="font-size:13.5px;margin-bottom:8px;">Tren Follow-up &amp; Closing</h3><div style="height:260px;"><canvas id="chartCsdlTrend"></canvas></div></div>
+  </div>
+
+  <div class="section-header"><h2>Ringkasan CS DL</h2><div class="muted-note" id="csdlCount">0 data tercatat (ikut filter tanggal &amp; brand global)</div></div>
+  <div class="grid grid-4" style="margin-bottom:8px;" id="csdlKpis"></div>
+  <div class="muted-note" id="csdlTargetNote" style="margin-bottom:18px;font-size:12px;"></div>
+
+  <div class="grid grid-2" style="gap:14px;align-items:start;margin-bottom:22px;">
+    <div class="card"><h3 style="font-size:13.5px;margin-bottom:8px;">Per CS DL</h3><div id="csdlTblCs" style="overflow-x:auto;"></div></div>
+    <div class="card"><h3 style="font-size:13.5px;margin-bottom:8px;">Per Brand</h3><div id="csdlTblBrand" style="overflow-x:auto;"></div></div>
+  </div>
+  <div class="card"><h3 style="font-size:13.5px;margin-bottom:8px;">Riwayat Input</h3><div id="csdlTblHist" style="overflow-x:auto;max-height:420px;overflow-y:auto;"></div></div>
+</div><!-- /page-csdl -->
+
+
+<div class="page" id="page-target">
+  <div class="section-header" style="margin-top:0;"><h1>Target Omzet</h1><div class="muted-note">Target omzet harian per CS, CRM, dan CS DL — dikali standar hari seperti target Advertiser</div></div>
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span style="font-size:12.5px;font-weight:700;">📅 Bulan</span>
+      <input type="month" id="otMonth" style="background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:6px 9px;font-size:12.5px;">
+      <button type="button" class="btn" id="otCopyAll" style="padding:6px 12px;font-size:12px;">Salin semua dari bulan lalu</button>
+      <span class="muted-note" id="otMsg" style="margin:0;font-size:11.5px;"></span>
+    </div>
+    <div class="muted-note" id="otPeriodNote" style="margin-top:8px;"></div>
+    <div class="muted-note" style="margin-top:4px;">Isi <b>target harian</b>; target bulan penuh = target harian × standar hari (diatur di menu Data Hasil Advertiser → Target). Target tersimpan otomatis &amp; ikut sinkron ke spreadsheet. Realisasi = total omzet pada bulan terpilih (tidak terpengaruh filter tanggal global).</div>
+  </div>
+  <div class="card" id="otPanel-cs" style="margin-bottom:16px;"></div>
+  <div class="card" id="otPanel-crm" style="margin-bottom:16px;"></div>
+  <div class="card" id="otPanel-csdl" style="margin-bottom:16px;"></div>
+</div><!-- /page-target -->
+
 <div class="page" id="page-laporan">
   <div class="section-header laporan-noprint" style="margin-top:0;">
     <h1>Laporan</h1>
@@ -1499,6 +1574,7 @@ try{
     <div class="period-btn" data-laptab="cs">📞 Closing &amp; CS</div>
     <div class="period-btn" data-laptab="kategori">🔎 Lead Tidak Real &amp; Tidak Closing</div>
     <div class="period-btn" data-laptab="crm">💌 CRM</div>
+    <div class="period-btn" data-laptab="csdl">📲 CS DL</div>
   </div>
 
   <div id="laporanReportArea">
@@ -1715,6 +1791,39 @@ try{
       </div>
     </div>
 
+    <!-- ================= TAB: CS DL ================= -->
+    <div class="lap-pane" id="lapPane-csdl">
+      <div class="lap-print-title">📲 CS DL</div>
+      <details class="lap-how laporan-noprint"><summary>📖 Cara membaca laporan CS DL</summary><ul>
+        <li><b>Closing Rate</b> = Closing ÷ Follow-up lead. Dibandingkan dengan target CS DL (<span class="lapCsdlTargetTxt">10</span>%).</li>
+        <li><b>Hari Kerja</b> = jumlah hari CS DL punya input follow-up/closing. <b>Rata² FU / Hari</b> = Follow-up ÷ Hari Kerja, supaya produktivitas antar CS DL adil.</li>
+        <li>Omzet CS DL tidak dijumlah ke Total Omzet / ROAS. Teks ▲ / ▼ = perubahan dibanding periode sebelumnya dengan jumlah hari yang sama.</li></ul></details>
+      <div class="muted-note" style="margin-bottom:10px;">Sumber: input harian di menu CS DL — <b id="lapCsdlNote">-</b></div>
+      <div class="lap-kpi-grid" style="margin-bottom:16px;" id="lapCsdlKpi"></div>
+      <div class="chart-card" style="margin-bottom:16px;">
+        <div style="font-size:13.5px;font-weight:700;margin-bottom:10px;">📈 Tren Harian CS DL — Follow-up &amp; Closing</div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="lapCsdlTrendChart"></canvas></div>
+      </div>
+      <div class="section-header"><h2>👥 Rekap per CS DL</h2></div>
+      <div class="chart-card" style="margin-bottom:16px;padding-bottom:14px;">
+        <div class="table-scroll"><table>
+          <thead><tr><th>CS DL</th><th>Follow-up</th><th>Closing</th><th>Closing Rate</th><th>Omzet</th><th>Omzet/Closing</th><th>Hari Kerja</th><th>Rata² FU / Hari</th></tr></thead>
+          <tbody id="lapCsdlCsTable"></tbody>
+        </table></div>
+      </div>
+      <div class="section-header"><h2>🏷️ Rekap per Brand</h2></div>
+      <div class="chart-card" style="margin-bottom:16px;padding-bottom:14px;">
+        <div class="table-scroll"><table>
+          <thead><tr><th>Brand</th><th>Follow-up</th><th>Closing</th><th>Closing Rate</th><th>Omzet</th><th>Omzet/Closing</th><th>Hari Kerja</th><th>Rata² FU / Hari</th></tr></thead>
+          <tbody id="lapCsdlBrandTable"></tbody>
+        </table></div>
+      </div>
+      <div class="chart-card" style="padding-bottom:14px;">
+        <div class="panel-title" style="margin-bottom:10px;">💡 Sorotan CS DL Periode Ini</div>
+        <div id="lapCsdlInsight"></div>
+      </div>
+    </div>
+
   </div>
 </div><!-- /page-laporan -->
 
@@ -1906,6 +2015,9 @@ let TARGETS_MONTHLY = {};
 let DIRTY_TARGETS = {};
 /* Target CPL per advertiser per bulan: TARGETS_CPL[adv]["tahun-bulan"] = {real:, oo:} (0/kosong = belum diisi → tidak ada pembanding) */
 let TARGETS_CPL = {};
+/* Target omzet HARIAN per orang per bulan: OMZET_TARGETS[role][nama]['tahun-bulan'] = nilai harian (role: cs | crm | csdl). Target bulan penuh = harian × stdHari(), sama seperti Advertiser */
+let OMZET_TARGETS = {cs:{}, crm:{}, csdl:{}};
+let OT_MONTH = (function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); })();
 function getCplTarget(adv, kind, month, year){
   year = year !== undefined ? year : activeEditYear;
   const o = TARGETS_CPL[adv] && TARGETS_CPL[adv][monthKey(year, month)];
@@ -3286,7 +3398,7 @@ function lapInsCopyLines(pane){
 }
 function buildReportText(){
   const base=buildReportTextCore();
-  if(!base || reportState.reportMode==='cs' || reportState.reportMode==='crm' || reportState.reportMode==='brand') return base;
+  if(!base || reportState.reportMode==='cs' || reportState.reportMode==='crm' || reportState.reportMode==='csdl' || reportState.reportMode==='brand') return base;
   try{
     const range=getReportRange(), prev=getPrevRange(range), accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
     const advs=ADVERTISERS.filter(a=>reportState.selectedAdvs.has(a)), L=['','*Efisiensi vs Periode Sebelumnya*'];
@@ -3459,6 +3571,7 @@ function render(){
   try{ renderOvInsights(range, accs); renderLapWeekly(); }catch(e){ console.error('Insight tambahan:',e); }
   if(typeof renderCsData==='function') renderCsData();
   if(typeof renderCrmAll==='function') renderCrmAll();
+  if(typeof renderCsdlAll==='function') renderCsdlAll();
 }
 
 /* ============== HALAMAN LAPORAN (rekap siap kirim per advertiser) ============== */
@@ -3688,6 +3801,7 @@ function renderLaporanPage(advRows, totalBudget, totalSpend, totalLeadsReal, tot
   renderLaporanSorotan(advRows, range);
   renderLaporanKategori(advRows, range);
   renderLaporanCrm(range);
+  renderLaporanCsdl(range);
   lapEnhanceTables();
 
   const notes = [];
@@ -3841,6 +3955,53 @@ function lapDelta(cur, prev, invert){
   const p = (cur-prev)/prev*100;
   if(Math.abs(p)<0.05) return '● sama dengan periode lalu';
   return (p>0?'▲ naik ':'▼ turun ')+pctFmt(Math.abs(p)).replace('%',' %')+' vs periode lalu';
+}
+function renderLaporanCsdl(range){
+  const kpiEl=document.getElementById('lapCsdlKpi'); if(!kpiEl) return;
+  range=range||getRange();
+  const T=CSDL_CLOSING_RATE_TARGET;
+  document.querySelectorAll('.lapCsdlTargetTxt').forEach(e=>e.textContent=T);
+  const rows=CSDL_DATA.filter(r=>csRowInRange(r.tanggal,range));
+  const pr=getPrevRange(range), prevRows=CSDL_DATA.filter(r=>csRowInRange(r.tanggal,pr));
+  const a=csdlAgg(rows), pa=csdlAgg(prevRows);
+  const nm=[...new Set(rows.map(r=>r.cs))].length;
+  const note=document.getElementById('lapCsdlNote'); if(note) note.textContent = rows.length ? nm+' CS DL aktif di periode ini' : 'Belum ada data';
+  const rd=(c,p)=>{ if(c==null||p==null) return ''; const d=c-p; if(Math.abs(d)<0.05) return '● sama dengan periode lalu'; return (d>0?'▲ naik ':'▼ turun ')+Math.abs(d).toFixed(1).replace('.',',')+' pp vs periode lalu'; };
+  const card=(color,label,value,sub,d)=>'<div class="card kpi"><div class="bar-accent" style="background:var(--'+color+')"></div><div class="label">'+label+'</div><div class="value">'+value+'</div><div class="muted-note" style="color:inherit;opacity:.88;">'+(sub||'&nbsp;')+'</div>'+(d?'<div class="lap-delta '+(d.indexOf('▲')===0?'up':d.indexOf('▼')===0?'down':'')+'">'+d+'</div>':'')+'</div>';
+  const tgt = a.rate==null ? 'Target '+T+'%' : (a.rate>=T ? 'Target '+T+'% · ✅ tercapai' : 'Target '+T+'% · ⚠️ kurang '+(T-a.rate).toFixed(1).replace('.',',')+' pp');
+  kpiEl.innerHTML =
+    card('blue','Follow-up Lead',num(a.followup),'Rata² '+csdlAvg(a.avgFu)+' / hari kerja',lapDelta(a.followup,pa.followup))+
+    card('green','Closing',num(a.closing),'',lapDelta(a.closing,pa.closing))+
+    card('yellow','Closing Rate',pctFmt(a.rate),tgt,rd(a.rate,pa.rate))+
+    card('purple','Omzet Closing DL',rupiah(a.omzet),a.aov==null?'':'Rata-rata '+rupiah(a.aov)+' / closing',lapDelta(a.omzet,pa.omzet))+
+    card('blue','Hari Kerja',num(a.hk),'total hari kerja semua CS DL','');
+  const rowOf=(k,x)=>'<tr><td>'+escapeHtml(k)+'</td><td>'+num(x.followup)+'</td><td>'+num(x.closing)+'</td><td>'+csdlRateHtml(x.rate)+'</td><td>'+rupiah(x.omzet)+'</td><td>'+(x.aov==null?'-':rupiah(x.aov))+'</td><td>'+num(x.hk)+'</td><td>'+csdlAvg(x.avgFu)+'</td></tr>';
+  const fill=(id,key)=>{ const el=document.getElementById(id); if(!el) return; const g=csdlGroup(rows,key); el.innerHTML = g.length ? g.map(([k,x])=>rowOf(k,x)).join('')+rowOf('TOTAL',a).replace('<tr>','<tr style="font-weight:700;">') : '<tr><td colspan="8" class="muted-note">Belum ada data pada periode ini.</td></tr>'; };
+  fill('lapCsdlCsTable','cs'); fill('lapCsdlBrandTable','brand');
+  // grafik tren: closing di sumbu kanan supaya tetap terlihat
+  if(chartReg.lapCsdlTrendChart){ chartReg.lapCsdlTrendChart.destroy(); delete chartReg.lapCsdlTrendChart; }
+  const fu=[], cl=[]; datesIn(range).forEach(d=>{ const iso=fmtISO(d), g=csdlAgg(rows.filter(r=>String(r.tanggal).slice(0,10)===iso)); fu.push(g.followup); cl.push(g.closing); });
+  const o=baseOpts(true); o.plugins=Object.assign({},o.plugins,{legend:{display:true,labels:{color:cssVar('--chart-tick')}}});
+  o.scales=Object.assign({},o.scales,{y1:{position:'right',beginAtZero:true,grid:{drawOnChartArea:false},ticks:{color:cssVar('--chart-tick')}}});
+  mkChart('lapCsdlTrendChart',{type:'line',data:{labels:trendLabels(range),datasets:[
+    {label:'Follow-up',data:fu,borderColor:cssVar('--blue'),backgroundColor:cssVar('--blue'),tension:.25,pointRadius:2},
+    {label:'Closing (sumbu kanan)',data:cl,yAxisID:'y1',borderColor:cssVar('--green'),backgroundColor:cssVar('--green'),tension:.25,pointRadius:2}]},options:o});
+  // sorotan
+  const ins=document.getElementById('lapCsdlInsight');
+  if(ins){
+    const g=csdlGroup(rows,'cs');
+    if(!g.length){ ins.innerHTML='<div class="muted-note">Belum ada data pada periode ini.</div>'; }
+    else{
+      const row=(k,v)=>'<div class="adv-card-row"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>';
+      const by=(f,asc)=>g.filter(([n,x])=>f(x)!=null).sort((p,q)=>asc?f(p[1])-f(q[1]):f(q[1])-f(p[1]))[0];
+      const top=by(x=>x.omzet), rate=by(x=>x.rate), avg=by(x=>x.avgFu);
+      const low=g.filter(([n,x])=>x.rate!=null&&x.rate<T);
+      ins.innerHTML=(top?row('Omzet tertinggi',escapeHtml(top[0])+' — '+rupiah(top[1].omzet)):'')
+        +(rate?row('Closing rate tertinggi',escapeHtml(rate[0])+' — '+pctFmt(rate[1].rate)):'')
+        +(avg?row('Rata² FU / hari tertinggi',escapeHtml(avg[0])+' — '+csdlAvg(avg[1].avgFu)):'')
+        +row('Di bawah target '+T+'%', low.length ? low.map(([n,x])=>escapeHtml(n)+' ('+pctFmt(x.rate)+')').join(', ') : '✅ Semua CS DL mencapai target');
+    }
+  }
 }
 function renderLaporanCrm(range){
   const kpiEl = document.getElementById('lapCrmKpi');
@@ -4535,6 +4696,14 @@ async function exportLaporanPPT(){
       addCards('CRM — Ringkasan', collectCards(p, '.card.kpi'));
       addChart('Tren Harian CRM — Omzet & Closing', 'lapCrmTrendChart');
       addTable('Rekap per CRM', document.getElementById('lapCrmTable') && document.getElementById('lapCrmTable').closest('table'));
+    }
+
+    p = pane('csdl');
+    if(p){
+      addCards('CS DL — Ringkasan', collectCards(p, '.card.kpi'));
+      addChart('Tren Harian CS DL — Follow-up & Closing', 'lapCsdlTrendChart');
+      addTable('Rekap per CS DL', document.getElementById('lapCsdlCsTable') && document.getElementById('lapCsdlCsTable').closest('table'));
+      addTable('Rekap per Brand — CS DL', document.getElementById('lapCsdlBrandTable') && document.getElementById('lapCsdlBrandTable').closest('table'));
     }
 
     const safe = (period || 'periode').replace(/[^\w\-]+/g,'_').replace(/^_+|_+$/g,'');
@@ -5240,12 +5409,14 @@ function doGet(e){
     var csNotRealSheet = ss.getSheetByName('CSTidakReal');
     var csNotClosingSheet = ss.getSheetByName('CSTidakClosing');
     var crmSheet = ss.getSheetByName('CRM');
+    var csdlSheet = ss.getSheetByName('CSDL');
     var pengSheet = ss.getSheetByName('Pengaturan');
     var peng = pengaturanToObjects(pengSheet);
     var akunwl = peng.akunwl;
     var historiakun = peng.akunhistori;
     var target = peng.target;
     var csroster = peng.csroster;
+    var csdlroster = peng.csdlroster;
     var csnotrealkategori = peng.csnotrealkategori;
     var csnotclosingkategori = peng.csnotclosingkategori;
     var akun = sheetToObjects(akunSheet);
@@ -5254,7 +5425,8 @@ function doGet(e){
     var csnotreal = sheetToObjects(csNotRealSheet);
     var csnotclosing = sheetToObjects(csNotClosingSheet);
     var crm = sheetToObjects(crmSheet);
-    var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, csdata: csdata, brand: peng.brand, csroster: csroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, crm: crm});
+    var csdl = sheetToObjects(csdlSheet);
+    var json = JSON.stringify({akun: akun, leads: leads, akunwl: akunwl, historiakun: historiakun, target: target, csdata: csdata, brand: peng.brand, csroster: csroster, csdlroster: csdlroster, csnotrealkategori: csnotrealkategori, csnotreal: csnotreal, csnotclosingkategori: csnotclosingkategori, csnotclosing: csnotclosing, crm: crm, csdl: csdl});
 
     try{
       cachePutBig(cache, json);
@@ -5283,8 +5455,8 @@ function doPost(e){
   // sama sekali. Cek di bawah ini memastikan sheet tujuan memang ada SEBELUM mulai menulis,
   // supaya kalau memang belum ada, client dapat pesan error yang jelas — bukan sukses palsu.
   var REQUIRED_SHEET_NAME = {
-    akun:'Akun', lead:'Leads', cs:'CS', csnotreal:'CSTidakReal', csnotclosing:'CSTidakClosing', crm:'CRM',
-    akunwl:'Pengaturan', akunhistori:'Pengaturan', target:'Pengaturan', csroster:'Pengaturan',
+    akun:'Akun', lead:'Leads', cs:'CS', csnotreal:'CSTidakReal', csnotclosing:'CSTidakClosing', crm:'CRM', csdl:'CSDL',
+    akunwl:'Pengaturan', akunhistori:'Pengaturan', target:'Pengaturan', csroster:'Pengaturan', csdlroster:'Pengaturan',
     csnotrealkategori:'Pengaturan', csnotclosingkategori:'Pengaturan'
   };
   var neededSheetName = REQUIRED_SHEET_NAME[data.type];
@@ -5316,6 +5488,8 @@ function doPost(e){
       upsertCsData(ss, data);
     } else if(data.type === 'csroster'){
       upsertCsRoster(ss, data);
+    } else if(data.type === 'csdlroster'){
+      pengUpsert(ss, 'csdlroster', [0], [data.nama, data.aktif ? 'ya' : 'tidak'], false);
     } else if(data.type === 'csnotrealkategori'){
       upsertCsNotRealKategori(ss, data);
     } else if(data.type === 'csnotreal'){
@@ -5326,6 +5500,8 @@ function doPost(e){
       upsertCsNotClosing(ss, data);
     } else if(data.type === 'crm'){
       upsertCrm(ss, data);
+    } else if(data.type === 'csdl'){
+      upsertCsdl(ss, data);
     } else if(data.type === 'brand'){
       pengUpsert(ss, 'brand', [0], [data.nama, data.advertiser||'', data.cs||'', data.crm||'', data.akun||''], !!data.hapus);
     }
@@ -5532,6 +5708,26 @@ function upsertCrm(ss, data){
   sh.appendRow(vals);
 }
 
+// Sheet "CSDL" = data harian CS DL (Dept Collect Lead): tanggal | cs | brand | followup | closing | omzet
+// 1 baris per (tanggal + nama CS DL + brand). Kirim hapus:true untuk menghapus baris.
+function upsertCsdl(ss, data){
+  var sh = ss.getSheetByName('CSDL');
+  if(!sh) return;
+  var rows = sh.getDataRange().getValues();
+  var cs = String(data.cs).trim().toLowerCase();
+  var brand = String(data.brand||'').trim().toLowerCase();
+  var vals = [data.tanggal, data.cs, data.brand || '', data.followup || 0, data.closing || 0, data.omzet || 0];
+  for(var i=1;i<rows.length;i++){
+    if(formatCellDate(rows[i][0]) === String(data.tanggal).trim() && String(rows[i][1]).trim().toLowerCase() === cs && String(rows[i][2]||'').trim().toLowerCase() === brand){
+      if(data.hapus){ sh.deleteRow(i+1); return; }
+      sh.getRange(i+1,1,1,6).setValues([vals]);
+      return;
+    }
+  }
+  if(data.hapus) return;
+  sh.appendRow(vals);
+}
+
 // ============================================================
 // SHEET "Pengaturan" = GABUNGAN 6 sheet pengaturan lama (AkunWL, AkunHistori, Target,
 // CSRoster, CSKategoriTidakReal, CSKategoriTidakClosing) jadi SATU sheet.
@@ -5541,6 +5737,7 @@ function upsertCrm(ss, data){
 //   akunhistori          -> nama | advertiser | tanggal_mulai
 //   target               -> advertiser | tipe | tahun | bulan | nilai
 //   csroster             -> nama | aktif
+//   csdlroster           -> nama | aktif   (daftar nama CS DL)
 //   csnotrealkategori    -> kategori | aktif
 //   csnotclosingkategori -> kategori | aktif
 // Dashboard tetap menerima data dengan bentuk yang sama seperti sebelumnya.
@@ -5550,6 +5747,7 @@ var PENGATURAN_JENIS = {
   akunhistori: ['nama','advertiser','tanggal_mulai'],
   target: ['advertiser','tipe','tahun','bulan','nilai'],
   csroster: ['nama','aktif'],
+  csdlroster: ['nama','aktif'],
   csnotrealkategori: ['kategori','aktif'],
   csnotclosingkategori: ['kategori','aktif'],
   brand: ['nama','advertiser','cs','crm','akun']
@@ -5947,6 +6145,12 @@ async function pullFromSheet(){
     (json.target||[]).forEach(r=>{
       const advRaw = String(r.advertiser||'').trim();
       if(!advRaw) return;
+      const otm = advRaw.match(/^__OT_(CS|CRM|CSDL)__\|(.+)$/i);
+      if(otm){ const y=parseInt(r.tahun), m=parseInt(r.bulan); if(y&&m){
+        const rl=otm[1].toLowerCase(), nm=otm[2].trim(), tp=String(r.tipe||'').trim().toLowerCase(), v=parseFloat(r.nilai)||0;
+        if(tp==='omzet_harian'){ otSet(rl,nm,y,m,v); countTarget++; }
+        else if(tp==='omzet' && !otGet(rl,nm,otKey(y,m))){ otSet(rl,nm,y,m,Math.round(v/stdHari(y,m))); countTarget++; } // data lama (bulanan) → harian
+      } return; }
       if(advRaw.toLowerCase()==='__mode__'){
         const m = String(r.tipe||'').trim().toLowerCase();
         if(m==='harian'||m==='bulanan') modeFromSheet = m;
@@ -6102,6 +6306,7 @@ async function pullFromSheet(){
       if(typeof renderCsData==='function') renderCsData();
     }
     const countCrm = crmApplyFromSheet(json);
+    csdlApplyFromSheet(json);
     let countCs=0;
     if(Array.isArray(json.csdata)){
       CS_DATA = json.csdata.map(r=>({
@@ -6332,6 +6537,11 @@ async function pushAllToSheet(){
   }
   for(const r of CRM_DATA){
     await pushCrmRow(r); sent++;
+  }
+  for(const n of CSDL_LIST){ await pushCsdlRoster(n,true); sent++; }
+  for(const n of CSDL_HIDDEN){ await pushCsdlRoster(n,false); sent++; }
+  for(const r of CSDL_DATA){
+    await pushCsdlRow(r); sent++;
   }
   msg.textContent = 'Selesai mengirim '+sent+' baris data (termasuk daftar Akun WL, Target, daftar nama CS, data CS, data CRM, kategori & rincian Lead OO tidak real, kategori & rincian Lead Real tidak closing) ke spreadsheet.';
   msg.style.color='var(--green)';
@@ -6785,6 +6995,7 @@ function renderCrmPerson(){
     kr.map(r=>'<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;"><span class="muted-note">'+escapeHtml(fmtTanggalID?fmtTanggalID(r.tanggal):r.tanggal)+'</span><div style="margin-top:3px;white-space:pre-wrap;">'+escapeHtml(r.kendala)+'</div></div>').join('');
 }
 function renderCrmAll(){
+  if(typeof renderOmzetTargets==='function') renderOmzetTargets();
   renderCrmChips();
   renderCrmTabs();
   const nv = document.getElementById('crmNamaView'); if(nv) nv.value = crmActiveTab || '';
@@ -6795,6 +7006,319 @@ function renderCrmAll(){
   if(typeof renderOverviewCrm==='function') renderOverviewCrm(getRange());
   if(typeof renderLaporanCrm==='function'){ renderLaporanCrm(getRange()); if(typeof lapEnhanceTables==='function') lapEnhanceTables(); }
 }
+
+/* ============== TARGET OMZET CS / CRM / CS DL ============== */
+function otKey(y,m){ return y+'-'+String(m).padStart(2,'0'); }
+function otGet(role,name,ym){ const R=OMZET_TARGETS[role]; return (R && R[name] && R[name][ym]) || 0; }
+function otSet(role,name,y,m,val){
+  const ym=otKey(y,m), R=(OMZET_TARGETS[role]=OMZET_TARGETS[role]||{});
+  R[name]=R[name]||{};
+  if(val>0) R[name][ym]=val; else delete R[name][ym];
+}
+function pushOmzetTarget(role,name,y,m,val){
+  const adv='__OT_'+role.toUpperCase()+'__|'+name;
+  return pushOneToSheet(val>0 ? {type:'target', advertiser:adv, tipe:'omzet_harian', tahun:y, bulan:m, nilai:val}
+                              : {type:'target', advertiser:adv, tipe:'omzet_harian', tahun:y, bulan:m, hapus:true});
+}
+const OT_ROLES = {
+  cs:   {label:'CS',    list:()=>CS_LIST,   data:()=>CS_DATA,   key:r=>r.cs,  el:'otPanel-cs'},
+  crm:  {label:'CRM',   list:()=>CRM_LIST,  data:()=>CRM_DATA,  key:r=>r.crm, el:'otPanel-crm'},
+  csdl: {label:'CS DL', list:()=>CSDL_LIST, data:()=>CSDL_DATA, key:r=>r.cs,  el:'otPanel-csdl'}
+};
+function otStats(role){
+  const cfg=OT_ROLES[role], [y,m]=OT_MONTH.split('-').map(Number), cal=new Date(y,m,0).getDate(), std=stdHari(y,m), now=new Date();
+  const isCur = now.getFullYear()===y && now.getMonth()+1===m, isFuture = new Date(y,m-1,1) > now;
+  const elapsed = isCur ? Math.min(now.getDate(),std) : (isFuture ? 0 : std), sisa = isCur ? Math.max(0,std-now.getDate()+1) : (isFuture ? std : 0);
+  const real={}, clos={};
+  (cfg.data()||[]).forEach(r=>{ if(String(r.tanggal).slice(0,7)===OT_MONTH){ const k=cfg.key(r); if(!k) return; real[k]=(real[k]||0)+crmNum(r.omzet); clos[k]=(clos[k]||0)+crmNum(role==='cs' ? r.hasilClosing : r.closing); } });
+  const names=[...new Set([...(cfg.list()||[]), ...Object.keys(real)])].filter(Boolean);
+  const rows=names.map(n=>{
+    const d=otGet(role,n,OT_MONTH), t=d*std, r=real[n]||0, kur=r-t;
+    return {n,d,t,r,clos:clos[n]||0,kur,pct:t>0?r/t*100:null,
+      perHari:(t>0&&r<t&&sisa>0)?(t-r)/sisa:null, avg:elapsed>0?r/elapsed:null,
+      proj:isCur?(elapsed>0?r/elapsed*std:null):(isFuture?null:r)};
+  });
+  const T=rows.reduce((a,x)=>a+x.t,0), R=rows.reduce((a,x)=>a+x.r,0);
+  return {rows,T,R,kur:R-T,pct:T>0?R/T*100:null,y,m,dim:std,cal,std,elapsed,sisa,isCur,isFuture,idealPct:std>0?elapsed/std*100:0};
+}
+function otMessage(role,list,st){
+  const cfg=OT_ROLES[role], L=['*TARGET OMZET '+cfg.label+'*','Bulan: '+MONTH_NAMES_FULL[st.m-1]+' '+st.y+' (standar '+st.std+' hari)',''];
+  list.forEach((x,i)=>{
+    L.push((i+1)+'. *'+x.n+'*');
+    L.push('   Target Harian: '+(x.d>0?rupiah(x.d):'belum diisi'));
+    L.push('   Target Bulan : '+(x.t>0?rupiah(x.t):'-'));
+    L.push('   Realisasi    : '+rupiah(x.r)+(x.pct==null?'':' ('+pctFmt(x.pct)+')'));
+    if(x.t>0) L.push('   '+(x.kur>=0?'Lebih         : ':'Kekurangan    : ')+rupiah(Math.abs(x.kur)));
+    if(x.perHari!=null) L.push('   Perlu / hari : '+rupiah(x.perHari));
+    L.push('');
+  });
+  if(list.length>1){ const T=list.reduce((a,x)=>a+x.t,0), R=list.reduce((a,x)=>a+x.r,0);
+    L.push('──────────────────────','*TOTAL '+cfg.label+'*','   Target Bulan : '+rupiah(T),'   Realisasi    : '+rupiah(R)+(T>0?' ('+pctFmt(R/T*100)+')':''),'   '+(R>=T?'Lebih         : ':'Kekurangan    : ')+rupiah(Math.abs(R-T))); }
+  return L.join('\n').trim();
+}
+function otCopy(txt,btn,label){
+  const done=()=>{ const o=btn.innerHTML; btn.innerHTML='✅ Disalin!'; if(typeof showQuickToast==='function') showQuickToast('Pesan target '+label+' disalin — tinggal paste & kirim.','var(--green)'); setTimeout(()=>{btn.innerHTML=o;},2000); };
+  const fb=()=>{ try{ const ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0;'; document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); document.body.removeChild(ta); if(ok) done(); }catch(e){} };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(fb); else fb();
+}
+function renderOmzetTargets(){
+  const OT_INP='width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;';
+  const hue=t=>{ let h=7; for(const c of String(t)) h=(h*31+c.charCodeAt(0))%360; return h; };
+  Object.keys(OT_ROLES).forEach(role=>{
+    const cfg=OT_ROLES[role], el=document.getElementById(cfg.el); if(!el) return;
+    const st=otStats(role);
+    const pn=document.getElementById('otPeriodNote');
+    if(pn) pn.textContent = 'Target bulan penuh = target harian × '+st.std+' hari (standar hari, '+(STANDAR_AUTO?'otomatis':'diatur manual')+' — sama dengan Advertiser).'+' '+(st.isCur ? 'Hari ke-'+st.elapsed+' dari '+st.std+' — idealnya omzet sudah ≥ '+pctFmt(st.idealPct)+' dari target; sisa '+st.sisa+' hari (termasuk hari ini).' : (st.isFuture ? 'Bulan ini belum berjalan.' : 'Bulan sudah berlalu.'));
+    const mi=document.getElementById('otMonth'); if(mi && mi.value!==OT_MONTH) mi.value=OT_MONTH;
+    const good=(x)=> x.pct==null ? false : (st.isCur ? x.pct>=st.idealPct : x.pct>=100);
+    const row=(k,v)=>'<div class="adv-card-row"><span class="k">'+k+'</span>'+v+'</div>';
+    const tag=(c,t)=>'<span class="tag '+c+'">'+t+'</span>';
+    const cards=st.rows.map(x=>{
+      const clr = x.pct==null ? 'var(--muted)' : (good(x) ? 'var(--green)' : 'var(--yellow)');
+      return '<div class="adv-card" data-ot-card="'+escapeHtml(x.n)+'">'
+        +'<div class="adv-card-head"><span class="dot" style="background:hsl('+hue(x.n)+',65%,55%)"></span><span class="adv-card-name">'+escapeHtml(x.n)+'</span>'
+        +(x.t>0 ? (x.pct>=100 ? tag('green','TERCAPAI') : '') : tag('yellow','BELUM DIISI')).replace('class="tag','style="margin-left:auto;font-size:10px;" class="tag')
+        +'</div>'
+        +'<div style="margin-bottom:10px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:4px;">Target Omzet Harian</label>'
+        +'<input type="number" min="0" step="10000" inputmode="numeric" placeholder="0" value="'+(x.d||'')+'" data-ot-role="'+role+'" data-ot-name="'+escapeHtml(x.n)+'" style="'+OT_INP+'"></div>'
+        +(x.pct!=null ? '<div style="height:7px;background:var(--panel);border-radius:4px;overflow:hidden;margin-bottom:10px;"><div style="width:'+Math.min(100,x.pct)+'%;height:100%;background:'+clr+';"></div></div>' : '')
+        +row('Target Bulan','<span class="v">'+(x.t>0?rupiah(x.t):'-')+'</span>')
+        +row('Realisasi Bulan Ini','<span class="v">'+rupiah(x.r)+'</span>')
+        +row('Progress', x.pct==null ? '<span class="v">-</span>' : tag(good(x)?'green':'yellow',pctFmt(x.pct)))
+        +row(x.kur>=0&&x.t>0?'Kelebihan':'Kekurangan', x.t>0 ? tag(x.kur>=0?'green':'yellow',rupiah(x.kur)) : '<span class="v">-</span>')
+        +row('Perlu / Hari','<span class="v">'+(x.perHari==null?'-':rupiah(x.perHari))+'</span>')
+        +row('Rata² Omzet / Hari','<span class="v">'+(x.avg==null?'-':rupiah(x.avg))+'</span>')
+        +row('Proyeksi Akhir Bulan', x.proj==null ? '<span class="v">-</span>' : (x.t>0 ? tag(x.proj>=x.t?'green':'yellow',rupiah(x.proj)) : '<span class="v">'+rupiah(x.proj)+'</span>'))
+        +row('Closing Bulan Ini','<span class="v">'+num(x.clos)+'</span>')
+        +'<button type="button" class="btn" data-ot-msg="'+escapeHtml(x.n)+'" style="'+COPY_MSG_BTN_STYLE+'width:100%;margin-top:10px;">📋 Salin Pesan Target</button>'
+        +'</div>';
+    }).join('');
+    el.innerHTML='<div style="font-size:14px;font-weight:700;margin-bottom:10px;">🎯 Target Omzet '+cfg.label+' — '+MONTH_NAMES_FULL[st.m-1]+' '+st.y+'</div>'
+      +(st.rows.length ? '<div class="adv-cards-grid" style="margin-bottom:14px;">'+cards+'</div>'
+        +'<div style="margin-top:6px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);display:flex;flex-wrap:wrap;gap:16px;align-items:center;">'
+        +'<div style="font-size:12.5px;font-weight:700;">Total '+cfg.label+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">Target: <b style="color:var(--text);">'+rupiah(st.T)+'</b></div>'
+        +'<div style="font-size:12px;color:var(--muted);">Realisasi: <b style="color:var(--text);">'+rupiah(st.R)+'</b></div>'
+        +'<div style="font-size:12px;color:var(--muted);">Progress: '+(st.pct==null?'<b style="color:var(--text);">-</b>':tag(st.isCur?(st.pct>=st.idealPct?'green':'yellow'):(st.pct>=100?'green':'yellow'),pctFmt(st.pct)))+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">'+(st.kur>=0&&st.T>0?'Kelebihan':'Kekurangan')+': '+(st.T>0?tag(st.kur>=0?'green':'yellow',rupiah(st.kur)):'<b style="color:var(--text);">-</b>')+'</div>'
+        +'<button type="button" class="btn" data-ot-msg-all="'+role+'" style="'+COPY_MSG_BTN_STYLE+'margin-left:auto;">📋 Salin Pesan Semua '+cfg.label+'</button></div>'
+      : '<div class="muted-note">Belum ada '+cfg.label+'. Tambahkan dulu di menu '+cfg.label+'.</div>');
+    if(!el._otBound){
+      el._otBound=true;
+      el.addEventListener('change', async ev=>{
+        const t=ev.target; if(!t.matches('input[data-ot-name]')) return;
+        const [yy,mm]=OT_MONTH.split('-').map(Number), name=t.getAttribute('data-ot-name'), rl=t.getAttribute('data-ot-role'), val=Math.max(0,parseFloat(t.value)||0);
+        otSet(rl,name,yy,mm,val); saveLocalState(); renderOmzetTargets();
+        let r='error'; try{ r=await pushOmzetTarget(rl,name,yy,mm,val); }catch(e){}
+        const e=document.getElementById('otMsg');
+        if(e) e.textContent = r==='ok' ? '✅ Target '+name+' tersimpan & terkirim ke spreadsheet.' : (r==='no-url' ? 'Tersimpan lokal (URL Apps Script belum diisi).' : '⚠️ Tersimpan lokal, gagal kirim ke spreadsheet.');
+      });
+      el.addEventListener('click', ev=>{
+        const b=ev.target.closest('[data-ot-msg],[data-ot-msg-all]'); if(!b) return;
+        const stt=otStats(role);
+        if(b.hasAttribute('data-ot-msg')){ const n=b.getAttribute('data-ot-msg'), x=stt.rows.find(r=>r.n===n); if(x) otCopy(otMessage(role,[x],stt),b,n); }
+        else otCopy(otMessage(role,stt.rows,stt),b,'semua '+cfg.label);
+      });
+    }
+  });
+  const mi=document.getElementById('otMonth');
+  if(mi && !mi._otBound){
+    mi._otBound=true;
+    mi.addEventListener('change',()=>{ if(mi.value){ OT_MONTH=mi.value; renderOmzetTargets(); } });
+    document.getElementById('otCopyAll').addEventListener('click', async ()=>{
+      const [yy,mm]=OT_MONTH.split('-').map(Number), pm=mm===1?12:mm-1, py=mm===1?yy-1:yy;
+      let n=0; const pend=[];
+      Object.keys(OT_ROLES).forEach(rl=>{
+        const nm=[...new Set([...(OT_ROLES[rl].list()||[]), ...Object.keys(OMZET_TARGETS[rl]||{})])];
+        nm.forEach(x=>{ const prev=otGet(rl,x,otKey(py,pm)); if(prev>0 && !otGet(rl,x,OT_MONTH)){ otSet(rl,x,yy,mm,prev); pend.push([rl,x,prev]); n++; } });
+      });
+      saveLocalState(); renderOmzetTargets();
+      for(const [rl,x,v] of pend){ try{ await pushOmzetTarget(rl,x,yy,mm,v); }catch(e){} }
+      document.getElementById('otMsg').textContent = n ? '✅ '+n+' target disalin dari bulan lalu (yang sudah terisi tidak ditimpa).' : 'Tidak ada target bulan lalu yang bisa disalin.';
+    });
+  }
+}
+
+/* ============== CS DL (Dept Collect Lead) ============== */
+let CSDL_LIST = [];
+let CSDL_HIDDEN = [];
+let CSDL_DATA = []; // {tanggal, cs, brand, followup, closing, omzet}
+let csdlActiveTab = null;
+
+const CSDL_CLOSING_RATE_TARGET = 10; // target closing rate CS DL (%)
+// Hari kerja = jumlah kombinasi (CS DL + tanggal) yang punya input follow-up/closing
+function csdlHariKerja(rows){ const st=new Set(); rows.forEach(r=>{ if(crmNum(r.followup)>0||crmNum(r.closing)>0) st.add(r.cs+'|'+String(r.tanggal).slice(0,10)); }); return st.size; }
+const csdlAvg = v => v==null ? '-' : v.toFixed(1).replace('.',',');
+function csdlRateHtml(rate){
+  if(rate==null) return '-';
+  const T=CSDL_CLOSING_RATE_TARGET, c = rate>=T ? 'var(--green)' : (rate>=T*0.5 ? 'var(--yellow)' : 'var(--red)');
+  return '<span style="color:'+c+';font-weight:600;">'+pctFmt(rate)+'</span>';
+}
+function csdlRateDelta(cur,prev){
+  if(cur==null||prev==null) return '';
+  const d=cur-prev; if(Math.abs(d)<0.05) return '<span class="delta-badge flat">▬ 0 pp</span>';
+  return '<span class="delta-badge '+(d>0?'up':'down')+'">'+(d>0?'▲':'▼')+' '+Math.abs(d).toFixed(1).replace('.',',')+' pp</span>';
+}
+function csdlAgg(rows){
+  const o={followup:0,closing:0,omzet:0};
+  rows.forEach(r=>{ o.followup+=crmNum(r.followup); o.closing+=crmNum(r.closing); o.omzet+=crmNum(r.omzet); });
+  o.rate = o.followup>0 ? o.closing/o.followup*100 : null;
+  o.aov = o.closing>0 ? o.omzet/o.closing : null;
+  o.hk = csdlHariKerja(rows);
+  o.avgFu = o.hk>0 ? o.followup/o.hk : null;
+  return o;
+}
+function csdlSyncRoster(){
+  CSDL_DATA.forEach(r=>{ if(r.cs && !CSDL_LIST.includes(r.cs) && !CSDL_HIDDEN.includes(r.cs)) CSDL_LIST.push(r.cs); });
+}
+async function pushCsdlRoster(nama, aktif){
+  return pushOneToSheet({type:'csdlroster', nama:nama, aktif:!!aktif});
+}
+function csdlApplyFromSheet(json){
+  const low=x=>String(x).toLowerCase();
+  if(Array.isArray(json.csdlroster)){
+    json.csdlroster.forEach(r=>{
+      const nama=String(r.nama||'').trim(); if(!nama) return;
+      const aktif=!['tidak','no','nonaktif','false','0','mati'].includes(low(r.aktif==null?'':r.aktif).trim());
+      if(aktif){
+        if(!CSDL_LIST.some(x=>low(x)===low(nama))) CSDL_LIST.push(nama);
+        CSDL_HIDDEN=CSDL_HIDDEN.filter(x=>low(x)!==low(nama));
+      } else {
+        CSDL_LIST=CSDL_LIST.filter(x=>low(x)!==low(nama));
+        if(!CSDL_HIDDEN.some(x=>low(x)===low(nama))) CSDL_HIDDEN.push(nama);
+      }
+    });
+  }
+  if(!Array.isArray(json.csdl)){ saveLocalState(); if(typeof renderCsdlAll==='function') renderCsdlAll(); return 0; }
+  CSDL_DATA = json.csdl.map(r=>({
+    tanggal: String(r.tanggal||'').slice(0,10), cs: String(r.cs||'').trim(), brand: String(r.brand||'').trim(),
+    followup: crmNum(r.followup), closing: crmNum(r.closing), omzet: crmNum(r.omzet)
+  })).filter(r=>r.cs && r.tanggal);
+  csdlSyncRoster();
+  saveLocalState();
+  if(typeof renderCsdlAll==='function') renderCsdlAll();
+  return CSDL_DATA.length;
+}
+async function pushCsdlRow(r){
+  return pushOneToSheet({type:'csdl', tanggal:r.tanggal, cs:r.cs, brand:r.brand||'', followup:r.followup, closing:r.closing, omzet:r.omzet});
+}
+async function pushCsdlDelete(r){
+  return pushOneToSheet({type:'csdl', tanggal:r.tanggal, cs:r.cs, brand:r.brand||'', hapus:true});
+}
+function csdlTable(headers, rows, totalRow){
+  if(!rows.length) return '<div class="muted-note">Belum ada data pada periode ini.</div>';
+  return '<table class="data-table"><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'
+    +rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')
+    +(totalRow?'<tr style="font-weight:700;background:var(--panel-2);border-top:2px solid var(--line);">'+totalRow.map(c=>'<td>'+c+'</td>').join('')+'</tr>':'')
+    +'</tbody></table>';
+}
+function csdlKpiHtml(a,p){
+  p=p||csdlAgg([]);
+  const T=CSDL_CLOSING_RATE_TARGET, vs=' <span style="opacity:.7;font-size:11px;">vs periode lalu</span>';
+  const k=(c,l,v,sub)=>'<div class="card kpi"><div class="bar-accent" style="background:var(--'+c+')"></div><div class="label">'+l+'</div><div class="value">'+v+'</div><div class="muted-note" style="margin-top:4px;color:inherit;opacity:.9;">'+sub+'</div></div>';
+  let tgt='Target '+T+'% · belum ada data';
+  if(a.rate!=null) tgt = a.rate>=T ? 'Target '+T+'% · ✅ tercapai'+(a.rate>T?' (+'+(a.rate-T).toFixed(1).replace('.',',')+' pp)':'') : 'Target '+T+'% · ⚠️ kurang '+(T-a.rate).toFixed(1).replace('.',',')+' pp';
+  return k('blue','Follow-up Lead',num(a.followup),'Rata² '+csdlAvg(a.avgFu)+' / hari kerja<br>'+deltaBadge(a.followup,p.followup)+vs)
+    +k('green','Closing',num(a.closing),'&nbsp;<br>'+deltaBadge(a.closing,p.closing)+vs)
+    +k('yellow','Closing Rate',pctFmt(a.rate),tgt+'<br>'+csdlRateDelta(a.rate,p.rate)+vs)
+    +k('purple','Omzet Closing DL',rupiah(a.omzet),'Omzet / closing '+(a.aov==null?'-':rupiah(a.aov))+'<br>'+deltaBadge(a.omzet,p.omzet)+vs);
+}
+function csdlGroup(rows,key){
+  const m={}; rows.forEach(r=>{ const k=r[key]||'(Tanpa brand)'; (m[k]=m[k]||[]).push(r); });
+  return Object.keys(m).sort().map(k=>[k,csdlAgg(m[k])]);
+}
+function renderCsdlAll(){
+  if(typeof renderOmzetTargets==='function') renderOmzetTargets();
+  if(!document.getElementById('csdlTabs')) return;
+  csdlSyncRoster();
+  const names = CSDL_LIST.filter(n=>!CSDL_HIDDEN.includes(n));
+  if(!names.includes(csdlActiveTab)) csdlActiveTab = names[0]||null;
+  const tabsEl=document.getElementById('csdlTabs');
+  tabsEl.innerHTML = names.length ? names.map(n=>'<button class="period-btn'+(n===csdlActiveTab?' active':'')+'" data-csdl-tab="'+escapeHtml(n)+'">'+escapeHtml(n)+'</button>').join('') : '<span class="muted-note">Belum ada CS DL — tambahkan lewat Kelola CS DL.</span>';
+  tabsEl.querySelectorAll('[data-csdl-tab]').forEach(b=>{ b.onclick=()=>{ csdlActiveTab=b.getAttribute('data-csdl-tab'); renderCsdlAll(); }; });
+  document.getElementById('csdlNamaView').value = csdlActiveTab||'';
+  document.getElementById('csdlCountBadge').textContent = names.length;
+  document.getElementById('csdlChips').innerHTML = names.map(n=>'<span class="kelola-item"><span>'+escapeHtml(n)+'</span> <button type="button" class="k-del" data-csdl-del="'+escapeHtml(n)+'" title="Hapus dari daftar">×</button></span>').join('');
+  document.querySelectorAll('[data-csdl-del]').forEach(b=>{ b.onclick=()=>{ const n=b.getAttribute('data-csdl-del'); CSDL_LIST=CSDL_LIST.filter(x=>x!==n); if(!CSDL_HIDDEN.includes(n)) CSDL_HIDDEN.push(n); saveLocalState(); renderCsdlAll(); pushCsdlRoster(n,false); }; });
+  const tg=document.getElementById('csdlTanggal');
+  if(tg && !tg.value) tg.value = fmtISO(new Date());
+  document.getElementById('csdlTanggalReadable').textContent = tg&&tg.value ? fmtTanggalID(tg.value) : '-';
+
+  const range=getRange();
+  const rows=CSDL_DATA.filter(r=>csRowInRange(r.tanggal,range));
+  const a=csdlAgg(rows);
+  const pa=csdlAgg(CSDL_DATA.filter(r=>csRowInRange(r.tanggal,getPrevRange(range))));
+  document.getElementById('csdlKpis').innerHTML = csdlKpiHtml(a,pa);
+  const tn=document.getElementById('csdlTargetNote'); if(tn) tn.textContent='Target closing rate CS DL: '+CSDL_CLOSING_RATE_TARGET+'% · Hari kerja = jumlah hari (per CS DL) yang punya input follow-up/closing · Rata² FU / Hari = Follow-up ÷ Hari Kerja · Pembanding: '+fmtTanggalID(fmtISO(getPrevRange(range)[0]))+' s/d '+fmtTanggalID(fmtISO(getPrevRange(range)[1]));
+  document.getElementById('csdlCount').textContent = rows.length+' data tercatat (ikut filter tanggal & brand global)';
+  const rowOf=(k,x)=>[escapeHtml(k),num(x.followup),num(x.closing),csdlRateHtml(x.rate),rupiah(x.omzet),x.aov==null?'-':rupiah(x.aov),num(x.hk),csdlAvg(x.avgFu)];
+  const H=['Nama','Follow-up','Closing','Closing Rate','Omzet','Omzet / Closing','Hari Kerja','Rata² FU / Hari'];
+  document.getElementById('csdlTblCs').innerHTML = csdlTable(H, csdlGroup(rows,'cs').map(([k,x])=>rowOf(k,x)), rowOf('TOTAL',a));
+  document.getElementById('csdlTblBrand').innerHTML = csdlTable(H, csdlGroup(rows,'brand').map(([k,x])=>rowOf(k,x)), rowOf('TOTAL',a));
+  const hist=rows.slice().sort((p,q)=>String(q.tanggal).localeCompare(String(p.tanggal)));
+  document.getElementById('csdlTblHist').innerHTML = csdlTable(['Tanggal','CS DL','Brand','Follow-up','Closing','Closing Rate','Omzet',''],
+    hist.map(r=>{ const ag=csdlAgg([r]); const i=CSDL_DATA.indexOf(r);
+      return [fmtTanggalID(r.tanggal),escapeHtml(r.cs),escapeHtml(r.brand||'-'),num(r.followup),num(r.closing),csdlRateHtml(ag.rate),rupiah(r.omzet),'<button type="button" class="btn" data-csdl-rm="'+i+'" style="padding:3px 8px;font-size:11px;">Hapus</button>']; }));
+  document.querySelectorAll('[data-csdl-rm]').forEach(b=>{ b.onclick=async()=>{
+    const r=CSDL_DATA[+b.getAttribute('data-csdl-rm')]; if(!r) return;
+    if(!confirm('Hapus data CS DL '+r.cs+' tanggal '+r.tanggal+'?')) return;
+    CSDL_DATA=CSDL_DATA.filter(x=>x!==r); saveLocalState(); renderCsdlAll();
+    try{ await pushCsdlDelete(r); }catch(e){ console.warn(e); }
+  }; });
+
+  // Tren
+  if(chartReg.chartCsdlTrend){ chartReg.chartCsdlTrend.destroy(); delete chartReg.chartCsdlTrend; }
+  const ds=datesIn(range), fu=[], cl=[];
+  ds.forEach(d=>{ const iso=fmtISO(d), rr=rows.filter(r=>String(r.tanggal).slice(0,10)===iso); const g=csdlAgg(rr); fu.push(g.followup); cl.push(g.closing); });
+  mkChart('chartCsdlTrend',{type:'line',data:{labels:trendLabels(range),datasets:[
+    {label:'Follow-up',data:fu,borderColor:cssVar('--blue'),backgroundColor:cssVar('--blue'),tension:.25,pointRadius:2},
+    {label:'Closing',data:cl,borderColor:cssVar('--green'),backgroundColor:cssVar('--green'),tension:.25,pointRadius:2}]},
+    options:Object.assign(baseOpts(true),{plugins:Object.assign({},baseOpts(true).plugins,{legend:{display:true,labels:{color:cssVar('--chart-tick')}}})})});
+
+  if(typeof renderLaporanCsdl==='function'){ renderLaporanCsdl(range); if(typeof lapEnhanceTables==='function') lapEnhanceTables(); }
+  // Overview
+  const ovK=document.getElementById('ovCsdlKpis');
+  if(ovK){
+    ovK.innerHTML = csdlKpiHtml(a,pa);
+    document.getElementById('ovCsdlTable').innerHTML = csdlTable(H, csdlGroup(rows,'cs').map(([k,x])=>rowOf(k,x)), rowOf('TOTAL',a));
+  }
+}
+function csdlUpdateRatePreview(){
+  const f=crmNum(document.getElementById('csdlFollowUp').value), c=crmNum(document.getElementById('csdlClosing').value);
+  const T=CSDL_CLOSING_RATE_TARGET, rt=f>0?c/f*100:null;
+  document.getElementById('csdlRatePreview').textContent = 'Closing Rate: '+(rt==null?'-':pctFmt(rt)+' — target '+T+'% '+(rt>=T?'✅ tercapai':'⚠️ kurang '+(T-rt).toFixed(1).replace('.',',')+' pp'));
+}
+async function saveCsdlInput(){
+  const msg=document.getElementById('csdlInputMsg');
+  const cs=csdlActiveTab, tanggal=document.getElementById('csdlTanggal').value, brand=document.getElementById('csdlBrand').value||'';
+  if(!cs){ msg.textContent='Pilih / tambah CS DL dulu.'; msg.style.color='var(--red)'; return; }
+  if(!tanggal){ msg.textContent='Isi tanggal dulu.'; msg.style.color='var(--red)'; return; }
+  const fu=document.getElementById('csdlFollowUp').value, cl=document.getElementById('csdlClosing').value, om=document.getElementById('csdlOmzet').value;
+  if(fu===''&&cl===''&&om===''){ msg.textContent='Isi minimal satu angka.'; msg.style.color='var(--red)'; return; }
+  const row={tanggal,cs,brand,followup:crmNum(fu),closing:crmNum(cl),omzet:crmNum(om)};
+  const i=CSDL_DATA.findIndex(r=>r.tanggal===tanggal && r.cs===cs && (r.brand||'')===brand);
+  if(i>=0) CSDL_DATA[i]=row; else CSDL_DATA.push(row);
+  saveLocalState(); renderCsdlAll();
+  ['csdlFollowUp','csdlClosing','csdlOmzet'].forEach(id=>document.getElementById(id).value=''); csdlUpdateRatePreview();
+  msg.textContent='Tersimpan lokal. Mengirim ke spreadsheet...'; msg.style.color='var(--muted)';
+  let st='error'; try{ st=await pushCsdlRow(row); }catch(e){}
+  if(st==='ok'){ msg.textContent='✅ Tersimpan & terkirim ke spreadsheet.'; msg.style.color='var(--green)'; }
+  else if(st==='no-url'){ msg.textContent='✅ Tersimpan lokal (URL Apps Script belum diisi, belum dikirim ke spreadsheet).'; msg.style.color='var(--muted)'; }
+  else { msg.textContent='⚠️ Tersimpan lokal, tapi gagal kirim ke spreadsheet. Pastikan sheet "CSDL" ada & Apps Script sudah di-deploy ulang.'; msg.style.color='var(--red)'; }
+}
+(function(){
+  const $=id=>document.getElementById(id);
+  $('btnSaveCsdl').onclick=saveCsdlInput;
+  $('btnCsdlToday').onclick=()=>{ $('csdlTanggal').value=fmtISO(new Date()); renderCsdlAll(); };
+  $('csdlTanggal').addEventListener('change',()=>{ $('csdlTanggalReadable').textContent=$('csdlTanggal').value?fmtTanggalID($('csdlTanggal').value):'-'; });
+  $('csdlFollowUp').addEventListener('input',csdlUpdateRatePreview);
+  $('csdlClosing').addEventListener('input',csdlUpdateRatePreview);
+  $('btnAddCsdl').onclick=()=>{
+    const n=$('csdlNewName').value.trim(); if(!n) return;
+    CSDL_HIDDEN=CSDL_HIDDEN.filter(x=>x!==n); if(!CSDL_LIST.includes(n)) CSDL_LIST.push(n);
+    csdlActiveTab=n; $('csdlNewName').value=''; saveLocalState(); renderCsdlAll(); pushCsdlRoster(n,true);
+  };
+})();
 
 /* ============== OMZET & CLOSING CS ============== */
 let CS_LIST = [];
@@ -7273,6 +7797,7 @@ function renderCsBreakdown(elId, sourceArr, entries, totalLeadBase){
   + '<div class="adv-card-row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px;font-weight:700;"><span class="k">Total</span><span class="v">'+num(grandTotal)+'</span></div>';
 }
 function renderCsData(){
+  if(typeof renderOmzetTargets==='function') renderOmzetTargets();
   const tbody = document.getElementById('tblCsData');
   const countEl = document.getElementById('csCount');
   const kpiOmzet = document.getElementById('csKpiOmzet');
@@ -7477,6 +8002,7 @@ function saveLocalState(){
       targetsMonthly: TARGETS_MONTHLY,
       dirtyTargets: DIRTY_TARGETS,
       targetsCpl: TARGETS_CPL,
+      omzetTargetsDaily: OMZET_TARGETS,
       defaultTargetMigrated: defaultTargetMigrated,
       targetMode: targetMode,
       standarHari: STANDAR_HARI,
@@ -7497,6 +8023,7 @@ function saveLocalState(){
       crmData: CRM_DATA,
       crmList: CRM_LIST,
       crmHidden: CRM_HIDDEN,
+      csdlData: CSDL_DATA, csdlList: CSDL_LIST, csdlHidden: CSDL_HIDDEN,
       appsScriptUrl: document.getElementById('appsScriptUrl').value,
       dataStart: fmtISO(DATA_START),
       savedAt: new Date().toISOString()
@@ -7516,6 +8043,11 @@ function loadLocalState(){
     TARGETS = state.targets || TARGETS;
     if(state.targetsMonthly) TARGETS_MONTHLY = state.targetsMonthly;
     if(state.targetsCpl) TARGETS_CPL = state.targetsCpl;
+    if(state.omzetTargetsDaily) OMZET_TARGETS = Object.assign({cs:{},crm:{},csdl:{}}, state.omzetTargetsDaily);
+    else if(state.omzetTargets){ // migrasi: versi lama menyimpan target BULANAN → ubah ke harian (÷ standar hari)
+      OMZET_TARGETS = {cs:{},crm:{},csdl:{}};
+      Object.keys(state.omzetTargets).forEach(rl=>{ const R=OMZET_TARGETS[rl]=OMZET_TARGETS[rl]||{}; Object.keys(state.omzetTargets[rl]||{}).forEach(n=>{ R[n]={}; Object.keys(state.omzetTargets[rl][n]).forEach(ym=>{ const pr=ym.split('-').map(Number); const v=state.omzetTargets[rl][n][ym]; if(v>0) R[n][ym]=Math.round(v/stdHari(pr[0],pr[1])); }); }); });
+    }
     DIRTY_TARGETS = state.dirtyTargets || {};
     defaultTargetMigrated = !!state.defaultTargetMigrated;
     if(state.targetMode) targetMode = state.targetMode;
@@ -7564,6 +8096,9 @@ function loadLocalState(){
     CRM_DATA = Array.isArray(state.crmData) ? state.crmData : [];
     CRM_LIST = Array.isArray(state.crmList) ? state.crmList : [];
     CRM_HIDDEN = Array.isArray(state.crmHidden) ? state.crmHidden : [];
+    CSDL_DATA = Array.isArray(state.csdlData) ? state.csdlData : [];
+    CSDL_LIST = Array.isArray(state.csdlList) ? state.csdlList : [];
+    CSDL_HIDDEN = Array.isArray(state.csdlHidden) ? state.csdlHidden : [];
     if(Array.isArray(state.selectedAccounts)){
       // Data lama tidak punya field ini — kalau ada, pakai apa adanya (termasuk akun yang
       // sudah ditandai mati, supaya histori spend-nya tetap ikut di laporan).
@@ -7619,6 +8154,9 @@ let reportState = {
   selectedAdvs: new Set(),   // advertiser yang dipilih
   selectedBrands: new Set(), // brand yang dipilih (mode 'brand'); kosong = semua brand
   showBrSpend: true, showBrOmzetCs: true, showBrOmzetCrm: true, showBrTotal: true, showBrRoasCs: true, showBrRoasTotal: true, showBrCpc: true, showBrClosing: true,
+  selectedCsdlList: new Set(),
+  showDlFu: true, showDlClosing: true, showDlRate: true, showDlOmzet: true,
+  showBrDlOmzet: true,
   showBudget: true,
   showSpend: true,
   showLead: true,
@@ -7673,6 +8211,7 @@ function buildReportTextCore(){
   if(reportState.reportMode === 'cs') return buildCsReportText();
   if(reportState.reportMode === 'gabungan') return buildGabunganReportText();
   if(reportState.reportMode === 'crm') return buildCrmReportText();
+  if(reportState.reportMode === 'csdl') return buildCsdlReportText();
   if(reportState.reportMode === 'brand') return window.buildBrandReportText ? window.buildBrandReportText() : null;
   return buildAdvertiserReportText();
 }
@@ -7969,6 +8508,42 @@ function buildGabCrmLines(range){
    tambahan — ROAS per advertiser tetap omzet CS saja, karena CRM tidak terikat ke advertiser. */
 /* ============== REPORT CRM (mandiri) ==============
    Satu entri per CRM terpilih yang punya data di periode report + total kalau lebih dari satu. */
+function buildCsdlReportText(){
+  const range=getReportRange(), T=CSDL_CLOSING_RATE_TARGET, r=reportState;
+  const dateLabel = fmtDateID(range[0])===fmtDateID(range[1]) ? fmtDateID(range[0]) : fmtDateID(range[0])+' s/d '+fmtDateID(range[1]);
+  const sel=r.selectedCsdlList;
+  const rows=CSDL_DATA.filter(x=>sel.has(x.cs)&&csRowInRange(x.tanggal,range));
+  if(!rows.length) return null;
+  const by={}; rows.forEach(x=>{ (by[x.cs]=by[x.cs]||[]).push(x); });
+  const aggs={}; Object.keys(by).forEach(n=>{ aggs[n]=csdlAgg(by[n]); });
+  const names=Object.keys(aggs).sort((p,q)=>aggs[q].omzet-aggs[p].omzet);
+  const fields=(o,ind)=>{
+    const L=[];
+    if(r.showDlFu)      L.push(ind+'Follow-up      : '+num(o.followup));
+    if(r.showDlClosing) L.push(ind+'Closing        : '+num(o.closing));
+    if(r.showDlRate)    L.push(ind+'Closing Rate   : '+(o.rate==null?'-':pctFmt(o.rate)+' (target '+T+'% '+(o.rate>=T?'✅':'⚠️ kurang '+(T-o.rate).toFixed(1).replace('.',',')+' pp')+')'));
+    if(r.showDlOmzet)   L.push(ind+'Omzet          : '+rupiah(o.omzet));
+    return L;
+  };
+  const L=['*REPORT CS DL*','Periode: '+dateLabel];
+  if(r.customHeader.trim()) L.push(r.customHeader.trim());
+  L.push('');
+  names.forEach((n,i)=>{
+    L.push((i+1)+'. *'+n+'*');
+    fields(aggs[n], '   ').forEach(x=>L.push(x));
+    if(i<names.length-1) L.push('');
+  });
+  if(names.length>1){
+    L.push('','──────────────────────','*TOTAL CS DL*');
+    fields(csdlAgg(rows), '   ').forEach(x=>L.push(x));
+    L.push('──────────────────────');
+  }
+  L.push('','_Omzet CS DL tidak dijumlah ke Total Omzet / ROAS._');
+  if(r.customFooter.trim()){ L.push(''); L.push(r.customFooter.trim()); }
+  L.push('','_Generated: '+new Date().toLocaleString('id-ID')+'_');
+  return L.join('\n');
+}
+
 function buildCrmReportText(){
   const range = getReportRange();
   const dateLabel = fmtDateID(range[0]) === fmtDateID(range[1])
@@ -8152,6 +8727,8 @@ function refreshReportPreview(){
       ? '⚠ Pilih minimal satu CS yang punya data pada periode ini.'
       : reportState.reportMode === 'crm'
       ? '⚠ Pilih minimal satu CRM yang punya data pada periode ini.'
+      : reportState.reportMode === 'csdl'
+      ? '⚠ Pilih minimal satu CS DL yang punya data pada periode ini.'
       : reportState.reportMode === 'brand'
       ? '⚠ Belum ada brand. Tambahkan dulu di halaman Per Brand.'
       : '⚠ Pilih minimal satu advertiser dan pastikan akun-akunnya aktif & dipilih di dashboard / punya data Hasil CS.';
@@ -8175,6 +8752,9 @@ function openReportModal(){
   if(reportState.selectedCrmList.size === 0){
     CRM_LIST.forEach(c=> reportState.selectedCrmList.add(c));
   }
+  if(reportState.selectedCsdlList.size === 0){
+    CSDL_LIST.forEach(c=> reportState.selectedCsdlList.add(c));
+  }
   // Prefill tanggal khusus report dengan periode dashboard aktif saat ini, kalau belum pernah diisi
   if(!reportState.dateStart || !reportState.dateEnd){
     const curRange = getRange();
@@ -8197,6 +8777,7 @@ function openReportModal(){
         <div class="period-btn ${reportState.reportMode==='cs'?'active':''}" data-mode="cs">📞 Report CS</div>
         <div class="period-btn ${reportState.reportMode==='gabungan'?'active':''}" data-mode="gabungan">📊 Report Gabungan</div>
         <div class="period-btn ${reportState.reportMode==='crm'?'active':''}" data-mode="crm">💌 Report CRM</div>
+        <div class="period-btn ${reportState.reportMode==='csdl'?'active':''}" data-mode="csdl">📲 Report CS DL</div>
         <div class="period-btn ${reportState.reportMode==='brand'?'active':''}" data-mode="brand">🏷️ Report Per Brand</div>
       </div>
 
@@ -8304,6 +8885,22 @@ function openReportModal(){
       </div>
 
       <!-- ============ SECTION: REPORT CS ============ -->
+      <div id="reportSectionCsdl" style="display:${reportState.reportMode==='csdl'?'':'none'};">
+        <div class="report-section">
+          <div class="report-section-title">Pilih CS DL</div>
+          <div class="adv-chips" id="reportCsdlChips"></div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-title">Kolom Report</div>
+          <div class="toggle-group">
+            <div class="toggle-chip ${reportState.showDlFu?'on':''}" data-key="showDlFu">📞 Follow-up</div>
+            <div class="toggle-chip ${reportState.showDlClosing?'on':''}" data-key="showDlClosing">✅ Closing</div>
+            <div class="toggle-chip ${reportState.showDlRate?'on':''}" data-key="showDlRate">📈 Closing Rate vs Target</div>
+            <div class="toggle-chip ${reportState.showDlOmzet?'on':''}" data-key="showDlOmzet">💰 Omzet</div>
+          </div>
+        </div>
+      </div>
+
       <div id="reportSectionBrand" style="display:${reportState.reportMode==='brand'?'':'none'};">
         <div class="report-section">
           <div class="report-section-title">Pilih Brand <span style="font-weight:400;color:var(--muted);">(opsional — kosongkan untuk semua brand)</span></div>
@@ -8320,6 +8917,7 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showBrRoasTotal?'on':''}" data-key="showBrRoasTotal">📈 ROAS Total</div>
             <div class="toggle-chip ${reportState.showBrClosing?'on':''}" data-key="showBrClosing">✅ Closing (CS+CRM)</div>
             <div class="toggle-chip ${reportState.showBrCpc?'on':''}" data-key="showBrCpc">🎯 Cost / Closing</div>
+            <div class="toggle-chip ${reportState.showBrDlOmzet?'on':''}" data-key="showBrDlOmzet">💰 Omzet CS DL</div>
           </div>
         </div>
       </div>
@@ -8487,6 +9085,25 @@ function openReportModal(){
   renderCrmChipsInto(document.getElementById('reportCrmChips'));
   renderCrmChipsInto(document.getElementById('reportCrmOnlyChips'));
 
+  // Chip CS DL (mode 'csdl')
+  (function(){
+    const wrap=document.getElementById('reportCsdlChips'); if(!wrap) return;
+    if(!CSDL_LIST.length){ wrap.innerHTML='<span class="muted-note">Belum ada CS DL. Tambahkan dulu di menu CS DL.</span>'; return; }
+    CSDL_LIST.forEach(c=>{
+      const chip=document.createElement('label');
+      chip.className='adv-chip'+(reportState.selectedCsdlList.has(c)?' selected':'');
+      chip.style.color='var(--blue)';
+      chip.innerHTML='<input type="checkbox" '+(reportState.selectedCsdlList.has(c)?'checked':'')+'><span></span>';
+      chip.querySelector('span').textContent=c;
+      chip.querySelector('input').addEventListener('change',e=>{
+        if(e.target.checked){ reportState.selectedCsdlList.add(c); chip.classList.add('selected'); }
+        else { reportState.selectedCsdlList.delete(c); chip.classList.remove('selected'); }
+        refreshReportPreview();
+      });
+      wrap.appendChild(chip);
+    });
+  })();
+
   // Render filter Advertiser utk mode CS — kosong = semua advertiser digabung (perilaku lama)
   const csAdvFilterWrap = document.getElementById('reportCsAdvFilterChips');
   if(ADVERTISERS.length===0){
@@ -8516,6 +9133,7 @@ function openReportModal(){
       document.getElementById('reportSectionGabungan').style.display = reportState.reportMode==='gabungan' ? '' : 'none';
       document.getElementById('reportSectionCrm').style.display = reportState.reportMode==='crm' ? '' : 'none';
       document.getElementById('reportSectionBrand').style.display = reportState.reportMode==='brand' ? '' : 'none';
+      document.getElementById('reportSectionCsdl').style.display = reportState.reportMode==='csdl' ? '' : 'none';
       refreshReportPreview();
     });
   });
@@ -8772,6 +9390,7 @@ async function autoPullOnLoad(){
       if(typeof renderCsData==='function') renderCsData();
     }
     crmApplyFromSheet(json);
+    csdlApplyFromSheet(json);
     saveLocalState();
     render();
     const hasSkipped2 = (skippedAkunNames2.size>0 || skippedLeadAdv2.size>0 || blockedRemovalNames2.length>0);
@@ -8890,7 +9509,7 @@ applyTheme(getSavedTheme());
     if(typeof renderCsNotClosingInputs==='function') renderCsNotClosingInputs();
     if(typeof renderCsData==='function') renderCsData();
     if(typeof renderCsInsight==='function') renderCsInsight();
-    if(typeof renderCrmAll==='function') renderCrmAll();
+    if(typeof renderCrmAll==='function') renderCrmAll();    if(typeof renderCsdlAll==='function') renderCsdlAll();
   }
   if(!defaultTargetMigrated){
     // Migrasi default -> bulanan DIMATIKAN: dulu jalan sebelum data Sheet ditarik dan menimpa
@@ -8921,7 +9540,7 @@ if(stdHariIn) stdHariIn.addEventListener('change', ()=> setStandarHari(stdHariIn
 updateStdHariUI();
 
 /* ============== NAV SIDEBAR (tampilan menu index — TIDAK diubah) ============== */
-const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi'];
+const PAGES_WITHOUT_DATE_FILTER = ['input','integrasi','target'];
 function syncGlobalFilterbarVisibility(pageId){
   const bar = document.querySelector('.global-filterbar');
   if(!bar) return;
@@ -9105,6 +9724,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     const inB=r=> b.name===null ? !r.brand : r.brand===b.name;
     const cs=CS_DATA.filter(r=>inB(r)&&csRowInRange(r.tanggal,range));
     const crm=CRM_DATA.filter(r=>inB(r)&&csRowInRange(r.tanggal,range));
+    const dl=CSDL_DATA.filter(r=>inB(r)&&csRowInRange(r.tanggal,range));
     const sum=(a,k)=>a.reduce((t,r)=>t+(Number(r[k])||0),0);
     let spend=0;
     accsOf(b).forEach(a=>{ const ser=brandSeries(b,a,a.spendSeries); for(let i=s;i<=e;i++) spend+=ser[i]||0; });
@@ -9113,7 +9733,8 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     const bc=sum(crm,'d0')+sum(crm,'d1')+sum(crm,'d7')+sum(crm,'d14');
     const lb=b.name===null?[]:Object.values(LB).filter(r=>r.brand===b.name&&csRowInRange(r.tanggal,range));
     const adReal=lb.reduce((t,r)=>t+(+r.real||0),0), adOO=lb.reduce((t,r)=>t+(+r.oo||0),0);
-    return {spend,omzet,closing,real,oo,cOmzet,cClosing,cPot,bc,adReal,adOO,hasAd:lb.length>0,n:cs.length+crm.length};
+    const dlF=sum(dl,'followup'), dlC=sum(dl,'closing'), dlO=sum(dl,'omzet');
+    return {spend,omzet,closing,real,oo,cOmzet,cClosing,cPot,bc,adReal,adOO,dlF,dlC,dlO,hasAd:lb.length>0,n:cs.length+crm.length+dl.length};
   }
   const K=(l,v)=>'<div><span>'+l+'</span><b>'+v+'</b></div>';
   /* ---- State tampilan (tidak disimpan): kartu diciutkan, panel atur terbuka, tab aktif, urutan tabel ---- */
@@ -9148,7 +9769,8 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       +KT('Lead OO Iklan',x.hasAd?cnt(x.adOO):'-')+KT('Lead Real Iklan',x.hasAd?cnt(x.adReal):'-')+KT('CPL Real',(x.hasAd&&x.adReal>0)?rupiah(x.spend/x.adReal):'-')
       +KT('Lead OO (CS)',cnt(x.oo))+KT('Lead Real (CS)',cnt(x.real))+KT('Closing CS',cnt(x.closing))
       +KT('Closing Rate',rate==null?'-':pctFmt(rate),'',rate==null?'':'<i class="br-bar"><u style="width:'+Math.min(100,rate)+'%"></u></i>')
-      +KT('Omzet CS',money(x.omzet))+KT('ROAS CS',hasSp?badge(x.omzet,x.spend):'-')+'</div></div>'
+      +KT('Omzet CS',money(x.omzet))+KT('ROAS CS',hasSp?badge(x.omzet,x.spend):'-')
+      +KT('Follow-up DL',cnt(x.dlF))+KT('Closing DL',cnt(x.dlC))+KT('Omzet DL',money(x.dlO))+'</div></div>'
       +'<div class="br-pane'+(tab==='crm'?' on':'')+'" data-pane="crm"><div class="br-kpis">'
       +KT('Total Broadcast',cnt(x.bc))+KT('Closing CRM',cnt(x.cClosing))+KT('Omzet CRM',money(x.cOmzet))+KT('Potensial',cnt(x.cPot))+KT('Total Omzet',money(tot))+'</div></div>';
     if(!unassigned){
@@ -9210,6 +9832,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     if(reportState.customHeader.trim()) L.push(reportState.customHeader.trim());
     L.push('');
     const rx=(o,sp)=>sp>0?(o/sp).toFixed(2)+'x':'-';
+    let anyDl=false;
     const block=(x,cls)=>{
       const tot=x.omzet+x.cOmzet, cl=x.closing+x.cClosing, has=x.spend>0, r=reportState;
       if(r.showBrSpend)     L.push('   Spend + PPN    : '+rupiah(x.spend));
@@ -9220,8 +9843,12 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       if(r.showBrRoasTotal) L.push('   ROAS Total     : '+rx(tot,x.spend));
       if(r.showBrClosing)   L.push('   Closing        : '+num(cl));
       if(r.showBrCpc)       L.push('   Cost / Closing : '+((has&&cl>0)?rupiah(x.spend/cl):'-'));
+      if(x.dlO){
+        anyDl=true;
+        if(r.showBrDlOmzet) L.push('   Omzet CS DL    : '+rupiah(x.dlO));
+      }
     };
-    const T={spend:0,omzet:0,cOmzet:0,closing:0,cClosing:0};
+    const T={spend:0,omzet:0,cOmzet:0,closing:0,cClosing:0,dlF:0,dlC:0,dlO:0};
     list.forEach((b,i)=>{
       const x=stats(b,range);
       Object.keys(T).forEach(k=>T[k]+=x[k]);
@@ -9230,6 +9857,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     if(list.length>1){
       L.push('','──────────────────────','*TOTAL SEMUA BRAND*'); block(T); L.push('──────────────────────');
     }
+    if(anyDl) L.push('','_Omzet CS DL tidak dijumlah ke Total Omzet / ROAS._');
     if(!sel.size){
       const lo=stats({name:null,accounts:[]},range);
       if(lo.n>0 && (lo.omzet+lo.cOmzet)>0) L.push('','_Belum ber-brand: Omzet CS '+rupiah(lo.omzet)+', Omzet CRM '+rupiah(lo.cOmzet)+' (tidak masuk total di atas)_');
@@ -9323,9 +9951,9 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     const b=FB&&BR.find(x=>x.name===FB);
     if(!b||busy) return fn.apply(self,args);
     busy=true;
-    const o={cd:CS_DATA,cr:CRM_DATA,nr:CS_NOTREAL,nc:CS_NOTCLOSING,ad:ADVERTISERS,sa:selectedAccounts,sv:window.saveLocalState,sc:[],ls:[]};
+    const o={dl:CSDL_DATA,cd:CS_DATA,cr:CRM_DATA,nr:CS_NOTREAL,nc:CS_NOTCLOSING,ad:ADVERTISERS,sa:selectedAccounts,sv:window.saveLocalState,sc:[],ls:[]};
     try{
-      CS_DATA=o.cd.filter(r=>r.brand===FB); CRM_DATA=o.cr.filter(r=>r.brand===FB);
+      CS_DATA=o.cd.filter(r=>r.brand===FB); CRM_DATA=o.cr.filter(r=>r.brand===FB); CSDL_DATA=o.dl.filter(r=>r.brand===FB);
       CS_NOTREAL=o.nr.filter(r=>r.brand===FB); CS_NOTCLOSING=o.nc.filter(r=>r.brand===FB);
       if((b.advertisers||[]).length) ADVERTISERS=o.ad.filter(a=>b.advertisers.includes(a));
       const bAcc=accsOf(b); const bIds=new Set(bAcc.map(a=>String(a.id)));
@@ -9352,7 +9980,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       window.saveLocalState=function(){}; // jangan simpan data yang sedang tersaring
       return fn.apply(self,args);
     } finally {
-      CS_DATA=o.cd; CRM_DATA=o.cr; CS_NOTREAL=o.nr; CS_NOTCLOSING=o.nc; ADVERTISERS=o.ad; selectedAccounts=o.sa; window.saveLocalState=o.sv;
+      CS_DATA=o.cd; CRM_DATA=o.cr; CSDL_DATA=o.dl; CS_NOTREAL=o.nr; CS_NOTCLOSING=o.nc; ADVERTISERS=o.ad; selectedAccounts=o.sa; window.saveLocalState=o.sv;
       o.sc.forEach(([a,sp,bu])=>{ a.spendSeries=sp; a.budgetSeries=bu; });
       o.ls.forEach(([adv,re,oo])=>{ ADV_LEADS[adv].real=re; ADV_LEADS[adv].oo=oo; });
       busy=false;
@@ -9387,7 +10015,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       return r;
     };
   })();
-  ['render','renderAdvMetricChart','renderOverviewCs','renderOverviewCrm','renderOvInsights','renderLaporanPage','renderLaporanGabungan','renderLaporanCrm','renderLaporanSorotan','renderLaporanCsRekap','renderLaporanKategori','renderCsData','renderCsInsight','renderCrmAll','renderCrmInsight','renderCrmOverview'].forEach(n=>{
+  ['render','renderAdvMetricChart','renderOverviewCs','renderOverviewCrm','renderOvInsights','renderLaporanPage','renderLaporanGabungan','renderLaporanCrm','renderLaporanSorotan','renderLaporanCsRekap','renderLaporanKategori','renderCsData','renderCsInsight','renderCrmAll','renderCrmInsight','renderCrmOverview','renderCsdlAll'].forEach(n=>{
     const o=window[n]; if(typeof o!=='function') return;
     window[n]=function(){ return withBrand(o,this,arguments); };
   });
