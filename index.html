@@ -1153,9 +1153,9 @@ details.kelola .kelola-add-row input{flex:1;min-width:0;background:var(--panel-2
     <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">Jumlah Akun Aktif</div><div class="value" id="kpiAccCount">0</div></div>
   </div>
   <div class="grid grid-4" id="ovRoasKpis" style="margin-top:14px;">
-    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Omzet (CS + CRM)</div><div class="value" id="kpiOmzetTotal">Rp 0</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Omzet (CS + CRM + CS DL)</div><div class="value" id="kpiOmzetTotal">Rp 0</div></div>
     <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">ROAS CS</div><div class="value" id="kpiRoasCs">-</div><div class="muted-note" id="kpiRoasCsNote" style="margin-top:4px;color:inherit;opacity:.85;">Omzet CS ÷ Spend + PPN</div></div>
-    <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Total (CS + CRM)</div><div class="value" id="kpiRoasTotal">-</div><div class="muted-note" id="kpiRoasTotalNote" style="margin-top:4px;color:inherit;opacity:.85;">(Omzet CS + CRM) ÷ Spend + PPN</div></div>
+    <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Gabungan (CS + CRM + CS DL)</div><div class="value" id="kpiRoasTotal">-</div><div class="muted-note" id="kpiRoasTotalNote" style="margin-top:4px;color:inherit;opacity:.85;">(Omzet CS + CRM + CS DL) ÷ Spend + PPN</div></div>
     <div class="card kpi"><div class="bar-accent" style="background:#FF9F6B"></div><div class="label">Cost / Closing</div><div class="value" id="kpiCostClosing">-</div><div class="muted-note" id="ovRoasKpiNote" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
   </div>
   <div class="chart-card" style="margin-top:16px;">
@@ -1257,7 +1257,7 @@ details.kelola .kelola-add-row input{flex:1;min-width:0;background:var(--panel-2
   </div>
 
   <div class="ov-pane" id="ovPane-csdl" role="tabpanel">
-    <div class="ov-head"><h2>Performa CS DL</h2><div class="muted-note">Follow-up lead tidak real oleh CS DL. Omzet DL tidak dijumlah ke Total Omzet / ROAS.</div><div class="ov-actions"><button type="button" class="ov-mini" data-ovfold="collapse" title="Lipat semua kartu">Lipat semua</button><button type="button" class="ov-mini" data-ovfold="expand" title="Buka semua kartu">Buka semua</button></div></div>
+    <div class="ov-head"><h2>Performa CS DL</h2><div class="muted-note">Follow-up lead tidak real oleh CS DL. Omzet CS DL ikut dijumlah ke Total Omzet / ROAS Gabungan (CS + CRM + CS DL).</div><div class="ov-actions"><button type="button" class="ov-mini" data-ovfold="collapse" title="Lipat semua kartu">Lipat semua</button><button type="button" class="ov-mini" data-ovfold="expand" title="Buka semua kartu">Buka semua</button></div></div>
     <div class="grid grid-4" id="ovCsdlKpis"></div>
     <div class="card"><div id="ovCsdlTable" style="overflow-x:auto;"></div></div>
   </div>
@@ -1265,7 +1265,7 @@ details.kelola .kelola-add-row input{flex:1;min-width:0;background:var(--panel-2
   <div class="ov-pane" id="ovPane-ins" role="tabpanel">
     <div class="ov-head"><h2>Insight Tambahan</h2><div class="muted-note">Dihitung otomatis dari data yang sama. Klik judul kartu lebar untuk melipat.</div><div class="ov-actions"><button type="button" class="ov-mini" data-ovfold="collapse" title="Lipat semua kartu">Lipat semua</button><button type="button" class="ov-mini" data-ovfold="expand" title="Buka semua kartu">Buka semua</button></div></div>
     <details class="ov-note"><summary>Catatan perhitungan</summary><p>Ikut filter tanggal/akun di atas, kecuali Proyeksi Akhir Bulan, Anomali CPL, dan Pola Hari yang memakai bulan berjalan / 14 hari / 90 hari terakhir. Lead advertiser dan closing CS dicocokkan per tanggal, jadi closing bisa berasal dari lead hari sebelumnya.</p></details>
-    <div class="card chart-card ov-fold"><div class="panel-title" tabindex="0" role="button">Efisiensi Iklan → Closing</div><div class="panel-desc">Cost per Closing = Spend + PPN ÷ Closing CS. ROAS = Omzet CS ÷ Spend + PPN (merah bila di bawah KPI <span class="roasKpiTxt">2.1</span>x).</div><div id="ovInsEff"></div></div>
+    <div class="card chart-card ov-fold"><div class="panel-title" tabindex="0" role="button">Efisiensi Iklan → Closing</div><div class="panel-desc">Cost per Closing = Spend + PPN ÷ Closing CS. ROAS CS = Omzet CS ÷ Spend + PPN (informasi saja). KPI <span class="roasKpiTxt">2.1</span>x berlaku untuk ROAS Gabungan CS + CRM + CS DL.</div><div id="ovInsEff"></div></div>
     <div class="grid ov-2">
       <div class="card chart-card"><div class="panel-title">Funnel Lead → Closing</div><div class="panel-desc">Di mana kebocoran terbesar: iklan (lead tidak real) atau CS (tidak closing).</div><div id="ovInsFunnel"></div></div>
       <div class="card chart-card"><div class="panel-title">Proyeksi Akhir Bulan</div><div id="ovInsProj"></div></div>
@@ -1898,7 +1898,7 @@ details.kelola .kelola-add-row input{flex:1;min-width:0;background:var(--panel-2
       <div class="muted-note" style="margin:-6px 0 12px 0;">Spending + PPN diambil dari data Akun/Advertiser, Omzet &amp; Closing dari input Hasil CS — semua advertiser digabung untuk periode ini.</div>
       <div class="lap-kpi-grid" style="margin-bottom:14px;">
         <div class="card kpi"><div class="bar-accent" style="background:var(--blue)"></div><div class="label">Total Budget</div><div class="value" id="gabBudget">Rp 0</div></div>
-        <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet</div><div class="value" id="gabOmzet">Rp 0</div></div>
+        <div class="card kpi"><div class="bar-accent" style="background:var(--green)"></div><div class="label">Total Omzet (CS + CRM + CS DL)</div><div class="value" id="gabOmzet">Rp 0</div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--yellow)"></div><div class="label">ROAS Gabungan</div><div class="value" id="gabRoas">0.00x</div><div class="muted-note" id="gabRoasCrm" style="margin-top:4px;color:inherit;opacity:.85;"></div></div>
         <div class="card kpi"><div class="bar-accent" style="background:var(--purple)"></div><div class="label">CPP Gabungan</div><div class="value" id="gabCpp">-</div><div class="muted-note" style="margin-top:4px;color:inherit;opacity:.85;">biaya per closing</div></div>
       </div>
@@ -1954,7 +1954,7 @@ details.kelola .kelola-add-row input{flex:1;min-width:0;background:var(--panel-2
       <div class="lap-print-title">📞 Closing &amp; CS</div>
       <details class="lap-how laporan-noprint"><summary>📖 Cara membaca tabel ini</summary><ul>
 <li><b>% Lead Real</b> = Lead Real ÷ Lead OO (persentase dari Lead OO). <b>vs Target</b> = Budget ÷ target budget.</li>
-<li><b>CPP</b> = Spending + PPN ÷ Closing. <b>ROAS</b> = Omzet ÷ Spending + PPN memakai patokan KPI <b><span class="roasKpiTxt">2.1</span>x</b> di seluruh dashboard (diatur di menu Target Omzet): hijau ≥ KPI, merah &lt; KPI.</li>
+<li><b>CPP</b> = Spending + PPN ÷ Closing. <b>ROAS</b> di tabel ini = Omzet CS ÷ Spending + PPN (informasi saja). Patokan KPI <b><span class="roasKpiTxt">2.1</span>x</b> (diatur di menu Target Omzet) berlaku untuk <b>ROAS Gabungan = (Omzet CS + CRM + CS DL) ÷ Spending + PPN</b> pada kartu di atas: hijau ≥ KPI, merah &lt; KPI.</li>
 <li><b>Closing Rate</b> = Closing ÷ Lead Real. Pada rekap per CS, hijau jika mencapai standar KPI CS, merah jika di bawahnya.</li>
 <li>Klik judul kolom untuk mengurutkan, ketik di kotak cari untuk menyaring baris.</li></ul></details>
 
@@ -3590,7 +3590,7 @@ function renderOvInsights(range, accs){
 
   /* 1 & 2. Cost per Closing + ROAS */
   const T = st.reduce((o,s)=>{o.spend+=s.spend;o.bud+=s.bud;o.real+=s.real;o.cl+=s.A.closing;o.om+=s.A.omzet;return o;},{spend:0,bud:0,real:0,cl:0,om:0});
-  const roasCell=v=>v>0?'<b style="color:'+(v>=ROAS_GABUNGAN_KPI?'var(--good)':'var(--bad)')+'">'+v.toFixed(2)+'x</b>':'–';
+  const roasCell=v=>v>0?'<b>'+v.toFixed(2)+'x</b>':'–';
   const effRows = st.map(s=>[ovAdvTag(s.adv),rupiah(s.spend),num(s.real),ovRp(s.cpl),num(s.A.closing),ovRp(s.cpc),rupiah(s.A.omzet),roasCell(s.roas)]);
   effRows.push(['<b>Total</b>',rupiah(T.spend),num(T.real),ovRp(T.real>0?T.bud/T.real:0),num(T.cl),ovRp(T.cl>0?T.spend/T.cl:0),rupiah(T.om),roasCell(T.spend>0?T.om/T.spend:0)]);
   ovSet('ovInsEff', ovTable(['Advertiser','Spend + PPN','Lead Real','CPL Real','Closing (CS)','Cost / Closing','Omzet (CS)','ROAS'], effRows));
@@ -3681,7 +3681,6 @@ function lapActionItems(advs, range){
     const real=sumIn(ADV_LEADS[adv].real,range), cpl=real>0?advBudgetAllAccounts(adv,range)/real:0, A=lapCsAgg([adv],range);
     const tg=calcTargetInRange(adv,range), P=(k,v,s,c)=>out.push({k:'🧭 Tindak Lanjut · '+adv,v:v,s:s,cls:c||'bad'});
     if(real>0 && cplOver(adv,'real',range,cpl)) P('','CPL di atas target','CPL Real '+rupiah(cpl)+' > target '+rupiah(cplLimit(adv,'real',range))+'. Cek targeting, kreatif, dan jam tayang.');
-    if(spend>0 && A.csRows.length>0 && A.omzet/spend<ROAS_GABUNGAN_KPI) P('','ROAS di bawah KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x','ROAS '+(A.omzet/spend).toFixed(2)+'x: belum mencapai KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x. Tinjau kualitas lead dan closing.');
     const rk=lapKatRank(A.nr); if(rk[0] && A.notReal>=5 && rk[0].jumlah/A.notReal>=0.4) P('','Alasan tidak real dominan',rk[0].kategori+' = '+Math.round(rk[0].jumlah/A.notReal*100)+'% dari lead tidak real. Perbaiki targeting/form.');
     if(tg>0 && budget<tg) P('','Spending di bawah target','Kurang '+rupiah(tg-budget)+' dari target periode. Kejar spending.','');
   });
@@ -3710,20 +3709,7 @@ function lapInsCopyLines(pane){
     c.querySelectorAll('tr').forEach(tr=>L.push('• '+[...tr.children].map(x=>x.textContent.trim().replace(/\s+/g,' ')).join(' | ')));}); return L;
 }
 function buildReportText(){
-  const base=buildReportTextCore();
-  if(!base || reportState.reportMode==='cs' || reportState.reportMode==='crm' || reportState.reportMode==='csdl' || reportState.reportMode==='brand') return base;
-  try{
-    const range=getReportRange(), prev=getPrevRange(range), accs=ACCOUNTS.filter(a=>selectedAccounts.has(a.id));
-    const advs=ADVERTISERS.filter(a=>reportState.selectedAdvs.has(a)), L=['','*Efisiensi vs Periode Sebelumnya*'];
-    const ar=v=>v==null?'':' ('+(v>=0?'▲':'▼')+Math.abs(v).toFixed(0)+'%)', ch=(a,b)=>(a>0&&b>0)?(a/b-1)*100:null;
-    const f=rg=>adv=>{const sp=accs.reduce((s,a)=>s+sumInForAdv(a,a.spendSeries,adv,rg),0), real=sumIn(ADV_LEADS[adv].real,rg), A=lapCsAgg([adv],rg);
-      return {sp,real,cpl:real>0?advBudgetAllAccounts(adv,rg)/real:0,roas:sp>0?A.omzet/sp:0,cpp:A.closing>0?sp/A.closing:0};};
-    advs.forEach(adv=>{const c=f(range)(adv), p=f(prev)(adv); if(!c.sp && !c.real) return;
-      L.push('• *'+adv+'*: CPL Real '+rupiah(c.cpl)+ar(ch(c.cpl,p.cpl))+' | ROAS '+(c.roas>0?c.roas.toFixed(2)+'x':'-')+ar(ch(c.roas,p.roas))+' | Cost/Closing '+(c.cpp>0?rupiah(c.cpp):'-')+ar(ch(c.cpp,p.cpp)));});
-    const act=lapActionItems(advs,range).filter(i=>i.cls==='bad');
-    if(act.length){L.push('','*Tindak Lanjut*'); act.forEach(i=>L.push('• '+i.k.replace('🧭 Tindak Lanjut · ','')+': '+i.v+' — '+i.s));}
-    return L.length>2||act.length ? base+'\n'+L.join('\n') : base;
-  }catch(e){ console.error('Teks laporan tambahan:',e); return base; }
+  return buildReportTextCore();
 }
 function render(){
   const range = getRange();
@@ -3763,16 +3749,17 @@ function render(){
   try{
     const _cs=CS_DATA.filter(x=>csRowInRange(x.tanggal,range)), _cr=CRM_DATA.filter(x=>csRowInRange(x.tanggal,range));
     const _sum=(arr,k)=>arr.reduce((t,x)=>t+(Number(x[k])||0),0);
+    const _dl=CSDL_DATA.filter(x=>csRowInRange(x.tanggal,range)), _od=_sum(_dl,'omzet');
     const _oc=_sum(_cs,'omzet'), _or=_sum(_cr,'omzet'), _cl=_sum(_cs,'hasilClosing')+_sum(_cr,'closing');
     const _rx=o=> totalSpend>0 ? (o/totalSpend).toFixed(2).replace('.',',')+'x' : '-';
     const _warn=o=> (totalSpend>0 && o/totalSpend<ROAS_GABUNGAN_KPI) ? ' · ⚠ di bawah KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x' : (totalSpend>0 ? ' · ✓ ≥ KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x' : '');
     const _set=(id,h)=>{ const e=document.getElementById(id); if(e) e.innerHTML=h; };
     const _gb=document.getElementById('globalBrand'), _bn=_gb?_gb.value:'';
-    _set('kpiOmzetTotal',rupiahShort(_oc+_or));
+    _set('kpiOmzetTotal',rupiahShort(_oc+_or+_od));
     _set('kpiRoasCs',_rx(_oc));
-    _set('kpiRoasTotal',_rx(_oc+_or));
-    _set('kpiRoasCsNote','Omzet CS ÷ Spend + PPN'+_warn(_oc));
-    _set('kpiRoasTotalNote','(Omzet CS + CRM) ÷ Spend + PPN'+_warn(_oc+_or));
+    _set('kpiRoasTotal',_rx(_oc+_or+_od));
+    _set('kpiRoasCsNote','Omzet CS ÷ Spend + PPN (informasi, KPI berlaku untuk ROAS Gabungan)');
+    _set('kpiRoasTotalNote','(Omzet CS + CRM + CS DL) ÷ Spend + PPN'+_warn(_oc+_or+_od));
     _set('kpiCostClosing',(_cl>0&&totalSpend>0)?rupiahShort(totalSpend/_cl):'-');
     const _n=document.getElementById('ovRoasKpiNote'); if(_n) _n.textContent=_bn?('Brand: '+_bn):'Semua brand';
   }catch(e){ console.warn('KPI ROAS overview:',e); }
@@ -4173,19 +4160,21 @@ function renderLaporanGabungan(advRows, range){
   }), { budget:0, spendPPN:0, omzet:0, real:0, oo:0, target:0, leadReal:0, closing:0, notReal:0, notClosing:0, csLeadReal:0, csOO:0 });
   const grandRate = grand.leadReal>0 ? (grand.closing/grand.leadReal*100) : 0;
   const grandRoas = grand.spendPPN>0 ? (grand.omzet/grand.spendPPN) : 0;
+  const _crmAll=CRM_DATA.filter(r=>csRowInRange(r.tanggal, range)).reduce((a,r)=>a+crmNum(r.omzet),0);
+  const _dlAll=CSDL_DATA.filter(r=>csRowInRange(r.tanggal, range)).reduce((a,r)=>a+crmNum(r.omzet),0);
+  const grandRoasAll = grand.spendPPN>0 ? ((grand.omzet+_crmAll+_dlAll)/grand.spendPPN) : 0;
   const grandPctLead = grand.oo>0 ? (grand.real/grand.oo*100) : 0;
   const grandPctTarget = grand.target>0 ? (grand.budget/grand.target*100) : null;
   const gabBudgetEl = document.getElementById('gabBudget'); if(gabBudgetEl) gabBudgetEl.textContent = rupiah(grand.budget);
-  const gabOmzetEl = document.getElementById('gabOmzet'); if(gabOmzetEl) gabOmzetEl.textContent = rupiah(grand.omzet);
+  const gabOmzetEl = document.getElementById('gabOmzet'); if(gabOmzetEl) gabOmzetEl.textContent = rupiah(grand.omzet+_crmAll+_dlAll);
   const gabPctLeadEl = document.getElementById('gabPctLead'); if(gabPctLeadEl) gabPctLeadEl.textContent = grand.oo>0 ? pctFmt(grandPctLead) : '0%';
   const gabRateEl = document.getElementById('gabRate'); if(gabRateEl) gabRateEl.textContent = pctFmt(grandRate);
-  const gabRoasEl = document.getElementById('gabRoas'); if(gabRoasEl) gabRoasEl.textContent = grandRoas.toFixed(2)+'x'; gabRoasEl.style.color = grand.spendPPN>0 ? (grandRoas>=ROAS_GABUNGAN_KPI?'var(--green)':'var(--red)') : '';
+  const gabRoasEl = document.getElementById('gabRoas'); if(gabRoasEl) gabRoasEl.textContent = grandRoasAll.toFixed(2)+'x'; gabRoasEl.style.color = grand.spendPPN>0 ? (grandRoasAll>=ROAS_GABUNGAN_KPI?'var(--green)':'var(--red)') : '';
   const gabRoasCrmEl = document.getElementById('gabRoasCrm');
   if(gabRoasCrmEl){
-    const crmOmzetAll = CRM_DATA.filter(r=>csRowInRange(r.tanggal, range)).reduce((a,r)=>a+crmNum(r.omzet),0);
-    const kpiTxt = grand.spendPPN>0 ? ('KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x '+(grandRoas>=ROAS_GABUNGAN_KPI?'✓':'✗')) : '';
-    const crmTxt = (crmOmzetAll>0 && grand.spendPPN>0)
-      ? 'Dengan CRM: '+((grand.omzet+crmOmzetAll)/grand.spendPPN).toFixed(2)+'x (omzet CRM '+rupiahShort(crmOmzetAll)+')'
+    const kpiTxt = grand.spendPPN>0 ? ('KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x '+(grandRoasAll>=ROAS_GABUNGAN_KPI?'✓':'✗')) : '';
+    const crmTxt = grand.spendPPN>0
+      ? 'ROAS CS saja '+grandRoas.toFixed(2)+'x · CS '+rupiahShort(grand.omzet)+' + CRM '+rupiahShort(_crmAll)+' + CS DL '+rupiahShort(_dlAll)
       : '';
     gabRoasCrmEl.textContent = [kpiTxt, crmTxt].filter(Boolean).join(' · ');
   }
@@ -4214,7 +4203,7 @@ function renderLaporanGabungan(advRows, range){
       '<td>'+num(r.closing)+'</td>'+
       '<td>'+(r.cpp==null?'-':rupiah(r.cpp))+'</td>'+
       '<td style="font-weight:600;">'+pctFmt(r.closingRate)+'</td>'+
-      '<td style="font-weight:600;color:'+(r.roas==null?'var(--muted)':(r.roas>=ROAS_GABUNGAN_KPI?'var(--green)':'var(--red)'))+';">'+(r.roas==null?'-':r.roas.toFixed(2)+'x')+'</td>'+
+      '<td style="font-weight:600;">'+(r.roas==null?'-':r.roas.toFixed(2)+'x')+'</td>'+
       '<td>'+(r.notReal>0?'<span style="color:var(--red);font-weight:600;">'+num(r.notReal)+'</span>':'<span class="muted-note">-</span>')+'</td>'+
       '<td>'+(r.notClosing>0?'<span style="color:var(--red);font-weight:600;">'+num(r.notClosing)+'</span>':'<span class="muted-note">-</span>')+'</td>'+
     '</tr>';
@@ -4231,7 +4220,7 @@ function renderLaporanGabungan(advRows, range){
     '<td>'+num(grand.closing)+'</td>'+
     '<td>'+(grand.closing>0?rupiah(grand.spendPPN/grand.closing):'-')+'</td>'+
     '<td>'+pctFmt(grand.leadReal>0?grandRate:null)+'</td>'+
-    '<td style="color:'+(grand.spendPPN>0?(grandRoas>=ROAS_GABUNGAN_KPI?'var(--green)':'var(--red)'):'var(--muted)')+';">'+(grand.spendPPN>0?grandRoas.toFixed(2)+'x':'-')+'</td>'+
+    '<td>'+(grand.spendPPN>0?grandRoas.toFixed(2)+'x':'-')+'</td>'+
     '<td>'+(grand.notReal>0?'<span style="color:var(--red);">'+num(grand.notReal)+'</span>':'-')+'</td>'+
     '<td>'+(grand.notClosing>0?'<span style="color:var(--red);">'+num(grand.notClosing)+'</span>':'-')+'</td>'+
   '</tr>';
@@ -9044,7 +9033,7 @@ function buildCsdlReportText(){
     fields(csdlAgg(rows), '   ').forEach(x=>L.push(x));
     L.push('──────────────────────');
   }
-  L.push('','_Omzet CS DL tidak dijumlah ke Total Omzet / ROAS._');
+  L.push('','_Omzet CS DL ikut dijumlah ke Total Omzet / ROAS Gabungan._');
   if(r.customFooter.trim()){ L.push(''); L.push(r.customFooter.trim()); }
   L.push('','_Generated: '+new Date().toLocaleString('id-ID')+'_');
   return L.join('\n');
@@ -9118,18 +9107,21 @@ function buildCrmReportText(){
 }
 
 function buildGabCrmRoasLines(range, spend, omzetCs){
-  if(!reportState.showGabCrm || !reportState.showGabCrmRoas) return [];
-  const omzetCrm = CRM_DATA.filter(r=> reportState.selectedCrmList.has(r.crm) && csRowInRange(r.tanggal, range))
-    .reduce((a,r)=>a+crmNum(r.omzet),0);
-  if(!(omzetCrm>0)) return [];
-  const total = omzetCs+omzetCrm;
+  if(!reportState.showGabCrmRoas) return [];
+  const sumO=arr=>arr.reduce((a,r)=>a+crmNum(r.omzet),0);
+  const omzetCrm = sumO(CRM_DATA.filter(r=> reportState.selectedCrmList.has(r.crm) && csRowInRange(r.tanggal, range)));
+  const omzetDl  = sumO(CSDL_DATA.filter(r=> reportState.selectedCsdlList.has(r.cs) && csRowInRange(r.tanggal, range)));
+  if(!(omzetCrm>0) && !(omzetDl>0)) return [];
+  const total = omzetCs+omzetCrm+omzetDl;
+  const roas = spend>0 ? total/spend : null;
   return [
-    '*ROAS GABUNGAN (CS + CRM)*',
+    '*ROAS GABUNGAN (CS + CRM + CS DL)*',
     '   Omzet CS      : '+rupiah(omzetCs),
     '   Omzet CRM     : '+rupiah(omzetCrm),
+    '   Omzet CS DL   : '+rupiah(omzetDl),
     '   Total Omzet   : '+rupiah(total),
     '   Total Spend   : '+rupiah(spend),
-    '   ROAS          : '+(spend>0 ? (total/spend).toFixed(2)+'x' : '-'),
+    '   ROAS          : '+(roas==null ? '-' : roas.toFixed(2)+'x (KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x '+(roas>=ROAS_GABUNGAN_KPI?'✓':'✗')+')'),
     '──────────────────────'
   ];
 }
@@ -9183,7 +9175,7 @@ function buildGabunganReportText(){
     if(reportState.showGabClosing)  lines.push('   Closing       : ' + num(closing));
     if(reportState.showGabCpp)      lines.push('   CPP           : ' + (cpp==null?'-':rupiah(cpp)));
     if(reportState.showGabRate)     lines.push('   Closing Rate  : ' + pctFmt(closingRate));
-    if(reportState.showGabRoas)     lines.push('   ROAS          : ' + (roas==null?'-':roas.toFixed(2)+'x'));
+    if(reportState.showGabRoas)     lines.push('   ROAS CS       : ' + (roas==null?'-':roas.toFixed(2)+'x'));
 
     if(idx < advList.length-1) lines.push('');
   });
@@ -9202,15 +9194,17 @@ function buildGabunganReportText(){
     if(reportState.showGabClosing)  lines.push('   Closing       : ' + num(grandClosing));
     if(reportState.showGabCpp)      lines.push('   CPP           : ' + (grandClosing>0?rupiah(grandSpend/grandClosing):'-'));
     if(reportState.showGabRate)     lines.push('   Closing Rate  : ' + pctFmt(grandRate));
-    if(reportState.showGabRoas)     lines.push('   ROAS          : ' + (grandRoas==null?'-':grandRoas.toFixed(2)+'x'+' (KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x '+(grandRoas>=ROAS_GABUNGAN_KPI?'✓':'✗')+')'));
+    if(reportState.showGabRoas)     lines.push('   ROAS CS       : ' + (grandRoas==null?'-':grandRoas.toFixed(2)+'x'));
     lines.push('──────────────────────');
   }
 
-  if(crmLines.length>0){
+  {
     const roasLines = buildGabCrmRoasLines(range, grandSpend, grandOmzet);
-    lines.push('');
-    (roasLines.length>0 ? crmLines.slice(0,-1) : crmLines).forEach(x=>lines.push(x));
-    if(roasLines.length>0){ lines.push(''); roasLines.forEach(x=>lines.push(x)); }
+    if(crmLines.length>0 || roasLines.length>0){
+      lines.push('');
+      if(crmLines.length>0) (roasLines.length>0 ? crmLines.slice(0,-1) : crmLines).forEach(x=>lines.push(x));
+      if(roasLines.length>0){ if(crmLines.length>0) lines.push(''); roasLines.forEach(x=>lines.push(x)); }
+    }
   }
 
   if(reportState.customFooter.trim()){
@@ -9323,6 +9317,7 @@ function openReportModal(){
 
       <!-- ============ SECTION: REPORT GABUNGAN (Hasil Ads per advertiser) ============ -->
       <div id="reportSectionGabungan" style="display:${reportState.reportMode==='gabungan'?'':'none'};">
+        <div class="gab-hd"><b>1</b>Hasil Ads &amp; CS <small>per advertiser</small></div>
         <div class="report-section">
           <div class="report-section-title">Pilih Advertiser</div>
           <div class="adv-chips" id="reportGabunganAdvChips"></div>
@@ -9337,23 +9332,19 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showGabClosing?'on':''}" data-key="showGabClosing">✅ Closing</div>
             <div class="toggle-chip ${reportState.showGabCpp?'on':''}" data-key="showGabCpp">🎯 CPP</div>
             <div class="toggle-chip ${reportState.showGabRate?'on':''}" data-key="showGabRate">📈 Closing Rate</div>
-            <div class="toggle-chip ${reportState.showGabRoas?'on':''}" data-key="showGabRoas">📊 ROAS</div>
+            <div class="toggle-chip ${reportState.showGabRoas?'on':''}" data-key="showGabRoas">📊 ROAS CS</div>
           </div>
         </div>
 
-        <div class="report-section">
-          <div class="report-section-title">Hasil CRM <span style="font-weight:400;color:var(--muted);">(ditambahkan di bawah semua advertiser)</span></div>
-          <div class="toggle-group">
-            <div class="toggle-chip ${reportState.showGabCrm?'on':''}" data-key="showGabCrm">💌 Sertakan CRM</div>
-          </div>
+        <div class="gab-hd"><b>2</b>Hasil CRM <small>ditambahkan di bawah semua advertiser</small>
+          <div class="toggle-chip ${reportState.showGabCrm?'on':''}" data-key="showGabCrm">💌 Sertakan</div>
         </div>
-
-        <div class="report-section">
+        <div class="report-section gab-crm-sec">
           <div class="report-section-title">Pilih CRM</div>
           <div class="adv-chips" id="reportCrmChips"></div>
         </div>
 
-        <div class="report-section">
+        <div class="report-section gab-crm-sec">
           <div class="report-section-title">Kolom CRM</div>
           <div class="toggle-group">
             <div class="toggle-chip ${reportState.showCrmOmzet?'on':''}" data-key="showCrmOmzet">💰 Omzet</div>
@@ -9362,9 +9353,13 @@ function openReportModal(){
             <div class="toggle-chip ${reportState.showCrmRo?'on':''}" data-key="showCrmRo">🔁 % Repeat Order</div>
             <div class="toggle-chip ${reportState.showCrmCbc?'on':''}" data-key="showCrmCbc">📈 Closing / BC</div>
             <div class="toggle-chip ${reportState.showCrmPot?'on':''}" data-key="showCrmPot">⭐ Potensial</div>
-            <div class="toggle-chip ${reportState.showGabCrmRoas?'on':''}" data-key="showGabCrmRoas">🔗 ROAS CS + CRM</div>
           </div>
         </div>
+
+        <div class="gab-hd"><b>3</b>ROAS Gabungan <small>CS + CRM + CS DL</small>
+          <div class="toggle-chip ${reportState.showGabCrmRoas?'on':''}" data-key="showGabCrmRoas">🔗 Tampilkan</div>
+        </div>
+        <div class="gab-note">Total omzet CS + CRM + CS DL ÷ Spend + PPN, dibandingkan dengan KPI ROAS. CRM dan CS DL yang dihitung mengikuti pilihan di tab Report CRM dan Report CS DL (default semua).</div>
       </div>
 
       <!-- ============ SECTION: REPORT CRM ============ -->
@@ -10320,7 +10315,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
   const hue=t=>{ let h=7; for(const c of String(t)) h=(h*31+c.charCodeAt(0))%360; return h; };
   const av=(t,sz)=>'<span class="br-av'+(sz?' '+sz:'')+'" style="--h:'+hue(t)+'">'+E(ini(t))+'</span>';
   const fx=v=>v.toFixed(2).replace('.',',')+'x';
-  const badge=(o,sp)=> sp>0 ? '<span class="br-roas '+(o/sp<ROAS_GABUNGAN_KPI?'bad':'good')+'">'+fx(o/sp)+'</span>' : '<span class="br-dash">-</span>';
+  const badge=(o,sp,neutral)=> sp>0 ? '<span class="br-roas '+(neutral?'':(o/sp<ROAS_GABUNGAN_KPI?'bad':'good'))+'">'+fx(o/sp)+'</span>' : '<span class="br-dash">-</span>';
   const money=v=> v ? rupiah(v) : '<span class="br-zero">'+rupiah(0)+'</span>';
   const cnt=v=> v ? num(v) : '<span class="br-zero">0</span>';
   const KT=(l,v,cls,sub)=>'<div class="br-k '+(cls||'')+'"><span>'+l+'</span><b>'+v+'</b>'+(sub||'')+'</div>';
@@ -10328,7 +10323,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
   const cardOf=n=>[...document.querySelectorAll('#brCards .br-card')].find(c=>c.dataset.bc===n);
 
   function card(b,unassigned){
-    const x=stats(b), name=unassigned?'Tanpa Brand':b.name, tot=x.omzet+x.cOmzet, hasSp=!unassigned&&x.spend>0;
+    const x=stats(b), name=unassigned?'Tanpa Brand':b.name, tot=x.omzet+x.cOmzet+x.dlO, hasSp=!unassigned&&x.spend>0;
     const coll=COLL.has(name), opn=OPEN.has(name), tab=TAB[name]||'cs', n=E(name);
     const rate=x.real>0?x.closing/x.real*100:null;
     const team=(k,label)=>{ const l=b[k]||[]; return '<div class="br-tg"><div class="br-tl">'+label+'</div><div class="br-pills">'+(l.length?l.map(v=>'<span class="br-pill">'+av(v,'xs')+E(v)+'</span>').join(''):'<button class="br-pill empty" data-open="'+n+'">+ belum diatur</button>')+'</div></div>'; };
@@ -10346,7 +10341,7 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
       +KT('Lead OO Iklan',x.hasAd?cnt(x.adOO):'-')+KT('Lead Real Iklan',x.hasAd?cnt(x.adReal):'-')+KT('CPL Real',(x.hasAd&&x.adReal>0)?rupiah(x.spend/x.adReal):'-')
       +KT('Lead OO (CS)',cnt(x.oo))+KT('Lead Real (CS)',cnt(x.real))+KT('Closing CS',cnt(x.closing))
       +KT('Closing Rate',rate==null?'-':pctFmt(rate),'',rate==null?'':'<i class="br-bar"><u style="width:'+Math.min(100,rate)+'%"></u></i>')
-      +KT('Omzet CS',money(x.omzet))+KT('ROAS CS',hasSp?badge(x.omzet,x.spend):'-')
+      +KT('Omzet CS',money(x.omzet))+KT('ROAS CS',hasSp?badge(x.omzet,x.spend,true):'-')
       +KT('Follow-up DL',cnt(x.dlF))+KT('Closing DL',cnt(x.dlC))+KT('Omzet DL',money(x.dlO))+'</div></div>'
       +'<div class="br-pane'+(tab==='crm'?' on':'')+'" data-pane="crm"><div class="br-kpis">'
       +KT('Total Broadcast',cnt(x.bc))+KT('Closing CRM',cnt(x.cClosing))+KT('Omzet CRM',money(x.cOmzet))+KT('Potensial',cnt(x.cPot))+KT('Total Omzet',money(tot))+'</div></div>';
@@ -10368,21 +10363,21 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     if(sm){
       if(!BR.length){ sm.innerHTML=''; }
       else {
-        const rows=BR.map(b=>{ const x=stats(b), tot=x.omzet+x.cOmzet, cl=x.closing+x.cClosing;
-          return {n:b.name,sp:x.spend,oc:x.omzet,or:x.cOmzet,tot,cl,rcs:x.spend>0?x.omzet/x.spend:-1,rt:x.spend>0?tot/x.spend:-1,cpc:(x.spend>0&&cl>0)?x.spend/cl:-1}; });
-        const T=rows.reduce((t,r)=>({sp:t.sp+r.sp,oc:t.oc+r.oc,or:t.or+r.or,cl:t.cl+r.cl}),{sp:0,oc:0,or:0,cl:0});
+        const rows=BR.map(b=>{ const x=stats(b), tot=x.omzet+x.cOmzet+x.dlO, cl=x.closing+x.cClosing;
+          return {n:b.name,sp:x.spend,oc:x.omzet,or:x.cOmzet,od:x.dlO,tot,cl,rcs:x.spend>0?x.omzet/x.spend:-1,rt:x.spend>0?tot/x.spend:-1,cpc:(x.spend>0&&cl>0)?x.spend/cl:-1}; });
+        const T=rows.reduce((t,r)=>({sp:t.sp+r.sp,oc:t.oc+r.oc,or:t.or+r.or,od:t.od+r.od,cl:t.cl+r.cl}),{sp:0,oc:0,or:0,od:0,cl:0});
         const loose=stats({name:null,accounts:[]});
         const {k,d}=SORT; rows.sort((p,q)=> k==='n' ? d*p.n.localeCompare(q.n) : d*((p[k]||0)-(q[k]||0)));
-        const maxTot=Math.max(1,...rows.map(r=>r.tot),loose.omzet+loose.cOmzet);
+        const maxTot=Math.max(1,...rows.map(r=>r.tot),loose.omzet+loose.cOmzet+loose.dlO);
         const withSp=rows.filter(r=>r.rt>=0), best=withSp.length>1?withSp.reduce((m,r)=>r.rt>m.rt?r:m).n:null;
         const cell=(v)=>'<td class="br-cb">'+money(v)+'<i><u style="width:'+Math.round(v/maxTot*100)+'%"></u></i></td>';
-        const tr=(r,nameHtml,hasSp,cls)=>'<tr'+(cls?' class="'+cls+'"':'')+'><td>'+nameHtml+'</td><td>'+(hasSp?money(r.sp):'<span class="br-dash">-</span>')+'</td><td>'+money(r.oc)+'</td><td>'+money(r.or)+'</td>'+(cls==='tot'?'<td>'+money(r.tot)+'</td>':cell(r.tot))+'<td>'+(hasSp?badge(r.oc,r.sp):'<span class="br-dash">-</span>')+'</td><td>'+(hasSp?badge(r.oc+r.or,r.sp):'<span class="br-dash">-</span>')+'</td><td>'+((hasSp&&r.cl>0)?rupiah(r.sp/r.cl):'<span class="br-dash">-</span>')+'</td></tr>';
+        const tr=(r,nameHtml,hasSp,cls)=>'<tr'+(cls?' class="'+cls+'"':'')+'><td>'+nameHtml+'</td><td>'+(hasSp?money(r.sp):'<span class="br-dash">-</span>')+'</td><td>'+money(r.oc)+'</td><td>'+money(r.or)+'</td><td>'+money(r.od)+'</td>'+(cls==='tot'?'<td>'+money(r.tot)+'</td>':cell(r.tot))+'<td>'+(hasSp?badge(r.oc,r.sp,true):'<span class="br-dash">-</span>')+'</td><td>'+(hasSp?badge(r.oc+r.or+r.od,r.sp):'<span class="br-dash">-</span>')+'</td><td>'+((hasSp&&r.cl>0)?rupiah(r.sp/r.cl):'<span class="br-dash">-</span>')+'</td></tr>';
         const th=(key,label)=>'<th data-sort="'+key+'" class="'+(SORT.k===key?'sorted':'')+'" title="Klik untuk mengurutkan">'+label+'<span class="ar">'+(SORT.k===key?(SORT.d>0?'▲':'▼'):'↕')+'</span></th>';
-        sm.innerHTML='<div class="card" style="padding:16px 18px;margin-bottom:14px;"><div class="panel-title">Perbandingan Brand</div><div class="panel-desc">ROAS CS = Omzet CS ÷ Spend+PPN. ROAS Total = (Omzet CS + Omzet CRM) ÷ Spend+PPN. Merah bila di bawah KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x. Ikut filter tanggal. Klik judul kolom untuk mengurutkan.</div><div class="table-scroll"><table class="br-tbl"><thead><tr>'
-          +th('n','Brand')+th('sp','Spend + PPN')+th('oc','Omzet CS')+th('or','Omzet CRM')+th('tot','Total Omzet')+th('rcs','ROAS CS')+th('rt','ROAS Total')+th('cpc','Cost / Closing')+'</tr></thead><tbody>'
+        sm.innerHTML='<div class="card" style="padding:16px 18px;margin-bottom:14px;"><div class="panel-title">Perbandingan Brand</div><div class="panel-desc">ROAS CS = Omzet CS ÷ Spend+PPN (informasi saja). ROAS Total = (Omzet CS + CRM + CS DL) ÷ Spend+PPN. Merah bila ROAS Total di bawah KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x. Ikut filter tanggal. Klik judul kolom untuk mengurutkan.</div><div class="table-scroll"><table class="br-tbl"><thead><tr>'
+          +th('n','Brand')+th('sp','Spend + PPN')+th('oc','Omzet CS')+th('or','Omzet CRM')+th('od','Omzet CS DL')+th('tot','Total Omzet')+th('rcs','ROAS CS')+th('rt','ROAS Total')+th('cpc','Cost / Closing')+'</tr></thead><tbody>'
           +rows.map(r=>tr(r,'<div class="bn">'+av(r.n,'xs')+E(r.n)+(r.n===best?' <span class="br-best">ROAS terbaik</span>':'')+'</div>',true,'')).join('')
-          +(loose.n>0?tr({sp:0,oc:loose.omzet,or:loose.cOmzet,tot:loose.omzet+loose.cOmzet,cl:0},'<div class="bn">'+av('Tanpa Brand','xs')+'Tanpa Brand</div>',false,''):'')
-          +tr({sp:T.sp,oc:T.oc,or:T.or,tot:T.oc+T.or,cl:T.cl},'Total semua brand',true,'tot')
+          +(loose.n>0?tr({sp:0,oc:loose.omzet,or:loose.cOmzet,od:loose.dlO,tot:loose.omzet+loose.cOmzet+loose.dlO,cl:0},'<div class="bn">'+av('Tanpa Brand','xs')+'Tanpa Brand</div>',false,''):'')
+          +tr({sp:T.sp,oc:T.oc,or:T.or,od:T.od,tot:T.oc+T.or+T.od,cl:T.cl},'Total semua brand',true,'tot')
           +'</tbody></table></div><div class="muted-note" style="margin-top:8px;">Cost / Closing memakai total closing CS + CRM. Baris Total hanya menjumlah brand bernama; "Tanpa Brand" tidak punya spend karena belum terhubung ke advertiser brand.</div></div>';
       }
     }
@@ -10411,19 +10406,16 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     const rx=(o,sp)=>sp>0?(o/sp).toFixed(2)+'x':'-';
     let anyDl=false;
     const block=(x,cls)=>{
-      const tot=x.omzet+x.cOmzet, cl=x.closing+x.cClosing, has=x.spend>0, r=reportState;
+      const tot=x.omzet+x.cOmzet+x.dlO, cl=x.closing+x.cClosing, has=x.spend>0, r=reportState;
       if(r.showBrSpend)     L.push('   Spend + PPN    : '+rupiah(x.spend));
       if(r.showBrOmzetCs)   L.push('   Omzet CS       : '+rupiah(x.omzet));
       if(r.showBrOmzetCrm)  L.push('   Omzet CRM      : '+rupiah(x.cOmzet));
+      if(x.dlO && r.showBrDlOmzet) L.push('   Omzet CS DL    : '+rupiah(x.dlO));
       if(r.showBrTotal)     L.push('   Total Omzet    : '+rupiah(tot));
       if(r.showBrRoasCs)    L.push('   ROAS CS        : '+rx(x.omzet,x.spend));
       if(r.showBrRoasTotal) L.push('   ROAS Total     : '+rx(tot,x.spend));
       if(r.showBrClosing)   L.push('   Closing        : '+num(cl));
       if(r.showBrCpc)       L.push('   Cost / Closing : '+((has&&cl>0)?rupiah(x.spend/cl):'-'));
-      if(x.dlO){
-        anyDl=true;
-        if(r.showBrDlOmzet) L.push('   Omzet CS DL    : '+rupiah(x.dlO));
-      }
     };
     const T={spend:0,omzet:0,cOmzet:0,closing:0,cClosing:0,dlF:0,dlC:0,dlO:0};
     list.forEach((b,i)=>{
@@ -10434,7 +10426,6 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
     if(list.length>1){
       L.push('','──────────────────────','*TOTAL SEMUA BRAND*'); block(T); L.push('──────────────────────');
     }
-    if(anyDl) L.push('','_Omzet CS DL tidak dijumlah ke Total Omzet / ROAS._');
     if(!sel.size){
       const lo=stats({name:null,accounts:[]},range);
       if(lo.n>0 && (lo.omzet+lo.cOmzet)>0) L.push('','_Belum ber-brand: Omzet CS '+rupiah(lo.omzet)+', Omzet CRM '+rupiah(lo.cOmzet)+' (tidak masuk total di atas)_');
@@ -10574,12 +10565,13 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
         let spend=0; accs.forEach(a=>{ spend+=sumIn(a.spendSeries,range); });
         const cs=CS_DATA.filter(x=>csRowInRange(x.tanggal,range)), cr=CRM_DATA.filter(x=>csRowInRange(x.tanggal,range));
         const sum=(a,k)=>a.reduce((t,x)=>t+(Number(x[k])||0),0);
+        const dlr=CSDL_DATA.filter(x=>csRowInRange(x.tanggal,range)), od=sum(dlr,'omzet');
         const oc=sum(cs,'omzet'), orr=sum(cr,'omzet'), cl=sum(cs,'hasilClosing')+sum(cr,'closing');
-        const rx=(o)=> spend>0 ? '<span style="color:'+(o/spend<ROAS_GABUNGAN_KPI?'var(--bad)':'var(--good)')+';">'+(o/spend).toFixed(2).replace('.',',')+'x</span>' : '-';
+        const rx=(o,neutral)=> spend>0 ? '<span'+(neutral?'':' style="color:'+(o/spend<ROAS_GABUNGAN_KPI?'var(--bad)':'var(--good)')+';"')+'>'+(o/spend).toFixed(2).replace('.',',')+'x</span>' : '-';
         const title=FB?('Brand: '+E(FB)):'Semua brand';
-        let html='<div id="ovRoasTotal" style="margin-top:16px;"><div class="panel-title" style="font-size:13px;">ROAS Total (CS + CRM) — '+title+'</div><div class="panel-desc">ROAS Total = (Omzet CS + Omzet CRM) ÷ Spend + PPN. Merah bila di bawah KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x. Ikut filter tanggal dan Brand.</div><div class="br-kpis">'
-          +K('Spend + PPN',rupiah(spend))+K('Omzet CS',rupiah(oc))+K('Omzet CRM',rupiah(orr))+K('Total Omzet',rupiah(oc+orr))
-          +K('ROAS CS',rx(oc))+K('ROAS Total',rx(oc+orr))+K('Cost / Closing',(cl>0&&spend>0)?rupiah(spend/cl):'-')+'</div>';
+        let html='<div id="ovRoasTotal" style="margin-top:16px;"><div class="panel-title" style="font-size:13px;">ROAS Gabungan (CS + CRM + CS DL) — '+title+'</div><div class="panel-desc">ROAS Gabungan = (Omzet CS + CRM + CS DL) ÷ Spend + PPN. Merah bila di bawah KPI '+ROAS_GABUNGAN_KPI.toFixed(1)+'x. Ikut filter tanggal dan Brand.</div><div class="br-kpis">'
+          +K('Spend + PPN',rupiah(spend))+K('Omzet CS',rupiah(oc))+K('Omzet CRM',rupiah(orr))+K('Omzet CS DL',rupiah(od))+K('Total Omzet',rupiah(oc+orr+od))
+          +K('ROAS CS',rx(oc,true))+K('ROAS Gabungan',rx(oc+orr+od))+K('Cost / Closing',(cl>0&&spend>0)?rupiah(spend/cl):'-')+'</div>';
         if(!FB && BR.length){
           renderBrands();
           const bs=document.getElementById('brSummary');
@@ -10816,4 +10808,260 @@ syncGlobalFilterbarVisibility(document.querySelector('.navbtn.active')?.dataset.
   window.addEventListener('beforeprint',()=>pg.querySelectorAll('.ov-collapsed').forEach(c=>c.classList.remove('ov-collapsed')));
 })();
 </script>
+<style id="rptWaSkin">
+/* ===== Modal Report WhatsApp: gaya & interaksi mengikuti dashboard ===== */
+.edit-modal-overlay:has(.report-modal){padding:3vh 12px;}
+.report-modal{width:780px;max-width:100%;max-height:94vh;padding:20px 24px 0;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.45);}
+.report-modal>h3{display:flex;align-items:center;gap:10px;font-size:19px;margin:0 0 4px;}
+.report-modal>h3::before{content:'';width:4px;height:20px;border-radius:3px;background:var(--accent);flex:none;}
+.report-modal>.muted-note{margin-bottom:14px!important;}
+
+.report-modal #reportModeTabs{position:sticky;top:0;z-index:7;display:flex;flex-wrap:nowrap;gap:4px;padding:6px;margin:0 0 14px!important;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow-x:auto;scrollbar-width:none;box-shadow:0 8px 18px -12px rgba(0,0,0,.45);}
+.report-modal #reportModeTabs::-webkit-scrollbar{display:none;}
+.report-modal #reportModeTabs .period-btn{display:flex;align-items:center;gap:8px;flex:0 0 auto;padding:9px 14px;border-radius:8px;border:1px solid transparent;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s,transform .15s,box-shadow .15s;}
+.report-modal #reportModeTabs .period-btn:hover:not(.active){background:var(--panel-2);color:var(--text);transform:translateY(-1px);}
+.report-modal #reportModeTabs .period-btn.active{background:var(--accent-dim);color:#EAFFF2;border-color:var(--accent);font-weight:700;box-shadow:0 4px 14px rgba(14,59,38,.28);}
+.report-modal #reportModeTabs kbd{font:inherit;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:0 5px;background:var(--panel-2);}
+.report-modal #reportModeTabs .period-btn.active kbd{color:#EAFFF2;border-color:rgba(234,255,242,.45);background:transparent;}
+
+.report-modal .report-section{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 12px;}
+.report-modal .report-section-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.report-modal .report-section input[type=text],.report-modal .report-section input[type=tel],.report-modal .report-section input[type=date]{background:var(--panel)!important;}
+.rpt-count{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:1px 8px;text-transform:none;letter-spacing:0;}
+.rpt-count:empty{display:none;}
+.rpt-tools{margin-left:auto;display:flex;gap:2px;}
+.rpt-tools button{background:none;border:0;color:var(--accent);font:600 11.5px 'Roboto',sans-serif;text-transform:none;letter-spacing:0;cursor:pointer;padding:3px 7px;border-radius:6px;}
+.rpt-tools button:hover{background:color-mix(in srgb,var(--accent) 14%,transparent);}
+
+.report-modal .adv-chip{padding:6px 13px;border-radius:999px;font-size:12.5px;gap:5px;transition:background .15s,border-color .15s,transform .1s;}
+.report-modal .adv-chip input{display:none;}
+.report-modal .adv-chip:hover{border-color:currentColor;}
+.report-modal .adv-chip:active{transform:scale(.96);}
+.report-modal .adv-chip.selected{background:color-mix(in srgb,currentColor 13%,var(--panel));}
+.report-modal .adv-chip.selected::before{content:"✓";font-size:10px;}
+.report-modal .toggle-chip{padding:6px 13px;border-radius:999px;background:var(--panel);transition:background .15s,border-color .15s,color .15s,transform .1s;}
+.report-modal .toggle-chip:hover{border-color:var(--accent);color:var(--text);}
+.report-modal .toggle-chip:active{transform:scale(.96);}
+.report-modal .toggle-chip.on,.report-modal .toggle-chip-wa.on{background:var(--accent-dim);color:#EAFFF2;border-color:var(--accent);}
+.report-modal .toggle-chip.on::before{content:"✓ ";font-size:10px;}
+
+.rpt-presets{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;}
+.rpt-preset{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;user-select:none;transition:all .15s;}
+.rpt-preset:hover{border-color:var(--accent);color:var(--text);}
+.rpt-preset.on{background:var(--accent-dim);color:#EAFFF2;border-color:var(--accent);}
+.rpt-period{margin-top:8px;font-size:13px;}
+.rpt-period span{color:var(--muted);}
+
+.rpt-more{border:1px solid var(--line);border-radius:12px;background:var(--panel-2);margin:0 0 12px;overflow:hidden;}
+.rpt-more>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:11px 14px;font:700 13px 'Roboto',sans-serif;user-select:none;}
+.rpt-more>summary::-webkit-details-marker{display:none;}
+.rpt-more>summary::after{content:'';margin-left:auto;width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;}
+.rpt-more[open]>summary::after{transform:rotate(-135deg);}
+.rpt-more[open]>summary{border-bottom:1px solid var(--line);}
+.rpt-more>summary:hover{color:var(--accent);}
+.rpt-more .report-section{border:0;background:none;border-radius:0;margin:0;padding:10px 14px 4px;}
+.rpt-sum{font-weight:400;font-size:11.5px;color:var(--muted);}
+.report-modal .gab-hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0 10px;padding:0 2px;font:700 14px 'Roboto',sans-serif;color:var(--text);}
+.report-modal .gab-hd:first-child{margin-top:2px;}
+.report-modal .gab-hd b{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent-dim);color:#EAFFF2;font-size:12px;flex:none;}
+.report-modal .gab-hd small{font-weight:400;font-size:11.5px;color:var(--muted);}
+.report-modal .gab-hd .toggle-chip{margin-left:auto;}
+.report-modal .gab-hd:has(.toggle-chip[data-key="showGabCrm"]:not(.on)) ~ .gab-crm-sec{display:none;}
+.report-modal .gab-note{font-size:11.5px;line-height:1.55;color:var(--muted);margin:-2px 2px 14px;}
+.rpt-phones{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 4px;}
+.rpt-phones:empty{display:none;}
+.rpt-phone{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:var(--panel);overflow:hidden;}
+.rpt-phone button{background:none;border:0;color:var(--text);font-size:12px;cursor:pointer;padding:4px 9px;}
+.rpt-phone button:first-child:hover{color:var(--accent);}
+.rpt-phone button:last-child{color:var(--muted);padding:4px 8px 4px 2px;}
+.rpt-phone button:last-child:hover{color:var(--bad);}
+
+.report-modal .report-preview{background:#DCF8C6;color:#111;border:1px solid rgba(0,0,0,.08);border-radius:12px 12px 12px 3px;padding:12px 14px;font-family:'Roboto',sans-serif;font-size:13px;line-height:1.65;box-shadow:0 1px 2px rgba(0,0,0,.15);max-height:340px;}
+:root:not([data-theme="light"]) .report-modal .report-preview{background:#144D37;color:#E9EDEF;border-color:rgba(255,255,255,.06);}
+.report-modal .report-preview.is-warn{background:var(--bad-bg)!important;color:var(--red)!important;border-color:var(--red);}
+.rpt-stats{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:11.5px;color:var(--muted);}
+.rpt-warn{color:var(--yellow);}
+
+.report-modal .report-actions{position:sticky;bottom:0;z-index:6;margin:6px -24px 0;padding:12px 24px;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -10px 18px -14px rgba(0,0,0,.5);align-items:center;}
+.rpt-hint{font-size:11px;color:var(--muted);margin-left:4px;}
+@media(max-width:640px){
+  .report-modal{padding:16px 14px 0;}
+  .report-modal .report-actions{margin:6px -14px 0;padding:10px 14px;}
+  .rpt-hint{display:none;}
+  .report-modal .btn-wa{flex:1;justify-content:center;}
+}
+</style>
+<script id="rptWaScript">
+/* Report WhatsApp: pilih semua/kosongkan, preset tanggal, preview ala WhatsApp, pengaturan tersimpan, pintasan keyboard */
+(function(){
+  'use strict';
+  const PK='dashReportPrefs_v1', PHK='dashReportPhones_v1';
+  const MODES=['advertiser','cs','gabungan','crm','csdl','brand'];
+  const BOXES=['reportAdvChips','reportGabunganAdvChips','reportCsChips','reportCsAdvFilterChips','reportCrmChips','reportCrmOnlyChips','reportCsdlChips','reportBrandChips'];
+  const PRESETS=[['hari_ini','Hari Ini'],['kemarin','Kemarin'],['7_hari','7 Hari'],['30_hari','30 Hari'],['bulan_ini','Bulan Ini'],['bulan_lalu','Bulan Lalu']];
+  const $=(r,s)=>r.querySelector(s);
+  const boolKeys=()=>Object.keys(reportState).filter(k=>typeof reportState[k]==='boolean'&&k!=='useCustomDate');
+
+  try{
+    const p=JSON.parse(localStorage.getItem(PK)||'{}');
+    boolKeys().forEach(k=>{ if(typeof p[k]==='boolean') reportState[k]=p[k]; });
+    ['phoneNumber','customHeader','customFooter'].forEach(k=>{ if(typeof p[k]==='string') reportState[k]=p[k]; });
+    if(MODES.includes(p.reportMode)) reportState.reportMode=p.reportMode;
+  }catch(e){}
+  function savePrefs(){
+    try{
+      const o={}; boolKeys().forEach(k=>o[k]=reportState[k]);
+      ['phoneNumber','customHeader','customFooter','reportMode'].forEach(k=>o[k]=reportState[k]);
+      localStorage.setItem(PK,JSON.stringify(o));
+    }catch(e){}
+  }
+
+  const getPhones=()=>{ try{ const a=JSON.parse(localStorage.getItem(PHK)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } };
+  const setPhones=a=>{ try{ localStorage.setItem(PHK,JSON.stringify(a.slice(0,5))); }catch(e){} };
+  const rememberPhone=p=>{ if(p&&p.length>=8) setPhones([p].concat(getPhones().filter(x=>x!==p))); };
+  function renderPhones(m){
+    const w=$(m,'.rpt-phones'); if(!w) return;
+    const l=getPhones();
+    w.innerHTML=l.length ? '<span class="muted-note">Terakhir dipakai:</span>'+l.map(p=>'<span class="rpt-phone"><button type="button" data-use="'+p+'">'+p+'</button><button type="button" data-rm="'+p+'" title="Hapus">×</button></span>').join('') : '';
+  }
+
+  const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const fmt=t=>esc(t).replace(/\*([^*\n]+)\*/g,'<b>$1</b>').replace(/(^|[\s(])_([^_\n]+)_(?=$|[\s).,])/gm,'$1<i>$2</i>');
+
+  function presetRange(key){
+    let r=drpRangeForType(key,ANCHOR_DATE);
+    if(key==='bulan_ini'){ const t=new Date(ANCHOR_DATE); t.setHours(0,0,0,0); r=[r[0],t]; }
+    return r;
+  }
+  function applyPreset(key){
+    const r=presetRange(key);
+    if(!reportState.useCustomDate) document.getElementById('reportDateModeCustom').click();
+    const s=document.getElementById('reportDateStart'), e=document.getElementById('reportDateEnd');
+    s.value=fmtISO(r[0]); e.value=fmtISO(r[1]);
+    s.dispatchEvent(new Event('change')); e.dispatchEvent(new Event('change'));
+  }
+
+  function enhance(){
+    const ov=document.getElementById('modalOverlay'); if(!ov) return;
+    const m=ov.querySelector('.report-modal'); if(!m||m.dataset.rpt) return;
+    m.dataset.rpt='1'; m._counts=[];
+
+    m.querySelectorAll('#reportModeTabs .period-btn').forEach((t,i)=>t.insertAdjacentHTML('beforeend','<kbd>'+(i+1)+'</kbd>'));
+
+    let n=0;
+    const wire=(box,toggle)=>{
+      const sec=box.closest('.report-section'), title=sec&&$(sec,'.report-section-title'); if(!title) return;
+      if(!box.id) box.id='rptBox'+(++n);
+      const cnt=document.createElement('span'); cnt.className='rpt-count';
+      const tools=document.createElement('span'); tools.className='rpt-tools';
+      tools.innerHTML='<button type="button" data-rpt="all" data-box="'+box.id+'">Semua</button><button type="button" data-rpt="none" data-box="'+box.id+'">Kosongkan</button>';
+      title.appendChild(cnt); title.appendChild(tools);
+      m._counts.push({box,cnt,toggle});
+    };
+    BOXES.forEach(id=>{ const b=document.getElementById(id); if(b) wire(b,false); });
+    m.querySelectorAll('.toggle-group').forEach(g=>{ if(g.querySelectorAll('.toggle-chip[data-key]').length>1) wire(g,true); });
+
+    const row=document.getElementById('reportCustomDateRow');
+    if(row){
+      const pre=document.createElement('div'); pre.className='rpt-presets';
+      pre.innerHTML=PRESETS.map(p=>'<span class="rpt-preset" data-p="'+p[0]+'">'+p[1]+'</span>').join('');
+      row.parentNode.insertBefore(pre,row);
+      const per=document.createElement('div'); per.className='rpt-period';
+      row.parentNode.insertBefore(per,row.nextSibling);
+    }
+
+    const secs=['reportHeader','reportFooter','reportPhone'].map(id=>{ const e=document.getElementById(id); return e&&e.closest('.report-section'); }).filter(Boolean);
+    if(secs.length){
+      const d=document.createElement('details'); d.className='rpt-more';
+      d.open=!!(reportState.customHeader||reportState.customFooter||reportState.phoneNumber);
+      d.innerHTML='<summary>✉️ Pesan tambahan &amp; nomor tujuan <span class="rpt-sum"></span></summary>';
+      secs[0].parentNode.insertBefore(d,secs[0]);
+      secs.forEach(s=>d.appendChild(s));
+    }
+    const pr=$(m,'.wa-phone-row');
+    if(pr){ const ph=document.createElement('div'); ph.className='rpt-phones'; pr.parentNode.insertBefore(ph,pr.nextSibling); }
+
+    const pb=$(m,'#reportPreviewBox');
+    if(pb){ const st=document.createElement('div'); st.className='rpt-stats'; st.id='reportStats'; pb.parentNode.appendChild(st); }
+    const cp=$(m,'#btnCopyReport');
+    if(cp) cp.insertAdjacentHTML('afterend','<span class="rpt-hint">Ctrl+Enter = salin</span>');
+    const send=$(m,'#btnSendWA');
+    if(send) send.addEventListener('click',()=>{ rememberPhone((document.getElementById('reportPhone').value||'').replace(/\D/g,'')); renderPhones(m); },true);
+
+    m.addEventListener('click',e=>{
+      let t=e.target.closest('[data-rpt]');
+      if(t){
+        const box=document.getElementById(t.dataset.box), want=t.dataset.rpt==='all';
+        if(box) box.querySelectorAll('input[type=checkbox],.toggle-chip[data-key]').forEach(x=>{
+          if(x.tagName==='INPUT'){ if(x.checked!==want) x.click(); }
+          else if(x.classList.contains('on')!==want) x.click();
+        });
+        return;
+      }
+      if(t=e.target.closest('.rpt-preset')){ applyPreset(t.dataset.p); return; }
+      if(t=e.target.closest('[data-use]')){ const i=document.getElementById('reportPhone'); i.value=t.dataset.use; i.dispatchEvent(new Event('input',{bubbles:true})); return; }
+      if(t=e.target.closest('[data-rm]')){ setPhones(getPhones().filter(x=>x!==t.dataset.rm)); renderPhones(m); }
+    });
+
+    renderPhones(m);
+    window.refreshReportPreview();
+  }
+
+  function post(){
+    const ov=document.getElementById('modalOverlay'), m=ov&&ov.querySelector('.report-modal'); if(!m) return;
+    const box=$(m,'#reportPreviewBox'), st=$(m,'#reportStats');
+    if(box){
+      const raw=box.textContent, warn=raw.charAt(0)==='⚠';
+      box.classList.toggle('is-warn',warn); box.style.color='';
+      if(!warn) box.innerHTML=fmt(raw);
+      if(st){
+        if(warn) st.innerHTML='';
+        else st.innerHTML='<span>'+raw.split('\n').length+' baris</span><span>'+raw.length.toLocaleString('id-ID')+' karakter</span>'+(raw.length>3500?'<span class="rpt-warn">Teks panjang — kalau WhatsApp tidak menampilkan semuanya, pakai Salin Teks lalu tempel.</span>':'');
+      }
+    }
+    const per=$(m,'.rpt-period');
+    if(per){
+      const r=getReportRange(), d=Math.round((r[1]-r[0])/864e5)+1, a=fmtDateID(r[0]), b=fmtDateID(r[1]);
+      per.innerHTML='📆 <b>'+(a===b?a:a+' – '+b)+'</b> <span>('+d+' hari)</span>';
+    }
+    m.querySelectorAll('.rpt-preset').forEach(p=>{
+      const r=presetRange(p.dataset.p);
+      p.classList.toggle('on', !!reportState.useCustomDate && reportState.dateStart===fmtISO(r[0]) && reportState.dateEnd===fmtISO(r[1]));
+    });
+    (m._counts||[]).forEach(c=>{
+      let n,t;
+      if(c.toggle){ const l=[...c.box.querySelectorAll('.toggle-chip[data-key]')]; t=l.length; n=l.filter(x=>x.classList.contains('on')).length; }
+      else { const l=[...c.box.querySelectorAll('input[type=checkbox]')]; t=l.length; n=l.filter(x=>x.checked).length; }
+      c.cnt.textContent = !t ? '' : (c.box.id==='reportBrandChips'&&n===0 ? 'semua brand' : n+' / '+t);
+    });
+    const sum=$(m,'.rpt-sum');
+    if(sum){
+      const bits=[];
+      if(reportState.phoneNumber) bits.push('📱 '+reportState.phoneNumber);
+      if(reportState.customHeader.trim()) bits.push('header');
+      if(reportState.customFooter.trim()) bits.push('footer');
+      sum.textContent=bits.join(' · ');
+    }
+    savePrefs();
+  }
+
+  const origRefresh=window.refreshReportPreview;
+  window.refreshReportPreview=function(){ origRefresh.apply(this,arguments); try{ post(); }catch(e){ console.warn('Report WA:',e); } };
+
+  const origOpen=window.openReportModal;
+  window.openReportModal=function(){ origOpen.apply(this,arguments); try{ enhance(); }catch(e){ console.warn('Report WA:',e); } };
+  const btn=document.getElementById('btnOpenReport'); if(btn) btn.onclick=window.openReportModal;
+
+  window.addEventListener('keydown',e=>{
+    const ov=document.getElementById('modalOverlay'), m=ov&&ov.querySelector('.report-modal'); if(!m) return;
+    if(e.key==='Escape'){ e.stopPropagation(); closeModal(); return; }
+    if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){ e.preventDefault(); const c=$(m,'#btnCopyReport'); if(c) c.click(); return; }
+    if(e.ctrlKey||e.metaKey||e.altKey) return;
+    const tg=e.target&&e.target.tagName; if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT') return;
+    const i=parseInt(e.key,10), tabs=m.querySelectorAll('#reportModeTabs .period-btn');
+    if(i>=1&&i<=tabs.length){ e.stopPropagation(); e.preventDefault(); tabs[i-1].click(); }
+  },true);
+})();
+</script>
+
 </body></html>
